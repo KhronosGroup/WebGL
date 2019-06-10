@@ -72,7 +72,7 @@ function testExtFloatBlend(internalFormat) {
     gl.deleteTexture(tex);
 }
 
-function testExtFloatBlendMRT(internalFormat, shaders, attachments, drawBuffers) {
+function testExtFloatBlendMRTImpl(internalFormat, shaders, attachments, drawBuffers) {
     const shouldBlend = gl.getSupportedExtensions().indexOf('EXT_float_blend') != -1;
 
     const prog = wtu.setupProgram(gl, shaders);
@@ -145,25 +145,26 @@ function testExtFloatBlendMRT(internalFormat, shaders, attachments, drawBuffers)
     gl.deleteTexture(texF2);
 }
 
-function testExtFloatBlendMRTWebGL1(drawBuffersExt) {
-    testExtFloatBlendMRT(
-        gl.RGBA,
-        [trivialVsMrtSrc100, trivialFsMrtSrc100],
-        [drawBuffersExt.COLOR_ATTACHMENT0_WEBGL, drawBuffersExt.COLOR_ATTACHMENT1_WEBGL],
-        drawBuffersExt.drawBuffersWEBGL.bind(drawBuffersExt)
-    );
+function testExtFloatBlendMRT(version, drawBuffersExt) {
+    if (version < 2) {
+        if (!drawBuffersExt) return;
+        testExtFloatBlendMRTImpl(
+            gl.RGBA,
+            [trivialVsMrtSrc100, trivialFsMrtSrc100],
+            [drawBuffersExt.COLOR_ATTACHMENT0_WEBGL, drawBuffersExt.COLOR_ATTACHMENT1_WEBGL],
+            drawBuffersExt.drawBuffersWEBGL.bind(drawBuffersExt)
+        );
+    } else {
+        testExtFloatBlendMRTImpl(
+            gl.RGBA32F,
+            [trivialVsMrtSrc300, trivialFsMrtSrc300],
+            [gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1],
+            gl.drawBuffers.bind(gl)
+        );
+    }
 }
 
-function testExtFloatBlendMRTWebGL2() {
-    testExtFloatBlendMRT(
-        gl.RGBA32F,
-        [trivialVsMrtSrc300, trivialFsMrtSrc300],
-        [gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1],
-        gl.drawBuffers.bind(gl)
-    );
-}
-
-function testExtFloatBlendNonFloat32Type(internalFormat, formats) {
+function testExtFloatBlendNonFloat32TypeImpl(internalFormat, formats) {
     const shouldBlend = gl.getSupportedExtensions().indexOf('EXT_float_blend') != -1;
 
     const prog = wtu.setupProgram(gl, [trivialVsSrc, trivialFsSrc]);
@@ -198,22 +199,23 @@ function testExtFloatBlendNonFloat32Type(internalFormat, formats) {
     gl.deleteTexture(tex);
 }
 
-function testExtFloatBlendNonFloat32TypeWebGL1(ext) {
-    const formats = [
-        [gl.RGBA, gl.RGBA, ext.HALF_FLOAT_OES]
-    ];
-    testExtFloatBlendNonFloat32Type(gl.RGBA, formats);
-}
-
-function testExtFloatBlendNonFloat32TypeWebGL2() {
-    const formats = [
-        [gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT],
-        [gl.RGBA16F, gl.RGBA, gl.FLOAT],
-        [gl.RG16F, gl.RG, gl.FLOAT],
-        [gl.R16F, gl.RED, gl.FLOAT],
-        [gl.R11F_G11F_B10F, gl.RGB, gl.FLOAT]
-    ];
-    testExtFloatBlendNonFloat32Type(gl.RGBA32F, formats);
+function testExtFloatBlendNonFloat32Type(version, oesTextureHalfFloat) {
+    if (version < 2) {
+        if (!oesTextureHalfFloat) return;
+        const formats = [
+            [gl.RGBA, gl.RGBA, oesTextureHalfFloat.HALF_FLOAT_OES]
+        ];
+        testExtFloatBlendNonFloat32TypeImpl(gl.RGBA, formats);
+    } else {
+        const formats = [
+            [gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT],
+            [gl.RGBA16F, gl.RGBA, gl.FLOAT],
+            [gl.RG16F, gl.RG, gl.FLOAT],
+            [gl.R16F, gl.RED, gl.FLOAT],
+            [gl.R11F_G11F_B10F, gl.RGB, gl.FLOAT]
+        ];
+        testExtFloatBlendNonFloat32TypeImpl(gl.RGBA32F, formats);
+    }
 }
 
 /*
