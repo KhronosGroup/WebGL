@@ -72,7 +72,7 @@ function testExtFloatBlend(internalFormat) {
     gl.deleteTexture(tex);
 }
 
-function testExtFloatBlendMRTImpl(internalFormat, shaders, attachments, drawBuffers) {
+function testExtFloatBlendMRTImpl(version, internalFormat, shaders, attachments, drawBuffers) {
     const shouldBlend = gl.getSupportedExtensions().indexOf('EXT_float_blend') != -1;
 
     const prog = wtu.setupProgram(gl, shaders);
@@ -107,36 +107,46 @@ function testExtFloatBlendMRTImpl(internalFormat, shaders, attachments, drawBuff
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, 0, 'No Float32 color attachment');
 
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[0], gl.TEXTURE_2D, texF1, 0);
-    shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
-    gl.drawArrays(gl.POINTS, 0, 1);
-    wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
-                        'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
+    if (version < 2) {
+        // EXT_draw_buffers require all color buffers having the same number of bitplanes
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[0], gl.TEXTURE_2D, texF1, 0);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[1], gl.TEXTURE_2D, texF2, 0);
+        shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+        gl.drawArrays(gl.POINTS, 0, 1);
+        wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
+                            'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
+    } else {
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[0], gl.TEXTURE_2D, texF1, 0);
+        shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+        gl.drawArrays(gl.POINTS, 0, 1);
+        wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
+                            'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
 
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[1], gl.TEXTURE_2D, texF2, 0);
-    shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
-    gl.drawArrays(gl.POINTS, 0, 1);
-    wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
-                        'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[1], gl.TEXTURE_2D, texF2, 0);
+        shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+        gl.drawArrays(gl.POINTS, 0, 1);
+        wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
+                            'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
 
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[0], gl.TEXTURE_2D, tex1, 0);
-    shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
-    gl.drawArrays(gl.POINTS, 0, 1);
-    wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
-                        'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[0], gl.TEXTURE_2D, tex1, 0);
+        shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+        gl.drawArrays(gl.POINTS, 0, 1);
+        wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
+                            'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
 
-    drawBuffers([attachments[0]]);
-    shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+        drawBuffers([attachments[0]]);
+        shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
 
-    gl.drawArrays(gl.POINTS, 0, 1);
-    wtu.glErrorShouldBe(gl, 0, 'Float32 color attachment draw buffer is not enabled');
+        gl.drawArrays(gl.POINTS, 0, 1);
+        wtu.glErrorShouldBe(gl, 0, 'Float32 color attachment draw buffer is not enabled');
 
-    drawBuffers(attachments);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[1], gl.TEXTURE_2D, tex2, 0);
-    shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+        drawBuffers(attachments);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[1], gl.TEXTURE_2D, tex2, 0);
+        shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
 
-    gl.drawArrays(gl.POINTS, 0, 1);
-    wtu.glErrorShouldBe(gl, 0, 'No Float32 color attachment');
+        gl.drawArrays(gl.POINTS, 0, 1);
+        wtu.glErrorShouldBe(gl, 0, 'No Float32 color attachment');
+    }
 
     gl.deleteFramebuffer(fb);
     gl.deleteTexture(tex1);
@@ -149,6 +159,7 @@ function testExtFloatBlendMRT(version, drawBuffersExt) {
     if (version < 2) {
         if (!drawBuffersExt) return;
         testExtFloatBlendMRTImpl(
+            version,
             gl.RGBA,
             [trivialVsMrtSrc100, trivialFsMrtSrc100],
             [drawBuffersExt.COLOR_ATTACHMENT0_WEBGL, drawBuffersExt.COLOR_ATTACHMENT1_WEBGL],
@@ -156,6 +167,7 @@ function testExtFloatBlendMRT(version, drawBuffersExt) {
         );
     } else {
         testExtFloatBlendMRTImpl(
+            version,
             gl.RGBA32F,
             [trivialVsMrtSrc300, trivialFsMrtSrc300],
             [gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1],
