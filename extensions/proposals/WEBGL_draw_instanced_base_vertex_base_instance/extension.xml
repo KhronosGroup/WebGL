@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/WEBGL_draw_instanced_base_vertex_base_instance/">
+
+  <name>WEBGL_draw_instanced_base_vertex_base_instance</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Shuai Shao</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+      <addendum>
+        This extension introduced the <code>drawArraysInstancedBaseInstanceWEBGL</code> and <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code>
+        in addition to the vertex shader builtin <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> exposed by ARB_shader_draw_parameters for OpenGL.
+      </addendum>
+      <addendum>
+        The implementation must validate the arrays and indices referenced by <code>drawArraysInstancedBaseInstanceWEBGL</code>, <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code>, similarly to how indices referenced by <code>drawArrays</code> and <code>drawElements</code> are validated according to section
+        <a href="http://www.khronos.org/registry/webgl/specs/1.0/#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a> of the
+        WebGL specification.
+      </addendum>
+
+    <div class="nonnormative">
+      <p>The baseVertex functionality could effectly help reduce CPU overhead with static batching and text rendering in game engine implementation.</p>
+      <p>The baseInstance functionality could make instanced arrays more useful as they could starting instancing from a particular point in the buffer.</p>
+    </div>
+
+    <features>
+      <feature>
+        The <code>drawArraysInstancedBaseInstanceWEBGL</code> and <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code> entry points are added.
+        These provide a counterpoint to instanced rendering and are more flexible for certain scenarios.
+        <code>drawArraysInstancedBaseInstanceWEBGL</code> behaves identically to <code>drawArrays</code> except that
+        <code>instacneCount</code> instances of the range of elements are executed and the value of <code>instance</code> advances for each iteration.
+        Those attributes that have non-zero values for divisor, as specified by <code>VertexAttribDivisor</code>, advance once every <code>divisor</code> instances.
+        Additionally, the first element within those instanced vertex attributes is specified in <code>baseInstance</code>.
+        <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code> is equivalent to <code>drawElements</code> except that the value of base vertex passed into driver is <code>baseVertex</code> instead of zero,
+        plus that <code>instacneCount</code> instances of the set of elements are executed and the value of <code>instance</code> advances between each set.
+      </feature>
+
+      <feature>
+        The <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> builtin are added to the shading language.
+        For any *BaseVertex* draw call variant, the <code>baseVertex</code> of the draw may be read by the vertex shader as <code>gl_BaseVertex</code>. For non *BaseVertex* calls, the value of <code>gl_BaseVertex</code> is 0.
+        For any *BaseInstance draw call variant, the <code>baseInstance</code> of the draw may be read by the vertex shader as <code>gl_BaseInstance</code>. For non *BaseInstance calls, the value of <code>gl_BaseInstance</code> is 0.
+      </feature>
+
+      <glsl extname="TODO">
+        <alias extname="GL_NV_foo_bar"/>
+
+        <alias extname="GL_ATI_foo_bar"/>
+
+        <stage type="fragment"/>
+
+        <stage type="vertex"/>
+
+        <function name="myfun" type="vec4">
+          <param type="vec4"/>
+        </function>
+      </glsl>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+
+[NoInterfaceObject]
+interface WEBGL_draw_instanced_base_vertex_base_instance {
+  void drawArraysInstancedBaseInstanceWEBGL(
+      GLenum mode, GLint first, GLsizei count,
+      GLsizei instanceCount, GLuint baseInstance
+  );
+  void drawElementsInstancedBaseVertexBaseInstanceWEBGL(
+      GLenum mode, GLsizei count, GLenum type, GLintptr offset,
+      GLsizei instanceCount, GLint baseVertex, GLuint baseinstance
+  );
+};
+  </idl>
+
+  <newfun>
+    <function name="drawArraysInstancedBaseInstanceWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="first" type="GLint"/>
+      <param name="count" type="GLsizei"/>
+      <param name="instanceCount" type="GLsizei"/>
+      <param name="baseInstance" type="GLuint"/>
+    </function>
+    <function name="drawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="count" type="GLsizei"/>
+      <param name="type" type="GLenum"/>
+      <param name="offset" type="GLintptr"/>
+      <param name="instanceCount" type="GLsizei"/>
+      <param name="baseVertex" type="GLint"/>
+      <param name="baseInstance" type="GLuint"/>
+    </function>
+  </newfun>
+
+  <security>
+    The base-vertex-base-instance-draw APIs are subject to all of the same rules regarding <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#4.5">out-of-range array accesses</a> as the core WebGL APIs.
+  </security>
+
+  <samplecode xml:space="preserve">
+    <pre>
+#extension GL_ANGLE_TODO : require
+void main() {
+    gl_Position = vec4(gl_BaseVertex, 0, 0, gl_BaseInstance);
+}
+    </pre>
+  </samplecode>
+
+  <tests/>
+
+  <issues/>
+
+  <history>
+    <revision date="2019/06/14">
+      <change>Initial version.</change>
+    </revision>
+  </history>
+</extension>

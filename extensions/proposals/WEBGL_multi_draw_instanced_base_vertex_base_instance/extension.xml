@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/WEBGL_multi_draw_instanced_base_vertex_base_instance/">
+
+  <name>WEBGL_multi_draw_instanced_base_vertex_base_instance</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Shuai Shao</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <addendum>
+      This extension introduced the <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>
+      in addition to the vertex shader builtin <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> exposed by ARB_shader_draw_parameters for OpenGL.
+    </addendum>
+    <addendum>
+      The implementation must validate the arrays and indices referenced by <code>multiDrawArraysInstancedBaseInstanceWEBGL</code>, <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>, similarly to how indices referenced by <code>drawArrays</code> and <code>drawElements</code> are validated according to section
+      <a href="http://www.khronos.org/registry/webgl/specs/1.0/#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a> of the
+      WebGL specification.
+    </addendum>
+
+    <div class="nonnormative">
+      <p>The baseVertex functionality could effectly help reduce CPU overhead with static batching and text rendering in game engine implementation.</p>
+      <p>The baseInstance functionality could make instanced arrays more useful as they could starting instancing from a particular point in the buffer.</p>
+    </div>
+
+    <features>
+      <feature>
+        The <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code> entry points are added.
+      </feature>
+
+      <glsl extname="TODO">
+        <alias extname="GL_NV_foo_bar"/>
+
+        <alias extname="GL_ATI_foo_bar"/>
+
+        <stage type="fragment"/>
+
+        <stage type="vertex"/>
+
+        <function name="myfun" type="vec4">
+          <param type="vec4"/>
+        </function>
+      </glsl>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
+  void multiDrawArraysInstancedBaseInstanceWEBGL(
+      GLenum mode, GLsizei drawCount,
+      Int32array or sequence<GLint> countsList, GLuint countsOffset,
+      Int32array or sequence<GLint> instanceCountsList, GLuint instanceCountsOffset,
+      Int32array or sequence<GLint> firstsList, GLuint firstsOffset,
+      Int32array or sequence<GLint> baseInstancesList, GLuint baseInstancesOffset
+  );
+  void multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
+      GLenum mode, GLenum type, GLsizei drawCount,
+      Int32array or sequence<GLint> countsList, GLuint countsOffset,
+      Int32array or sequence<GLint> instanceCountsList, GLuint instanceCountsOffset,
+      Int32array or sequence<GLint> offsetsList, GLuint offsetsOffset,
+      Int32array or sequence<GLint> baseVerticesList, GLuint baseVerticesOffset,
+      Int32array or sequence<GLint> baseInstancesList, GLuint baseInstancesOffset
+  );
+};
+  </idl>
+
+  <newfun>
+    <function name="multiDrawArraysInstancedBaseInstanceWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="drawCount" type="GLsizei"/>
+      <param name="countsList" type="sequence<GLint>"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="firstsList" type="sequence<GLint>"/>
+      <param name="firstsOffset" type="GLuint"/>
+      <param name="baseInstancesList" type="sequence<GLint>"/>
+      <param name="baseInstancesOffset" type="GLuint"/>
+    </function>
+    <function name="multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="type" type="GLenum"/>
+      <param name="drawCount" type="GLsizei"/>
+      <param name="countsList" type="sequence<GLint>"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="instanceCountsList" type="sequence<GLint>"/>
+      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="offsetsList" type="sequence<GLint>"/>
+      <param name="offsetsOffset" type="GLuint"/>
+      <param name="baseVerticesList" type="sequence<GLint>"/>
+      <param name="baseVerticesOffset" type="GLuint"/>
+      <param name="baseInstancesList" type="sequence<GLint>"/>
+      <param name="baseInstancesOffset" type="GLuint"/>
+    </function>
+  </newfun>
+
+
+  <security>
+    The multi-draw-base-vertex-base-instance-draw APIs are subject to all of the same rules regarding <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#4.5">out-of-range array accesses</a> as the core WebGL APIs.
+  </security>
+
+
+  <samplecode xml:space="preserve">
+    <pre>
+var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance");
+
+{
+  // multiDrawArraysInstancedBaseInstance variant.
+  let counts = new Int32Array(...);
+  let instanceCounts = new Int32Array(...);
+  let firsts = new Int32Array(...);
+  let baseInstances = new Int32Array(...);
+  ext.multiDrawArraysInstancedBaseInstanceWEBGL(
+      gl.TRIANGLES, counts.length, counts, 0, instanceCounts, 0, first, 0, baseInstances, 0);
+}
+
+{
+  // multiDrawElementsInstancedBaseVertexBaseInstance variant.
+  // Assumes that the indices which have been previously uploaded to the
+  // ELEMENT_ARRAY_BUFFER are to be treated as UNSIGNED_SHORT.
+  let counts = new Int32Array(...);
+  let instanceCounts = new Int32Array(...);
+  let offsets = new Int32Array(...);
+  let baseVertices = new Int32Array(...);
+  let baseInstances = new Int32Array(...);
+  ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
+      gl.TRIANGLES, gl.UNSIGHNED_SHORT, counts.length,
+      counts, 0, instanceCounts, 0, offsets, 0, baseVertices, 0, baseInstances, 0);
+}
+
+    </pre>
+    <pre>
+#extension GL_ANGLE_TODO : require
+void main() {
+    gl_Position = vec4(gl_BaseVertex, 0, 0, gl_BaseInstance);
+}
+    </pre>
+  </samplecode>
+
+  <tests/>
+
+  <issues/>
+
+  <history>
+    <revision date="2019/06/14">
+      <change>Initial version.</change>
+    </revision>
+  </history>
+</extension>
