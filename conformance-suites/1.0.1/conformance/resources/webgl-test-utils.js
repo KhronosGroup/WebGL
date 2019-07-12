@@ -1357,6 +1357,7 @@ var startPlayingAndWaitForVideo = function(video, callback) {
   video.addEventListener('playing', playingListener, true);
   video.addEventListener('timeupdate', timeupdateListener, true);
   video.loop = true;
+  video.muted = true;
   video.play();
 };
 
