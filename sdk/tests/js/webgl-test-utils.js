@@ -3004,6 +3004,8 @@ var startPlayingAndWaitForVideo = function(video, callback) {
   requestAnimFrame.call(window, timeWatcher);
   video.loop = true;
   video.muted = true;
+  // See whether setting the preload flag de-flakes video-related tests.
+  video.preload = 'auto';
   video.play();
 };
 
