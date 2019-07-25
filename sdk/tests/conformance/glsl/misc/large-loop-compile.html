@@ -156,11 +156,11 @@ if (!gl) {
   setTimeout(function() {
     if (!receivedContextLost) {
       testPassed("Large loop compiled and linked without terminating the WebGL context");
-      let timeString = ": " + (endTime - startTime) + " ms";
+      const timeString = `${endTime - startTime} ms`;
       if (endTime - startTime < 7500) {
-        testPassed("Shader compilation completed in a reasonable amount of time" + timeString);
+        testPassed("Shader compilation completed in a reasonable amount of time: " + timeString);
       } else {
-        testFailed("Shader compilation took an unreasonably long time" + timeString);
+        testFailed("Shader compilation took an unreasonably long time: " + timeString);
       }
     }
     finishTest();
@@ -170,4 +170,3 @@ var successfullyParsed = true;
 </script>
 </body>
 </html>
-
