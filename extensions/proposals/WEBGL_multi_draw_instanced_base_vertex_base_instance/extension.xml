@@ -7,50 +7,42 @@
   working group</a> (public_webgl 'at' khronos.org) </contact>
 
   <contributors>
-    <contributor>Shuai Shao</contributor>
+    <contributor>Contributors to the ANGLE_base_vertex_base_instance specification</contributor>
+    <contributor>Contributors to the WEBGL_multi_draw_instanced specification</contributor>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
   <number>NN</number>
 
   <depends>
-    <api version="1.0"/>
+    <api version="2.0"/>
+    <ext name="WEBGL_multi_draw" require="true"/>
+    <ext name="WEBGL_draw_instanced_base_vertex_base_instance" require="true"/>
   </depends>
 
   <overview>
     <addendum>
-      This extension introduced the <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>
-      in addition to the vertex shader builtin <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> exposed by ARB_shader_draw_parameters for OpenGL.
+      This extension exposes the <code>MultiDrawArraysInstancedBaseInstanceANGLE</code> and <code>MultiDrawElementsInstancedBaseVertexBaseInstanceANGLE</code> entrypoints as <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>. In addition the vertex shader builtin <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> are added.
     </addendum>
     <addendum>
-      The implementation must validate the arrays and indices referenced by <code>multiDrawArraysInstancedBaseInstanceWEBGL</code>, <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>, similarly to how indices referenced by <code>drawArrays</code> and <code>drawElements</code> are validated according to section
-      <a href="http://www.khronos.org/registry/webgl/specs/1.0/#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a> of the
-      WebGL specification.
+      The implementation must validate the arrays and indices referenced by <code>multiDrawArraysInstancedBaseInstanceWEBGL</code>, <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>, similarly to how indices referenced by <code>drawArrays</code> and <code>drawElements</code> are validated according to section <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/index.html#6.6">Enabled Vertex Attributes and Range Checking</a> and <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#RANGE_CHECKING">Range Checking</a> of the WebGL specification.
+    </addendum>
+    <addendum>
+      Although the extension name is named WEBGL_multi_draw_instanced_base_vertex_base_instance, the extension must be enabled with the <code>#extension GL_ANGLE_base_vertex_base_instance</code> directive, as shown in the sample code, to use the extension in a shader.
+
+      Likewise the shading language preprocessor <code>#define GL_ANGLE_base_vertex_base_instance</code>, will be defined to 1 if the extension is supported.
     </addendum>
 
     <div class="nonnormative">
       <p>The baseVertex functionality could effectly help reduce CPU overhead with static batching and text rendering in game engine implementation.</p>
       <p>The baseInstance functionality could make instanced arrays more useful as they could starting instancing from a particular point in the buffer.</p>
+      <p>The multi draw functionality could help reduce draw call overhead by allowing better batching.</p>
     </div>
 
     <features>
       <feature>
-        The <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code> entry points are added.
+        The <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code> entry points are added. They behave identically to multiple calls to <code>drawArraysInstanced</code> and <code>drawElementsInstanced</code> except they handle multiple lists of arguments in one call, plus that the first element within those instanced vertex attributes is specified in <code>baseInstancesList</code>. The <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code> in addition specify the value of base vertex of each draw call to be values in<code>baseVerticesList</code> instead of zero.
       </feature>
-
-      <glsl extname="TODO">
-        <alias extname="GL_NV_foo_bar"/>
-
-        <alias extname="GL_ATI_foo_bar"/>
-
-        <stage type="fragment"/>
-
-        <stage type="vertex"/>
-
-        <function name="myfun" type="vec4">
-          <param type="vec4"/>
-        </function>
-      </glsl>
     </features>
   </overview>
 
@@ -59,18 +51,18 @@
 interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
   void multiDrawArraysInstancedBaseInstanceWEBGL(
       GLenum mode, GLsizei drawCount,
-      Int32array or sequence<GLint> countsList, GLuint countsOffset,
-      Int32array or sequence<GLint> instanceCountsList, GLuint instanceCountsOffset,
-      Int32array or sequence<GLint> firstsList, GLuint firstsOffset,
-      Int32array or sequence<GLint> baseInstancesList, GLuint baseInstancesOffset
+      Int32array or sequence&lt;GLint&gt; countsList, GLuint countsOffset,
+      Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
+      Int32array or sequence&lt;GLint&gt; firstsList, GLuint firstsOffset,
+      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset
   );
   void multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
       GLenum mode, GLenum type, GLsizei drawCount,
-      Int32array or sequence<GLint> countsList, GLuint countsOffset,
-      Int32array or sequence<GLint> instanceCountsList, GLuint instanceCountsOffset,
-      Int32array or sequence<GLint> offsetsList, GLuint offsetsOffset,
-      Int32array or sequence<GLint> baseVerticesList, GLuint baseVerticesOffset,
-      Int32array or sequence<GLint> baseInstancesList, GLuint baseInstancesOffset
+      Int32array or sequence&lt;GLint&gt; countsList, GLuint countsOffset,
+      Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
+      Int32array or sequence&lt;GLint&gt; offsetsList, GLuint offsetsOffset,
+      Int32array or sequence&lt;GLint&gt; baseVerticesList, GLuint baseVerticesOffset,
+      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset
   );
 };
   </idl>
@@ -139,9 +131,10 @@ var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance"
 
     </pre>
     <pre>
+#version 300 es
 #extension GL_ANGLE_TODO : require
 void main() {
-    gl_Position = vec4(gl_BaseVertex, 0, 0, gl_BaseInstance);
+    gl_Position = vec4(gl_BaseVertex, gl_InstanceID + gl_BaseInstance, 0, 1);
 }
     </pre>
   </samplecode>
@@ -151,7 +144,7 @@ void main() {
   <issues/>
 
   <history>
-    <revision date="2019/06/14">
+    <revision date="2019/08/15">
       <change>Initial version.</change>
     </revision>
   </history>
