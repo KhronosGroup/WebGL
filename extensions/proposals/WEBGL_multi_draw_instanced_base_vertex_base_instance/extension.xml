@@ -49,7 +49,7 @@
       code, to use the extension in a shader.
 
       Likewise the shading language preprocessor
-      <code>#define GL_ANGLE_base_vertex_base_instance</code>, will be defined to 1 if the
+      <code>#define GL_ANGLE_base_vertex_base_instance</code> will be defined to 1 if the
       extension is supported.
     </addendum>
 
