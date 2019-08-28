@@ -71,26 +71,26 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
     <function name="multiDrawArraysInstancedBaseInstanceWEBGL" type="void">
       <param name="mode" type="GLenum"/>
       <param name="drawCount" type="GLsizei"/>
-      <param name="countsList" type="sequence<GLint>"/>
+      <param name="countsList" type="sequence&lt;GLint&gt;"/>
       <param name="countsOffset" type="GLuint"/>
-      <param name="firstsList" type="sequence<GLint>"/>
+      <param name="firstsList" type="sequence&lt;GLint&gt;"/>
       <param name="firstsOffset" type="GLuint"/>
-      <param name="baseInstancesList" type="sequence<GLint>"/>
+      <param name="baseInstancesList" type="sequence&lt;GLint&gt;"/>
       <param name="baseInstancesOffset" type="GLuint"/>
     </function>
     <function name="multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
       <param name="mode" type="GLenum"/>
       <param name="type" type="GLenum"/>
       <param name="drawCount" type="GLsizei"/>
-      <param name="countsList" type="sequence<GLint>"/>
+      <param name="countsList" type="sequence&lt;GLint&gt;"/>
       <param name="countsOffset" type="GLuint"/>
-      <param name="instanceCountsList" type="sequence<GLint>"/>
+      <param name="instanceCountsList" type="sequence&lt;GLint&gt;"/>
       <param name="instanceCountsOffset" type="GLuint"/>
-      <param name="offsetsList" type="sequence<GLint>"/>
+      <param name="offsetsList" type="sequence&lt;GLint&gt;"/>
       <param name="offsetsOffset" type="GLuint"/>
-      <param name="baseVerticesList" type="sequence<GLint>"/>
+      <param name="baseVerticesList" type="sequence&lt;GLint&gt;"/>
       <param name="baseVerticesOffset" type="GLuint"/>
-      <param name="baseInstancesList" type="sequence<GLint>"/>
+      <param name="baseInstancesList" type="sequence&lt;GLint&gt;"/>
       <param name="baseInstancesOffset" type="GLuint"/>
     </function>
   </newfun>
@@ -148,4 +148,4 @@ void main() {
       <change>Initial version.</change>
     </revision>
   </history>
-</extension>
+</proposal>
