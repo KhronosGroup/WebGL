@@ -31,7 +31,8 @@
         <a href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_float">
         EXT_color_buffer_float</a> or
         <a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_color_buffer_float">
-        WEBGL_color_buffer_float</a> extensions must be enabled.</p>
+        WEBGL_color_buffer_float</a> extensions must be enabled. This extension
+        applies to both WebGL 1.0 and 2.0 contexts.</p>
       </feature>
       <feature>
         On supported systems, this extension is implicitly enabled when any of the
@@ -72,6 +73,10 @@ interface EXT_float_blend {
     <revision date="2019/03/15">
       <change>Implicitly enable to preserve existing content.</change>
       <change>Promote to Community Approved.</change>
+    </revision>
+
+    <revision date="2019/08/27">
+      <change>Clarified that this extension applies to both WebGL 1.0 and 2.0 contexts.</change>
     </revision>
   </history>
 </extension>
