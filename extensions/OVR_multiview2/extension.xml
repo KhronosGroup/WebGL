@@ -152,7 +152,7 @@ interface OVR_multiview2 {
   </errors>
   <samplecode xml:space="preserve">
     <pre>
-    var gl = document.createElement('canvas').getContext('webgl2');
+    var gl = document.createElement('canvas').getContext('webgl2', {antialias: false});
     var ext = gl.getExtension('OVR_multiview2');
     var fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
