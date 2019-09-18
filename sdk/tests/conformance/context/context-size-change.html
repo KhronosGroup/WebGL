@@ -70,10 +70,10 @@ function runTest()
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    // Check that the top-left pixel has R channel 255.
+    // Check that the top-left pixel has R channel non-zero.
     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     pixel[0] = buf[0];
-    shouldBeTrue("pixel[0] == 255");
+    shouldBeTrue("pixel[0] != 0");
 
     // Check that the bottom-right pixel has R channel 0.
     gl.readPixels(2, 2, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
