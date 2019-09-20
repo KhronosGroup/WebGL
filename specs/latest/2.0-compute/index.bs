@@ -386,7 +386,7 @@ Abstract: This is the WebGL 2.0 compute specification.
 ### Texture Object ### {#texture}
   <p>
     <b>
-      void texStorage2DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedSsampleLlocations)
+      void texStorage2DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)
     </b>
   </p>
   <p>
