@@ -79,7 +79,7 @@ function runGetSyncParameterTest() {
   var iter = numRetries;
   while (--iter > 0) {
     syncWithGLServer();
-    if (gl.getSyncParameter(sync, gl.SYNC_STATUS) == gl.SYNC_SIGNALED) {
+    if (gl.getSyncParameter(sync, gl.SYNC_STATUS) == gl.SIGNALED) {
       testFailed("Sync object was signaled too early");
       finishTest();
       return;
