@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/WEBGL_blend_equation_advanced_coherent/">
+<draft href="WEBGL_blend_equation_advanced_coherent/">
   <name>WEBGL_blend_equation_advanced_coherent</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -10,7 +10,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>42</number>
 
   <depends>
     <api version="1.0"/>
@@ -106,6 +106,10 @@ gl.getParameter(gl.BLEND_EQUATION) == ext.MULTIPLY;
 
   <history>
   
+    <revision date="2019/09/25">
+      <change>Moved to draft after WebGL F2F of September 2019</change>
+    </revision>
+	
     <revision date="2018/09/13">
       <change>Forked from WEBGL_blend_equation_advanced to specify only the coherent variant</change>
     </revision>
@@ -122,4 +126,4 @@ gl.getParameter(gl.BLEND_EQUATION) == ext.MULTIPLY;
       <change>Original draft as a TXT file</change>
     </revision>
   </history>
-</proposal>
+</draft>
