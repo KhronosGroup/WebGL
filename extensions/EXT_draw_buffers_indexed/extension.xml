@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/EXT_draw_buffers_indexed/">
-
+<draft href="EXT_draw_buffers_indexed/">
   <name>EXT_draw_buffers_indexed</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -11,7 +10,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>45</number>
 
   <depends>
     <api version="2.0"/>
@@ -23,7 +22,7 @@
     </mirrors>
 
     <features>
-      <feature>This extension provides the ability to independently enable or disable blending, set the blend equations, 
+      <feature>This extension provides the ability to independently enable or disable blending, set the blend equations,
       set the blend functions, and set the color write masks per color output.</feature>
     </features>
   </overview>
@@ -34,22 +33,22 @@ interface EXT_draw_buffers_indexed {
   void enableiEXT(GLenum target, GLuint index);
 
   void disableiEXT(GLenum target, GLuint index);
-  
+
   void blendEquationiEXT(GLuint buf, GLenum mode);
-  
-  void blendEquationSeparateiEXT(GLuint buf, 
+
+  void blendEquationSeparateiEXT(GLuint buf,
                                  GLenum modeRGB, GLenum modeAlpha);
-  
+
   void blendFunciEXT(GLuint buf,
                      GLenum src, GLenum dst);
-  
+
   void blendFuncSeparateiEXT(GLuint buf,
                              GLenum srcRGB, GLenum dstRGB,
                              GLenum srcAlpha, GLenum dstAlpha);
-  
-  void colorMaskiEXT(GLuint buf, 
+
+  void colorMaskiEXT(GLuint buf,
                      GLboolean r, GLboolean g, GLboolean b, GLboolean a);
-  
+
   [WebGLHandlesContextLoss] GLboolean isEnablediEXT(GLenum target, GLuint index);
 };
   </idl>
@@ -98,7 +97,7 @@ interface EXT_draw_buffers_indexed {
       </p>
       <p>
         <code>mode</code> accepts the same tokens as <code>mode</code> in <code>blendEquation</code>.
-      </p>      
+      </p>
     </function>
   </newfun>
 
@@ -128,9 +127,9 @@ interface EXT_draw_buffers_indexed {
         should be modified for <code>DRAW_BUFFER<em>i</em></code>.
       </p>
       <p>
-        <code>src</code> and <code>dst</code> accept the same tokens as <code>src</code> and 
+        <code>src</code> and <code>dst</code> accept the same tokens as <code>src</code> and
         <code>dst</code> in <code>blendFunc</code>.
-      </p>      
+      </p>
     </function>
   </newfun>
 
@@ -146,7 +145,7 @@ interface EXT_draw_buffers_indexed {
         should be modified for <code>DRAW_BUFFER<em>i</em></code>.
       </p>
       <p>
-        <code>srcRGB</code>, <code>dstRGB</code>, <code>srcAlpha</code>, and <code>dstAlpha</code> accept the same 
+        <code>srcRGB</code>, <code>dstRGB</code>, <code>srcAlpha</code>, and <code>dstAlpha</code> accept the same
         tokens as <code>srcRGB</code>, <code>dstRGB</code>, <code>srcAlpha</code>, and <code>dstAlpha</code> parameters in
         <code>blendEquationSeparate</code>.
       </p>
@@ -193,7 +192,7 @@ interface EXT_draw_buffers_indexed {
       <param name="target" type="GLenum"/>
       <param name="index" type="GLuint"/>
       <p>
-        New allowed <code>target</code> tokens and their return types are given in the following table. 
+        New allowed <code>target</code> tokens and their return types are given in the following table.
       </p>
       <p>
         <table class="foo">
@@ -213,7 +212,7 @@ interface EXT_draw_buffers_indexed {
       </p>
     </function>
   </newtok>
-  
+
   <issues>
     Describe interaction with <code>WEBGL_blend_equation_advanced_coherent</code>.
   </issues>
@@ -225,5 +224,8 @@ interface EXT_draw_buffers_indexed {
     <revision date="2019/01/30">
       <change>Fixed typos.</change>
     </revision>
+    <revision date="2019/09/25">
+      <change>Promoted to Draft.</change>
+    </revision>
   </history>
-</proposal>
+</draft>
