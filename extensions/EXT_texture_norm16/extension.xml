@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/EXT_texture_norm16/">
-
+<draft href="EXT_texture_norm16/">
   <name>EXT_texture_norm16</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -11,7 +10,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>44</number>
 
   <depends>
     <api version="1.0"/>
@@ -71,5 +70,8 @@ interface EXT_texture_norm16 {
     <revision date="2019/03/27">
       <change>Initial Draft.</change>
     </revision>
+    <revision date="2019/09/25">
+      <change>Promoted to Draft.</change>
+    </revision>
   </history>
-</proposal>
+</draft>
