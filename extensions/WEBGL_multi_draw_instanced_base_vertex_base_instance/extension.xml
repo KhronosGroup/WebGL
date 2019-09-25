@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/WEBGL_multi_draw_instanced_base_vertex_base_instance/">
+<draft href="WEBGL_multi_draw_instanced_base_vertex_base_instance/">
 
   <name>WEBGL_multi_draw_instanced_base_vertex_base_instance</name>
 
@@ -81,19 +81,22 @@
 [NoInterfaceObject]
 interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
   void multiDrawArraysInstancedBaseInstanceWEBGL(
-      GLenum mode, GLsizei drawCount,
+      GLenum mode,
+      Int32array or sequence&lt;GLint&gt; firstsList, GLuint firstsOffset,
       Int32array or sequence&lt;GLint&gt; countsList, GLuint countsOffset,
       Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
-      Int32array or sequence&lt;GLint&gt; firstsList, GLuint firstsOffset,
-      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset
+      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset,
+      GLsizei drawCount
   );
   void multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
-      GLenum mode, GLenum type, GLsizei drawCount,
+      GLenum mode,
       Int32array or sequence&lt;GLint&gt; countsList, GLuint countsOffset,
-      Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
+      GLenum type,
       Int32array or sequence&lt;GLint&gt; offsetsList, GLuint offsetsOffset,
+      Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
       Int32array or sequence&lt;GLint&gt; baseVerticesList, GLuint baseVerticesOffset,
-      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset
+      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset,
+      GLsizei drawCount
   );
 };
   </idl>
@@ -101,28 +104,28 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
   <newfun>
     <function name="multiDrawArraysInstancedBaseInstanceWEBGL" type="void">
       <param name="mode" type="GLenum"/>
-      <param name="drawCount" type="GLsizei"/>
-      <param name="countsList" type="sequence&lt;GLint&gt;"/>
-      <param name="countsOffset" type="GLuint"/>
       <param name="firstsList" type="sequence&lt;GLint&gt;"/>
       <param name="firstsOffset" type="GLuint"/>
+      <param name="countsList" type="sequence&lt;GLint&gt;"/>
+      <param name="countsOffset" type="GLuint"/>
       <param name="baseInstancesList" type="sequence&lt;GLint&gt;"/>
       <param name="baseInstancesOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
     </function>
     <function name="multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
       <param name="mode" type="GLenum"/>
-      <param name="type" type="GLenum"/>
-      <param name="drawCount" type="GLsizei"/>
       <param name="countsList" type="sequence&lt;GLint&gt;"/>
       <param name="countsOffset" type="GLuint"/>
-      <param name="instanceCountsList" type="sequence&lt;GLint&gt;"/>
-      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="type" type="GLenum"/>
       <param name="offsetsList" type="sequence&lt;GLint&gt;"/>
       <param name="offsetsOffset" type="GLuint"/>
+      <param name="instanceCountsList" type="sequence&lt;GLint&gt;"/>
+      <param name="instanceCountsOffset" type="GLuint"/>
       <param name="baseVerticesList" type="sequence&lt;GLint&gt;"/>
       <param name="baseVerticesOffset" type="GLuint"/>
       <param name="baseInstancesList" type="sequence&lt;GLint&gt;"/>
       <param name="baseInstancesOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
     </function>
   </newfun>
 
@@ -143,12 +146,12 @@ var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance"
 
 {
   // multiDrawArraysInstancedBaseInstance variant.
+  let firsts = new Int32Array(...);
   let counts = new Int32Array(...);
   let instanceCounts = new Int32Array(...);
-  let firsts = new Int32Array(...);
   let baseInstances = new Int32Array(...);
   ext.multiDrawArraysInstancedBaseInstanceWEBGL(
-      gl.TRIANGLES, counts.length, counts, 0, instanceCounts, 0, first, 0, baseInstances, 0);
+      gl.TRIANGLES, first, 0, counts, 0, instanceCounts, 0, baseInstances, 0, counts.length);
 }
 
 {
@@ -156,13 +159,14 @@ var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance"
   // Assumes that the indices which have been previously uploaded to the
   // ELEMENT_ARRAY_BUFFER are to be treated as UNSIGNED_SHORT.
   let counts = new Int32Array(...);
-  let instanceCounts = new Int32Array(...);
   let offsets = new Int32Array(...);
+  let instanceCounts = new Int32Array(...);
   let baseVertices = new Int32Array(...);
   let baseInstances = new Int32Array(...);
   ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
-      gl.TRIANGLES, gl.UNSIGHNED_SHORT, counts.length,
-      counts, 0, instanceCounts, 0, offsets, 0, baseVertices, 0, baseInstances, 0);
+      gl.TRIANGLES, counts, 0, gl.UNSIGHNED_SHORT,
+      offsets, 0, instanceCounts, 0, baseVertices, 0, baseInstances, 0,
+      counts.length);
 }
     </pre>
     <pre>
@@ -182,5 +186,9 @@ void main() {
     <revision date="2019/08/28">
       <change>Initial version.</change>
     </revision>
+    <revision date="2019/09/25">
+      <change>Change parameters order.</change>
+      <change>Move to draft.</change>
+    </revision>
   </history>
-</proposal>
+</draft>

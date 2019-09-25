@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/WEBGL_draw_instanced_base_vertex_base_instance/">
+<draft href="WEBGL_draw_instanced_base_vertex_base_instance/">
 
   <name>WEBGL_draw_instanced_base_vertex_base_instance</name>
 
@@ -182,5 +182,8 @@ void main() {
     <revision date="2019/08/28">
       <change>Initial version.</change>
     </revision>
+    <revision date="2019/09/25">
+      <change>Move to draft.</change>
+    </revision>
   </history>
-</proposal>
+</draft>
