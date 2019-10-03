@@ -814,10 +814,7 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
               </p>
               <p>
                 WebGL implementations use context lost and restored events to regulate power and
-                memory consumption, <em>regardless</em> of the value of this attribute. <em>At
-                WebGLRenderingContext creation time, this attribute will be ignored if no event
-                listeners exist which would handle both <code>"webglcontextlost"</code>
-                and <code>"webglcontextrestored"</code> events dispatched to the canvas element.</em>
+                memory consumption, <em>regardless</em> of the value of this attribute.
               </p>
               <p>
                 The allowed values are:
@@ -835,14 +832,21 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
                   </p>
                   <p>
                     Indicates a request for a GPU configuration that prioritizes rendering
-                    performance over power consumption.  Any content that chooses this value should
-                    be aware that it is more likely that the user agent will force a lost context at
-                    any time. Implementations may decide to initially respect this request and,
-                    after some time, lose the context and restore a new context ignoring the
-                    request. Developers are encouraged to only specify this value if they believe it
+                    performance over power consumption.
+                    Developers are encouraged to only specify this value if they believe it
                     is absolutely necessary, since it may significantly decrease battery life on
                     mobile devices.
+                    Implementations may decide to initially respect this request and,
+                    after some time, lose the context and restore a new context ignoring the
+                    request.
                   </p>
+                  <div class="note">
+                    <p>
+                      Applications that request <code>high-performance</code> should test and
+                      maintain robust context loss handling, as User Agents are very likely to decide
+                      to lose background <code>high-performance</code> contexts.
+                    </p>
+                  </div>
                   <p>
                     <em>low-power</em>
                   </p>
