@@ -4394,6 +4394,32 @@ extensions.
     drivers don't accept uniforms and vertex attributes with the same name.
 </div>
 
+<h3>Wide point primitive clipping</h3>
+<p>
+    <code>POINTS</code> primitives may or may not be discarded if the vertex lies outside the clip
+    volume, but within the near and far clip planes.
+</p>
+<div class="note rationale">
+    <p>
+        Clipping of wide points works differently in GLES and GL, and this difference in behavior is
+        prohibitive to work around in implementations.
+    </p>
+    <p>
+        OpenGL ES 2.0.25 p46:
+        <blockquote>
+            If the primitive under consideration is a point, then clipping discards it if it lies
+            outside the near or far clip plane; otherwise it is passed unchanged.
+        </blockquote>
+    </p>
+    <p>
+        OpenGL 3.2 Core p97:
+        <blockquote>
+            If the primitive under consideration is a point, then clipping passes it unchanged if it
+            lies within the clip volume; otherwise, it is discarded.
+        </blockquote>
+    </p>
+</div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
