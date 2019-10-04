@@ -3569,8 +3569,9 @@ dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventi
 
     <div class="note">
         Once the context is restored, WebGL resources such as textures and buffers that were created
-        before the context was lost are no longer valid. The application needs to reinitialize the
-        context's state and recreate all such resources.
+        before the context was lost are no longer valid.
+        Previously enabled extensions are not restored.
+        The application will want to restore all modified state and destroyed extensions and resources.
     </div>
 
     <div class="example">
