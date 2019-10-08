@@ -117,7 +117,7 @@ void main()
 
 <script>
 "use strict";
-description("This test verifies the functionality of the ANGLE_multi_draw extension, if it is available.");
+description("This test verifies the functionality of the WEBGL_[multi]_draw_basevertex_base_instance extension, if it is available.");
 
 const wtu = WebGLTestUtils;
 const canvas = document.getElementById("canvas");
@@ -149,8 +149,8 @@ function getQuadVertices(x, y) {
 }
 
 const indicesData = [];
-const verticesData = [];
-const nonIndexedVerticesData = [];
+let verticesData = [];
+let nonIndexedVerticesData = [];
 const instanceIDsData = Array.from(Array(x_count).keys());
 const is = new Uint16Array([0, 1, 2, 0, 2, 3]);
 // Rects in the same column are within a vertex array, testing gl_VertexID, gl_BaseVertex
@@ -166,14 +166,15 @@ for (let y = 0; y < y_count; ++y) {
   const vs = getQuadVertices(0, y);
 
   for (let i = 0; i < vs.length; ++i) {
-    for (let v = 0; v < vs[i].length; ++v) verticesData.push(vs[i][v]);
+    verticesData = verticesData.concat(vs[i]);
   }
 
   for (let i = 0; i < is.length; ++i) {
-    for (let v = 0; v < vs[is[i]].length; ++v) nonIndexedVerticesData.push(vs[is[i]][v]);
+    nonIndexedVerticesData = nonIndexedVerticesData.concat(vs[is[i]]);
   }
 }
 
+// Build the indicesData used by drawElements*
 for (let i = 0; i < y_count; ++i) {
   let oi = 6 * i;
   let ov = 4 * i;
@@ -283,14 +284,13 @@ function doTest(extensionName, multiDraw) {
       '#define kCountY ' + countY.toString(),
       'layout(location = 0) in vec2 vPosition;',
       config.useBaseInstanceBuiltin ? '' : 'layout(location = 1) in float vInstanceID;',
-      !config.isDivisorTest ? '' : 'layout(location = 2) in float vInstanceColorID;', //?? TODO: complete test adjustment
       'out vec4 color;',
       'void main()',
       '{',
       '  const float xStep = 1.0 / float(kCountX);',
       '  const float yStep = 1.0 / float(kCountY);',
       '  float xID = ' + (config.useBaseInstanceBuiltin ? 'float(gl_InstanceID + gl_BaseInstance)' : 'vInstanceID') + ';',
-      '  float xColor = ' + (config.isDivisorTest ? 'xStep * (vInstanceColorID + 1.0f)' : '1.0 - xStep * xID') + ';',
+      '  float xColor = 1.0 - xStep * xID;',
       '  float yID = floor(float(gl_VertexID) / ' + (config.isDrawArrays ? '6.0' : '4.0') + ' + 0.01);',
       '  color = vec4(xColor, 1.0 - yStep * yID, ',
       config.useBaseVertexBuiltin ? '1.0 - yStep * float(gl_BaseVertex) / 4.0' : '1.0',
@@ -374,22 +374,22 @@ function doTest(extensionName, multiDraw) {
       checkDrawArraysInstancedBaseInstance(
         [gl.TRIANGLES, 0, 3, 1, 3],
         [gl.NO_ERROR, gl.INVALID_OPERATION],
-        "with baseInstance leads to out of bounds"
+        "with baseInstance leading to out of bounds"
       );
       checkDrawElementsInstancedBaseVertexBaseInstance(
         [gl.TRIANGLES, 3, gl.UNSIGNED_BYTE, 0, 1, 2, 0],
         [gl.NO_ERROR, gl.INVALID_OPERATION],
-        "with baseVertex leads to out of bounds"
+        "with baseVertex leading to out of bounds"
       );
       checkDrawElementsInstancedBaseVertexBaseInstance(
         [gl.TRIANGLES, 3, gl.UNSIGNED_BYTE, 0, 1, 0, 3],
         [gl.NO_ERROR, gl.INVALID_OPERATION],
-        "with baseInstance leads to out of bounds"
+        "with baseInstance leading to out of bounds"
       );
       checkDrawElementsInstancedBaseVertexBaseInstance(
         [gl.TRIANGLES, 3, gl.UNSIGNED_BYTE, 0, 1, 2, 3],
         [gl.NO_ERROR, gl.INVALID_OPERATION],
-        "with both baseVertex and baseInstance lead to out of bounds"
+        "with both baseVertex and baseInstance leading to out of bounds"
       );
     } else {
       const checkMultiDrawArraysInstancedBaseInstance = makeDrawValidationCheck(
@@ -670,9 +670,8 @@ function doTest(extensionName, multiDraw) {
       drawFunc: multiDraw ? multiDrawArraysInstancedBaseInstance : drawArraysInstancedBaseInstance,
       isDrawArrays: true,
       isMultiDraw: multiDraw,
-      useBaseVertexBuiltin: true,
-      useBaseInstanceBuiltin: true,
-      isDivisorTest: false
+      useBaseVertexBuiltin: false,
+      useBaseInstanceBuiltin: false
     });
 
     checkDraw({
@@ -680,8 +679,31 @@ function doTest(extensionName, multiDraw) {
       isDrawArrays: true,
       isMultiDraw: multiDraw,
       useBaseVertexBuiltin: true,
-      useBaseInstanceBuiltin: false,
-      isDivisorTest: false
+      useBaseInstanceBuiltin: false
+    });
+
+    checkDraw({
+      drawFunc: multiDraw ? multiDrawArraysInstancedBaseInstance : drawArraysInstancedBaseInstance,
+      isDrawArrays: true,
+      isMultiDraw: multiDraw,
+      useBaseVertexBuiltin: false,
+      useBaseInstanceBuiltin: true
+    });
+
+    checkDraw({
+      drawFunc: multiDraw ? multiDrawArraysInstancedBaseInstance : drawArraysInstancedBaseInstance,
+      isDrawArrays: true,
+      isMultiDraw: multiDraw,
+      useBaseVertexBuiltin: true,
+      useBaseInstanceBuiltin: true
+    });
+
+    checkDraw({
+      drawFunc: multiDraw ? multiDrawElementsInstancedBaseVertexBaseInstance : drawElementsInstancedBaseVertexBaseInstance,
+      isDrawArrays: false,
+      isMultiDraw: multiDraw,
+      useBaseVertexBuiltin: false,
+      useBaseInstanceBuiltin: false
     });
 
     checkDraw({
@@ -689,8 +711,15 @@ function doTest(extensionName, multiDraw) {
       isDrawArrays: false,
       isMultiDraw: multiDraw,
       useBaseVertexBuiltin: true,
-      useBaseInstanceBuiltin: true,
-      isDivisorTest: false
+      useBaseInstanceBuiltin: false
+    });
+
+    checkDraw({
+      drawFunc: multiDraw ? multiDrawElementsInstancedBaseVertexBaseInstance : drawElementsInstancedBaseVertexBaseInstance,
+      isDrawArrays: false,
+      isMultiDraw: multiDraw,
+      useBaseVertexBuiltin: false,
+      useBaseInstanceBuiltin: true
     });
 
     checkDraw({
@@ -698,8 +727,7 @@ function doTest(extensionName, multiDraw) {
       isDrawArrays: false,
       isMultiDraw: multiDraw,
       useBaseVertexBuiltin: true,
-      useBaseInstanceBuiltin: false,
-      isDivisorTest: false
+      useBaseInstanceBuiltin: true
     });
   }
 
