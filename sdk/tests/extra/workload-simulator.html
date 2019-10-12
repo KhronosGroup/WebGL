@@ -76,7 +76,7 @@ input[type="range"] {
 }
 </style>
 
-
+<button id=highPower>high power</button>
 
 <canvas id=webglCanvas class=square></canvas>
 <canvas id=canvas class=square style=display:none;></canvas>
@@ -474,12 +474,12 @@ function render(fromRaf, fromPostMessage) {
     // We're using antialias: false so that results are comparable between
     // multiview and non-multiview rendering (multiview is never antialiased).
     // We create a WebGL 2 context if available - if not, fall back to WebGL 1.
-    gl = webglCanvas.getContext('webgl2', {antialias: false});
+    gl = webglCanvas.getContext('webgl2', {antialias: true});
     if (gl) {
       webglVersion = 2;
     } else {
       webglVersion = 1;
-      gl = webglCanvas.getContext('webgl', {antialias: false});
+      gl = webglCanvas.getContext('webgl', {antialias: true});
       const aia = gl.getExtension('ANGLE_instanced_arrays');
       gl.drawArraysInstanced = (a, b, c, d)=>aia.drawArraysInstancedANGLE(a, b, c, d);
     }
@@ -755,6 +755,12 @@ function countFps(name, mouseEventsThisFrame) {
 
 updateControls();
 }; // img.onload
+
+highPower.onclick = ()=>{
+  let canvas = document.createElement('canvas');
+  document.body.appendChild(canvas);
+  canvas.getContext('webgl', {powerPreference: "high-performance"});
+}
 
 img.src = 'logo-256x256.png';
 </script>
