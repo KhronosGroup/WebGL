@@ -57,8 +57,9 @@ description();
 
 var gl = wtu.create3DContext("example", undefined, 2);
 
-var singleProgram = wtu.setupProgram(gl, ['singlevshader', 'singlefshader']);
-var dualProgram = wtu.setupProgram(gl, ['dualvshader', 'dualfshader']);
+// Location of "position" attribute must match between shaders.
+var singleProgram = wtu.setupProgram(gl, ['singlevshader', 'singlefshader'], ['position'], [0]);
+var dualProgram = wtu.setupProgram(gl, ['dualvshader', 'dualfshader'], ['position'], [0]);
 
 var positionLocation = gl.getAttribLocation(dualProgram, "position");
 var colorLocation = gl.getAttribLocation(dualProgram, "color");
