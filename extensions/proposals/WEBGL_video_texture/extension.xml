@@ -44,7 +44,7 @@
         <stage type="fragment"/>
         <type name="samplerVideoWEBGL"/>
 
-        <function name="texture2D" type="vec4">
+        <function name="textureVideoWEBGL" type="vec4">
           <param name="sampler" type="samplerVideoWEBGL"/>
 
           <param name="coord" type="vec2"/>
@@ -84,7 +84,7 @@ interface WEBGL_video_texture {
     uniform samplerVideoWEBGL uSampler;
 
     void main(void) {
-      gl_FragColor = texture2D(uSampler, v_texCoord);
+      gl_FragColor = textureVideoWEBGL(uSampler, v_texCoord);
     }
     </pre>
 
@@ -156,6 +156,9 @@ interface WEBGL_video_texture {
       <change>Declare possible side effect of TEXTURE_VIDEO_IMAGE_WEBGL.</change>
       <change>Add limitations for TEXTURE_VIDEO_IMAGE_WEBGL</change>
       <change>Add releaseVideoImageWEBGL and implicit release rules</change>
+    </revision>
+    <revision date="2019/10/25">
+      <change>Define textureVideoWEBGL, rather than using texture2D, in ESSL 1.00 shaders.</change>
     </revision>
   </history>
 </proposal>
