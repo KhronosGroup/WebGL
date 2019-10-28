@@ -130,7 +130,7 @@ Multiply the above slider values by:
 <input type=range id=views min=1 max=4 value=0 step=1>
 using <span id=viewsLabel>1</span> views(s)
 <br>
-<label for=multiview><input type=checkbox id=multiview>Use WEBGL_multiview</label>
+<label for=multiview><input type=checkbox id=multiview>Use OVR_multiview2</label>
 <label for=multiviewCopy><input type=checkbox id=multiviewCopy checked>Copy multiview draw results to main canvas</label>
 </div>
 <input type=range id=jsWork min=0 max=100 value=0>
@@ -171,7 +171,7 @@ void main() {
 }
 </script>
 <script id="multiviewVs" type="text/x-glsl">#version 300 es
-#extension GL_OVR_multiview : enable
+#extension GL_OVR_multiview2 : enable
 layout(num_views=$(num_views)) in;
 in vec2 position;
 out vec2 texCoord;
@@ -184,7 +184,7 @@ void main() {
 }
 </script>
 <script id="multiviewFs" type="text/x-glsl">#version 300 es
-#extension GL_OVR_multiview : enable
+#extension GL_OVR_multiview2 : enable
 precision highp float;
 in vec2 texCoord;
 out vec4 my_FragColor;
@@ -526,9 +526,9 @@ function render(fromRaf, fromPostMessage) {
     gl.useProgram(program);
     gl.uniform1i(program.tex, 0);
 
-    if (webglVersion >= 2 && gl.getExtension('WEBGL_multiview')) {
+    if (webglVersion >= 2 && gl.getExtension('OVR_multiview2')) {
       multiviewAvailable = true;
-      let ext = gl.getExtension('WEBGL_multiview')
+      let ext = gl.getExtension('OVR_multiview2')
       maxViewsMultiview = Math.min(gl.getParameter(ext.MAX_VIEWS_OVR), 16);
       views.max = maxViewsMultiview;
       for (let i = 0; i < maxViewsMultiview; ++i) {
@@ -590,10 +590,10 @@ function render(fromRaf, fromPostMessage) {
     gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, webglCanvas.width, webglCanvas.height, maxViewsMultiview);
-    multiviewExt = gl.getExtension('WEBGL_multiview');
+    multiviewExt = gl.getExtension('OVR_multiview2');
     multiviewFramebuffer = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, multiviewFramebuffer);
-    multiviewExt.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, multiviewTexture, 0, 0, numViews);
+    multiviewExt.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, multiviewTexture, 0, 0, numViews);
     lastNumViews = numViews;
     for (let i = 0; i < maxViewsMultiview; ++i) {
       viewFramebuffer[i] = gl.createFramebuffer();
@@ -608,7 +608,7 @@ function render(fromRaf, fromPostMessage) {
   if (multiviewAvailable && multiview.checked) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, multiviewFramebuffer);
     if (numViews != lastNumViews) {
-      multiviewExt.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, multiviewTexture, 0, 0, numViews);
+      multiviewExt.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, multiviewTexture, 0, 0, numViews);
       lastNumViews = numViews;
     }
     usedProgram = multiviewProgram[numViews - 1];
