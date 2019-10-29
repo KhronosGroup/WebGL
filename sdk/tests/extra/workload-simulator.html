@@ -17,6 +17,7 @@ body {
   text-size-adjust: none;
 }
 
+.square img { position: relative; }
 .square {
   overflow: hidden;
   border-bottom: 20px solid black;
@@ -24,10 +25,7 @@ body {
   display: block;
 }
 
-.square img {
-  position: relative;
-}
-
+#fpsSpan { font-size: 30px; }
 #fpsPanel {
   position: fixed;
   text-align: right;
@@ -39,30 +37,9 @@ body {
   pointer-events: none;
 }
 
-#showFps, label[for='showFps'], #showStats, label[for='showStats'] {
-  pointer-events: auto;
-}
-
-#fpsSpan {
-  font-size: 30px;
-}
-
-.bad {
-  color: red;
-}
-
-.light {
-  color: #CCCCCC;
-}
-
-input {
-  margin: 15px 15px;
-  transform: scale(2);
-}
-
-input[type="number"] {
-  width: 50px;
-}
+input, label { white-space: pre; pointer-events: auto; }
+input { margin: 15px 15px;  transform: scale(2); }
+input[type="number"] { width: 50px; }
 input[type="range"] {
     width: 100px;
     margin: 30px 200px;
@@ -70,19 +47,14 @@ input[type="range"] {
     transform: scale(4);
 }
 
+.rotate { animation: rotating 2s linear infinite; }
 @keyframes rotating {
   from { transform: scale(2) rotate(0deg); }
   to { transform: scale(2) rotate(360deg); }
 }
 
-.rotate {
-  animation: rotating 2s linear infinite;
-}
-
-label {
-  white-space: pre;
-}
-
+.bad { color: red; }
+.light { color: #CCCCCC; }
 #warning {
   color: #FF0000;
   display: block;
@@ -96,7 +68,7 @@ label {
 <div id=dom class=square style=display:none;background:white>
   <img id=img style=width:256px;height:256px;background:black></img>
 </div>
-<div id="warning"></div>
+<div id=warning></div>
 
 <label for=animation><input type=checkbox id=animation>CSS animation</label>
 <br>
@@ -104,74 +76,82 @@ label {
 <label for=use2D><input type=radio name=renderer id=use2D>Canvas 2D</label>
 <label for=useDom><input type=radio name=renderer id=useDom>DOM</label>
 <br>
+<div id=canvasOptions>
+  <label for=onscreen><input type=radio name=offscreen id=onscreen checked>Regular canvas</label>
+  <label for=offscreen><input type=radio name=offscreen id=offscreen>OffscreenCanvas (still on main thread)</label>
+  <!-- <label for=offscreenWorker><input type=radio name=offscreen id=offscreenWorker>OffscreenCanvas on worker</label> -->
+  <br>
+  <label for=transferControlToOffscreen><input type=checkbox id=transferControlToOffscreen checked>Use transferControlToOffscreen</label>
+</div>
 <label for=mousemove><input type=radio name=continuous id=mousemove checked>Mouse/touch drag triggers rendering</label>
 <label for=continuous><input type=radio name=continuous id=continuous>Continuous rendering loop</label>
 <br>
 <div id=continuousOptions>
-Looping method:
-<label for=useRaf><input type=radio name=loop id=useRaf checked>requestAnimationFrame</label>
-<label for=usePostMessage><input type=radio name=loop id=usePostMessage>postMessage</label>
-<label for=useSetTimeout><input type=radio name=loop id=useSetTimeout>setTimeout</label>
-<label for=useSetInterval><input type=radio name=loop id=useSetInterval>setInterval</label>
-<br>
-<div id=fpsOptions>
-<input id=fpsSlider type=range min=10 max=240 step=10 value=60>
-Target FPS: <span id=fpsLabel>60</span>
-</div>
+  Looping method:
+  <label for=useRaf><input type=radio name=loop id=useRaf checked>requestAnimationFrame</label>
+  <label for=usePostMessage><input type=radio name=loop id=usePostMessage>postMessage</label>
+  <label for=useSetTimeout><input type=radio name=loop id=useSetTimeout>setTimeout</label>
+  <label for=useSetInterval><input type=radio name=loop id=useSetInterval>setInterval</label>
+  <br>
+  <div id=fpsOptions>
+    <input id=fpsSlider type=range min=10 max=240 step=10 value=60>
+    Target FPS: <span id=fpsLabel>60</span>
+  </div>
 </div>
 <p>Do the following extra work each frame:</p>
 <input type=range id=jsWork min=0 max=100 value=0>
 <span id=jsWorkLabel>0</span> ms Javascript work
 <div id=glOptions>
-<input type=range id=pixels min=65536 max=65536000 value=65536 step=65536>
-draw <span id=pixelsLabel>64K</span> pixels per view
-<br>
-<input type=range id=drawCalls min=0 max=10000 value=0 step=10>
-using <span id=drawCallsLabel>1</span> draw call(s) per view
-<br>
-Multiply the above slider values by:
-<label for=x1><input type=radio name=multiplier id=x1 checked>1 </label>
-<label for=x10><input type=radio name=multiplier id=x10>10 </label>
-<label for=x100><input type=radio name=multiplier id=x100>100 </label>
-<br>
-<input type=range id=uploads min=0 max=256 value=0 step=0.25>
-<span id=uploadLabel>0.00</span> MB glBufferData
-<br>
-<label for=finish><input type=checkbox id=finish>glFinish</label>
-<br>
-<label for=readPixels><input type=checkbox id=readPixels>glReadPixels</label>
-<br>
-<p>Context creation options:</p>
-<label for=antialias><input type=checkbox id=antialias checked>Antialias</label>
-<label for=alpha><input type=checkbox id=alpha checked>Alpha</label>
-<label for=depth><input type=checkbox id=depth checked>Depth</label>
-<label for=stencil><input type=checkbox id=stencil>Stencil</label>
-<label for=premultipliedAlpha><input type=checkbox id=premultipliedAlpha checked>Premultiplied Alpha</label>
-<label for=preserveDrawingBuffer><input type=checkbox id=preserveDrawingBuffer>Preserve Drawing Buffer</label>
-<label for=desyncrhonized><input type=checkbox id=desyncrhonized>Desynchronized</label>
-<br>
-Power preference
-<label for=ppDefault><input type=radio name=pp id=ppDefault checked>default</label>
-<label for=lowPower><input type=radio name=pp id=lowPower>low-power</label>
-<label for=highPerformance><input type=radio name=pp id=highPerformance>high-performance</label>
+  <input type=range id=pixels min=65536 max=65536000 value=65536 step=65536>
+  draw <span id=pixelsLabel>64K</span> pixels per view
+  <br>
+  <input type=range id=drawCalls min=0 max=10000 value=0 step=10>
+  using <span id=drawCallsLabel>1</span> draw call(s) per view
+  <br>
+  Multiply the above slider values by:
+  <label for=x1><input type=radio name=multiplier id=x1 checked>1 </label>
+  <label for=x10><input type=radio name=multiplier id=x10>10 </label>
+  <label for=x100><input type=radio name=multiplier id=x100>100 </label>
+  <br>
+  <input type=range id=uploads min=0 max=256 value=0 step=0.25>
+  <span id=uploadLabel>0.00</span> MB glBufferData
+  <br>
+  <label for=finish><input type=checkbox id=finish>glFinish</label>
+  <br>
+  <label for=readPixels><input type=checkbox id=readPixels>glReadPixels</label>
+  <br>
+  <p>Context creation options:</p>
+  <label for=antialias><input type=checkbox id=antialias checked>Antialias</label>
+  <label for=alpha><input type=checkbox id=alpha checked>Alpha</label>
+  <label for=depth><input type=checkbox id=depth checked>Depth</label>
+  <label for=stencil><input type=checkbox id=stencil>Stencil</label>
+  <label for=premultipliedAlpha><input type=checkbox id=premultipliedAlpha checked>Premultiplied Alpha</label>
+  <label for=preserveDrawingBuffer><input type=checkbox id=preserveDrawingBuffer>Preserve Drawing Buffer</label>
+  <label for=desyncrhonized><input type=checkbox id=desyncrhonized>Desynchronized</label>
+  <br>
+  Power preference
+  <label for=ppDefault><input type=radio name=pp id=ppDefault checked>default</label>
+  <label for=lowPower><input type=radio name=pp id=lowPower>low-power</label>
+  <label for=highPerformance><input type=radio name=pp id=highPerformance>high-performance</label>
 </div>
+<br>
 Canvas size <input type=number id=canvasSize value=512 min=1> pixels<sup>2</sup>
 <div id="multiviewOptions">
-<input type=range id=views min=1 max=4 value=0 step=1>
-Draw <span id=viewsLabel>1</span> views(s)
-<br>
-<label for=multiview><input type=checkbox id=multiview>Use OVR_multiview2</label>
-<label for=multiviewCopy><input type=checkbox id=multiviewCopy checked>Copy multiview draw results to main canvas</label>
+  <input type=range id=views min=1 max=4 value=0 step=1>
+  Draw <span id=viewsLabel>1</span> views(s)
+  <br>
+  <label for=multiview><input type=checkbox id=multiview>Use OVR_multiview2</label>
+  <label for=multiviewCopy><input type=checkbox id=multiviewCopy checked>Copy multiview draw results to main canvas</label>
 </div>
 
 <div id=fpsPanel>
-<label for=showFps><input type=checkbox id=showFps checked>Show FPS</label>
-<div id=fps>
-  <span id=fpsSpan></span>
-  <p>
-  <label for=showStats><input type=checkbox id=showStats>More info</label>
-  <div id=stats></div>
-</div>
+  <label for=showFps><input type=checkbox id=showFps checked>Show FPS</label>
+  <div id=fps>
+    <span id=fpsSpan></span>
+    <p>
+    <label for=showStats><input type=checkbox id=showStats>More info</label>
+    <div id=stats></div>
+  </div>
 </div>
 
 <h2><center>WebGL workload simulator</center></h2>
@@ -209,7 +189,7 @@ for (const control of controls) {
   control.oninput = updateControls;
 }
 // Some controls require a page reload when changed.
-const reloadControls = ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desyncrhonized', 'ppDefault', 'lowPower', 'highPerformance', 'canvasSize'].map(x=>window[x]);
+const reloadControls = ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desyncrhonized', 'ppDefault', 'lowPower', 'highPerformance', 'canvasSize', 'onscreen', 'offscreen', 'transferControlToOffscreen'].map(x=>window[x]);
 for (let control of reloadControls) {
   control.onchange = ()=>{
     updateControls();
@@ -244,19 +224,16 @@ function updateControls() {
   canvas.style.display = use2D.checked ? 'block' : 'none';
   dom.style.display = useDom.checked ? 'block' : 'none';
   animation.className = animation.checked ? 'rotate' : null;
-  continuousOptions.style.visibility =
-      continuous.checked ? 'visible' : 'hidden';
-  glOptions.style.visibility =
-      useGl.checked ? 'visible' : 'hidden';
-  multiviewOptions.style.visibility =
-      (useGl.checked && multiviewAvailable) ? 'visible' : 'hidden';
+  canvasOptions.style.display = useDom.checked ? 'none' : '';
+  transferControlToOffscreen.parentElement.style.display = onscreen.checked ? 'none' : '';
+  continuousOptions.style.display = continuous.checked ? '' : 'none';
+  glOptions.style.display = useGl.checked ? '' : 'none';
+  multiviewOptions.style.display = (useGl.checked && multiviewAvailable) ? '' : 'none';
   fpsOptions.style.display =
       continuous.checked && (useSetTimeout.checked || useSetInterval.checked) ?
-      'block' : 'none';
-  fps.style.visibility =
-      showFps.checked ? 'visible' : 'hidden';
-  stats.style.visibility =
-      showStats.checked ? 'visible' : 'hidden';
+      '' : 'none';
+  fps.style.visibility = showFps.checked ? 'visible' : 'hidden';
+  stats.style.visibility = showStats.checked ? 'visible' : 'hidden';
   drawCallsLabel.textContent = Math.max(1, drawCalls.value * multiplier);
   pixelsLabel.textContent = formatSI(pixels.value * multiplier);
   jsWorkLabel.textContent = jsWork.value;
@@ -348,16 +325,15 @@ for (const element of [dom, canvas, webglCanvas, img])
 \***********/
 
 
-webglCanvas.width = webglCanvas.height = size;
-canvas.width = canvas.height = size;
-dom.style.width = size + 'px';
-dom.style.height = size + 'px';
-
+webglCanvas.width = webglCanvas.height = canvas.width = canvas.height = size;
+dom.style.width = dom.style.height = size + 'px';
 
 window.onmessage = () => render(false, true);
 
 let ctx;
 let gl;
+let bitmapRenderer;
+let offscreenCanvas;
 let program;
 let buffer;
 const borderSize = 10;
@@ -445,13 +421,23 @@ function render(fromRaf, fromPostMessage) {
     for (let option of ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desyncrhonized'])
       options[option] = window[option].checked;
     options.powerPreference = ppDefault.checked ? 'default' : lowPower.checked ? 'low-power' : 'high-performance';
+    let renderCanvas = webglCanvas;
+    if (offscreen.checked) {
+      if (transferControlToOffscreen.checked) {
+        renderCanvas = webglCanvas.transferControlToOffscreen();
+      } else {
+        bitmapRenderer = webglCanvas.getContext('bitmaprenderer')
+        renderCanvas = offscreenCanvas = new OffscreenCanvas(size, size);
+      }
+    }
+    renderCanvas.width = renderCanvas.height = size;
     // We create a WebGL 2 context if available - if not, fall back to WebGL 1.
-    gl = webglCanvas.getContext('webgl2', options);
+    gl = renderCanvas.getContext('webgl2', options);
     if (gl) {
       webglVersion = 2;
     } else {
       webglVersion = 1;
-      gl = webglCanvas.getContext('webgl', options);
+      gl = renderCanvas.getContext('webgl', options);
       const aia = gl.getExtension('ANGLE_instanced_arrays');
       gl.drawArraysInstanced = (a, b, c, d)=>aia.drawArraysInstancedANGLE(a, b, c, d);
     }
@@ -556,7 +542,7 @@ function render(fromRaf, fromPostMessage) {
     gl.vertexAttribPointer(program.position, 2, gl.FLOAT, false, 0, 0);
 
     // Setup drawing state
-    gl.viewport(0, 0, webglCanvas.width, webglCanvas.height);
+    gl.viewport(0, 0, size, size);
     gl.clearColor(1, 1, 1, 1);
     gl.disable(gl.SCISSOR_TEST);
     gl.disable(gl.DEPTH_TEST);
@@ -573,7 +559,19 @@ function render(fromRaf, fromPostMessage) {
     return;
   }
   if (use2D.checked) {
-    ctx = ctx || canvas.getContext('2d');
+    if (!ctx) {
+      if (offscreen.checked) {
+        if (transferControlToOffscreen.checked) {
+          offscreenCanvas = canvas.transferControlToOffscreen();
+        } else {
+          bitmapRenderer = canvas.getContext('bitmaprenderer');
+          offscreenCanvas = new OffscreenCanvas(size, size);
+        }
+        ctx = offscreenCanvas.getContext('2d');
+      } else {
+        ctx = canvas.getContext('2d');
+      }
+    }
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     try {
@@ -581,6 +579,9 @@ function render(fromRaf, fromPostMessage) {
     } catch (e) {
       ctx.fillStyle = 'black';
       ctx.fillRect(position[0], position[1], imgSize, imgSize);
+    }
+    if (offscreen.checked && !transferControlToOffscreen.checked && bitmapRenderer && offscreenCanvas) {
+      bitmapRenderer.transferFromImageBitmap(offscreenCanvas.transferToImageBitmap());
     }
     return;
   }
@@ -604,7 +605,7 @@ function render(fromRaf, fromPostMessage) {
   const instancesPerCall = Math.max(1, instances / numDrawCalls | 0);
   const instancesFirstCall = instancesPerCall + numDrawCalls % instancesPerCall;
   // Set up to scissor out all but one pixel of the map.
-  gl.scissor(position[0], webglCanvas.height - position[1] - 1, 1, 1);
+  gl.scissor(position[0], size - position[1] - 1, 1, 1);
 
   if (multiviewAvailable && (multiview.checked || numViews > 1) && !multiviewFramebuffer) {
     multiviewTexture = gl.createTexture();
@@ -613,7 +614,7 @@ function render(fromRaf, fromPostMessage) {
     gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, webglCanvas.width, webglCanvas.height, maxViewsMultiview);
+    gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, size, size, maxViewsMultiview);
     multiviewExt = gl.getExtension('OVR_multiview2');
     multiviewFramebuffer = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, multiviewFramebuffer);
@@ -687,9 +688,9 @@ function render(fromRaf, fromPostMessage) {
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, viewFramebuffer[i]);
         let x = i % gridCellsPerRow;
         let y = Math.floor(i / gridCellsPerRow);
-        x *= webglCanvas.width / gridCellsPerRow;
-        y *= webglCanvas.height / gridCellsPerRow;
-        gl.blitFramebuffer(0, 0, webglCanvas.width, webglCanvas.height, x, y, x + webglCanvas.width / gridCellsPerRow, y + webglCanvas.height / gridCellsPerRow, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+        x *= size / gridCellsPerRow;
+        y *= size / gridCellsPerRow;
+        gl.blitFramebuffer(0, 0, size, size, x, y, x + size / gridCellsPerRow, y + size / gridCellsPerRow, gl.COLOR_BUFFER_BIT, gl.NEAREST);
       }
     } else {
       warningText = 'NOTE: Offscreen multiview rendering active - rendering not copied to canvas';
@@ -701,6 +702,9 @@ function render(fromRaf, fromPostMessage) {
   }
   if (readPixels.checked) {
     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, readPixelsArray);
+  }
+  if (offscreen.checked && !transferControlToOffscreen.checked && offscreenCanvas && bitmapRenderer) {
+    bitmapRenderer.transferFromImageBitmap(offscreenCanvas.transferToImageBitmap());
   }
 }
 
