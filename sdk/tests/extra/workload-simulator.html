@@ -11,26 +11,21 @@ body {
   margin: 0;
   font-family: monospace;
   user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
   font-size: 22px;
   text-size-adjust: none;
 }
 
 .square {
-  width: 512px;
-  height: 512px;
   overflow: hidden;
   border-bottom: 20px solid black;
   border-right: 20px solid black;
   display: block;
-  user-select: none;
-  -moz-user-select: -moz-none;
-  -webkit-user-select: none;
 }
 
 .square img {
   position: relative;
-  left: 128;
-  top: 128;
 }
 
 #fpsPanel {
@@ -41,10 +36,15 @@ body {
   width: 300px;
   font-size: 12px;
   margin: 10px;
+  pointer-events: none;
+}
+
+#showFps, label[for='showFps'], #showStats, label[for='showStats'] {
+  pointer-events: auto;
 }
 
 #fpsSpan {
-  font-size: 40px;
+  font-size: 30px;
 }
 
 .bad {
@@ -56,16 +56,22 @@ body {
 }
 
 input {
-  margin: 20px;
-  padding: 20px;
-  transform: scale(2);
+  margin: 15px 15px;
+  transform: scale(2) translate(0px, -2px);
 }
 
+input[type="number"] {
+  width: 50px;
+}
 input[type="range"] {
     width: 100px;
-    margin: 40px 200px;
+    margin: 30px 200px;
     padding: 0px;
     transform: scale(4);
+}
+
+label {
+  white-space: pre;
 }
 
 #warning {
@@ -75,8 +81,6 @@ input[type="range"] {
   min-height: 2em;
 }
 </style>
-
-<button id=highPower>high power</button>
 
 <canvas id=webglCanvas class=square></canvas>
 <canvas id=canvas class=square style=display:none;></canvas>
@@ -92,7 +96,6 @@ input[type="range"] {
 <label for=mousemove><input type=radio name=continuous id=mousemove checked>Mouse/touch drag triggers rendering</label>
 <label for=continuous><input type=radio name=continuous id=continuous>Continuous rendering loop</label>
 <br>
-
 <div id=continuousOptions>
 Looping method:
 <label for=useRaf><input type=radio name=loop id=useRaf checked>requestAnimationFrame</label>
@@ -106,6 +109,8 @@ Target FPS: <span id=fpsLabel>60</span>
 </div>
 </div>
 <p>Do the following extra work each frame:</p>
+<input type=range id=jsWork min=0 max=100 value=0>
+<span id=jsWorkLabel>0</span> ms Javascript work
 <div id=glOptions>
 <input type=range id=pixels min=65536 max=65536000 value=65536 step=65536>
 draw <span id=pixelsLabel>64K</span> pixels per view
@@ -125,91 +130,150 @@ Multiply the above slider values by:
 <br>
 <label for=readPixels><input type=checkbox id=readPixels>glReadPixels</label>
 <br>
+<p>Context creation options:</p>
+<label for=antialias><input type=checkbox id=antialias checked>Antialias</label>
+<label for=alpha><input type=checkbox id=alpha checked>Alpha</label>
+<label for=depth><input type=checkbox id=depth checked>Depth</label>
+<label for=stencil><input type=checkbox id=stencil>Stencil</label>
+<label for=premultipliedAlpha><input type=checkbox id=premultipliedAlpha checked>Premultiplied Alpha</label>
+<label for=preserveDrawingBuffer><input type=checkbox id=preserveDrawingBuffer>Preserve Drawing Buffer</label>
+<label for=desyncrhonized><input type=checkbox id=desyncrhonized>Desynchronized</label>
+<br>
+Power preference
+<label for=ppDefault><input type=radio name=pp id=ppDefault checked>default</label>
+<label for=lowPower><input type=radio name=pp id=lowPower>low-power</label>
+<label for=highPerformance><input type=radio name=pp id=highPerformance>high-performance</label>
 </div>
+Canvas size <input type=number id=canvasSize value=512 min=1> pixels<sup>2</sup>
 <div id="multiviewOptions">
 <input type=range id=views min=1 max=4 value=0 step=1>
-using <span id=viewsLabel>1</span> views(s)
+Draw <span id=viewsLabel>1</span> views(s)
 <br>
 <label for=multiview><input type=checkbox id=multiview>Use OVR_multiview2</label>
 <label for=multiviewCopy><input type=checkbox id=multiviewCopy checked>Copy multiview draw results to main canvas</label>
 </div>
-<input type=range id=jsWork min=0 max=100 value=0>
-<span id=jsWorkLabel>0</span> ms Javascript work
-
-
 
 <div id=fpsPanel>
-<p><label for=showFps><input type=checkbox id=showFps checked>Show FPS</label>
-<p>
+<label for=showFps><input type=checkbox id=showFps checked>Show FPS</label>
 <div id=fps>
   <span id=fpsSpan></span>
   <p>
-  <label for=showStats><input type=checkbox id=showStats>Show detailed stats</label>
+  <label for=showStats><input type=checkbox id=showStats>More info</label>
   <div id=stats></div>
 </div>
-<p>FPS figures are for the last second of rendering.
 </div>
 
 <h2><center>WebGL workload simulator</center></h2>
 
-<script id=vs type=text/x-glsl>
-attribute vec2 position;
-varying vec2 texCoord;
-uniform vec2 offset;
-void main() {
-  gl_Position = vec4(position + offset, 0, 1);
-  texCoord = vec2(position.x, 1. - position.y);
-}
-</script>
-<script id=fs type=text/x-glsl>
-precision highp float;
-varying vec2 texCoord;
-uniform vec4 colorAddition;
-uniform sampler2D tex;
-void main() {
-  gl_FragColor = texture2D(tex, texCoord) + colorAddition * 0.5;
-}
-</script>
-<script id="multiviewVs" type="text/x-glsl">#version 300 es
-#extension GL_OVR_multiview2 : enable
-layout(num_views=$(num_views)) in;
-in vec2 position;
-out vec2 texCoord;
-
-uniform vec2 offset;
-
-void main() {
-  gl_Position = vec4(position + offset, 0, 1);
-  texCoord = vec2(position.x, 1. - position.y);
-}
-</script>
-<script id="multiviewFs" type="text/x-glsl">#version 300 es
-#extension GL_OVR_multiview2 : enable
-precision highp float;
-in vec2 texCoord;
-out vec4 my_FragColor;
-
-uniform sampler2D tex;
-
-void main() {
-  vec4 colorAddition = vec4(((gl_ViewID_OVR & 0x4u) != 0u) ? 1.0 : 0.0,
-                            ((gl_ViewID_OVR & 0x2u) != 0u) ? 1.0 : 0.0,
-                            ((gl_ViewID_OVR & 0x1u) != 0u) ? 1.0 : 0.0,
-                            1.0);
-  my_FragColor = texture(tex, texCoord) + colorAddition * 0.5;
-}
-</script>
 <script>
-const img = document.getElementById('img');
-// Wait for the image to load before doing anything.
-img.onload = img.onerror = function() {
-const canvas = document.getElementById('canvas');
-const webglCanvas = document.getElementById('webglCanvas');
-const dom = document.getElementById('dom');
-const imgSize = img.width || 256;
-const size = webglCanvas.clientWidth;
-let multiviewAvailable = false;
-let webglVersion;
+'use strict';
+// Add all elements with ids as global readonly variables.
+for (let element of document.documentElement.querySelectorAll('[id]'))
+  Object.defineProperty(this, element.id, {value: element, writeable: false});
+
+
+/************\
+* Options UI *
+\************/
+
+
+// Set all input elements with values from the query string.
+const controls = document.getElementsByTagName('input');
+const defaultChecked = {};
+const defaultValues = {};
+const defaultMaxes = {};
+for (const control of controls) {
+  defaultChecked[control.id] = control.checked;
+  defaultValues[control.id] = control.value;
+  defaultMaxes[control.id] = control.max;
+  const param = window.location.search.match(control.id + '(?:=([^&]*))?');
+  if (param) {
+    if (control.type == 'radio')
+      control.checked = true;
+    else if (param.length > 1) {
+      if (control.type == 'checkbox')
+        control.checked = param[1] != 'false';
+      else
+        control.value = param[1];
+    }
+  }
+  control.oninput = updateControls;
+}
+// Some controls require a page reload when changed.
+const reloadControls = ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desyncrhonized', 'ppDefault', 'lowPower', 'highPerformance', 'canvasSize'].map(x=>window[x]);
+for (let control of reloadControls) {
+  control.onchange = ()=>{
+    updateControls();
+    callReplaceStateThrottled();
+    location.reload();
+  };
+}
+
+let queryString = window.location.search;
+let previousQueryString = queryString;
+let replaceStateScheduled = false;
+function callReplaceStateThrottled() {
+  replaceStateScheduled = false;
+  if (queryString == previousQueryString)
+    return;
+  previousQueryString = queryString;
+  let path = window.location.pathname;
+  history.replaceState(null, null, queryString == '?' ? path : path + queryString);
+}
+const suffixes = ['', 'K', 'M', 'G', 'E']
+const divisors = [];
+for (let i = 0; i < suffixes.length; i++)
+  divisors[i] = Math.pow(10, i * 3);
+const formatSI = (x) => {
+  const order = Math.min(Math.log10(Math.abs(x)) / 3 | 0, suffixes.length);
+  return (x / divisors[order]).toFixed(1) + suffixes[order];
+}
+var multiplier;
+function updateControls() {
+  multiplier = x1.checked ? 1 : x10.checked ? 10 : 100;
+  webglCanvas.style.display = useGl.checked ? 'block' : 'none';
+  canvas.style.display = use2D.checked ? 'block' : 'none';
+  dom.style.display = useDom.checked ? 'block' : 'none';
+  continuousOptions.style.visibility =
+      continuous.checked ? 'visible' : 'hidden';
+  glOptions.style.visibility =
+      useGl.checked ? 'visible' : 'hidden';
+  multiviewOptions.style.visibility =
+      (useGl.checked && multiviewAvailable) ? 'visible' : 'hidden';
+  fpsOptions.style.display =
+      continuous.checked && (useSetTimeout.checked || useSetInterval.checked) ?
+      'block' : 'none';
+  fps.style.visibility =
+      showFps.checked ? 'visible' : 'hidden';
+  stats.style.visibility =
+      showStats.checked ? 'visible' : 'hidden';
+  drawCallsLabel.textContent = Math.max(1, drawCalls.value * multiplier);
+  pixelsLabel.textContent = formatSI(pixels.value * multiplier);
+  jsWorkLabel.textContent = jsWork.value;
+  fpsLabel.textContent = fpsSlider.value;
+  uploadLabel.textContent =
+      parseFloat(uploads.value).toFixed(2);
+  viewsLabel.textContent = views.value;
+
+  const queryParams = [];
+  for (const control of controls) {
+    if (control.type == 'radio') {
+      if (!defaultChecked[control.id] && control.checked)
+        queryParams.push(control.id);
+    } else if (control.type == 'checkbox') {
+      if (control.checked != defaultChecked[control.id])
+        queryParams.push(control.id + '=' + control.checked);
+    } else if (control.value != defaultValues[control.id]) {
+      queryParams.push(control.id + '=' + control.value);
+    }
+  }
+  queryString = '?' + queryParams.join('&');
+  if (!replaceStateScheduled) {
+    replaceStateScheduled = true;
+    setTimeout(callReplaceStateThrottled, 200);
+  }
+  render();
+};
 
 
 /**********************\
@@ -217,15 +281,20 @@ let webglVersion;
 \**********************/
 
 
+const imgSize = 256;
+const size = parseInt(canvasSize.value);
+let multiviewAvailable = false;
+let webglVersion;
+
 let mouseDown = false;
 const lastPos = [0, 0];
-document.onmouseup = function(e) { mouseDown = false; };
-document.onmousedown = function(e) {
+document.onmouseup = (e) => mouseDown = false;
+document.onmousedown = (e) => {
   mouseDown = true;
   lastPos[0] = e.pageX;
   lastPos[1] = e.pageY;
 };
-document.ontouchstart = function(e) {
+document.ontouchstart = (e) => {
   lastPos[0] = e.touches[0].pageX;
   lastPos[1] = e.touches[0].pageY;
 }
@@ -256,107 +325,9 @@ function mouseMove(e) {
 }
 document.addEventListener("mousemove", mouseMove, true);
 document.body.addEventListener("touchmove", mouseMove, true);
-function cancel(e) { e.preventDefault(); }
-const toCancel = [dom, canvas, webglCanvas, img];
-for (const element of toCancel) {
-  element.onmousedown = cancel;
-  element.ontouchstart = cancel;
-}
+for (const element of [dom, canvas, webglCanvas, img])
+  element.onmousedown = element.ontouchstart = (e)=>e.preventDefault();
 
-
-/************\
-* Options UI *
-\************/
-
-
-// Set all input elements with values from the query string.
-const controls = document.getElementsByTagName('input');
-const defaultChecked = {};
-const defaultValues = {};
-const defaultMaxes = {};
-for (const control of controls) {
-  window[control.id] = control;
-  defaultChecked[control.id] = control.checked;
-  defaultValues[control.id] = control.value;
-  defaultMaxes[control.id] = control.max;
-  const param = window.location.search.match(control.id + '(?:=([^&]*))?');
-  if (param) {
-    if (control.type == 'radio')
-      control.checked = true;
-    else if (param.length > 1) {
-      if (control.type == 'checkbox')
-        control.checked = param[1] != 'false';
-      else
-        control.value = param[1];
-    }
-  }
-  control.oninput = updateControls;
-}
-let queryString = window.location.search;
-let previousQueryString = queryString;
-let replaceStateScheduled = false;
-function callReplaceStateThrottled() {
-  replaceStateScheduled = false;
-  if (queryString == previousQueryString)
-    return;
-  previousQueryString = queryString;
-  let path = window.location.pathname;
-  history.replaceState(null, null, queryString == '?' ? path : path + queryString);
-}
-const suffixes = ['', 'K', 'M', 'G', 'E']
-const divisors = [];
-for (let i = 0; i < suffixes.length; i++)
-  divisors[i] = Math.pow(10, i * 3);
-const formatSI = (x) => {
-  const order = Math.min(Math.log10(Math.abs(x)) / 3 | 0, suffixes.length);
-  return (x / divisors[order]).toFixed(1) + suffixes[order];
-}
-var multiplier;
-function updateControls() {
-  multiplier = x1.checked ? 1 : x10.checked ? 10 : 100;
-  webglCanvas.style.display = useGl.checked ? 'block' : 'none';
-  canvas.style.display = use2D.checked ? 'block' : 'none';
-  dom.style.display = useDom.checked ? 'block' : 'none';
-  document.getElementById('continuousOptions').style.visibility =
-      continuous.checked ? 'visible' : 'hidden';
-  document.getElementById('glOptions').style.visibility =
-      useGl.checked ? 'visible' : 'hidden';
-  document.getElementById('multiviewOptions').style.visibility =
-      (useGl.checked && multiviewAvailable) ? 'visible' : 'hidden';
-  document.getElementById('fpsOptions').style.display =
-      continuous.checked && (useSetTimeout.checked || useSetInterval.checked) ?
-      'block' : 'none';
-  document.getElementById('fps').style.visibility =
-      showFps.checked ? 'visible' : 'hidden';
-  document.getElementById('stats').style.visibility =
-      showStats.checked ? 'visible' : 'hidden';
-  document.getElementById('drawCallsLabel').textContent = Math.max(1, drawCalls.value * multiplier);
-  document.getElementById('pixelsLabel').textContent = formatSI(pixels.value * multiplier);
-  document.getElementById('jsWorkLabel').textContent = jsWork.value;
-  document.getElementById('fpsLabel').textContent = fpsSlider.value;
-  document.getElementById('uploadLabel').textContent =
-      parseFloat(uploads.value).toFixed(2);
-  document.getElementById('viewsLabel').textContent = views.value;
-
-  const queryParams = [];
-  for (const control of controls) {
-    if (control.type == 'radio') {
-      if (!defaultChecked[control.id] && control.checked)
-        queryParams.push(control.id);
-    } else if (control.type == 'checkbox') {
-      if (control.checked != defaultChecked[control.id])
-        queryParams.push(control.id + '=' + control.checked);
-    } else if (control.value != defaultValues[control.id]) {
-      queryParams.push(control.id + '=' + control.value);
-    }
-  }
-  queryString = '?' + queryParams.join('&');
-  if (!replaceStateScheduled) {
-    replaceStateScheduled = true;
-    setTimeout(callReplaceStateThrottled, 200);
-  }
-  render();
-};
 
 
 /***********\
@@ -366,8 +337,11 @@ function updateControls() {
 
 webglCanvas.width = webglCanvas.height = size;
 canvas.width = canvas.height = size;
+dom.style.width = size + 'px';
+dom.style.height = size + 'px';
 
-window.onmessage = function() { render(false, true); };
+
+window.onmessage = () => render(false, true);
 
 let ctx;
 let gl;
@@ -452,34 +426,19 @@ function render(fromRaf, fromPostMessage) {
 
   warningText = '';
 
-  if (useDom.checked) {
-    img.style.left = position[0] + 'px';
-    img.style.top = position[1] + 'px';
-    return;
-  }
-  if (use2D.checked) {
-    ctx = ctx || canvas.getContext('2d');
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    try {
-      ctx.drawImage(img, position[0], position[1]);
-    } catch (e) {
-      ctx.fillStyle = 'black';
-      ctx.fillRect(position[0], position[1], imgSize, imgSize);
-    }
-    return;
-  }
   // Initialize GL.
   if (!gl) {
-    // We're using antialias: false so that results are comparable between
-    // multiview and non-multiview rendering (multiview is never antialiased).
+    const options = {};
+    for (let option of ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desyncrhonized'])
+      options[option] = window[option].checked;
+    options.powerPreference = ppDefault.checked ? 'default' : lowPower.checked ? 'low-power' : 'high-performance';
     // We create a WebGL 2 context if available - if not, fall back to WebGL 1.
-    gl = webglCanvas.getContext('webgl2', {antialias: true});
+    gl = webglCanvas.getContext('webgl2', options);
     if (gl) {
       webglVersion = 2;
     } else {
       webglVersion = 1;
-      gl = webglCanvas.getContext('webgl', {antialias: true});
+      gl = webglCanvas.getContext('webgl', options);
       const aia = gl.getExtension('ANGLE_instanced_arrays');
       gl.drawArraysInstanced = (a, b, c, d)=>aia.drawArraysInstancedANGLE(a, b, c, d);
     }
@@ -488,41 +447,56 @@ function render(fromRaf, fromPostMessage) {
     const tex = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    try {
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+    img.onload = ()=>{
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
       gl.generateMipmap(gl.TEXTURE_2D);
-    } catch (e) {}
+      render();
+    };
 
-    let setupProgram = function(vsSource, fsSource, attribs) {
-      const vs = gl.createShader(gl.VERTEX_SHADER);
-      gl.shaderSource(vs, vsSource);
-      gl.compileShader(vs);
-      //console.log(gl.getShaderInfoLog(vs));
-      const fs = gl.createShader(gl.FRAGMENT_SHADER);
-      gl.shaderSource(fs, fsSource);
-      gl.compileShader(fs);
-      //console.log(gl.getShaderInfoLog(fs));
-
+    function setupProgram(vsSource, fsSource, attribs, uniforms) {
       let prog = gl.createProgram();
-      gl.attachShader(prog, fs);
-      gl.attachShader(prog, vs);
-
-      for (let i = 0; i < attribs.length; ++i) {
-        gl.bindAttribLocation(prog, i, attribs[i]);
+      function compileShader(source, type) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+          console.log(gl.getShaderInfoLog(shader));
+        gl.attachShader(prog, shader);
       }
-
+      compileShader(vsSource, gl.VERTEX_SHADER);
+      compileShader(fsSource, gl.FRAGMENT_SHADER);
+      for (let i = 0; i < attribs.length; ++i)
+        gl.bindAttribLocation(prog, i, attribs[i]);
       gl.linkProgram(prog);
-      //console.log(gl.getProgramInfoLog(prog));
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+        console.log(gl.getProgramInfoLog(prog));
+      for (const attrib of attribs)
+        prog[attrib] = gl.getAttribLocation(prog, attrib);
+      for (const uniform of uniforms)
+        prog[uniform] = gl.getUniformLocation(prog, uniform);
       return prog;
     }
 
-    // Setup shaders
-    program = setupProgram(document.getElementById('vs').textContent, document.getElementById('fs').textContent, ['position', 'texCoordIn']);
-    program.position = gl.getAttribLocation(program, 'position');
-    program.texCoordIn = gl.getAttribLocation(program, 'texCoordIn');
-    program.offset = gl.getUniformLocation(program, 'offset');
-    program.tex = gl.getUniformLocation(program, 'tex');
-    program.colorAddition = gl.getUniformLocation(program, 'colorAddition');
+    program = setupProgram(`
+      attribute vec2 position;
+      varying vec2 texCoord;
+      uniform vec2 offset;
+      uniform float size;
+      void main() {
+        gl_Position = vec4(position * size + offset + vec2(size - 1., 1. - size), 0, 1);
+        texCoord = vec2(position.x, 1. - position.y);
+      }`,`
+      precision highp float;
+      varying vec2 texCoord;
+      uniform vec4 colorAddition;
+      uniform sampler2D tex;
+      void main() {
+        gl_FragColor = texture2D(tex, texCoord) + colorAddition * 0.5;
+      }`,
+      ['position', 'texCoordIn'], ['offset', 'tex', 'size', 'colorAddition']);
     gl.useProgram(program);
     gl.uniform1i(program.tex, 0);
 
@@ -532,11 +506,32 @@ function render(fromRaf, fromPostMessage) {
       maxViewsMultiview = Math.min(gl.getParameter(ext.MAX_VIEWS_OVR), 16);
       views.max = maxViewsMultiview;
       for (let i = 0; i < maxViewsMultiview; ++i) {
-        let vsSource = document.getElementById('multiviewVs').textContent;
-        vsSource = vsSource.replace('$(num_views)', (i + 1));
-        multiviewProgram[i] = setupProgram(vsSource, document.getElementById('multiviewFs').textContent, ['position', 'texCoordIn']);
-        multiviewProgram[i].offset = gl.getUniformLocation(multiviewProgram[i], 'offset');
-        multiviewProgram[i].tex = gl.getUniformLocation(multiviewProgram[i], 'tex');
+        multiviewProgram[i] = setupProgram(`
+          #version 300 es
+          #extension GL_OVR_multiview2 : enable
+          layout(num_views=${i + 1}) in;
+          in vec2 position;
+          out vec2 texCoord;
+          uniform vec2 offset;
+          uniform float size;
+          void main() {
+            gl_Position = vec4(position * size + offset + vec2(size - 1., 1. - size), 0, 1);
+            texCoord = vec2(position.x, 1. - position.y);
+          }`, `
+          #version 300 es
+          #extension GL_OVR_multiview2 : enable
+          precision highp float;
+          in vec2 texCoord;
+          out vec4 my_FragColor;
+          uniform sampler2D tex;
+          void main() {
+            vec4 colorAddition = vec4(((gl_ViewID_OVR & 0x4u) != 0u) ? 1.0 : 0.0,
+                                      ((gl_ViewID_OVR & 0x2u) != 0u) ? 1.0 : 0.0,
+                                      ((gl_ViewID_OVR & 0x1u) != 0u) ? 1.0 : 0.0,
+                                      1.0);
+            my_FragColor = texture(tex, texCoord) + colorAddition * 0.5;
+          }`,
+          ['position', 'texCoordIn'], ['offset', 'tex', 'size']);
         gl.useProgram(multiviewProgram[i]);
         gl.uniform1i(multiviewProgram[i].tex, 0);
       }
@@ -559,6 +554,24 @@ function render(fromRaf, fromPostMessage) {
     gl.disable(gl.CULL_FACE);
 
     updateControls();
+  } // End GL init
+
+  if (useDom.checked) {
+    img.style.left = position[0] + 'px';
+    img.style.top = position[1] + 'px';
+    return;
+  }
+  if (use2D.checked) {
+    ctx = ctx || canvas.getContext('2d');
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    try {
+      ctx.drawImage(img, position[0], position[1]);
+    } catch (e) {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(position[0], position[1], imgSize, imgSize);
+    }
+    return;
   }
 
   // Upload some data to test the PCI bottleneck.
@@ -618,8 +631,9 @@ function render(fromRaf, fromPostMessage) {
 
   gl.useProgram(usedProgram);
   gl.uniform2f(usedProgram.offset,
-               (position[0] - imgSize) / webglCanvas.width * 2,
-               -position[1] / webglCanvas.width * 2);
+               (position[0] - imgSize) / size * 2,
+               -position[1] / size * 2);
+  gl.uniform1f(usedProgram.size, imgSize * 2 / size);
 
   if (usedProgram == program) {
     gl.uniform4f(program.colorAddition, 0.0, 0.0, 0.0, 1.0);
@@ -632,7 +646,7 @@ function render(fromRaf, fromPostMessage) {
       gl.uniform4f(program.colorAddition, (viewIndex & 4) ? 1.0 : 0.0, (viewIndex & 2) ? 1.0 : 0.0, (viewIndex & 1) ? 1.0 : 0.0, 1.0);
       gl.disable(gl.SCISSOR_TEST);
     }
-    gl.clearColor(0.9, 1, 0.9, 1);
+    gl.clearColor(1, 1, 1, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, instancesFirstCall);
     var instancesDrawn = instancesFirstCall;
@@ -744,23 +758,16 @@ function countFps(name, mouseEventsThisFrame) {
         }
         text += "<div class=light>" + counter.count + " frames</div>";
       }
-      document.getElementById('stats').innerHTML = text;
+      stats.innerHTML = text;
     }
   }
   if (warningText != displayedWarningText) {
-    document.getElementById('warning').textContent = warningText;
+    warning.textContent = warningText;
     displayedWarningText = warningText;
   }
 }
 
 updateControls();
-}; // img.onload
 
-highPower.onclick = ()=>{
-  let canvas = document.createElement('canvas');
-  document.body.appendChild(canvas);
-  canvas.getContext('webgl', {powerPreference: "high-performance"});
-}
-
-img.src = 'logo-256x256.png';
+img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAgMAAAAhHED1AAAADFBMVEUAAAA5AAByAACZAAADU26qAAAFIUlEQVR42u2ZPW7jRhTHOVQkFiwEFU4RFTwCj0Am8AG8wHIDrC8QZBH4BAGJNGkdIL7BLpCo8Q1CpkqrDRCkVWEvkKSIChVUQHLy3pshRZlDeUhVCeZf6GOt+XHmvf+8+VjLMjIyMjIyMjIyMjIyMjIyMjIyMjL6j2txEUWX45u/uueo6l04qvlUNCfE9yPaf8zbendme84fB7af8ad6O6g9SzsAfjsEcNNtz6sBuVhylR7OGsCgQXhHzf5crVaCuNftQHvgd2LkF28GdKHVgcdD4C7udbvQ6sCRg9mNZheW6vZEyHUAaW/agKDhBadurxjwNN3oh1BpvGWpb6K12uOJ7gh6Mjbb6I6gL2Ffaeag1zKzZ/Jgn4wA6uo0wJUpgI8fvaDCPrCq+wcPBegaxsthgFgANvSRAEXnNxcaE2lL4UwwJh37v+F7DOTl5SkX7AiQWdaEPgI5CltRwhFy5bxwDwBGqXCoM/gtaw0Sba4G1DbKCbBBwOYYMKuzrAaIGOYIsAngSkc0AK/uoRogfLhJCxw9/mz+FCAeUfYAZBLWcUnx3OEDs2OAHGMPQBo5FIA0R0ByBIBf7EMojoka4EgfBxWOPi7QmeERwMEA2viiBIgsFtAMR++XXYBL0ySF+CoBcxliD/7oVV6JEwJm1UsCsCtKQkEzZqsGeNLHCPBLDx4WV9YsheoCgBTt45MzPXhVAnzpkjkEKSjn8HQIp4++YvwXykpAxpr3AQICZDDSzIpzF36SFpTakPG/qUrE5Itp9FINEC5JINZrADiYrJwykzH5l7SZEycAIQHS3QTb7ea8gqAD4J8U/5UnpwCpBEwwTVubrwHg89sZ3wEgdGjkGgD025bhU9fwAV0Z51TawJqHZicBTD5+A11JIfY+hBLewJqif2i2kwCL72x06xaCgXmblwwLi18yXUAKwc8gjg5/j3lzK4ZvXjUIkJAVfsa8OZwA80p7CHGBLgoA8A3/LYquOU0msOYzgNoH0sc+vH4mSsSnCHA5pVEHIGYSvPKJADDMPwDQiSz6/DQgseRchtdqUvdAAMRcsPsAQV2zPaomUFOqJz2IaTZO+gB+vTDOqZ5BVSsn/P0CRADIQkALjdMHqAsKNMWKCnW1sMX0E1mo4BE5FbbidEmTNR1ec5sGHREA4jKnmuj3Adx61XCoH7i2kINcYSSIi0sxTvsAdVnHphtaBGACb7HvDL8HBf7hAddHBNxFEVQm5cIiKj8uVFucwzSL4A0mJlYmPD0UVrMKq5Y2ubZb2A+oywBh0C8bOyN3cQ1gGr0IO5Nhi4CMvq4hYHfXVJHgbd1sohrA7MPvWcdJtPYm5MxMZGZTF1URpipuAOzXv7LuBgOfHRIgES0SVm/+6EMetAA/Zd0tDhR1LjqU0O67hHb3MmL4jLXfAnzdBkzqLRKuz3JpXWLmGP9W7p8BWFmf/GCtSG+t76Kkm4bqKDVfiqO7fINl6er5jeatNVbeYZ84Ts7wg7Z6r7sZu92vg1COPXA0e9W+E8cXz42hPrJUYw9dzcH1QX0oDHUTybkqWkuNw7PdHH1Dxd3OWv/Uo7g6mqaVjhXcvssndq/n0NYVzOPx8znXM2jrEmh/iOSrbgnVugX6kU5bC3EzmGhOCPU91JA5qr6IGjBFZ2dehVnWtaL9flBZuDnrMk8m/YzrRAVh+LVs61J35LUue920/+NqXIVdvKZxrKJz7sYXC/MfBEZGRkZGRkZGRkZGRkZGRkZGRkb/N/0Lo92VZbHxh60AAAAASUVORK5CYII=';
 </script>
