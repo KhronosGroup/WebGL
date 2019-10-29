@@ -64,8 +64,8 @@ interface WebGLVideoFrameInfo {
 
 [NoInterfaceObject]
 interface WEBGL_video_texture {
-    const GLenum TEXTURE_VIDEO_IMAGE_WEBGL             = 0x851D;
-    const GLenum SAMPLER_VIDEO_IMAGE_WEBGL             = 0x8B61;
+    const GLenum TEXTURE_VIDEO_IMAGE_WEBGL             = 0x9248;
+    const GLenum SAMPLER_VIDEO_IMAGE_WEBGL             = 0x9249;
 
     [RaisesException] WebGLVideoFrameInfo shareVideoImageWEBGL(
       GLenum target, HTMLVideoElement video);
@@ -159,6 +159,10 @@ interface WEBGL_video_texture {
     </revision>
     <revision date="2019/10/25">
       <change>Define textureVideoWEBGL, rather than using texture2D, in ESSL 1.00 shaders.</change>
+    </revision>
+    <revision date="2019/10/29">
+      <change>Allocate enums for TEXTURE_VIDEO_IMAGE_WEBGL and SAMPLER_VIDEO_IMAGE_WEBGL out of
+      WebGL's current assigned enum block in the OpenGL extension registry.</change>
     </revision>
   </history>
 </proposal>
