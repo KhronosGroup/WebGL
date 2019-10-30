@@ -43,14 +43,17 @@ interface OES_fbo_render_mipmap {
             gl.bindTexture(gl.TEXTURE_2D, texture);
             var fbos = [];
 
-            for(var level=0; level&lt;7; level++){
+            for(var level=0; level&lt;8; level++){
                 var size = 128/Math.pow(2, level);
                 gl.texImage2D(gl.TEXTURE_2D, level, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
                 var fbo = gl.createFramebuffer();
                 gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
                 gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, level);
                 fbos.push(fbo);
+            }
 
+            for(var level=0; level&lt;8; level++){
+                gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[level]);
                 var fboStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
                 console.assert(fboStatus == gl.FRAMEBUFFER_COMPLETE, 'Framebuffer is not complete');
             }
