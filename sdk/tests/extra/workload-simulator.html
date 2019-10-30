@@ -331,9 +331,11 @@ dom.style.width = dom.style.height = size + 'px';
 window.onmessage = () => render(false, true);
 
 let ctx;
-let gl;
 let bitmapRenderer;
 let offscreenCanvas;
+let gl;
+let glBitmapRenderer;
+let glOffscreenCanvas;
 let program;
 let buffer;
 const borderSize = 10;
@@ -426,8 +428,8 @@ function render(fromRaf, fromPostMessage) {
       if (transferControlToOffscreen.checked) {
         renderCanvas = webglCanvas.transferControlToOffscreen();
       } else {
-        bitmapRenderer = webglCanvas.getContext('bitmaprenderer')
-        renderCanvas = offscreenCanvas = new OffscreenCanvas(size, size);
+        glBitmapRenderer = webglCanvas.getContext('bitmaprenderer')
+        renderCanvas = glOffscreenCanvas = new OffscreenCanvas(size, size);
       }
     }
     renderCanvas.width = renderCanvas.height = size;
@@ -703,8 +705,8 @@ function render(fromRaf, fromPostMessage) {
   if (readPixels.checked) {
     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, readPixelsArray);
   }
-  if (offscreen.checked && !transferControlToOffscreen.checked && offscreenCanvas && bitmapRenderer) {
-    bitmapRenderer.transferFromImageBitmap(offscreenCanvas.transferToImageBitmap());
+  if (offscreen.checked && !transferControlToOffscreen.checked && glOffscreenCanvas && glBitmapRenderer) {
+    glBitmapRenderer.transferFromImageBitmap(glOffscreenCanvas.transferToImageBitmap());
   }
 }
 
