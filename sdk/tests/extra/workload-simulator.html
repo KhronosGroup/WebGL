@@ -102,9 +102,10 @@ input[type="range"] {
 <input type=range id=jsWork min=0 max=100 value=0>
 <span id=jsWorkLabel>0</span> ms Javascript work
 <div id=glOptions>
-  <input type=range id=pixels min=65536 max=65536000 value=65536 step=65536>
-  draw <span id=pixelsLabel>64K</span> pixels per view
-  <br>
+  <div id=pixelsWrapper>
+    <input type=range id=pixels min=65536 max=65536000 value=65536 step=65536>
+    draw <span id=pixelsLabel>64K</span> pixels per view
+  </div>
   <input type=range id=drawCalls min=0 max=10000 value=0 step=10>
   using <span id=drawCallsLabel>1</span> draw call(s) per view
   <br>
@@ -441,7 +442,13 @@ function render(fromRaf, fromPostMessage) {
       webglVersion = 1;
       gl = renderCanvas.getContext('webgl', options);
       const aia = gl.getExtension('ANGLE_instanced_arrays');
-      gl.drawArraysInstanced = (a, b, c, d)=>aia.drawArraysInstancedANGLE(a, b, c, d);
+      if (aia)
+        gl.drawArraysInstanced = (a, b, c, d)=>aia.drawArraysInstancedANGLE(a, b, c, d);
+      else {
+        pixels.value = pixels.min;
+        pixelsWrapper.style.display = 'none';
+        gl.drawArraysInstanced = (a, b, c, d)=>gl.drawArrays(a, b, c);
+      }
     }
 
     // Setup texture
