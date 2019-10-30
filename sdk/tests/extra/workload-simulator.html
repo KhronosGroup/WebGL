@@ -497,7 +497,7 @@ function render(fromRaf, fromPostMessage) {
         gl_Position = vec4(position * size + offset + vec2(size - 1., 1. - size), 0, 1);
         texCoord = vec2(position.x, 1. - position.y);
       }`,`
-      precision highp float;
+      precision mediump float;
       varying vec2 texCoord;
       uniform vec4 colorAddition;
       uniform sampler2D tex;
@@ -526,7 +526,7 @@ function render(fromRaf, fromPostMessage) {
             texCoord = vec2(position.x, 1. - position.y);
           }`, `#version 300 es
           #extension GL_OVR_multiview2 : enable
-          precision highp float;
+          precision mediump float;
           in vec2 texCoord;
           out vec4 my_FragColor;
           uniform sampler2D tex;
