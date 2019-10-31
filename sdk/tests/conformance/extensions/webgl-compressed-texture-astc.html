@@ -1592,29 +1592,21 @@ var program = wtu.setupTexturedQuad(gl);
 // For LDR and non-sRGB formats, the error color is magenta *or* all NaNs. To
 // make sure we accept this we create a program that transforms an all NaN
 // sampling result to magenta.
-var nanToMagentaProgram = wtu.setupTexturedQuad(gl);
-var fragmentShader = null;
-for (let shader of gl.getAttachedShaders(nanToMagentaProgram)) {
-    if (gl.getShaderParameter(shader, gl.SHADER_TYPE) == gl.FRAGMENT_SHADER) {
-        fragmentShader = shader;
-    }
-}
-gl.detachShader(nanToMagentaProgram, fragmentShader);
-fragmentShader = wtu.loadShader(gl,
-   `precision mediump float;
-    uniform sampler2D tex;
-    varying vec2 texCoord;
-    void main() {
-        vec4 c = texture2D(tex, texCoord);
-        if (all(notEqual(c, c))) {
-            gl_FragData[0] = vec4(1, 0, 1, 1);
-        } else {
-            gl_FragData[0] = texture2D(tex, texCoord);
-        }
-    }`, gl.FRAGMENT_SHADER);
-gl.attachShader(nanToMagentaProgram, fragmentShader);
-gl.linkProgram(nanToMagentaProgram);
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, "linking nan program");
+const nanToMagentaProgram = wtu.setupTexturedQuad(gl, undefined, undefined,
+    {
+        fragmentShaderOverride:
+           `precision mediump float;
+            uniform sampler2D tex;
+            varying vec2 texCoord;
+            void main() {
+                vec4 c = texture2D(tex, texCoord);
+                if (all(notEqual(c, c))) {
+                    gl_FragData[0] = vec4(1, 0, 1, 1);
+                } else {
+                    gl_FragData[0] = texture2D(tex, texCoord);
+                }
+            }`,
+    });
 gl.useProgram(program);
 
 var extFlag = "WEBGL_compressed_texture_astc";
