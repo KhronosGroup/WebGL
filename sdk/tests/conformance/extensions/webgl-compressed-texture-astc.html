@@ -1588,6 +1588,27 @@ var contextVersion = wtu.getDefault3DContextVersion();
 var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas, {antialias: false});
 var program = wtu.setupTexturedQuad(gl);
+
+// For LDR and non-sRGB formats, the error color is magenta *or* all NaNs. To
+// make sure we accept this we create a program that transforms an all NaN
+// sampling result to magenta.
+const nanToMagentaProgram = wtu.setupTexturedQuad(gl, undefined, undefined,
+    {
+        fragmentShaderOverride:
+           `precision mediump float;
+            uniform sampler2D tex;
+            varying vec2 texCoord;
+            void main() {
+                vec4 c = texture2D(tex, texCoord);
+                if (all(notEqual(c, c))) {
+                    gl_FragData[0] = vec4(1, 0, 1, 1);
+                } else {
+                    gl_FragData[0] = texture2D(tex, texCoord);
+                }
+            }`,
+    });
+gl.useProgram(program);
+
 var extFlag = "WEBGL_compressed_texture_astc";
 var ext = null;
 var vao = null;
@@ -1764,6 +1785,14 @@ function testASTCTexture(test, useTexStorage) {
     if (useTexStorage) {
         gl.texStorage2D(gl.TEXTURE_2D, 1, format, width, height);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "allocating compressed texture via texStorage2D");
+        if (format >= ext.COMPRESSED_RGBA_ASTC_4x4_KHR && format <= ext.COMPRESSED_RGBA_ASTC_12x12_KHR) {
+            // For LDR non-sRGB formats, we accept all NaNs as a valid result.
+            // This program transforms all NaNs to the normal error color,
+            // magenta.
+            gl.useProgram(nanToMagentaProgram);
+        } else {
+            gl.useProgram(program);
+        }
         wtu.clearAndDrawUnitQuad(gl);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing unit quad");
         var clearColor = [255, 0, 255, 255];

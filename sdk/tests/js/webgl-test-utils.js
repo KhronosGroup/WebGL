@@ -389,11 +389,12 @@ var setupNoTexCoordTextureProgram = function(gl) {
  * @return {WebGLProgram}
  */
 var setupSimpleTextureProgram = function(
-    gl, opt_positionLocation, opt_texcoordLocation) {
+    gl, opt_positionLocation, opt_texcoordLocation, opt_fragmentShaderOverride) {
   opt_positionLocation = opt_positionLocation || 0;
   opt_texcoordLocation = opt_texcoordLocation || 1;
+  opt_fragmentShaderOverride = opt_fragmentShaderOverride || simpleTextureFragmentShader;
   return setupProgram(gl,
-                      [simpleTextureVertexShader, simpleTextureFragmentShader],
+                      [simpleTextureVertexShader, opt_fragmentShaderOverride],
                       ['vPosition', 'texCoord0'],
                       [opt_positionLocation, opt_texcoordLocation]);
 };
@@ -555,13 +556,14 @@ var setupQuad = function(gl, options) {
  *        position. Default = 0.
  * @param {number} opt_texcoordLocation The attrib location for
  *        texture coords. Default = 1.
- * @param {!Object} various options. See setupQuad for details.
+ * @param {!Object} various options defined by setupQuad, plus an option
+          fragmentShaderOverride to specify a custom fragment shader.
  * @return {!WebGLProgram}
  */
 var setupTexturedQuad = function(
     gl, opt_positionLocation, opt_texcoordLocation, options) {
   var program = setupSimpleTextureProgram(
-      gl, opt_positionLocation, opt_texcoordLocation);
+      gl, opt_positionLocation, opt_texcoordLocation, options && options.fragmentShaderOverride);
   setupUnitQuad(gl, opt_positionLocation, opt_texcoordLocation, options);
   return program;
 };
