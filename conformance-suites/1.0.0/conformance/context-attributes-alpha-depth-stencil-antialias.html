@@ -200,7 +200,6 @@ function testAntialias(antialias)
 
     shouldBeTrue("webGL.canvas.width == webGL.canvas.height");
     // Both the width and height of canvas are N.
-    // Note that "N = 2" doesn't work for some post processing AA per the discussion at https://github.com/KhronosGroup/WebGL/pull/1977.
     var N = webGL.canvas.width;
     var buf = new Uint8Array(N * N * 4);
     webGL.readPixels(0, 0, N, N, webGL.RGBA, webGL.UNSIGNED_BYTE, buf);
@@ -235,8 +234,8 @@ function runTest()
 <canvas id="depthOff" width="1px" height="1px"></canvas>
 <canvas id="stencilOn" width="1px" height="1px"></canvas>
 <canvas id="stencilOff" width="1px" height="1px"></canvas>
-<canvas id="antialiasOn" width="3px" height="3px"></canvas>
-<canvas id="antialiasOff" width="3px" height="3px"></canvas>
+<canvas id="antialiasOn" width="2px" height="2px"></canvas>
+<canvas id="antialiasOff" width="2px" height="2px"></canvas>
 <div id="description"></div>
 <div id="console"></div>
 </body>
