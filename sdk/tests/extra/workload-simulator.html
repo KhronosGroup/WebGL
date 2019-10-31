@@ -78,7 +78,7 @@ input[type="range"] {
 <br>
 <div id=canvasOptions>
   <label for=onscreen><input type=radio name=offscreen id=onscreen checked>Regular canvas</label>
-  <label for=offscreen><input type=radio name=offscreen id=offscreen>OffscreenCanvas (still on main thread)</label>
+  <label for=offscreen><input type=radio name=offscreen id=offscreen>OffscreenCanvas (on main thread)</label>
   <!-- <label for=offscreenWorker><input type=radio name=offscreen id=offscreenWorker>OffscreenCanvas on worker</label> -->
   <br>
   <label for=transferControlToOffscreen><input type=checkbox id=transferControlToOffscreen checked>Use transferControlToOffscreen</label>
@@ -128,7 +128,7 @@ input[type="range"] {
   <label for=stencil><input type=checkbox id=stencil>Stencil</label>
   <label for=premultipliedAlpha><input type=checkbox id=premultipliedAlpha checked>Premultiplied Alpha</label>
   <label for=preserveDrawingBuffer><input type=checkbox id=preserveDrawingBuffer>Preserve Drawing Buffer</label>
-  <label for=desyncrhonized><input type=checkbox id=desyncrhonized>Desynchronized</label>
+  <label for=desynchronized><input type=checkbox id=desynchronized>Desynchronized</label>
   <br>
   Power preference
   <label for=ppDefault><input type=radio name=pp id=ppDefault checked>default</label>
@@ -190,7 +190,7 @@ for (const control of controls) {
   control.oninput = updateControls;
 }
 // Some controls require a page reload when changed.
-const reloadControls = ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desyncrhonized', 'ppDefault', 'lowPower', 'highPerformance', 'canvasSize', 'onscreen', 'offscreen', 'transferControlToOffscreen'].map(x=>window[x]);
+const reloadControls = ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desynchronized', 'ppDefault', 'lowPower', 'highPerformance', 'canvasSize', 'onscreen', 'offscreen', 'transferControlToOffscreen'].map(x=>window[x]);
 for (let control of reloadControls) {
   control.onchange = ()=>{
     updateControls();
@@ -421,7 +421,7 @@ function render(fromRaf, fromPostMessage) {
   // Initialize GL.
   if (!gl) {
     const options = {};
-    for (let option of ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desyncrhonized'])
+    for (let option of ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desynchronized'])
       options[option] = window[option].checked;
     options.powerPreference = ppDefault.checked ? 'default' : lowPower.checked ? 'low-power' : 'high-performance';
     let renderCanvas = webglCanvas;
