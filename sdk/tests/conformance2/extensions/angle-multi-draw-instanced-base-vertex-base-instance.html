@@ -117,7 +117,7 @@ void main()
 
 <script>
 "use strict";
-description("This test verifies the functionality of the WEBGL_[multi]_draw_basevertex_base_instance extension, if it is available.");
+description("This test verifies the functionality of the ANGLE_[multi]_draw_basevertex_base_instance extension, if it is available.");
 
 const wtu = WebGLTestUtils;
 const canvas = document.getElementById("canvas");
@@ -265,8 +265,8 @@ function runTest() {
     }
   }
 
-  doTest('WEBGL_draw_instanced_base_vertex_base_instance', false);
-  doTest('WEBGL_multi_draw_instanced_base_vertex_base_instance', true);
+  doTest('ANGLE_draw_instanced_base_vertex_base_instance', false);
+  doTest('ANGLE_multi_draw_instanced_base_vertex_base_instance', true);
 }
 
 function doTest(extensionName, multiDraw) {
@@ -359,9 +359,9 @@ function doTest(extensionName, multiDraw) {
 
     if (!multiDraw) {
       const checkDrawArraysInstancedBaseInstance = makeDrawValidationCheck(
-        ext.drawArraysInstancedBaseInstanceWEBGL, setupDrawArrays);
+        ext.drawArraysInstancedBaseInstanceANGLE, setupDrawArrays);
       const checkDrawElementsInstancedBaseVertexBaseInstance = makeDrawValidationCheck(
-        ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL, setupDrawElements);
+        ext.drawElementsInstancedBaseVertexBaseInstanceANGLE, setupDrawElements);
       checkDrawArraysInstancedBaseInstance(
         [gl.TRIANGLES, 0, 3, 1, 1],
         gl.NO_ERROR, "with gl.TRIANGLES"
@@ -393,9 +393,9 @@ function doTest(extensionName, multiDraw) {
       );
     } else {
       const checkMultiDrawArraysInstancedBaseInstance = makeDrawValidationCheck(
-        ext.multiDrawArraysInstancedBaseInstanceWEBGL, setupDrawArrays);
+        ext.multiDrawArraysInstancedBaseInstanceANGLE, setupDrawArrays);
       const checkMultiDrawElementsInstancedBaseVertexBaseInstance = makeDrawValidationCheck(
-        ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL, setupDrawElements);
+        ext.multiDrawElementsInstancedBaseVertexBaseInstanceANGLE, setupDrawElements);
 
       // Check that drawing a single triangle works
       checkMultiDrawArraysInstancedBaseInstance(
@@ -509,9 +509,9 @@ function doTest(extensionName, multiDraw) {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     if (!multiDraw) {
-      ext.drawArraysInstancedBaseInstanceWEBGL(gl.TRIANGLES, 0, 6, 1, 5);
+      ext.drawArraysInstancedBaseInstanceANGLE(gl.TRIANGLES, 0, 6, 1, 5);
     } else {
-      ext.multiDrawArraysInstancedBaseInstanceWEBGL(gl.TRIANGLES, [0], 0, [6], 0, [1], 0, [5], 0, 1);
+      ext.multiDrawArraysInstancedBaseInstanceANGLE(gl.TRIANGLES, [0], 0, [6], 0, [1], 0, [5], 0, 1);
     }
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -525,9 +525,9 @@ function doTest(extensionName, multiDraw) {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     if (!multiDraw) {
-      ext.drawArraysInstancedBaseInstanceWEBGL(gl.TRIANGLES, 0, 6, 1, 5);
+      ext.drawArraysInstancedBaseInstanceANGLE(gl.TRIANGLES, 0, 6, 1, 5);
     } else {
-      ext.multiDrawArraysInstancedBaseInstanceWEBGL(gl.TRIANGLES, [0], 0, [6], 0, [1], 0, [5], 0, 1);
+      ext.multiDrawArraysInstancedBaseInstanceANGLE(gl.TRIANGLES, [0], 0, [6], 0, [1], 0, [5], 0, 1);
     }
 
     wtu.checkCanvasRect(gl, x, y, xSize, ySize, [0, 255, 0, 255], "gl_InstanceID should always starts from 0");
@@ -546,9 +546,9 @@ function doTest(extensionName, multiDraw) {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     if (!multiDraw) {
-      ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1, 3, 0);
+      ext.drawElementsInstancedBaseVertexBaseInstanceANGLE(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1, 3, 0);
     } else {
-      ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(gl.TRIANGLES, [6], 0, gl.UNSIGNED_BYTE, [0], 0, [1], 0, [3], 0, [0], 0, 1);
+      ext.multiDrawElementsInstancedBaseVertexBaseInstanceANGLE(gl.TRIANGLES, [6], 0, gl.UNSIGNED_BYTE, [0], 0, [1], 0, [3], 0, [0], 0, 1);
     }
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -562,9 +562,9 @@ function doTest(extensionName, multiDraw) {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     if (!multiDraw) {
-      ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1, 3, 0);
+      ext.drawElementsInstancedBaseVertexBaseInstanceANGLE(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1, 3, 0);
     } else {
-      ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(gl.TRIANGLES, [6], 0, gl.UNSIGNED_BYTE, [0], 0, [1], 0, [3], 0, [0], 0, 1);
+      ext.multiDrawElementsInstancedBaseVertexBaseInstanceANGLE(gl.TRIANGLES, [6], 0, gl.UNSIGNED_BYTE, [0], 0, [1], 0, [3], 0, [0], 0, 1);
     }
 
     wtu.checkCanvasRect(gl, x, y, xSize, ySize, [0, 255, 0, 255], "gl_VertexID should always starts from 0");
@@ -612,25 +612,25 @@ function doTest(extensionName, multiDraw) {
     function drawArraysInstancedBaseInstance() {
       const countPerDraw = y_count * 6;
       for (let x = 0; x < x_count; x += 2) {
-        ext.drawArraysInstancedBaseInstanceWEBGL(gl.TRIANGLES, 0, countPerDraw, 2, x);
+        ext.drawArraysInstancedBaseInstanceANGLE(gl.TRIANGLES, 0, countPerDraw, 2, x);
       }
     }
 
     function multiDrawArraysInstancedBaseInstance() {
-      ext.multiDrawArraysInstancedBaseInstanceWEBGL(gl.TRIANGLES, drawArraysParams.firsts, 0, drawArraysParams.counts, 0, drawArraysParams.instances, 0, drawArraysParams.baseInstances, 0, drawArraysParams.drawCount);
+      ext.multiDrawArraysInstancedBaseInstanceANGLE(gl.TRIANGLES, drawArraysParams.firsts, 0, drawArraysParams.counts, 0, drawArraysParams.instances, 0, drawArraysParams.baseInstances, 0, drawArraysParams.drawCount);
     }
 
     function drawElementsInstancedBaseVertexBaseInstance() {
       const countPerDraw = 6;
       for (let v = 0; v < y_count; ++v) {
         for (let x = 0; x < x_count; x += 2) {
-          ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL(gl.TRIANGLES, countPerDraw, gl.UNSIGNED_SHORT, 0, 2, v * 4, x);
+          ext.drawElementsInstancedBaseVertexBaseInstanceANGLE(gl.TRIANGLES, countPerDraw, gl.UNSIGNED_SHORT, 0, 2, v * 4, x);
         }
       }
     }
 
     function multiDrawElementsInstancedBaseVertexBaseInstance() {
-      ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(gl.TRIANGLES, drawElementsParams.counts, 0, gl.UNSIGNED_SHORT, drawElementsParams.offsets, 0, drawElementsParams.instances, 0, drawElementsParams.baseVertices, 0, drawElementsParams.baseInstances, 0, drawElementsParams.drawCount);
+      ext.multiDrawElementsInstancedBaseVertexBaseInstanceANGLE(gl.TRIANGLES, drawElementsParams.counts, 0, gl.UNSIGNED_SHORT, drawElementsParams.offsets, 0, drawElementsParams.instances, 0, drawElementsParams.baseVertices, 0, drawElementsParams.baseInstances, 0, drawElementsParams.drawCount);
     }
 
     function checkDraw(config) {

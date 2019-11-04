@@ -41,4 +41,4 @@ webgl-debug-shaders.html
 --min-version 1.0.4 --max-version 1.9.9 webgl-draw-buffers-broadcast-return.html
 --min-version 1.0.4 --max-version 1.9.9 webgl-draw-buffers-framebuffer-unsupported.html
 --min-version 1.0.4 --max-version 1.9.9 webgl-draw-buffers-max-draw-buffers.html
---min-version 1.0.4 webgl-multi-draw.html
+--min-version 1.0.4 angle-multi-draw.html

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="WEBGL_draw_instanced_base_vertex_base_instance/">
+<draft href="ANGLE_draw_instanced_base_vertex_base_instance/">
 
-  <name>WEBGL_draw_instanced_base_vertex_base_instance</name>
+  <name>ANGLE_draw_instanced_base_vertex_base_instance</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
   working group</a> (public_webgl 'at' khronos.org) </contact>
@@ -21,14 +21,14 @@
       <addendum>
         This extension exposes the <code>DrawArraysInstancedBaseInstanceANGLE</code> and
         <code>DrawElementsInstancedBaseVertexBaseInstanceANGLE</code> entrypoints as
-        <code>drawArraysInstancedBaseInstanceWEBGL</code> and
-        <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code>. In addition the vertex
+        <code>drawArraysInstancedBaseInstanceANGLE</code> and
+        <code>drawElementsInstancedBaseVertexBaseInstanceANGLE</code>. In addition the vertex
         shader builtin <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> are added.
       </addendum>
       <addendum>
         The implementation must validate the arrays and indices referenced by
-        <code>drawArraysInstancedBaseInstanceWEBGL</code> and
-        <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code>, similarly to how indices
+        <code>drawArraysInstancedBaseInstanceANGLE</code> and
+        <code>drawElementsInstancedBaseVertexBaseInstanceANGLE</code>, similarly to how indices
         referenced by <code>drawArrays</code> and <code>drawElements</code> are validated according
         to section
         <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/index.html#6.6">
@@ -39,7 +39,7 @@
         </a> of the WebGL specification.
       </addendum>
       <addendum>
-        Although the extension name is named WEBGL_draw_instanced_base_vertex_base_instance, the
+        Although the extension name is named ANGLE_draw_instanced_base_vertex_base_instance, the
         extension must be enabled with the
         <code>#extension GL_ANGLE_base_vertex_base_instance</code> directive, as shown in the
         sample code, to use the extension in a shader.
@@ -62,13 +62,13 @@
 
     <features>
       <feature>
-        The <code>drawArraysInstancedBaseInstanceWEBGL</code>
-        and <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code> entry points are added.
+        The <code>drawArraysInstancedBaseInstanceANGLE</code>
+        and <code>drawElementsInstancedBaseVertexBaseInstanceANGLE</code> entry points are added.
         These provide a counterpoint to instanced rendering and are more flexible for certain
-        scenarios. <code>drawArraysInstancedBaseInstanceWEBGL</code> behaves identically to
+        scenarios. <code>drawArraysInstancedBaseInstanceANGLE</code> behaves identically to
         <code>drawArraysInstanced</code> except that the first element within those instanced
         vertex attributes is specified in <code>baseInstance</code>.
-        <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code> is equivalent to
+        <code>drawElementsInstancedBaseVertexBaseInstanceANGLE</code> is equivalent to
         <code>drawElementsInstanced</code> except that the value of the base vertex passed into
         driver is <code>baseVertex</code> instead of zero, and that the first element within those
         instanced vertex attributes is specified in <code>baseInstance</code>.
@@ -101,12 +101,12 @@
   <idl xml:space="preserve">
 
 [NoInterfaceObject]
-interface WEBGL_draw_instanced_base_vertex_base_instance {
-  void drawArraysInstancedBaseInstanceWEBGL(
+interface ANGLE_draw_instanced_base_vertex_base_instance {
+  void drawArraysInstancedBaseInstanceANGLE(
       GLenum mode, GLint first, GLsizei count,
       GLsizei instanceCount, GLuint baseInstance
   );
-  void drawElementsInstancedBaseVertexBaseInstanceWEBGL(
+  void drawElementsInstancedBaseVertexBaseInstanceANGLE(
       GLenum mode, GLsizei count, GLenum type, GLintptr offset,
       GLsizei instanceCount, GLint baseVertex, GLuint baseinstance
   );
@@ -114,14 +114,14 @@ interface WEBGL_draw_instanced_base_vertex_base_instance {
   </idl>
 
   <newfun>
-    <function name="drawArraysInstancedBaseInstanceWEBGL" type="void">
+    <function name="drawArraysInstancedBaseInstanceANGLE" type="void">
       <param name="mode" type="GLenum"/>
       <param name="first" type="GLint"/>
       <param name="count" type="GLsizei"/>
       <param name="instanceCount" type="GLsizei"/>
       <param name="baseInstance" type="GLuint"/>
     </function>
-    <function name="drawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
+    <function name="drawElementsInstancedBaseVertexBaseInstanceANGLE" type="void">
       <param name="mode" type="GLenum"/>
       <param name="count" type="GLsizei"/>
       <param name="type" type="GLenum"/>
@@ -140,7 +140,7 @@ interface WEBGL_draw_instanced_base_vertex_base_instance {
 
   <samplecode xml:space="preserve">
     <pre>
-var ext = gl.getExtension("WEBGL_draw_instanced_base_vertex_base_instance");
+var ext = gl.getExtension("ANGLE_draw_instanced_base_vertex_base_instance");
 
 {
   // drawArraysInstancedBaseInstance variant.
@@ -148,7 +148,7 @@ var ext = gl.getExtension("WEBGL_draw_instanced_base_vertex_base_instance");
   let count = 3;
   let instanceCount = 2;
   let baseInstance = 1;
-  ext.drawArraysInstancedBaseInstanceWEBGL(
+  ext.drawArraysInstancedBaseInstanceANGLE(
       gl.TRIANGLES, first, count, instanceCount, baseInstance);
 }
 
@@ -161,7 +161,7 @@ var ext = gl.getExtension("WEBGL_draw_instanced_base_vertex_base_instance");
   let instanceCount = 2;
   let baseVertice = 3;
   let baseInstance = 1;
-  ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL(
+  ext.drawElementsInstancedBaseVertexBaseInstanceANGLE(
       gl.TRIANGLES, count, gl.UNSIGHNED_SHORT, offset, instanceCount, baseVertex, baseInstance);
 }
     </pre>
@@ -184,6 +184,9 @@ void main() {
     </revision>
     <revision date="2019/09/25">
       <change>Move to draft.</change>
+    </revision>
+    <revision date="2019/11/04">
+      <change>Rename prefix from WEBGL_ to ANGLE_.</change>
     </revision>
   </history>
 </draft>

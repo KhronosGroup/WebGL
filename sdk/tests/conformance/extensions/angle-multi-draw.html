@@ -175,7 +175,7 @@ function runTest() {
     }
   }
 
-  const extensionName = 'WEBGL_multi_draw';
+  const extensionName = 'ANGLE_multi_draw';
   const ext = gl.getExtension(extensionName);
   if (!runSupportedTest(extensionName, ext)) {
     return;
@@ -255,13 +255,13 @@ function doTest(ext, instanced) {
     }
 
     const checkMultiDrawArrays = makeDrawCheck(
-        ext.multiDrawArraysWEBGL, setupDrawArrays);
+        ext.multiDrawArraysANGLE, setupDrawArrays);
     const checkMultiDrawElements = makeDrawCheck(
-        ext.multiDrawElementsWEBGL, setupDrawElements);
+        ext.multiDrawElementsANGLE, setupDrawElements);
     const checkMultiDrawArraysInstanced = makeDrawCheck(
-        ext.multiDrawArraysInstancedWEBGL, setupDrawArraysInstanced);
+        ext.multiDrawArraysInstancedANGLE, setupDrawArraysInstanced);
     const checkMultiDrawElementsInstanced = makeDrawCheck(
-        ext.multiDrawElementsInstancedWEBGL, setupDrawElementsInstanced);
+        ext.multiDrawElementsInstancedANGLE, setupDrawElementsInstanced);
 
     gl.useProgram(program);
 
@@ -529,35 +529,35 @@ function doTest(ext, instanced) {
     let drawIDLocation;
 
     const multiDrawArrays = function() {
-      ext.multiDrawArraysWEBGL(gl.TRIANGLES, firsts, 0, counts, 0, tri_count);
+      ext.multiDrawArraysANGLE(gl.TRIANGLES, firsts, 0, counts, 0, tri_count);
     }
 
     const multiDrawArraysWithNonzeroOffsets = function() {
-      ext.multiDrawArraysWEBGL(gl.TRIANGLES, buffer, firstsOffset, buffer, countsOffset, tri_count);
+      ext.multiDrawArraysANGLE(gl.TRIANGLES, buffer, firstsOffset, buffer, countsOffset, tri_count);
     }
 
     const multiDrawElements = function() {
-      ext.multiDrawElementsWEBGL(gl.TRIANGLES, counts, 0, gl.UNSIGNED_SHORT, offsets, 0, tri_count);
+      ext.multiDrawElementsANGLE(gl.TRIANGLES, counts, 0, gl.UNSIGNED_SHORT, offsets, 0, tri_count);
     }
 
     const multiDrawElementsWithNonzeroOffsets = function() {
-      ext.multiDrawElementsWEBGL(gl.TRIANGLES, buffer, countsOffset, gl.UNSIGNED_SHORT, buffer, offsetsOffset, tri_count);
+      ext.multiDrawElementsANGLE(gl.TRIANGLES, buffer, countsOffset, gl.UNSIGNED_SHORT, buffer, offsetsOffset, tri_count);
     }
 
     const multiDrawArraysInstanced = function() {
-      ext.multiDrawArraysInstancedWEBGL(gl.TRIANGLES, firsts, 0, counts, 0, instances, 0, tri_count);
+      ext.multiDrawArraysInstancedANGLE(gl.TRIANGLES, firsts, 0, counts, 0, instances, 0, tri_count);
     }
 
     const multiDrawArraysInstancedWithNonzeroOffsets = function() {
-      ext.multiDrawArraysInstancedWEBGL(gl.TRIANGLES, buffer, firstsOffset, buffer, countsOffset, buffer, instancesOffset, tri_count);
+      ext.multiDrawArraysInstancedANGLE(gl.TRIANGLES, buffer, firstsOffset, buffer, countsOffset, buffer, instancesOffset, tri_count);
     }
 
     const multiDrawElementsInstanced = function() {
-      ext.multiDrawElementsInstancedWEBGL(gl.TRIANGLES, counts, 0, gl.UNSIGNED_SHORT, offsets, 0, instances, 0, tri_count);
+      ext.multiDrawElementsInstancedANGLE(gl.TRIANGLES, counts, 0, gl.UNSIGNED_SHORT, offsets, 0, instances, 0, tri_count);
     }
 
     const multiDrawElementsInstancedWithNonzeroOffsets = function() {
-      ext.multiDrawElementsInstancedWEBGL(gl.TRIANGLES, buffer, countsOffset, gl.UNSIGNED_SHORT, buffer, offsetsOffset, buffer, instancesOffset, tri_count);
+      ext.multiDrawElementsInstancedANGLE(gl.TRIANGLES, buffer, countsOffset, gl.UNSIGNED_SHORT, buffer, offsetsOffset, buffer, instancesOffset, tri_count);
     }
 
     const manyDrawArrays = function() {
