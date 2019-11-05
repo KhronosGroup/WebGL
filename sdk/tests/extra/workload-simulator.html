@@ -16,7 +16,7 @@ body {
   font-size: 22px;
   text-size-adjust: none;
 }
-
+pre { margin: 0; }
 .square img { position: relative; }
 .square {
   overflow: hidden;
@@ -68,6 +68,7 @@ input[type="range"] {
 <div id=dom class=square style=display:none;background:white>
   <img id=img style=width:256px;height:256px;background:black></img>
 </div>
+<div style=margin:2em;margin-top:0>
 <div id=warning></div>
 
 <label for=animation><input type=checkbox id=animation>CSS animation</label>
@@ -122,6 +123,7 @@ input[type="range"] {
   <label for=readPixels><input type=checkbox id=readPixels>glReadPixels</label>
   <br>
   <p>Context creation options:</p>
+  <label for=useWebGL2><input type=checkbox id=useWebGL2 checked>Use WebGL 2 if available</label>
   <label for=antialias><input type=checkbox id=antialias checked>Antialias</label>
   <label for=alpha><input type=checkbox id=alpha checked>Alpha</label>
   <label for=depth><input type=checkbox id=depth checked>Depth</label>
@@ -135,15 +137,24 @@ input[type="range"] {
   <label for=lowPower><input type=radio name=pp id=lowPower>low-power</label>
   <label for=highPerformance><input type=radio name=pp id=highPerformance>high-performance</label>
 </div>
-<br>
 Canvas size <input type=number id=canvasSize value=512 min=1> pixels<sup>2</sup>
-<div id="multiviewOptions">
+<div id=multiviewOptions>
   <input type=range id=views min=1 max=4 value=0 step=1>
   Draw <span id=viewsLabel>1</span> views(s)
   <br>
   <label for=multiview><input type=checkbox id=multiview>Use OVR_multiview2</label>
   <label for=multiviewCopy><input type=checkbox id=multiviewCopy checked>Copy multiview draw results to main canvas</label>
 </div>
+
+<pre id=contextVersion>
+</pre>
+<details id=contextAttributes>
+  <summary>Context attributes</summary>
+  <pre></pre>
+</details>
+<details id=supportedExtensions>
+  <summary>Supported Extensions</summary>
+</details>
 
 <div id=fpsPanel>
   <label for=showFps><input type=checkbox id=showFps checked>Show FPS</label>
@@ -156,6 +167,7 @@ Canvas size <input type=number id=canvasSize value=512 min=1> pixels<sup>2</sup>
 </div>
 
 <h2><center>WebGL workload simulator</center></h2>
+</div>
 
 <script>
 'use strict';
@@ -170,7 +182,7 @@ for (let element of document.documentElement.querySelectorAll('[id]'))
 
 
 // Set all input elements with values from the query string.
-const controls = document.getElementsByTagName('input');
+const controls = document.querySelectorAll('input, details');
 const defaultChecked = {};
 const defaultValues = {};
 const defaultMaxes = {};
@@ -184,13 +196,17 @@ for (const control of controls) {
       control.checked = true;
     else if (control.type == 'checkbox')
       control.checked = param[1] != 'false';
+    else if (control instanceof HTMLDetailsElement)
+      control.open = true;
     else
       control.value = param[1];
   }
   control.oninput = updateControls;
+  if (control instanceof HTMLDetailsElement)
+    control.onclick = ()=>setTimeout(updateControls, 0);
 }
 // Some controls require a page reload when changed.
-const reloadControls = ['antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desynchronized', 'ppDefault', 'lowPower', 'highPerformance', 'canvasSize', 'onscreen', 'offscreen', 'transferControlToOffscreen'].map(x=>window[x]);
+const reloadControls = ['useWebGL2', 'antialias', 'alpha', 'depth', 'stencil', 'premultipliedAlpha', 'preserveDrawingBuffer', 'desynchronized', 'ppDefault', 'lowPower', 'highPerformance', 'canvasSize', 'onscreen', 'offscreen', 'transferControlToOffscreen'].map(x=>window[x]);
 for (let control of reloadControls) {
   control.onchange = ()=>{
     updateControls();
@@ -254,6 +270,9 @@ function updateControls() {
     } else if (control.type == 'checkbox') {
       if (control.checked != defaultChecked[control.id])
         queryParams.push(defaultChecked[control.id] ? control.id + '=' + control.checked : control.id);
+    } else if (control instanceof HTMLDetailsElement) {
+      if (control.open)
+        queryParams.push(control.id);
     } else if (control.value != defaultValues[control.id]) {
       queryParams.push(control.id + '=' + control.value);
     }
@@ -279,7 +298,7 @@ let webglVersion;
 
 let mouseDown = false;
 const lastPos = [0, 0];
-document.onmouseup = (e) => mouseDown = false;
+document.onmouseup = (e) => { mouseDown = false; }
 document.onmousedown = (e) => {
   mouseDown = true;
   lastPos[0] = e.pageX;
@@ -434,8 +453,8 @@ function render(fromRaf, fromPostMessage) {
       }
     }
     renderCanvas.width = renderCanvas.height = size;
-    // We create a WebGL 2 context if available - if not, fall back to WebGL 1.
-    gl = renderCanvas.getContext('webgl2', options);
+    if (useWebGL2.checked)
+      gl = renderCanvas.getContext('webgl2', options);
     if (gl) {
       webglVersion = 2;
     } else {
@@ -449,6 +468,24 @@ function render(fromRaf, fromPostMessage) {
         pixelsWrapper.style.display = 'none';
         gl.drawArraysInstanced = (a, b, c, d)=>gl.drawArrays(a, b, c);
       }
+    }
+    // Read context info like renderer string and extensions.
+    let renderer = gl.getParameter(gl.RENDERER);
+    let debugRendererInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    if (debugRendererInfo)
+      renderer = gl.getParameter(debugRendererInfo.UNMASKED_RENDERER_WEBGL);
+    contextVersion.textContent = `WebGL Version: ${gl.getParameter(gl.VERSION)}\nRenderer: `;
+    const a = document.createElement('a');
+    a.textContent = renderer;
+    a.href = `https://www.google.com/search?q=${encodeURIComponent(renderer)}`
+    contextVersion.appendChild(a);
+    contextAttributes.getElementsByTagName('pre')[0].textContent = JSON.stringify(gl.getContextAttributes(), 0, 2);
+    for (const e of gl.getSupportedExtensions()) {
+      const a = document.createElement('a');
+      a.textContent = e;
+      a.href = `https://www.khronos.org/registry/webgl/extensions/${e}/`;
+      supportedExtensions.appendChild(a);
+      supportedExtensions.appendChild(document.createElement('br'));
     }
 
     // Setup texture
