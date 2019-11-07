@@ -195,7 +195,7 @@
     <a href="http://webgl.org/"><img alt="WebGL" height="100" src="{concat($basepath,'/resources/WebGL-Logo.png')}" width="240" /></a>
   </div>
   <div class="right">
-    <a href="http://khronos.org/"><img alt="Khronos" height="100" src="{concat($basepath,'/resources/Khronos_100px_June18.png')}" width="420" /></a>
+    <a href="http://khronos.org/"><img alt="Khronos" height="80" src="{concat($basepath,'/resources/Khronos_100px_June18.png')}" width="336" /></a>
   </div>
   <div style="clear: both;">&#160;</div>
   <br/>
