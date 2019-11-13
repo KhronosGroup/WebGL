@@ -108,7 +108,7 @@ function testNorm16Render(interalFormat, format, type) {
 
   gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, expectedValue, 0), undefined, undefined, readbackBuf, type, format);
+  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, expectedValue, 0xffff), undefined, undefined, readbackBuf, type);
 
   // Renderbuffer test
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[1]);
@@ -123,16 +123,19 @@ function testNorm16Render(interalFormat, format, type) {
   gl.clearColor(1, 1, 1, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0), undefined, undefined, readbackBuf, type, format);
+  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, undefined, readbackBuf, type);
 
-  // Copy from renderbuffer to textures[1] test
-  gl.bindTexture(gl.TEXTURE_2D, textures[1]);
-  gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, 1, 1);
+  if (format === gl.RGBA) {
+    // ReadPixels and copyTex* are limited to RGBA
+    // Copy from renderbuffer to textures[1] test
+    gl.bindTexture(gl.TEXTURE_2D, textures[1]);
+    gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, 1, 1);
 
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copy succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copy succeed");
 
-  gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0]);
-  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0), undefined, undefined, readbackBuf, type, format);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0]);
+    wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, undefined, readbackBuf, type);
+  }
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.bindTexture(gl.TEXTURE_2D, null);
