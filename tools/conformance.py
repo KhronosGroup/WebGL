@@ -176,7 +176,7 @@ class AndroidDevices():
         for device_line in cmd.output.split('\n'):
             if re.match('List of devices attached', device_line):
                 continue
-            elif re.match('^\s*$', device_line):
+            elif re.match(r'^\s*$', device_line):
                 continue
             elif re.search('offline', device_line):
                 continue
@@ -374,7 +374,7 @@ class GPUs(object):
                 key = tds[0].find_element_by_xpath('./span').text
                 if key == 'GPU0':
                     value = tds[1].find_element_by_xpath('./span').text
-                    match = re.search('VENDOR = 0x(\S{4}), DEVICE.*= 0x(\S{4})', value)
+                    match = re.search(r'VENDOR = 0x(\S{4}), DEVICE.*= 0x(\S{4})', value)
                     vendor_id.append(match.group(1))
                     vendor_name.append('')
                     product_id.append(match.group(2))
@@ -389,11 +389,11 @@ class GPUs(object):
             lines = cmd.output.split('\n')
             for line in lines:
                 line = line.strip()
-                match = re.search('product: (.*) \[(.*)\]$', line)
+                match = re.search(r'product: (.*) \[(.*)\]$', line)
                 if match:
                     product_name.append(match.group(1))
                     product_id.append(match.group(2).split(':')[1].upper())
-                match = re.search('vendor: (.*) \[(.*)\]$', line)
+                match = re.search(r'vendor: (.*) \[(.*)\]$', line)
                 if match:
                     vendor_name.append(match.group(1))
                     vendor_id.append(match.group(2).upper())
@@ -408,7 +408,7 @@ class GPUs(object):
                 match = re.match('Chipset Model: (.*)', line)
                 if match:
                     product_name.append(match.group(1))
-                match = re.match('Vendor: (.*) \(0x(.*)\)', line)
+                match = re.match(r'Vendor: (.*) \(0x(.*)\)', line)
                 if match:
                     vendor_name.append(match.group(1))
                     vendor_id.append(match.group(2))
@@ -431,7 +431,7 @@ class GPUs(object):
                 match = re.match('Name=(.*)', line)
                 if match:
                     product_name.append(match.group(1))
-                match = re.match('PNPDeviceID=.*VEN_(\S{4})&.*DEV_(\S{4})&', line)
+                match = re.match(r'PNPDeviceID=.*VEN_(\S{4})&.*DEV_(\S{4})&', line)
                 if match:
                     vendor_id.append(match.group(1))
                     product_id.append(match.group(2))
@@ -604,7 +604,7 @@ class Browser(object):
             elif self.is_edge():
                 match = re.search('Edge/(.*)$', ua)
             elif self.is_firefox():
-                match = re.search('rv:(.*)\)', ua)
+                match = re.search(r'rv:(.*)\)', ua)
             if match:
                 self.version = match.group(1)
 
@@ -1344,8 +1344,7 @@ class Conformance(object):
     def _get_result(self, text):
         # passed includes both results of passed and skipped
         if self.version == '1.0.3':
-            p = '(\d+) of (\d+) (.+)'
-            match = re.search(p, text)
+            match = re.search(r'(\d+) of (\d+) (.+)', text)
             if match:
                 total = int(match.group(2))
                 passed = int(match.group(1))
@@ -1359,13 +1358,12 @@ class Conformance(object):
             else:
                 status = Status.FAIL
         else:
-            p = '(.*) in (.+) ms'
-            match = re.search(p, text)
+            match = re.search(r'(.*) in (.+) ms', text)
             if match:
                 time = float(match.group(2))
                 text_detail = match.group(1)
                 total = 0
-                match_detail = re.search('Passed: (\d+)/(\d+)', text_detail)
+                match_detail = re.search(r'Passed: (\d+)/(\d+)', text_detail)
                 if match_detail:
                     passed = int(match_detail.group(1))
                     total_tmp = int(match_detail.group(2))
@@ -1375,7 +1373,7 @@ class Conformance(object):
                         Util.error('Total is not consistent')
                 else:
                     passed = 0
-                match_detail = re.search('Skipped: (\d+)/(\d+)', text_detail)
+                match_detail = re.search(r'Skipped: (\d+)/(\d+)', text_detail)
                 if match_detail:
                     skipped = int(match_detail.group(1))
                     total_tmp = int(match_detail.group(2))
@@ -1385,7 +1383,7 @@ class Conformance(object):
                         Util.error('Total is not consistent')
                 else:
                     skipped = 0
-                match_detail = re.search('Failed: (\d+)/(\d+)', text_detail)
+                match_detail = re.search(r'Failed: (\d+)/(\d+)', text_detail)
                 if match_detail:
                     failed = int(match_detail.group(1))
                     total_tmp = int(match_detail.group(2))
