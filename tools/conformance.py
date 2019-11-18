@@ -8,12 +8,18 @@ import logging
 import os
 import platform
 import re
-import urllib2
 import shutil
 import socket
 import subprocess
 import sys
 import time
+
+try:
+    # For Python 3.0 and later
+    from urllib.request import urlopen
+except ImportError:
+    # Fall back to Python 2's urllib2
+    from urllib2 import urlopen
 
 try:
     import selenium
@@ -711,7 +717,7 @@ class Webdriver(object):
                 capabilities['chromeOptions']['args'] = browser.options
             elif target_os.is_cros():
                 remote_port = self._get_chrome_remote_debugging_port()
-                urllib2.urlopen('http://localhost:%i/json/new' % remote_port)
+                urlopen('http://localhost:%i/json/new' % remote_port)
                 capabilities['chromeOptions']['debuggerAddress'] = ('localhost:%d' % remote_port)
 
             self.driver = webdriver.Remote(command_executor=self.server_url, desired_capabilities=capabilities)
@@ -781,7 +787,7 @@ class Webdriver(object):
         self.driver.quit()
         if self.target_os.is_android() or self.target_os.is_cros():
             try:
-                urllib2.urlopen(self.server_url + '/shutdown', timeout=10).close()
+                urlopen(self.server_url + '/shutdown', timeout=10).close()
             except Exception:
                 pass
             self.server_process.stdout.close()
