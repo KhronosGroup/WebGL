@@ -29,6 +29,7 @@ try:
     from selenium.common.exceptions import WebDriverException
     from selenium.webdriver.support.select import Select
     from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 except ImportError:
     print('Please install package selenium')
     exit(1)
@@ -738,8 +739,7 @@ class Webdriver(object):
             elif browser.is_edge():
                 self.driver = selenium.webdriver.Edge(self.path)
             elif browser.is_firefox():
-                from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-                capabilities = DesiredCapabilities.FIREFOX
+                capabilities = DesiredCapabilities.FIREFOX.copy()
                 capabilities['marionette'] = True
                 capabilities['binary'] = browser.path
                 self.driver = selenium.webdriver.Firefox(capabilities=capabilities, executable_path=self.path)

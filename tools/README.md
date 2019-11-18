@@ -112,9 +112,10 @@ Assuming your current directory is the one with `conformance.py`.
 6. Execute script
 
     ```
-    shell> python conformance.py
+    shell> python conformance.py [options]
     ```
-    Pass `--help` for more information.
+
+    Pass `--help` for more information. You'll need to provide `--browser-name` at least.
 
 7. Check report
 
