@@ -34,7 +34,6 @@ except ImportError:
     print('Please install package selenium')
     exit(1)
 
-
 class Util(object):
     LOGGER_NAME = __file__
 
@@ -1129,14 +1128,14 @@ class Conformance(object):
                 category = remain_detail
             category.append(Change(exp_case, cur_case))
 
-        improve_pass_detail = sorted(improve_pass_detail, cmp=lambda x, y: cmp(x.exp_case.path, y.exp_case.path))
-        improve_fail_detail = sorted(improve_fail_detail, cmp=lambda x, y: cmp(x.exp_case.path, y.exp_case.path))
-        regress_detail = sorted(regress_detail, cmp=lambda x, y: cmp(x.exp_case.path, y.exp_case.path))
-        remain_detail = sorted(remain_detail, cmp=lambda x, y: cmp(x.exp_case.path, y.exp_case.path))
+        improve_pass_detail = sorted(improve_pass_detail, key=lambda x: x.exp_case.path)
+        improve_fail_detail = sorted(improve_fail_detail, key=lambda x: x.exp_case.path)
+        regress_detail = sorted(regress_detail, key=lambda x: x.exp_case.path)
+        remain_detail = sorted(remain_detail, key=lambda x: x.exp_case.path)
 
         # top_time
         top_time = []
-        all_time = sorted(self.cur_suite.suite, cmp=lambda x, y: cmp(x.time, y.time), reverse=True)
+        all_time = sorted(self.cur_suite.suite, key=lambda x: x.time, reverse=True)
         count = 0
         for case in all_time:
             if not case.path:
