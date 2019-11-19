@@ -1335,7 +1335,7 @@ class Conformance(object):
         folder_name_elements = self.driver.find_elements_by_class_name('folderName')
         for folder_name_element in folder_name_elements:
             if folder_name_element.text == folder_name:
-                tmp_case_elements = folder_name_element.find_elements_by_xpath('../..//*[@class="testpage"]')
+                tmp_case_elements = folder_name_element.find_elements_by_xpath('../../..//*[@class="testpage"]')
                 if not case_name:
                     case_elements = tmp_case_elements
                     break
