@@ -217,17 +217,18 @@ class Cmd(object):
             self.process = None
             return
 
-        tmp_output = ''
+        tmp_output = b''
         process = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        while True:
-            nextline = process.stdout.readline()
-            if nextline == '' and process.poll() is not None:
+        for nextline in iter(process.stdout.readline, ''):
+            if nextline == b'':
                 break
             tmp_output += nextline
 
         self.status = process.returncode
         (out, error) = process.communicate()
         self.output = tmp_output + out + error
+        self.output = self.output.decode('utf-8')
+
         self.process = process
 
         if self.abort and self.status:
