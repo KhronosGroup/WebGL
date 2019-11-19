@@ -644,7 +644,7 @@ class Webdriver(object):
         'chrome_public': 'org.chromium.chrome',
     }
 
-    def __init__(self, path, browser, host_os, target_os, android_device=None, debug=False):
+    def __init__(self, path, browser, host_os, target_os, android_device=None, debug=False, tools=False):
         self._logger = Util.get_logger()
         self.path = path
         self.target_os = target_os
@@ -922,6 +922,7 @@ class Conformance(object):
         parser.add_argument('--gles', dest='gles', help='gles', action='store_true')
         parser.add_argument('--logging-level', dest='logging_level', help='level of logging', default=logging.INFO)
         parser.add_argument('--timeout', dest='timeout', help='timeout seconds for each test', type=int, default=60)
+        parser.add_argument('--tools', dest='open_tools', help='show the developer tools for the browser', action='store_true')
 
         debug_group = parser.add_argument_group('debug')
         debug_group.add_argument('--fixed-time', dest='fixed_time', help='fixed time', action='store_true')
@@ -990,6 +991,7 @@ class Conformance(object):
         self.webdriver_path = args.webdriver_path
         self.args = args
         self.timeout = args.timeout
+        self.open_tools = args.open_tools
 
         # url
         self.version = args.version
@@ -1533,7 +1535,7 @@ class Conformance(object):
         f.close()
 
     def _start(self, is_firstrun=False):
-        self.webdriver = Webdriver(browser=self.browser, path=self.webdriver_path, host_os=self.host_os, target_os=self.target_os, android_device=self.android_device)
+        self.webdriver = Webdriver(browser=self.browser, path=self.webdriver_path, host_os=self.host_os, target_os=self.target_os, android_device=self.android_device, tools=self.open_tools)
         self.driver = self.webdriver.driver
 
         if is_firstrun:
