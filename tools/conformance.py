@@ -565,12 +565,16 @@ class Browser(object):
         elif self.os.is_mac():
             if self.name == 'chrome' or self.name == 'chrome_stable':
                 self.path = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-            if self.name == 'chrome_canary':
+            elif self.name == 'chrome_canary':
                 self.path = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
+            elif self.name == 'safari':
+                self.path = '/usr/bin/safaridriver'
+            elif self.name == 'safari_technology_preview':
+                self.path = '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
         elif self.os.is_win():
             if self.name == 'chrome' or self.name == 'chrome_stable':
                 self.path = '%s/Google/Chrome/Application/chrome.exe' % self.os.programfilesx86
-            if self.name == 'chrome_canary':
+            elif self.name == 'chrome_canary':
                 self.path = '%s/../Local/Google/Chrome SxS/Application/chrome.exe' % self.os.appdata
             elif self.name == 'firefox' or self.name == 'firefox_stable':
                 self.path = '%s/Mozilla Firefox/firefox.exe' % self.os.programfilesx86
@@ -600,12 +604,15 @@ class Browser(object):
         # version
         if not self.os.is_win():
             ua = driver.execute_script('return navigator.userAgent;')
+            match = None
             if self.is_chrome():
                 match = re.search('Chrome/(.*) ', ua)
             elif self.is_edge():
                 match = re.search('Edge/(.*)$', ua)
             elif self.is_firefox():
                 match = re.search(r'rv:(.*)\)', ua)
+            elif self.is_safari():
+                match = re.search('AppleWebKit/(.*)$', ua)
             if match:
                 self.version = match.group(1)
 
@@ -736,7 +743,11 @@ class Webdriver(object):
                     service_args = []
                 self.driver = selenium.webdriver.Chrome(executable_path=self.path, chrome_options=chrome_options, service_args=service_args)
             elif browser.is_safari():
-                Util.not_implemented()
+                capabilities = DesiredCapabilities.SAFARI.copy()
+                if tools:
+                    capabilities['automaticInspection'] = True
+                self.path = browser.path
+                self.driver = selenium.webdriver.safari.webdriver.WebDriver(desired_capabilities=capabilities, executable_path=self.path)
             elif browser.is_edge():
                 self.driver = selenium.webdriver.Edge(self.path)
             elif browser.is_firefox():
