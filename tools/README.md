@@ -117,6 +117,16 @@ Assuming your current directory is the one with `conformance.py`.
 
     Pass `--help` for more information. You'll need to provide `--browser-name` at least.
 
+    For example, to run a local version of the 1.0.4 test suite against Safari, use:
+
+    ```
+    # Start a server pointing to the tests.
+    shell1> ./serve_localhost.py --directory sdk/tests
+
+    # Run the tests.
+    shell2> python3 conformance.py --browser-name safari --url http://localhost:8000/webgl-conformance-tests.html --version 1.0.4
+    ```
+
 7. Check report
 
     Test results will be placed in `<work_dir>/result/<timestamp>.html` where
