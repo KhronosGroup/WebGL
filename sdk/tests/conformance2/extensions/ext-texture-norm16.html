@@ -125,17 +125,13 @@ function testNorm16Render(interalFormat, format, type) {
 
   wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, undefined, readbackBuf, type);
 
-  if (format === gl.RGBA) {
-    // ReadPixels and copyTex* are limited to RGBA
-    // Copy from renderbuffer to textures[1] test
-    gl.bindTexture(gl.TEXTURE_2D, textures[1]);
-    gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, 1, 1);
+  gl.bindTexture(gl.TEXTURE_2D, textures[1]);
+  gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, 1, 1);
 
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copy succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copy succeed");
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0]);
-    wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, undefined, readbackBuf, type);
-  }
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0]);
+  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, undefined, readbackBuf, type);
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.bindTexture(gl.TEXTURE_2D, null);
@@ -167,8 +163,6 @@ function runTestExtension() {
   testNorm16Texture(ext.RGB16_SNORM_EXT, gl.RGB, gl.SHORT);
   testNorm16Texture(ext.RGBA16_SNORM_EXT, gl.RGBA, gl.SHORT);
 
-  testNorm16Render(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT);
-  testNorm16Render(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT);
   testNorm16Render(ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT);
 };
 
