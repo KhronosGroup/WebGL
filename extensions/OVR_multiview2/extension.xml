@@ -25,7 +25,7 @@
       <addendum>
         If <code>baseViewIndex</code> is not the same for all framebuffer attachment points where
         the value of <code>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</code> is not <code>NONE</code> the
-        framebuffer is considered incomplete. Calling <code>getFramebufferStatus</code> for a
+        framebuffer is considered incomplete. Calling <code>checkFramebufferStatus</code> for a
         framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>.
         Other rules for framebuffer completeness from the OVR_multiview specification also apply.
         <ul>
@@ -243,6 +243,10 @@ interface OVR_multiview2 {
 
     <revision date="2019/07/24">
       <change>Moved to Community Approved status.</change>
+    </revision>
+
+    <revision date="2019/11/26">
+      <change>s/getFramebufferStatus/checkFramebufferStatus/</change>
     </revision>
   </history>
 </extension>
