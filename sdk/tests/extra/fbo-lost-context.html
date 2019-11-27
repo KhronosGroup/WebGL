@@ -101,7 +101,7 @@ if (!gl) {
         0);
     var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (status != gl.FRAMEBUFFER_COMPLETE) {
-      testFailed("gl.checkFramebufferStatus() returned " + WebGLDebugUtils.glEnumToString(status));
+      testFailed("gl.checkFramebufferStatus() returned " + WebGLTestUtils.glEnumToString(gl, status));
     }
     return { fb: fb, tex: tex };
   }
