@@ -90,7 +90,7 @@ function drawQuad(depth) {
 
 // Test based on dEQP-GLES3.functional.blit.depth_stencil.depth_24_stencil8_stencil_only
 function test_stencil_only_blit(format) {
-  debug("testing format: " + wtu.glEnumToString(format))
+  debug("testing format: " + wtu.glEnumToString(gl, format))
 
   var src = init_buffer(format);
   var dest = init_buffer(format);
