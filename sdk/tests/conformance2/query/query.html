@@ -107,17 +107,43 @@ function runCurrentQueryTest() {
     shouldBeNull("gl.getQuery(gl.ANY_SAMPLES_PASSED_CONSERVATIVE, gl.CURRENT_QUERY)");
 
     gl.endQuery(gl.ANY_SAMPLES_PASSED);
+    gl.beginQuery(gl.ANY_SAMPLES_PASSED_CONSERVATIVE, q2);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+        "Can't beginQuery(ALL_SAMPLES_PASSED_CONSERVATIVE) if previously was ALL_SAMPLES_PASSED.");
+    gl.beginQuery(gl.ANY_SAMPLES_PASSED, q2);
 
     gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, q1);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be able to have multiple unrelated query types active at once");
     shouldBe("gl.getQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, gl.CURRENT_QUERY)", "q1");
 
+    debug("");
+    debug("Testing deleting active queries");
+
     gl.deleteQuery(q1);
     gl.deleteQuery(q2);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "deleting queries should not produce errors");
 
-    shouldBeNull("gl.getQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, gl.CURRENT_QUERY)");
+    shouldBeNonNull("gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY)");
     shouldBeNull("gl.getQuery(gl.ANY_SAMPLES_PASSED_CONSERVATIVE, gl.CURRENT_QUERY)");
+    shouldBeNonNull("gl.getQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, gl.CURRENT_QUERY)");
+
+    gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+    wtu.glErrorShouldBe(gl, 0, "Ending a delete query is fine.");
+
+    shouldBeNonNull("gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY)");
+    shouldBeNull("gl.getQuery(gl.ANY_SAMPLES_PASSED_CONSERVATIVE, gl.CURRENT_QUERY)");
+    shouldBeNull("gl.getQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, gl.CURRENT_QUERY)");
+
+    gl.endQuery(gl.ANY_SAMPLES_PASSED_CONSERVATIVE);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+            "Can't endQuery ANY_SAMPLES_PASSED via ANY_SAMPLES_PASSED_CONSERVATIVE.");
+
+    gl.endQuery(gl.ANY_SAMPLES_PASSED);
+    wtu.glErrorShouldBe(gl, 0, "Ending a delete query is fine.");
+
+    shouldBeNull("gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY)");
+    shouldBeNull("gl.getQuery(gl.ANY_SAMPLES_PASSED_CONSERVATIVE, gl.CURRENT_QUERY)");
+    shouldBeNull("gl.getQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, gl.CURRENT_QUERY)");
 
     gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, q1);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "beginning a deleted query object");
@@ -127,6 +153,8 @@ function runCurrentQueryTest() {
 function runObjectTest() {
     debug("");
     debug("Testing object creation");
+
+    shouldBeFalse("gl.isQuery(null)");
 
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should have no previous errors");
 
@@ -143,7 +171,20 @@ function runObjectTest() {
     gl.deleteQuery(q1);
     shouldBeFalse("gl.isQuery(q1)");
 
-    shouldBeFalse("gl.isQuery(null)");
+    debug("Testing object deletion");
+
+    q1 = gl.createQuery();
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "createQuery should not set an error");
+    shouldBeNonNull("q1");
+
+    // Expect false if never bound
+    shouldBeFalse("gl.isQuery(q1)");
+    gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, q1);
+    shouldBeTrue("gl.isQuery(q1)");
+    gl.deleteQuery(q1);
+    shouldBeTrue("gl.isQuery(q1)");
+    gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+    shouldBeFalse("gl.isQuery(q1)");
 
     q1 = null;
 }
