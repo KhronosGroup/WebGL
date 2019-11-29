@@ -39,24 +39,30 @@ var loggingOff = function() {
  * @param {number} value The enum value.
  * @return {string} The enum as a string.
  */
-var glEnumToString = function(gl, value) {
-  if (gl.NO_ERROR === undefined)
-    throw new Error('glEnumToString: `gl` must be a WebGL2?RenderingContext');
+var glEnumToString = function(glOrExt, value) {
   if (value === undefined)
     throw new Error('glEnumToString: `value` must not be undefined');
 
-  // Optimization for the most common enum:
-  if (value === gl.NO_ERROR) {
-    return "NO_ERROR";
-  }
-  for (var p in gl) {
-    if (gl[p] == value) {
-      if (p == 'drawingBufferWidth' || p == 'drawingBufferHeight') {
+  if (glOrExt.keyByValue === undefined) {
+    const keyByValue = glOrExt.keyByValue = {};
+
+    for (const k in glOrExt) {
+      if (k == 'drawingBufferWidth' ||
+          k == 'drawingBufferHeight') {
         continue;
       }
-      return p;
+      const v = glOrExt[k];
+      if (keyByValue[v] === undefined) {
+        keyByValue[v] = k;
+      } else {
+        keyByValue[v] += '/' + k;
+      }
     }
   }
+
+  const key = glOrExt.keyByValue[value];
+  if (key !== undefined) return key;
+
   return "0x" + Number(value).toString(16);
 };
 
@@ -1667,16 +1673,22 @@ var glErrorShouldBeImpl = function(gl, glErrors, reportSuccesses, opt_msg) {
     glErrors = [glErrors];
   }
   opt_msg = opt_msg || "";
+
+  const fnErrStr = function(errVal) {
+    if (errVal == 0) return "NO_ERROR";
+    return glEnumToString(gl, errVal);
+  };
+
   var err = gl.getError();
   var ndx = glErrors.indexOf(err);
   var errStrs = [];
   for (var ii = 0; ii < glErrors.length; ++ii) {
-    errStrs.push(glEnumToString(gl, glErrors[ii]));
+    errStrs.push(fnErrStr(glErrors[ii]));
   }
   var expected = errStrs.join(" or ");
   if (ndx < 0) {
     var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
-    testFailed(msg + expected +  ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
+    testFailed(msg + expected +  ". Was " + fnErrStr(err) + " : " + opt_msg);
   } else if (reportSuccesses) {
     var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
     testPassed(msg + expected + " : " + opt_msg);
