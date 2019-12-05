@@ -566,10 +566,6 @@ class Browser(object):
                 self.path = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
             elif self.name == 'chrome_canary':
                 self.path = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
-            elif self.name == 'safari':
-                self.path = '/usr/bin/safaridriver'
-            elif self.name == 'safari_technology_preview':
-                self.path = '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
         elif self.os.is_win():
             if self.name == 'chrome' or self.name == 'chrome_stable':
                 self.path = '%s/Google/Chrome/Application/chrome.exe' % self.os.programfilesx86
@@ -658,6 +654,10 @@ class Webdriver(object):
         # path
         if target_os.is_cros():
             self.path = '/usr/local/chromedriver/chromedriver'
+        elif browser.name == 'safari':
+            self.path = '/usr/bin/safaridriver'
+        elif browser.name == 'safari_technology_preview':
+            self.path = '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
 
         executable_suffix = Util.get_executable_suffix(host_os)
         if not self.path and browser.is_chrome() and host_os == target_os:
@@ -745,7 +745,6 @@ class Webdriver(object):
                 capabilities = DesiredCapabilities.SAFARI.copy()
                 if tools:
                     capabilities['automaticInspection'] = True
-                self.path = browser.path
                 self.driver = selenium.webdriver.safari.webdriver.WebDriver(desired_capabilities=capabilities, executable_path=self.path)
             elif browser.is_edge():
                 self.driver = selenium.webdriver.Edge(self.path)
@@ -756,10 +755,13 @@ class Webdriver(object):
                 self.driver = selenium.webdriver.Firefox(capabilities=capabilities, executable_path=self.path)
 
         # check
-        if not browser.path:
-            Util.error('Could not find browser at %s' % browser.path)
+        if not browser.is_safari():
+            if not browser.path:
+                Util.error('Could not find browser at %s' % browser.path)
+            else:
+                self._logger.info('Use browser at %s' % browser.path)
         else:
-            self._logger.info('Use browser at %s' % browser.path)
+            self._logger.info('Using Safari-family browser')
         if not self.path:
             Util.error('Could not find webdriver at %s' % self.path)
         else:
