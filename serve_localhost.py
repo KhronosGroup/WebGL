@@ -22,7 +22,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--bind', '-b', default='localhost', metavar='ADDRESS',
+    parser.add_argument('--bind', '-b', default='', metavar='ADDRESS',
                         help='Specify alternate bind address '
                              '[default: all interfaces]')
     parser.add_argument('--directory', '-d', default=os.getcwd(),
