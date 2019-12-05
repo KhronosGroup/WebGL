@@ -73,8 +73,13 @@ class Util(object):
         exit(1)
 
     @staticmethod
+    def warn(msg):
+        _logger = Util.get_logger()
+        _logger.warning(msg)
+
+    @staticmethod
     def not_implemented():
-        Util.error('not_mplemented() at line %s' % inspect.stack()[1][2])
+        Util.error('not_implemented() at line %s' % inspect.stack()[1][2])
 
     @staticmethod
     def get_caller_name():
@@ -155,22 +160,44 @@ class Util(object):
             return s
 
 
-class AndroidDevice(object):
+class MobileDevice(object):
     def __init__(self, id):
         self.id = id
 
+class AndroidDevice(MobileDevice):
     def get_prop(self, key):
         cmd = AdbShellCmd('getprop | grep %s' % key, device_id=self.id)
-        match = re.search('\[%s\]: \[(.*)\]' % key, cmd.output)
+        match = re.search(r'\[%s\]: \[(.*)\]' % key, cmd.output)
         if match:
             return match.group(1)
         else:
             Util.error('Could not find %s' % key)
 
 
-class AndroidDevices():
+class MobileDevices():
     def __init__(self):
         self.devices = []
+        self.initialize_devices()
+
+    def initialize_devices(self):
+        # TODO: this could probably use @foo.abstractmethod
+        Util.error('initialize_devices called on base MobileDevices class')
+
+    def get_device(self, device_id):
+        if not device_id:
+            if len(self.devices) > 1:
+                Util.warn('There is more than one device, and the first one will be used')
+            return self.devices[0]
+        else:
+            for device in self.devices:
+                if device.id == device_id:
+                    return device
+            else:
+                Util.error('Could not find mobile device with id %s' % device_id)
+
+
+class AndroidDevices(MobileDevices):
+    def initialize_devices(self):
         cmd = Cmd('adb devices')
         for device_line in cmd.output.split('\n'):
             if re.match('List of devices attached', device_line):
@@ -186,17 +213,22 @@ class AndroidDevices():
         if len(self.devices) < 1:
             Util.error('Could not find available Android device')
 
-    def get_device(self, device_id):
-        if not device_id:
-            if len(self.devices) > 1:
-                self._logger.warning('There are more than one devices, and the first one will be used')
-            return self.devices[0]
-        else:
-            for device in self.devices:
-                if device.id == device_id:
-                    return device
+
+class iOSDevices(MobileDevices):
+    def initialize_devices(self):
+        cmd = Cmd('instruments -s devices')
+        for device_line in cmd.output.split('\n'):
+            if re.match('Known Devices', device_line):
+                continue
+            if re.match('Simulator', device_line):
+                continue
             else:
-                Util.error('Cound not find Android device with id %s' % device_id)
+                match = re.search(r'\[([a-f0-9]{40})\]', device_line)
+                if match:
+                    self.devices.append(MobileDevice(match.group(1)))
+
+        if len(self.devices) < 1:
+            Util.error('Could not find available iOS device')
 
 
 class Cmd(object):
@@ -339,7 +371,7 @@ class GPU(object):
 
 
 class GPUs(object):
-    def __init__(self, os, android_device, driver=None):
+    def __init__(self, os, mobile_device, driver=None):
         self._logger = Util.get_logger()
         self.gpus = []
 
@@ -350,7 +382,7 @@ class GPUs(object):
         driver_version = []
 
         if os.is_android():
-            cmd = AdbShellCmd('dumpsys | grep GLES', android_device.id)
+            cmd = AdbShellCmd('dumpsys | grep GLES', mobile_device.id)
             for line in cmd.output.split('\n'):
                 if re.match('GLES', line):
                     fields = line.replace('GLES:', '').strip().split(',')
@@ -417,6 +449,13 @@ class GPUs(object):
                     product_id.append(match.group(1))
                     driver_version.append('')
 
+        elif os.is_ios():
+            product_name.append("iOS")
+            vendor_name.append("Apple")
+            vendor_id.append("Apple")
+            product_id.append("GPU")
+            driver_version.append("")
+
         elif os.is_win():
             cmd = Cmd('wmic path win32_videocontroller get /format:list')
             lines = cmd.output.split('\n')
@@ -480,6 +519,9 @@ class OS(object):
     def is_mac(self):
         return self._is_name('mac')
 
+    def is_ios(self):
+        return self._is_name('ios')
+
     def is_win(self):
         return self._is_name('win')
 
@@ -515,6 +557,8 @@ class HostOS(OS):
             version = platform.dist()[1]
         elif self.is_mac():
             version = platform.mac_ver()[0]
+        elif self.is_ios():
+            version = 1
         elif self.is_win():
             version = platform.version()
 
@@ -577,6 +621,8 @@ class Browser(object):
                 self.path = '%s/Nightly/firefox.exe' % self.os.programfiles
             elif self.name == 'edge':
                 self.path = '%s/systemapps/Microsoft.MicrosoftEdge_8wekyb3d8bbwe/MicrosoftEdge.exe' % self.os.windir
+        elif self.os.is_ios():
+            pass
         else:
             Util.not_implemented()
 
@@ -646,7 +692,7 @@ class Webdriver(object):
         'chrome_public': 'org.chromium.chrome',
     }
 
-    def __init__(self, path, browser, host_os, target_os, android_device=None, debug=False, tools=False):
+    def __init__(self, path, browser, host_os, target_os, mobile_device=None, debug=False, tools=False):
         self._logger = Util.get_logger()
         self.path = path
         self.target_os = target_os
@@ -654,6 +700,8 @@ class Webdriver(object):
         # path
         if target_os.is_cros():
             self.path = '/usr/local/chromedriver/chromedriver'
+        elif target_os.is_ios():
+            self.path = '/usr/bin/safaridriver'
         elif browser.name == 'safari':
             self.path = '/usr/bin/safaridriver'
         elif browser.name == 'safari_technology_preview':
@@ -720,7 +768,7 @@ class Webdriver(object):
             self.server_url = 'http://localhost:%d' % port
 
             if target_os.is_android():
-                capabilities['chromeOptions']['androidDeviceSerial'] = android_device.id
+                capabilities['chromeOptions']['androidDeviceSerial'] = mobile_device.id
                 capabilities['chromeOptions']['androidPackage'] = self.ANDROID_CHROME_NAME_PKG[browser.name]
                 capabilities['chromeOptions']['args'] = browser.options
             elif target_os.is_cros():
@@ -745,6 +793,9 @@ class Webdriver(object):
                 capabilities = DesiredCapabilities.SAFARI.copy()
                 if tools:
                     capabilities['automaticInspection'] = True
+                if target_os.is_ios():
+                    capabilities['platformName'] = "ios"
+                    capabilities['deviceUDID'] = mobile_device.id
                 self.driver = selenium.webdriver.safari.webdriver.WebDriver(desired_capabilities=capabilities, executable_path=self.path)
             elif browser.is_edge():
                 self.driver = selenium.webdriver.Edge(self.path)
@@ -929,7 +980,7 @@ class Conformance(object):
         parser.add_argument('--url', dest='url', help='url for website other than default Khronos WebGL CTS')
         parser.add_argument('--suite', dest='suite', help='instead of whole suite, we may test specific cases, e.g., conformance/attibs or "conformance/attribs/gl-bindAttribLocation-matrix.html"', default='all')
         parser.add_argument('--os-name', dest='os_name', help='OS to run test on')
-        parser.add_argument('--android-device-id', dest='android_device_id', help='id of Android device to run test on')
+        parser.add_argument('--device-id', dest='device_id', help='id of mobile device to run test on')
         parser.add_argument('--mesa-dir', dest='mesa_dir', help='directory of Mesa')
         parser.add_argument('--gles', dest='gles', help='gles', action='store_true')
         parser.add_argument('--logging-level', dest='logging_level', help='level of logging', default=logging.INFO)
@@ -964,15 +1015,18 @@ class Conformance(object):
         self.result_file = '%s/%s.html' % (self.result_dir, self.timestamp)
 
         # device
+        self.mobile_device = None
         if args.os_name == 'android':
-            self.android_device = AndroidDevices().get_device(args.android_device_id)
-        else:
-            self.android_device = None
+            self.mobile_device = AndroidDevices().get_device(args.device_id)
+        elif args.os_name == 'ios':
+            self.mobile_device = iOSDevices().get_device(args.device_id)
 
         # OS
         self.host_os = HostOS()
         if args.os_name == 'android':
-            self.target_os = AndroidOS(self.android_device)
+            self.target_os = AndroidOS(self.mobile_device)
+        elif args.os_name == 'ios':
+            self.target_os = OS("ios")
         else:
             self.target_os = self.host_os
 
@@ -1547,12 +1601,12 @@ class Conformance(object):
         f.close()
 
     def _start(self, is_firstrun=False):
-        self.webdriver = Webdriver(browser=self.browser, path=self.webdriver_path, host_os=self.host_os, target_os=self.target_os, android_device=self.android_device, tools=self.open_tools)
+        self.webdriver = Webdriver(browser=self.browser, path=self.webdriver_path, host_os=self.host_os, target_os=self.target_os, mobile_device=self.mobile_device, tools=self.open_tools)
         self.driver = self.webdriver.driver
 
         if is_firstrun:
             self.browser.update(self.driver)
-            self.gpus = GPUs(self.target_os, self.android_device, self.driver)
+            self.gpus = GPUs(self.target_os, self.mobile_device, self.driver)
             self.gpu = self.gpus.get_active(self.driver)
             self.exp_suite = Suite()
             for exp in Expectations().expectations:
