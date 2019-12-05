@@ -163,8 +163,7 @@ Sometimes, you want to test against OpenGL ES instead of OpenGL on Linux, and op
 On Linux, Mesa driver can be used on the fly, which means you may run the system with system graphics stack, while running browser solely with your self-build Mesa driver. Option --mesa-dir can be used for this sake.
 
 # TODO Features
-* Python 3 support<br>
-* More support of host_os, target_os and browser combinations, especially for Safari
+* More support of host_os, target_os and browser combinations
 * The design of expectations
 * Get more GPU, OS, browser info
 * log_path of geckodriver
