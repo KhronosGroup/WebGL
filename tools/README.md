@@ -47,33 +47,90 @@ Target OS means the OS you run test on, while host OS is the place you run this 
 [1] means the configuration has been tested.
 
 # Setup
-## Android, Linux, MacOS and Windows
-* Install Python<br>
-Both Python 2 and 3 are supported, and you may download it from https://www.python.org/downloads/.  
-* Install Python Selenium package<br>
-pip install selenium  
-Note on Windows, pip resides in &lt;python_dir>/Scripts.
-* Download Android platform tools (Android only)<br>
-You may download tools as below according to your system, and please be sure to put them in your PATH environment.<br>
-https://dl.google.com/android/repository/platform-tools-latest-darwin.zip<br>
-https://dl.google.com/android/repository/platform-tools-latest-linux.zip<br>
-https://dl.google.com/android/repository/platform-tools-latest-windows.zip<br>
-* Download this script<br>
-Put it in &lt;work_dir><br>
-* Download webdriver<br>
-You may put them under &lt;work_dir>/webdriver/&lt;os_name>, which is the default place for them. Otherwise, you have to designate the path of webdriver with option --webdriver-path.  
-&lt;os_name>: android, linux, mac or win.  
-Webdriver download links:  
-Chrome (chromedriver(.exe)): https://sites.google.com/a/chromium.org/chromedriver  
-Edge (MicrosoftWebDriver.exe): https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver  
-FireFox (geckodriver(.exe)): https://github.com/mozilla/geckodriver/releases  
-Safari (safaridriver): already included as /usr/bin/safaridriver
-* Execute script<br>
-python conformance.py  
-Type --help for more information
-* Check report<br>
-After test, you may find report in &lt;work_dir>/result/&lt;timestamp>.html  
-&lt;timestamp>: The datetime you run the test in format %Y%m%d%H%M%S, e.g., 20170403235901
+
+Assuming your current directory is the one with `conformance.py`.
+
+1. Install Python
+
+    Both Python 2 and 3 are supported, available from https://www.python.org/downloads/.
+
+2. *OPTIONAL* - Install a virtual environment
+
+    Seeing as you'll be installing packages, it might be best to use a virtual python
+    environment. If you're not familiar with this, the flow is something like this (on UNIX):
+
+    ```
+    # If you're using python3
+    shell> python3 -m pip install --user virtualenv
+    shell> python3 -m venv env
+
+    # If you're using python2
+    shell> pip install virtualenv
+    shell> virtualenv env
+
+    # Now activate the environment
+    shell> source env/bin/activate
+
+    # To exit the environment
+    shell> deactivate
+    ```
+
+3. Install the Selenium package
+
+    Selenium is a tool for automating browsers. There is a python API, which
+    talks to WebDriver.
+
+    ```
+    shell> pip install selenium
+    ```
+
+    Note on Windows, pip resides in `<python_dir>/Scripts`.
+
+4. *Android Only* - Download and install the platform tools
+
+    If you're going to run this tool for Android, download the relevant package
+    for your host platform, and install into your `PATH`.
+    - https://dl.google.com/android/repository/platform-tools-latest-darwin.zip
+    - https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+    - https://dl.google.com/android/repository/platform-tools-latest-windows.zip
+
+5. Download a Web Driver binary if necessary
+
+    With the exception of Safari, which comes with the system, you'll probably
+    need the tool that can control the browser via Web Driver.
+
+    This tool will look for the driver in `./webdriver/<os_name>` by default, where `os_name`
+    is "android", "linux", "win" or "mac".
+    You can also designate a path to a webdriver executable with `--webdriver-path`.  
+
+    Webdrivers are available at:  
+    - Chrome (chromedriver(.exe)): https://sites.google.com/a/chromium.org/chromedriver  
+    - Edge (MicrosoftWebDriver.exe): https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver  
+    - FireFox (geckodriver(.exe)): https://github.com/mozilla/geckodriver/releases  
+    - Safari (safaridriver): already included as `/usr/bin/safaridriver`
+
+6. Execute script
+
+    ```
+    shell> python conformance.py [options]
+    ```
+
+    Pass `--help` for more information. You'll need to provide `--browser-name` at least.
+
+    For example, to run a local version of the 1.0.4 test suite against Safari, use:
+
+    ```
+    # Start a server pointing to the tests.
+    shell1> ./serve_localhost.py --directory sdk/tests
+
+    # Run the tests.
+    shell2> python3 conformance.py --browser-name safari --url http://localhost:8000/webgl-conformance-tests.html --version 1.0.4
+    ```
+
+7. Check report
+
+    Test results will be placed in `<work_dir>/result/<timestamp>.html` where
+    `timestamp` is when the test run happened (`%Y%m%d%H%M%S`, e.g., 20170403235901)
 
 ## ChromeOS
 First, a test image is required as the script relies on telemetry. Then you just need to copy the script to your ChromeOS and execute it as others, including Python, webdriver binary, etc., just work out of the box.
@@ -106,8 +163,7 @@ Sometimes, you want to test against OpenGL ES instead of OpenGL on Linux, and op
 On Linux, Mesa driver can be used on the fly, which means you may run the system with system graphics stack, while running browser solely with your self-build Mesa driver. Option --mesa-dir can be used for this sake.
 
 # TODO Features
-* Python 3 support<br>
-* More support of host_os, target_os and browser combinations, especially for Safari
+* More support of host_os, target_os and browser combinations
 * The design of expectations
 * Get more GPU, OS, browser info
 * log_path of geckodriver
