@@ -24,7 +24,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--bind', '-b', default='localhost', metavar='ADDRESS',
                         help='Specify alternate bind address '
-                             '[default: all interfaces]')
+                             '[default: localhost - pass \'\' if you want to serve remote clients]')
     parser.add_argument('--directory', '-d', default=os.getcwd(),
                         help='Specify alternative directory '
                         '[default:current directory]')
