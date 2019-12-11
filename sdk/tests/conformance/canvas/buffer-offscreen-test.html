@@ -29,11 +29,11 @@ debug("");
 var wtu = WebGLTestUtils;
 var gl1 = wtu.create3DContext("c");
 var gl2 = wtu.create3DContext();
-shouldBeTrue("gl1 != null");
-shouldBeTrue("gl2 != null");
+shouldBeNonNull("gl1");
+shouldBeNonNull("gl2");
 
-shouldBeTrue('gl1.getContextAttributes().preserveDrawingBuffer == false');
-shouldBeTrue('gl2.getContextAttributes().preserveDrawingBuffer == false');
+shouldBeFalse('gl1.getContextAttributes().preserveDrawingBuffer');
+shouldBeFalse('gl2.getContextAttributes().preserveDrawingBuffer');
 
 function init(gl) {
     gl.clearColor(1, 0, 0, 1);
