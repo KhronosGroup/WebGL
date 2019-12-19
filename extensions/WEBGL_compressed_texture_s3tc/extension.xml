@@ -28,6 +28,8 @@
         <div class="note">
           Some platforms do not have native support for <code>COMPRESSED_RGB_S3TC_DXT1_EXT</code> format,
           so WebGL implementations may map it to <code>COMPRESSED_RGBA_S3TC_DXT1_EXT</code>.
+          This means the alpha channel is not guaranteed to be opaque (0xFF);
+          it may be transparent (0x0) in some implementations.
           Applications expecting maximum portability should avoid authoring and uploading textures of
           <code>COMPRESSED_RGB_S3TC_DXT1_EXT</code> format. See the corresponding OpenGL extension for technical
           details about format differences.
