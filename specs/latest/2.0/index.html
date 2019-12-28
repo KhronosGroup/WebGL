@@ -4182,6 +4182,20 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         undefined texture images, skipping an otherwise-common validation.
     </div>
 
+
+    <h3><code>deleteQuery</code> implicitly calls <code>endQuery</code> if the query is active</h3>
+    <p>
+      In GLES, <code>DeleteQueries</code> does not implicitly end queries, even if they are active.
+    </p>
+
+    <div class="note rationale">
+      This deviation was not originally specified, but was implicitly standardized across
+      browsers by conformance tests.
+      Some implementations found this behavior simpler to implement.
+      Reverting this behavior to match the GLES specs could break content, and at this
+      point it's better to spec what we implemented.
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
