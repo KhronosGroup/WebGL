@@ -81,6 +81,11 @@ interface EXT_disjoint_timer_query {
   <newfun>
     <function name="deleteQueryEXT" type="void">
       <param name="query" type="WebGLTimerQueryEXT?"/>
+      <code>deleteQueryEXT</code> implicitly calls <code>endQueryEXT</code> if the query
+      is active.
+      In GLES, <code>DeleteQueries</code> does not end queries, even if they are active.
+      However, all WebGL implementations implemented this implicit <code>EndQuery</code>
+      due to conformance tests.
     </function>
   </newfun>
 
@@ -130,7 +135,7 @@ interface EXT_disjoint_timer_query {
       <tr><td>TIMESTAMP_EXT</td><td>CURRENT_QUERY</td><td>null</td></tr>
       <tr><td>TIME_ELAPSED_EXT</td><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
       <tr><td>TIMESTAMP_EXT</td><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
-      </table>      
+      </table>
     </function>
   </newfun>
 
@@ -145,7 +150,7 @@ interface EXT_disjoint_timer_query {
       <tr><th>pname</th><th>returned type</th></tr>
       <tr><td>QUERY_RESULT_EXT</td><td>GLuint64EXT</td></tr>
       <tr><td>QUERY_RESULT_AVAILABLE_EXT</td><td>boolean</td></tr>
-      </table>      
+      </table>
       <br/>
       In order to ensure consistent behavior across platforms, queries' results must only be made
       available when the user agent's <a
@@ -174,7 +179,7 @@ interface EXT_disjoint_timer_query {
       </div>
     </function>
   </newfun>
-  
+
   <newtok>
     <function name="getParameter" type="any">
       <param name="pname" type="GLenum"/>
@@ -186,7 +191,7 @@ interface EXT_disjoint_timer_query {
       <tr><th>pname</th><th>returned type</th></tr>
       <tr><td>TIMESTAMP_EXT</td><td>GLuint64EXT</td></tr>
       <tr><td>GPU_DISJOINT_EXT</td><td>boolean</td></tr>
-      </table>      
+      </table>
     </function>
   </newtok>
 
