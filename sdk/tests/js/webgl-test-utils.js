@@ -33,30 +33,39 @@ var loggingOff = function() {
   error = function() {};
 };
 
+const ENUM_NAME_REGEX = RegExp('[A-Z][A-Z0-9_]*');
+const ENUM_NAME_BY_VALUE = {};
+const ENUM_NAME_PROTOTYPES = new Map();
+
 /**
  * Converts a WebGL enum to a string.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} value The enum value.
  * @return {string} The enum as a string.
  */
-var glEnumToString = function(gl, value) {
-  if (gl.NO_ERROR === undefined)
-    throw new Error('glEnumToString: `gl` must be a WebGL2?RenderingContext');
+var glEnumToString = function(glOrExt, value) {
   if (value === undefined)
     throw new Error('glEnumToString: `value` must not be undefined');
 
-  // Optimization for the most common enum:
-  if (value === gl.NO_ERROR) {
-    return "NO_ERROR";
-  }
-  for (var p in gl) {
-    if (gl[p] == value) {
-      if (p == 'drawingBufferWidth' || p == 'drawingBufferHeight') {
-        continue;
+  const proto = glOrExt.__proto__;
+  if (!ENUM_NAME_PROTOTYPES.has(proto)) {
+    ENUM_NAME_PROTOTYPES.set(proto, true);
+
+    for (const k in proto) {
+      if (!ENUM_NAME_REGEX.test(k)) continue;
+
+      const v = glOrExt[k];
+      if (ENUM_NAME_BY_VALUE[v] === undefined) {
+        ENUM_NAME_BY_VALUE[v] = k;
+      } else {
+        ENUM_NAME_BY_VALUE[v] += '/' + k;
       }
-      return p;
     }
   }
+
+  const key = ENUM_NAME_BY_VALUE[value];
+  if (key !== undefined) return key;
+
   return "0x" + Number(value).toString(16);
 };
 
@@ -1667,16 +1676,22 @@ var glErrorShouldBeImpl = function(gl, glErrors, reportSuccesses, opt_msg) {
     glErrors = [glErrors];
   }
   opt_msg = opt_msg || "";
+
+  const fnErrStr = function(errVal) {
+    if (errVal == 0) return "NO_ERROR";
+    return glEnumToString(gl, errVal);
+  };
+
   var err = gl.getError();
   var ndx = glErrors.indexOf(err);
   var errStrs = [];
   for (var ii = 0; ii < glErrors.length; ++ii) {
-    errStrs.push(glEnumToString(gl, glErrors[ii]));
+    errStrs.push(fnErrStr(glErrors[ii]));
   }
   var expected = errStrs.join(" or ");
   if (ndx < 0) {
     var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
-    testFailed(msg + expected +  ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
+    testFailed(msg + expected +  ". Was " + fnErrStr(err) + " : " + opt_msg);
   } else if (reportSuccesses) {
     var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
     testPassed(msg + expected + " : " + opt_msg);

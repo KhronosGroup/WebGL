@@ -53,8 +53,8 @@ for (var bb = 0; bb < bufferTypes.length; ++bb) {
   var buffer = gl.createBuffer();
   gl.bindBuffer(bufferType, buffer);
   gl.bufferData(bufferType, 16, gl.DYNAMIC_DRAW);
-  var expression1 = "gl.getBufferParameter(gl." + wtu.glEnumToString(gl, bufferType) + ", gl.BUFFER_SIZE)";
-  var expression2 = "gl.getBufferParameter(gl." + wtu.glEnumToString(gl, bufferType) + ", gl.BUFFER_USAGE)";
+  var expression1 = "gl.getBufferParameter(" + bufferType + ", gl.BUFFER_SIZE)";
+  var expression2 = "gl.getBufferParameter(" + bufferType + ", gl.BUFFER_USAGE)";
   shouldBe(expression1, '16');
   shouldBe(expression2, 'gl.DYNAMIC_DRAW');
   testInvalidArgument("getBufferParameter", "parameter", [gl.BUFFER_SIZE, gl.BUFFER_USAGE], function(bufferType) {
