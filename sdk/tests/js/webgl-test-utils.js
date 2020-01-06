@@ -33,6 +33,10 @@ var loggingOff = function() {
   error = function() {};
 };
 
+const ENUM_NAME_REGEX = RegExp('[A-Z][A-Z0-9_]*');
+const ENUM_NAME_BY_VALUE = {};
+const ENUM_NAME_PROTOTYPES = new Map();
+
 /**
  * Converts a WebGL enum to a string.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
@@ -43,24 +47,23 @@ var glEnumToString = function(glOrExt, value) {
   if (value === undefined)
     throw new Error('glEnumToString: `value` must not be undefined');
 
-  if (glOrExt.keyByValue === undefined) {
-    const keyByValue = glOrExt.keyByValue = {};
+  const proto = glOrExt.__proto__;
+  if (!ENUM_NAME_PROTOTYPES.has(proto)) {
+    ENUM_NAME_PROTOTYPES.set(proto, true);
 
-    for (const k in glOrExt) {
-      if (k == 'drawingBufferWidth' ||
-          k == 'drawingBufferHeight') {
-        continue;
-      }
+    for (const k in proto) {
+      if (!ENUM_NAME_REGEX.test(k)) continue;
+
       const v = glOrExt[k];
-      if (keyByValue[v] === undefined) {
-        keyByValue[v] = k;
+      if (ENUM_NAME_BY_VALUE[v] === undefined) {
+        ENUM_NAME_BY_VALUE[v] = k;
       } else {
-        keyByValue[v] += '/' + k;
+        ENUM_NAME_BY_VALUE[v] += '/' + k;
       }
     }
   }
 
-  const key = glOrExt.keyByValue[value];
+  const key = ENUM_NAME_BY_VALUE[value];
   if (key !== undefined) return key;
 
   return "0x" + Number(value).toString(16);
