@@ -125,6 +125,18 @@ var simpleTextureFragmentShader = [
   '}'].join('\n');
 
 /**
+ * A fragment shader for a single texture with high precision.
+ * @type {string}
+ */
+var simpleHighPrecisionTextureFragmentShader = [
+  'precision highp float;',
+  'uniform highp sampler2D tex;',
+  'varying vec2 texCoord;',
+  'void main() {',
+  '    gl_FragData[0] = texture2D(tex, texCoord);',
+  '}'].join('\n');
+
+/**
  * A fragment shader for a single cube map texture.
  * @type {string}
  */
@@ -3386,6 +3398,7 @@ Object.defineProperties(API, {
   simpleVertexShader: { value: simpleVertexShader, writable: false },
   simpleVertexShaderESSL300: { value: simpleVertexShaderESSL300, writable: false },
   simpleTextureFragmentShader: { value: simpleTextureFragmentShader, writable: false },
+  simpleHighPrecisionTextureFragmentShader: { value: simpleHighPrecisionTextureFragmentShader, writable: false },
   simpleCubeMapTextureFragmentShader: { value: simpleCubeMapTextureFragmentShader, writable: false },
   simpleVertexColorFragmentShader: { value: simpleVertexColorFragmentShader, writable: false },
   simpleVertexColorVertexShader: { value: simpleVertexColorVertexShader, writable: false }

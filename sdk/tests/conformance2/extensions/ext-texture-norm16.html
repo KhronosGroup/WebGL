@@ -153,7 +153,7 @@ function runTestExtension() {
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texture and framebuffer setup succeed");
 
-  wtu.setupTexturedQuad(gl);
+  wtu.setupTexturedQuad(gl, 0, 1, wtu.simpleHighPrecisionTextureFragmentShader);
 
   testNorm16Texture(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT);
   testNorm16Texture(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT);
