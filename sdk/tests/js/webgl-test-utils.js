@@ -113,6 +113,20 @@ var simpleTextureVertexShader = [
   '}'].join('\n');
 
 /**
+ * A vertex shader for a single texture.
+ * @type {string}
+ */
+var simpleTextureVertexShaderESSL300 = [
+  '#version 300 es',
+  'layout(location=0) in vec4 vPosition;',
+  'layout(location=1) in vec2 texCoord0;',
+  'out vec2 texCoord;',
+  'void main() {',
+  '    gl_Position = vPosition;',
+  '    texCoord = texCoord0;',
+  '}'].join('\n');
+
+/**
  * A fragment shader for a single texture.
  * @type {string}
  */
@@ -122,6 +136,20 @@ var simpleTextureFragmentShader = [
   'varying vec2 texCoord;',
   'void main() {',
   '    gl_FragData[0] = texture2D(tex, texCoord);',
+  '}'].join('\n');
+
+/**
+ * A fragment shader for a single texture.
+ * @type {string}
+ */
+var simpleTextureFragmentShaderESSL300 = [
+  '#version 300 es',
+  'precision highp float;',
+  'uniform highp sampler2D tex;',
+  'in vec2 texCoord;',
+  'out vec4 out_color;',
+  'void main() {',
+  '    out_color = texture(tex, texCoord);',
   '}'].join('\n');
 
 /**
@@ -408,6 +436,7 @@ var setupNoTexCoordTextureProgram = function(gl) {
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
  * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @param {string} opt_fragmentShaderOverride The alternative fragment shader to use.
  * @return {WebGLProgram}
  */
 var setupSimpleTextureProgram = function(
@@ -417,6 +446,25 @@ var setupSimpleTextureProgram = function(
   opt_fragmentShaderOverride = opt_fragmentShaderOverride || simpleTextureFragmentShader;
   return setupProgram(gl,
                       [simpleTextureVertexShader, opt_fragmentShaderOverride],
+                      ['vPosition', 'texCoord0'],
+                      [opt_positionLocation, opt_texcoordLocation]);
+};
+
+/**
+ * Creates a simple texture program using glsl version 300.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @param {string} opt_fragmentShaderOverride The alternative fragment shader to use.
+ * @return {WebGLProgram}
+ */
+var setupSimpleTextureProgramESSL300 = function(
+    gl, opt_positionLocation, opt_texcoordLocation, opt_fragmentShaderOverride) {
+  opt_positionLocation = opt_positionLocation || 0;
+  opt_texcoordLocation = opt_texcoordLocation || 1;
+  opt_fragmentShaderOverride = opt_fragmentShaderOverride || simpleTextureFragmentShaderESSL300;
+  return setupProgram(gl,
+                      [simpleTextureVertexShaderESSL300, opt_fragmentShaderOverride],
                       ['vPosition', 'texCoord0'],
                       [opt_positionLocation, opt_texcoordLocation]);
 };
@@ -3353,6 +3401,7 @@ var API = {
   setupIndexedQuadWithOptions: setupIndexedQuadWithOptions,
   setupSimpleColorProgram: setupSimpleColorProgram,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
+  setupSimpleTextureProgramESSL300: setupSimpleTextureProgramESSL300,
   setupSimpleCubeMapTextureProgram: setupSimpleCubeMapTextureProgram,
   setupSimpleVertexColorProgram: setupSimpleVertexColorProgram,
   setupNoTexCoordTextureProgram: setupNoTexCoordTextureProgram,
@@ -3393,11 +3442,13 @@ var API = {
 Object.defineProperties(API, {
   noTexCoordTextureVertexShader: { value: noTexCoordTextureVertexShader, writable: false },
   simpleTextureVertexShader: { value: simpleTextureVertexShader, writable: false },
+  simpleTextureVertexShaderESSL300: { value: simpleTextureVertexShaderESSL300, writable: false },
   simpleColorFragmentShader: { value: simpleColorFragmentShader, writable: false },
   simpleColorFragmentShaderESSL300: { value: simpleColorFragmentShaderESSL300, writable: false },
   simpleVertexShader: { value: simpleVertexShader, writable: false },
   simpleVertexShaderESSL300: { value: simpleVertexShaderESSL300, writable: false },
   simpleTextureFragmentShader: { value: simpleTextureFragmentShader, writable: false },
+  simpleTextureFragmentShaderESSL300: { value: simpleTextureFragmentShaderESSL300, writable: false },
   simpleHighPrecisionTextureFragmentShader: { value: simpleHighPrecisionTextureFragmentShader, writable: false },
   simpleCubeMapTextureFragmentShader: { value: simpleCubeMapTextureFragmentShader, writable: false },
   simpleVertexColorFragmentShader: { value: simpleVertexColorFragmentShader, writable: false },
