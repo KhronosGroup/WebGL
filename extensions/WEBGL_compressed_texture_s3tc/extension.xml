@@ -24,6 +24,16 @@
         <code>COMPRESSED_RGBA_S3TC_DXT1_EXT</code>, <code>COMPRESSED_RGBA_S3TC_DXT3_EXT</code>, and
         <code>COMPRESSED_RGBA_S3TC_DXT5_EXT</code> may be passed to
         the <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code> entry points.
+
+        <div class="note">
+          Some platforms do not have native support for <code>COMPRESSED_RGB_S3TC_DXT1_EXT</code> format,
+          so WebGL implementations may map it to <code>COMPRESSED_RGBA_S3TC_DXT1_EXT</code>.
+          This means the alpha channel is not guaranteed to be opaque (0xFF);
+          it may be transparent (0x0) in some implementations.
+          Applications expecting maximum portability should avoid authoring and uploading textures of
+          <code>COMPRESSED_RGB_S3TC_DXT1_EXT</code> format. See the corresponding OpenGL extension for technical
+          details about format differences.
+        </div>
       </feature>
       <feature>
         Calling <code>getParameter</code> with the argument <code>COMPRESSED_TEXTURE_FORMATS</code>
@@ -114,6 +124,9 @@ interface WEBGL_compressed_texture_s3tc {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2019/10/24">
+      <change>Added a note about <code>COMPRESSED_RGB_S3TC_DXT1_EXT</code> support.</change> 
     </revision>
   </history>
 </ratified>
