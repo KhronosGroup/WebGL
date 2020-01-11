@@ -83,7 +83,7 @@ function testNorm16Texture(internalFormat, format, type) {
   wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, expectedValue));
 }
 
-function testNorm16Render(interalFormat, format, type) {
+function testNorm16Render(interalFormat, format, type, tolerance) {
   // Only UNSIGNED_SHORT are renderable
   let pixelValue = 0x6a35;
   let expectedValue = pixelValue;
@@ -108,7 +108,7 @@ function testNorm16Render(interalFormat, format, type) {
 
   gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, expectedValue, 0xffff), undefined, undefined, readbackBuf, type);
+  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, expectedValue, 0xffff), undefined, tolerance, readbackBuf, type);
 
   // Renderbuffer test
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[1]);
@@ -123,7 +123,7 @@ function testNorm16Render(interalFormat, format, type) {
   gl.clearColor(1, 1, 1, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, undefined, readbackBuf, type);
+  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, tolerance, readbackBuf, type);
 
   // Copy from renderbuffer to textures[1] test
   gl.bindTexture(gl.TEXTURE_2D, textures[1]);
@@ -132,7 +132,7 @@ function testNorm16Render(interalFormat, format, type) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copy succeed");
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0]);
-  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, undefined, readbackBuf, type);
+  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, 0xffff, 0xffff), undefined, tolerance, readbackBuf, type);
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.bindTexture(gl.TEXTURE_2D, null);
@@ -153,8 +153,8 @@ function runTestExtension() {
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texture and framebuffer setup succeed");
 
-  wtu.setupSimpleTextureProgramESSL300(gl);
-  wtu.setupUnitQuad(gl);
+  let program300 = wtu.setupSimpleTextureProgramESSL300(gl);
+  let program100 = wtu.setupTexturedQuad(gl, 0, 1, wtu.simpleHighPrecisionTextureFragmentShader);
 
   testNorm16Texture(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT);
   testNorm16Texture(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT);
@@ -165,9 +165,15 @@ function runTestExtension() {
   testNorm16Texture(ext.RGB16_SNORM_EXT, gl.RGB, gl.SHORT);
   testNorm16Texture(ext.RGBA16_SNORM_EXT, gl.RGBA, gl.SHORT);
 
-  testNorm16Render(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT);
-  testNorm16Render(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT);
-  testNorm16Render(ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT);
+  testNorm16Render(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT, 8);
+  testNorm16Render(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT, 8);
+  testNorm16Render(ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT, 8);
+
+  gl.useProgram(program300);
+
+  testNorm16Render(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT, 0);
+  testNorm16Render(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT, 0);
+  testNorm16Render(ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT, 0);
 };
 
 function runTest() {
