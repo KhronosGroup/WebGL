@@ -288,6 +288,10 @@
     </table>
     <br>
     <p>
+        <code>HTMLCanvasElement.width</code> and <code>.height</code> values less than 1 are treated as 1.
+        A 0x0 canvas will yield a 1x1 drawingBufferWidth/Height.
+    </p>
+    <p>
         If the requested width or height cannot be satisfied, either when the drawing buffer is first
         created or when the <code>width</code> and <code>height</code> attributes of the
         <code>HTMLCanvasElement</code> or <code>OffscreenCanvas</code> are changed, a drawing buffer
