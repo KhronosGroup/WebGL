@@ -23,6 +23,7 @@ invalid-default-precision.html
 invalid-invariant.html
 loops-with-side-effects.html
 --min-version 2.0.1 matrix-row-major.html
+--min-version 2.0.1 matrix-row-major-dynamic-indexing.html
 misplaced-version-directive.html
 --min-version 2.0.1 no-attribute-vertex-shader.html
 sampler-no-precision.html
@@ -52,4 +53,3 @@ valid-invariant.html
 vector-dynamic-indexing.html
 --min-version 2.0.1 vector-dynamic-indexing-nv-driver-bug.html
 --min-version 2.0.1 vector-dynamic-indexing-swizzled-lvalue.html
---min-version 2.0.1 matrix-row-major-dynamic-indexing.html
