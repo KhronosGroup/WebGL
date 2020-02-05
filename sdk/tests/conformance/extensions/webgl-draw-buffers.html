@@ -89,6 +89,7 @@ var gl = wtu.create3DContext(canvas);
 var ext = null;
 var programWithMaxDrawBuffersEqualOne = null;
 var drawBuffersUtils;
+let fb;
 
 var extensionConstants = [
   { name: "MAX_COLOR_ATTACHMENTS_WEBGL", enum: 0x8CDF, expectedFn: function(v) { return v >= 4; }, passMsg: " should be >= 4"},
@@ -225,6 +226,28 @@ function runEnumTestEnabled() {
   wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.BACK])");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+
+  debug("Testing drawBuffers and getParameter with bindFramebuffer, without drawing.");
+  fb = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.COLOR_ATTACHMENT0");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL+1)", "gl.NONE");
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.NONE])");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.NONE");
+
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.NONE,gl.COLOR_ATTACHMENT0+1])");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.NONE");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL+1)", "gl.COLOR_ATTACHMENT0+1");
+
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.COLOR_ATTACHMENT0,gl.COLOR_ATTACHMENT0+1])");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.COLOR_ATTACHMENT0");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL+1)", "gl.COLOR_ATTACHMENT0+1");
+
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteFramebuffer(fb)");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
 }
 
 function testShaders(tests, sub) {

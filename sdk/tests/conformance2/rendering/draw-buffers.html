@@ -87,6 +87,7 @@ var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas, null, 2);
 var drawBuffersUtils;
+let fb;
 
 if (!gl) {
   testFailed("WebGL context does not exist");
@@ -138,7 +139,7 @@ function runAttachmentTest() {
   var maxColorAttachments = gl.getParameter(gl.MAX_COLOR_ATTACHMENTS);
 
   var tex = gl.createTexture();
-  var fb = gl.createFramebuffer();
+  fb = gl.createFramebuffer();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + maxColorAttachments, gl.TEXTURE_2D, tex, 0);
@@ -165,6 +166,28 @@ function runAttachmentTest() {
   gl.deleteFramebuffer(fb);
   gl.deleteTexture(tex);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+
+  debug("Testing drawBuffers and getParameter with bindFramebuffer, without drawing.");
+  fb = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0)", "gl.COLOR_ATTACHMENT0");
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0+1)", "gl.NONE");
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawBuffers([gl.NONE])");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0)", "gl.BACK");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0)", "gl.NONE");
+
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawBuffers([gl.NONE,gl.COLOR_ATTACHMENT0+1])");
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0)", "gl.NONE");
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0+1)", "gl.COLOR_ATTACHMENT0+1");
+
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawBuffers([gl.COLOR_ATTACHMENT0,gl.COLOR_ATTACHMENT0+1])");
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0)", "gl.COLOR_ATTACHMENT0");
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0+1)", "gl.COLOR_ATTACHMENT0+1");
+
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteFramebuffer(fb)");
+  shouldBe("gl.getParameter(gl.DRAW_BUFFER0)", "gl.BACK");
 }
 
 function makeColorByIndex(index) {
