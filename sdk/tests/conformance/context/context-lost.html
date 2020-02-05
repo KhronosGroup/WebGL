@@ -144,6 +144,15 @@ function testLostContext()
     shouldBe("gl.getAttribLocation(program, 'u_modelViewProjMatrix')", "-1");
     shouldBe("gl.getVertexAttribOffset(0, gl.VERTEX_ATTRIB_ARRAY_POINTER)", "0");
 
+    // Attempt resize of lost context should succeed, still lost.
+    gl.canvas.width = gl.canvas.width; // Try to hit any same-size resize path.
+    shouldBeTrue("gl.isContextLost()");
+
+    const newSize = gl.canvas.width + 1;
+    gl.canvas.width = newSize;
+    shouldBe("gl.canvas.width", newSize);
+    shouldBeTrue("gl.isContextLost()");
+
     // Test the extension itself.
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "extension.loseContext()");
 
