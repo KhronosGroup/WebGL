@@ -64,6 +64,19 @@ function runTexCompressedFormatsTest()
         WEBGL_compressed_texture_etc.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC,
     ];
 
+    wtu.setupUnitQuad(gl);
+
+    gl.useProgram(wtu.setupSimpleTextureProgramESSL300(gl, undefined, undefined,
+           `#version 300 es
+            precision mediump float;
+            uniform mediump sampler2DArray tex;
+            in vec2 texCoord;
+            out vec4 out_color;
+            void main() {
+              out_color = texture(tex, vec3(texCoord, 0));
+            }`
+        ));
+
     texCompressedFormats.forEach(function(internalformat){
         // Test a 2D texture.
         var tex = gl.createTexture();
@@ -90,6 +103,8 @@ function runTexCompressedFormatsTest()
         gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, internalformat, 1, 1, 1);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                             "texStorage3D(TEXTURE_2D_ARRAY) should succeed for " + enumToString(internalformat));
+        wtu.clearAndDrawUnitQuad(gl);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing unit quad from empty texture");
         gl.deleteTexture(tex2dArr);
     });
 }
