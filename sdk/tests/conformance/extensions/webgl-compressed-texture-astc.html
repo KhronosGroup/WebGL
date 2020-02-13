@@ -1932,9 +1932,6 @@ function runTestExtension() {
     // Test that texture upload buffer size is validated correctly.
     ctu.testFormatRestrictionsOnBufferSize(gl, validFormats, expectedByteLength, getBlockDimensions);
 
-    // TODO: remove after http://crbug.com/1049806 is fixed
-    ext.getSupportedProfiles = ext.getSupportedProfiles || (() => ["ldr", "hdr"]);
-
     if (contextVersion >= 2) {
         // For LDR and non-sRGB formats, the error color is magenta *or* all NaNs. To
         // make sure we accept this we create a program that transforms an all NaN
