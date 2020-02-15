@@ -156,6 +156,21 @@ function bufferSubDataTest() {
     shouldThrow("gl.bufferSubData(gl.ARRAY_BUFFER, 10, undefined)");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should generate no GL error");
 
+    // -
+    // Firefox bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1611837
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new ArrayBuffer(0));
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+        "Calling bufferSubData with empty ArrayBuffer and null WebGLBuffer should fail");
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new ArrayBuffer(0));
+    wtu.glErrorShouldBe(gl, 0,
+        "Calling bufferSubData with empty ArrayBuffer and non-null WebGLBuffer should succeed");
+
+    // -
+
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 }
 
