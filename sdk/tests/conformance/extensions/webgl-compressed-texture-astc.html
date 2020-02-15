@@ -1893,8 +1893,8 @@ var validFormats = {
 };
 var name;
 
-var errorColor = [255, 0, 255, 255];
-var hasHdr = false;
+const errorColor = [255, 0, 255, 255];
+let hasHdr = false;
 
 var check2DTarget = 1;
 var check2DArrayTarget = 1;
@@ -2010,22 +2010,18 @@ function runTestExtension() {
 
     // Query supported profiles and test ASTC texture with appropriate formats
     var profiles = ext.getSupportedProfiles();
-    if (profiles.length > 0) {
-        // Check for HDR support first, since it affects sliced 3D support for LDR
-        if (profiles.indexOf("hdr") != -1) {
-            hasHdr = true;
-            testHDRTextures();
-        } else {
-            testPassed("HDR profile is not supported.");
-        }
-
-        if (profiles.indexOf("ldr") != -1) {
-            testLDRTextures();
-        } else {
-            testFailed('LDR profile must be supported.');
-        }
+    // Check for HDR support first, since it affects sliced 3D support for LDR
+    if (profiles.indexOf("hdr") != -1) {
+        hasHdr = true;
+        testHDRTextures();
     } else {
-        testFailed('getSupportedProfiles() returned an empty array.');
+        testPassed("HDR profile is not supported.");
+    }
+
+    if (profiles.indexOf("ldr") != -1) {
+        testLDRTextures();
+    } else {
+        testFailed('LDR profile must be supported.');
     }
 }
 
@@ -2167,12 +2163,26 @@ function testASTCTexture(test, useES3) {
     }
 
     function uploadSubData(target) {
-        if (target == gl.TEXTURE_2D) {
-            gl.compressedTexSubImage2D(target, 0, 0, 0, width, height, format, data);
-            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture data via compressedTexSubImage2D");
-        } else if (target == gl.TEXTURE_2D_ARRAY || target == gl.TEXTURE_3D) {
+        function checkResult(target, expectations, dim) {
+            switch (target) {
+                case gl.TEXTURE_2D:
+                    wtu.glErrorShouldBe(gl, expectations[0], "uploading compressed 2D texture data via compressedTexSubImage" + dim);
+                    break;
+                case gl.TEXTURE_2D_ARRAY:
+                    wtu.glErrorShouldBe(gl, expectations[1], "uploading compressed 2D array texture data via compressedTexSubImage" + dim);
+                    break;
+                case gl.TEXTURE_3D:
+                    wtu.glErrorShouldBe(gl, expectations[2], "uploading compressed 3D texture data via compressedTexSubImage" + dim);
+                    break;
+            }
+        }
+
+        gl.compressedTexSubImage2D(target, 0, 0, 0, width, height, format, data);
+        checkResult(target, [gl.NO_ERROR, gl.INVALID_ENUM, gl.INVALID_ENUM ], "2D");
+
+        if (useES3) {
             gl.compressedTexSubImage3D(target, 0, 0, 0, 0, width, height, 1, format, data);
-            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture data via compressedTexSubImage3D");
+            checkResult(target, [gl.INVALID_ENUM, gl.NO_ERROR, gl.NO_ERROR], "3D");
         }
     }
 
