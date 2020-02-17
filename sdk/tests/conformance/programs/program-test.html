@@ -46,13 +46,14 @@ found in the LICENSE.txt file.
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script type="application/javascript">
 var wtu = WebGLTestUtils;
+let gl;
 function go() {
     description("Tests that program compiling/linking/using works correctly.");
 
     debug("");
     debug("Canvas.getContext");
 
-    var gl = wtu.create3DContext("canvas");
+    gl = wtu.create3DContext("canvas");
     if (!gl) {
         testFailed("context does not exist");
         return;
@@ -190,7 +191,7 @@ function go() {
 /////// Check getAttachedShaders() /////////////////////////////
 
     function checkGetAttachedShaders(shaders_to_attach, shaders_to_detach, expected_shaders, errmsg) {
-        var prog = gl.createProgram();
+        prog = gl.createProgram();
         for (var i = 0; i < shaders_to_attach.length; ++i)
             gl.attachShader(prog, shaders_to_attach[i]);
         if(gl.getError() != gl.NO_ERROR)
@@ -200,6 +201,7 @@ function go() {
         if(gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in detachShader()");
         assertMsg(doArraysHaveSameContents(gl.getAttachedShaders(prog), expected_shaders), errmsg);
+        shouldBe('gl.getProgramParameter(prog, gl.ATTACHED_SHADERS)', `${expected_shaders.length}`);
     }
     checkGetAttachedShaders([], [], [], "getAttachedShaders should return an empty list by default");
     checkGetAttachedShaders([fs], [], [fs], "attaching a single shader should give the expected list");
