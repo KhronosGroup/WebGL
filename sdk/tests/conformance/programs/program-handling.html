@@ -80,7 +80,7 @@ wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
 debug("Change fragment shader to one that will not link");
 compile(gl, fs, "fshader-not-link");
 debug("Draw orange");
-gl.uniform4fv(colorLoc, [1, 0.5, 0, 1]);
+gl.uniform4fv(colorLoc, [1, 127/255, 0, 1]);
 wtu.drawUnitQuad(gl);
 wtu.checkCanvas(gl, [255, 127, 0, 255], "should be orange");
 
