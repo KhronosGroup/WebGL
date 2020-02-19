@@ -248,7 +248,7 @@ function runTest() {
                       const pixel = data[offset];
                       const diff = Math.abs(pixel - expected[c]);
                       if (diff > tolerance) {
-                          testFailed(`pixel ${x},${y} channel ${c} was ${pixel} expected ${expected[c]}`);
+                          testFailed(`pixel ${x},${y} channel ${c} was ${pixel} expected ${expected[c]} +/- ${tolerance}`);
                           return;
                       }
                   }
@@ -263,7 +263,7 @@ function runTest() {
       gl.readPixels(0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, data);
       const internalFormat = textureInfo.internalFormat;
       wtu.glErrorShouldBe(gl, gl.NO_ERROR, `No errors from readPixels with ${wtu.glEnumToString(gl, internalFormat)}`);
-      checkData(data, expected, internalFormat, 5);
+      checkData(data, expected, internalFormat, 9);
   }
 
   function checkInt(gl, textureInfo, expected) {
@@ -377,7 +377,8 @@ function runTest() {
   });
 
   // set the canvas to a known color
-  gl.clearColor(.5, .5, .5, .5);
+  const half = 127 / 255;
+  gl.clearColor(half, half, half, half);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.clearColor(0, 0, 0, 0);
 
