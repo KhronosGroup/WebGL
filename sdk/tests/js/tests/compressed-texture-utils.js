@@ -200,7 +200,7 @@ return {
     testCompressedFormatsUnavailableWhenExtensionDisabled: testCompressedFormatsUnavailableWhenExtensionDisabled,
     testCorrectEnumValuesInExt: testCorrectEnumValuesInExt,
     testFormatRestrictionsOnBufferSize: testFormatRestrictionsOnBufferSize,
-    testTexSubImageDimensions: testTexSubImageDimensions
+    testTexSubImageDimensions: testTexSubImageDimensions,
 };
 
 })();
