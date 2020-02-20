@@ -156,6 +156,42 @@ var testFormatRestrictionsOnBufferSize = function(gl, validFormats, expectedByte
     }
 };
 
+/**
+ * @param {WebGLRenderingContextBase} gl
+ * @param {Object} validFormats Mapping from format names to format enum values.
+ * @param expectedByteLength A function that takes in width, height and format and returns the expected buffer size in bytes.
+ * @param getBlockDimensions A function that takes in a format and returns block size in pixels.
+ * @param {number} width Width of the image in pixels.
+ * @param {number} height Height of the image in pixels.
+ * @param {Object} subImageConfigs configs for compressedTexSubImage calls
+ */
+var testTexSubImageDimensions = function(gl, validFormats, expectedByteLength, getBlockDimensions, width, height, subImageConfigs) {
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+
+    for (var formatId in validFormats) {
+        if (validFormats.hasOwnProperty(formatId)) {
+            var format = validFormats[formatId];
+            var blockSize = getBlockDimensions(format);
+            var expectedSize = expectedByteLength(width, height, format);
+            var data = new Uint8Array(expectedSize);
+
+            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, data);
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "setting up compressed texture");
+
+            for (let i = 0, len = subImageConfigs.length; i < len; ++i) {
+                let c = subImageConfigs[i];
+                var subData = new Uint8Array(expectedByteLength(c.width, c.height, format));
+                gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, c.xoffset, c.yoffset, c.width, c.height, format, subData);
+                wtu.glErrorShouldBe(gl, c.expectation, c.message);
+            }
+        }
+    }
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.deleteTexture(tex);
+};
+
 return {
     formatToString: formatToString,
     insertCaptionedImg: insertCaptionedImg,
@@ -163,7 +199,8 @@ return {
     testCompressedFormatsListed: testCompressedFormatsListed,
     testCompressedFormatsUnavailableWhenExtensionDisabled: testCompressedFormatsUnavailableWhenExtensionDisabled,
     testCorrectEnumValuesInExt: testCorrectEnumValuesInExt,
-    testFormatRestrictionsOnBufferSize: testFormatRestrictionsOnBufferSize
+    testFormatRestrictionsOnBufferSize: testFormatRestrictionsOnBufferSize,
+    testTexSubImageDimensions: testTexSubImageDimensions,
 };
 
 })();
