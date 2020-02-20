@@ -52,6 +52,27 @@ function runTestExtension() {
   ctu.testCorrectEnumValuesInExt(ext, validFormats);
   // Test that texture upload buffer size is validated correctly.
   ctu.testFormatRestrictionsOnBufferSize(gl, validFormats, expectedByteLength, getBlockDimensions);
+  // Test TexSubImage validation on dimensions
+  // CompressedTexSubImage* will result in an
+  // INVALID_OPERATION error only if one of the following conditions occurs:
+  // * <width> is not a multiple of four, and <width> plus <xoffset> is not
+  // equal to TEXTURE_WIDTH;
+  // * <height> is not a multiple of four, and <height> plus <yoffset> is
+  //           not equal to TEXTURE_HEIGHT; or
+  // * <xoffset> or <yoffset> is not a multiple of four.
+  ctu.testTexSubImageDimensions(gl, validFormats, expectedByteLength, getBlockDimensions,
+    16, 16, [
+      { xoffset: 0, yoffset: 0, width: 4, height: 3,
+        expectation: gl.INVALID_OPERATION, message: "height is not a multiple of 4" },
+      { xoffset: 0, yoffset: 0, width: 3, height: 4,
+        expectation: gl.INVALID_OPERATION, message: "width is not a multiple of 4" },
+      { xoffset: 1, yoffset: 0, width: 4, height: 4,
+        expectation: gl.INVALID_OPERATION, message: "xoffset is not a multiple of 4" },
+      { xoffset: 0, yoffset: 1, width: 4, height: 4,
+        expectation: gl.INVALID_OPERATION, message: "yoffset is not a multiple of 4" },
+      { xoffset: 12, yoffset: 12, width: 4, height: 4,
+        expectation: gl.NO_ERROR, message: "is valid" },
+  ]);
 };
 
 function runTest() {
