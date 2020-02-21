@@ -23,12 +23,11 @@ function runTest() {
         testFailed('could not create context');
         return;
     }
-    const width = 100;
-    const height = 100;
+    const size = 100;
 
     debug('Setup');
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = size;
+    canvas.height = size;
 
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -37,8 +36,7 @@ function runTest() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
     const backbuffer = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, backbuffer);
@@ -55,11 +53,10 @@ function runTest() {
     ]));
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 8, 0);
     gl.enableVertexAttribArray(0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 
-    const blendTextureProgram = gl.createProgram();
-    const blendTextureVertex = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(blendTextureVertex, `
+    const blitTextureProgram = gl.createProgram();
+    const blitTextureVertex = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(blitTextureVertex, `
         precision mediump float;
         attribute vec2 pos;
         varying vec2 uv;
@@ -68,10 +65,10 @@ function runTest() {
             gl_Position=vec4(pos*2.-1.,0.,1.);
         }
     `);
-    gl.compileShader(blendTextureVertex);
-    gl.attachShader(blendTextureProgram, blendTextureVertex);
-    const blendTextureFragment = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(blendTextureFragment, `
+    gl.compileShader(blitTextureVertex);
+    gl.attachShader(blitTextureProgram, blitTextureVertex);
+    const blitTextureFragment = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(blitTextureFragment, `
         precision mediump float;
         uniform sampler2D texture;
         varying vec2 uv;
@@ -79,9 +76,9 @@ function runTest() {
             gl_FragColor=texture2D(texture, uv);
         }
     `);
-    gl.compileShader(blendTextureFragment);
-    gl.attachShader(blendTextureProgram, blendTextureFragment);
-    gl.linkProgram(blendTextureProgram);
+    gl.compileShader(blitTextureFragment);
+    gl.attachShader(blitTextureProgram, blitTextureFragment);
+    gl.linkProgram(blitTextureProgram);
 
     const solidColorProgram = gl.createProgram();
     const solidColorVertex = gl.createShader(gl.VERTEX_SHADER);
@@ -111,21 +108,21 @@ function runTest() {
     // Draw blue rectangle to backbuffer texture
     gl.bindFramebuffer(gl.FRAMEBUFFER, backbuffer);
     gl.useProgram(solidColorProgram);
-    gl.drawArrays(5, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     // Blit backbuffer texture to screen
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.useProgram(blendTextureProgram);
-    gl.drawArrays(5, 0, 4);
+    gl.useProgram(blitTextureProgram);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-    // Clear backbuffer texture to yellow
+    // Clear backbuffer texture to red
     gl.bindFramebuffer(gl.FRAMEBUFFER, backbuffer);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     // Blit backbuffer texture to screen
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.useProgram(blendTextureProgram);
-    gl.drawArrays(5, 0, 4);
+    gl.useProgram(blitTextureProgram);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     debug('Expected: canvas should be red');
     debug('Buggy: canvas is blue');
