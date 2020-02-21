@@ -1,28 +1,7 @@
 <!--
-
-/*
-** Copyright (c) 2018 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-*/
-
+Copyright (c) 2020 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 -->
 
 <!DOCTYPE html>
@@ -34,25 +13,23 @@
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
 <script id="vshader" type="x-shader/x-vertex">#version 300 es
-uniform float depth;
 void main(void) {
-  int x = gl_VertexID % 2;
-  int y = (gl_VertexID / 2 + gl_VertexID / 3) % 2;
-  gl_Position = vec4(x * 2 - 1, y * 2 - 1, depth, 1);
+  gl_Position = vec4(0, 0, 0, 1);
+  gl_PointSize = 1.0;
 }
 </script>
 <script id="fshader" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
-uniform vec4 color;
 out vec4 outColor;
 void main() {
-  outColor = color;
+  outColor = vec4(0, 1, 0, 1);
 }
 </script>
 </head>
 <body>
-<canvas id="example" width="2", height="2"></canvas>
+<canvas id="example" width="1", height="1"></canvas>
 <div id="description"></div>
+<a href='https://bugs.chromium.org/p/angleproject/issues/detail?id=4417'>ANGLE issue #4417</a>
 <div id="console"></div>
 <script>
 "use strict";
@@ -78,41 +55,26 @@ function runTest() {
   gl.bindTexture(gl.TEXTURE_3D, tex);
   gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
   gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, 2, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, gl.canvas.width, gl.canvas.height, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
-  gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex, 0, 1);
+  for (let i = 0; i < 2; i++) {
+    gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex, 0, i);
 
-  const rb = gl.createRenderbuffer();
-  gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
-  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 2, 2);
-  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb);
+    const rb = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb);
 
-  wtu.framebufferStatusShouldBe(gl, gl.FRAMEBUFFER, gl.FRAMEBUFFER_COMPLETE);
+    wtu.framebufferStatusShouldBe(gl, gl.FRAMEBUFFER, gl.FRAMEBUFFER_COMPLETE);
 
-  const program = wtu.setupProgram(gl, ['vshader','fshader'], [], console.log.bind(console));
-  gl.useProgram(program);
-  const depthLoc = gl.getUniformLocation(program, 'depth');
-  const colorLoc = gl.getUniformLocation(program, 'color');
-  gl.viewport(0, 0, 2, 2);
-  gl.enable(gl.DEPTH_TEST);
+    const program = wtu.setupProgram(gl, ['vshader','fshader'], [], console.log.bind(console));
+    gl.useProgram(program);
 
-  // draw in middle
-  gl.uniform1f(depthLoc, 0);
-  gl.uniform4fv(colorLoc, [1, 0, 0, 1]);
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.POINTS, 0, 1);
 
-  // draw in front
-  gl.uniform1f(depthLoc, -.5);
-  gl.uniform4fv(colorLoc, [0, 1, 0, 1]);
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-  // draw in back
-  gl.uniform1f(depthLoc, .5);
-  gl.uniform4fv(colorLoc, [0, 0, 1, 1]);
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, `No errors`);
-  wtu.checkCanvas(gl, [0, 255, 0, 255], "framebuffer should be green");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, `No errors`);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], `framebuffer layer ${i} should be green`);
+  }
 
   // make sure we were not rendering to the canvas.
   gl.bindFramebuffer(gl.FRAMEBUFFER, null)
