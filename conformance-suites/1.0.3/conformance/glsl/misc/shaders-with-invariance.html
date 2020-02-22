@@ -216,9 +216,11 @@ GLSLConformanceTester.runTests([
     linkSuccess: false,
     passMsg: "vertex shader with invariant varying and fragment shader with variant varying must fail",
   },
-  // The following test has been removed as it was enforcing a rule contradictory to the ESSL 1.0
-  // specification.
+  // Some of the following tests have been removed as they were enforcing a rule contradictory to the ESSL 1.0
+  // specification. The tests are removed and not changed to preserve any implementations that
+  // pass this snapshot instead of trunk.
   /*
+  // Changed on trunk in #2878
   {
     vShaderId: "vertexShaderVariant",
     vShaderSuccess: true,
@@ -276,6 +278,8 @@ GLSLConformanceTester.runTests([
     linkSuccess: false,
     passMsg: "fragment shader with invariant (separately set in wrong order) varying must fail",
   },
+  /*
+  // Changed on trunk in #2908
   {
     vShaderId: "vertexShaderInvariant",
     vShaderSuccess: true,
@@ -284,6 +288,7 @@ GLSLConformanceTester.runTests([
     linkSuccess: true,
     passMsg: "vertex shader with invariant varying and fragment shader with invariant (global setting) varying must succeed",
   },
+  */
   {
     vShaderId: "vertexShaderInvariantGlPosition",
     vShaderSuccess: true,
