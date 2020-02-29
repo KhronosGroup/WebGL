@@ -3183,6 +3183,13 @@ var getRelativePath = function(path) {
   return relparts.join("/");
 }
 
+function chooseUrlForCrossOriginImage(imgUrl, localUrl) {
+    if (runningOnLocalhost())
+      return getLocalCrossOrigin() + getRelativePath(localUrl);
+
+    return img.src = getUrlOptions().imgUrl || imgUrl;
+}
+
 var setupImageForCrossOriginTest = function(img, imgUrl, localUrl, callback) {
   window.addEventListener("load", function() {
     if (typeof(img) == "string")
@@ -3193,10 +3200,7 @@ var setupImageForCrossOriginTest = function(img, imgUrl, localUrl, callback) {
     img.addEventListener("load", callback, false);
     img.addEventListener("error", callback, false);
 
-    if (runningOnLocalhost())
-      img.src = getLocalCrossOrigin() + getRelativePath(localUrl);
-    else
-      img.src = getUrlOptions().imgUrl || imgUrl;
+    img.src = chooseUrlForCrossOriginImage(imgUrl, localUrl);
   }, false);
 }
 
@@ -3334,6 +3338,14 @@ function createImageFromPixel(buf, width, height) {
     return img;
 }
 
+async function awaitTimeout(ms) {
+  await new Promise(res => {
+    setTimeout(() => {
+      res();
+    }, ms);
+  });
+}
+
 var API = {
   addShaderSource: addShaderSource,
   addShaderSources: addShaderSources,
@@ -3460,7 +3472,9 @@ var API = {
   runningOnLocalhost: runningOnLocalhost,
   getLocalCrossOrigin: getLocalCrossOrigin,
   getRelativePath: getRelativePath,
+  chooseUrlForCrossOriginImage: chooseUrlForCrossOriginImage,
   setupImageForCrossOriginTest: setupImageForCrossOriginTest,
+  awaitTimeout: awaitTimeout,
 
   none: false
 };
