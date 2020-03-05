@@ -19,6 +19,14 @@
   <overview>
     <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_draw_buffers_indexed.txt"
              name="EXT_draw_buffers_indexed">
+             <addendum>Core WebGL <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#6.15">blend factors limitation</a>
+              is also applied to the new entrypoints.
+             </addendum>
+             <addendum>
+              When <code>CONSTANT_COLOR</code> or <code>ONE_MINUS_CONSTANT_COLOR</code> are used as blend color factors of an active draw buffer and
+              <code>CONSTANT_ALPHA</code> or <code>ONE_MINUS_CONSTANT_ALPHA</code> are used as blend color factors of another active draw buffer,
+              any draw call will generate an <code>INVALID_OPERATION</code> error.
+             </addendum>
     </mirrors>
 
     <features>
