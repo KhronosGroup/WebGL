@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="EXT_draw_buffers_indexed/">
-  <name>EXT_draw_buffers_indexed</name>
+<draft href="OES_draw_buffers_indexed/">
+  <name>OES_draw_buffers_indexed</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
   working group</a> (public_webgl 'at' khronos.org) </contact>
@@ -17,8 +17,8 @@
   </depends>
 
   <overview>
-    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_draw_buffers_indexed.txt"
-             name="EXT_draw_buffers_indexed">
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/OES/OES_draw_buffers_indexed.txt"
+             name="OES_draw_buffers_indexed">
              <addendum>Core WebGL <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#6.15">blend factors limitation</a>
               is also applied to the new entrypoints.
              </addendum>
@@ -37,32 +37,32 @@
 
   <idl xml:space="preserve">
 [NoInterfaceObject]
-interface EXT_draw_buffers_indexed {
-  void enableiEXT(GLenum target, GLuint index);
+interface OES_draw_buffers_indexed {
+  void enableiOES(GLenum target, GLuint index);
 
-  void disableiEXT(GLenum target, GLuint index);
+  void disableiOES(GLenum target, GLuint index);
 
-  void blendEquationiEXT(GLuint buf, GLenum mode);
+  void blendEquationiOES(GLuint buf, GLenum mode);
 
-  void blendEquationSeparateiEXT(GLuint buf,
+  void blendEquationSeparateiOES(GLuint buf,
                                  GLenum modeRGB, GLenum modeAlpha);
 
-  void blendFunciEXT(GLuint buf,
+  void blendFunciOES(GLuint buf,
                      GLenum src, GLenum dst);
 
-  void blendFuncSeparateiEXT(GLuint buf,
+  void blendFuncSeparateiOES(GLuint buf,
                              GLenum srcRGB, GLenum dstRGB,
                              GLenum srcAlpha, GLenum dstAlpha);
 
-  void colorMaskiEXT(GLuint buf,
+  void colorMaskiOES(GLuint buf,
                      GLboolean r, GLboolean g, GLboolean b, GLboolean a);
 
-  [WebGLHandlesContextLoss] GLboolean isEnablediEXT(GLenum target, GLuint index);
+  [WebGLHandlesContextLoss] GLboolean isEnablediOES(GLenum target, GLuint index);
 };
   </idl>
 
   <newfun>
-    <function name="enableiEXT" type="void">
+    <function name="enableiOES" type="void">
       <param name="target" type="GLenum"/>
       <param name="index" type="GLuint"/>
       <p>
@@ -79,7 +79,7 @@ interface EXT_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="disableiEXT" type="void">
+    <function name="disableiOES" type="void">
       <param name="target" type="GLenum"/>
       <param name="index" type="GLuint"/>
       <p>
@@ -96,7 +96,7 @@ interface EXT_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="blendEquationiEXT" type="void">
+    <function name="blendEquationiOES" type="void">
       <param name="buf" type="GLuint"/>
       <param name="mode" type="GLenum"/>
       <p>
@@ -110,7 +110,7 @@ interface EXT_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="blendEquationSeparateiEXT" type="void">
+    <function name="blendEquationSeparateiOES" type="void">
       <param name="buf" type="GLuint"/>
       <param name="modeRGB" type="GLenum"/>
       <param name="modeAlpha" type="GLenum"/>
@@ -126,7 +126,7 @@ interface EXT_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="blendFunciEXT" type="void">
+    <function name="blendFunciOES" type="void">
       <param name="buf" type="GLuint"/>
       <param name="src" type="GLenum"/>
       <param name="dst" type="GLenum"/>
@@ -142,7 +142,7 @@ interface EXT_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="blendFuncSeparateiEXT" type="void">
+    <function name="blendFuncSeparateiOES" type="void">
       <param name="buf" type="GLuint"/>
       <param name="srcRGB" type="GLenum"/>
       <param name="dstRGB" type="GLenum"/>
@@ -161,7 +161,7 @@ interface EXT_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="colorMaskiEXT" type="void">
+    <function name="colorMaskiOES" type="void">
       <param name="buf" type="GLuint"/>
       <param name="r" type="GLboolean"/>
       <param name="g" type="GLboolean"/>
@@ -179,7 +179,7 @@ interface EXT_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="isEnablediEXT" type="GLboolean">
+    <function name="isEnablediOES" type="GLboolean">
       <param name="target" type="GLenum"/>
       <param name="index" type="GLuint"/>
       <p>
@@ -234,6 +234,9 @@ interface EXT_draw_buffers_indexed {
     </revision>
     <revision date="2019/09/25">
       <change>Promoted to Draft.</change>
+    </revision>
+    <revision date="2020/03/05">
+      <change>Added WebGL-specific limitations, renamed to <code>OES_draw_buffers_indexed</code>.</change>
     </revision>
   </history>
 </draft>
