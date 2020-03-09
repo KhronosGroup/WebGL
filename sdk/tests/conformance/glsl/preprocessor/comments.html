@@ -88,6 +88,26 @@ GLSLConformanceTester.runTests([{
     linkSuccess: true,
     passMsg: 'Complete line-comment-begin at EOF'
   }, {
+    vShaderSource: `//
+void main() {}`,
+    vShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: `Minimal line comment: "//,\\n"`
+  }, {
+    vShaderSource: `//\
+
+void main() {}`,
+    vShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: `Minimal continued line comment: "//,\\,\\n,\\n"`
+  }, {
+    vShaderSource: `//\
+a
+void main() {}`,
+    vShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: `"//,\\,\\n,a,\\n"`
+  }, {
     vShaderSource: `void main() {} // The quick brown fox jumped\\over the lazy dog`,
     vShaderSuccess: true,
     linkSuccess: true,
