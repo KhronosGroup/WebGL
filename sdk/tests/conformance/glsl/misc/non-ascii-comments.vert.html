@@ -18,20 +18,37 @@ found in the LICENSE.txt file.
 <body>
 <div id="description"></div>
 <div id="console"></div>
-<script id="vertexShader" type="text/something-not-javascript">
-// Non ascii comments in source should succeed
-// ‚±‚ê‚Í‚`‚r‚b‚h‚h‚Å‚Í‚È‚¢‚Å‚·B
-// ‚s‚ˆ‚‰‚“@‚h‚“@‚m‚‚”@‚`‚r‚b‚h‚h
-/*
- * ‚s‚ˆ‚‰‚“@‚h‚“@‚m‚‚”@‚`‚r‚b‚h‚h
- */
-#define TEST 1 // ‚s‚ˆ‚‰‚“@‚h‚“@‚m‚‚”@‚`‚r‚b‚h‚h
-void main() {
-  gl_Position = vec4(1,1,1,1); // ‚s‚ˆ‚‰‚“@‚h‚“@‚m‚‚”@‚`‚r‚b‚h‚h
-} // ‚s‚ˆ‚‰‚“@‚h‚“@‚m‚‚”@‚`‚r‚b‚h‚h
+<script id="vertexShader" type="text/plain">
+Loading...
 </script>
 <script>
 "use strict";
+
+// Via `[].map.call(str, x => x.codePointAt(0));`
+let a = [8218,177,8218,234,8218,205,8218,96,8218,114,8218,98,8218,104,8218,104,8218,197,8218,205,
+         8218,200,8218,162,8218,197,8218,183,129,66];
+let b = [8218,115,8218,710,8218,8240,8218,8220,129,64,8218,104,8218,8220,129,64,8218,109,8218,143,
+         8218,8221,129,64,8218,96,8218,114,8218,98,8218,104,8218,104];
+a = String.fromCodePoint(...a);
+b = String.fromCodePoint(...b);
+
+// -
+
+vertexShader.textContent = `
+// Non ascii comments in source should succeed
+// ${a}
+// ${b}
+/*
+ * ${b}
+ */
+#define TEST 1 // ${b}
+void main() {
+  gl_Position = vec4(1,1,1,1); // ${b}
+} // ${b}
+`;
+
+// -
+
 GLSLConformanceTester.runTest();
 var successfullyParsed = true;
 </script>
