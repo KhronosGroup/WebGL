@@ -340,11 +340,15 @@ function runTest(canvas, antialias) {
     const validDatas = [
       `new Uint8Array(4)`,
       `new Uint8Array(new ArrayBuffer(4))`,
-      `new Uint8Array(new SharedArrayBuffer(4))`,
       `new Uint8ClampedArray(4)`,
       `new Uint8ClampedArray(new ArrayBuffer(4))`,
-      `new Uint8ClampedArray(new SharedArrayBuffer(4))`,
     ];
+    if (SharedArrayBuffer) {
+      validDatas.push(
+        `new Uint8Array(new SharedArrayBuffer(4))`,
+        `new Uint8ClampedArray(new SharedArrayBuffer(4))`
+      );
+    }
     for (const x of validDatas) {
       shouldNotThrow(`gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, ${x});`);
     }

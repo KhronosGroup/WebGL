@@ -115,12 +115,16 @@ for (const [A, B, name] of dims) {
   gl[name](loc, false, matMore);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "should fail with more than 1 array size for " + name);
 
-  const uploadTypes = [
+  const validDatas = [
     `new Float32Array(${mat.length})`,
     `new Float32Array(new ArrayBuffer(4*${mat.length}))`,
-    `new Float32Array(new SharedArrayBuffer(4*${mat.length}))`,
   ];
-  for (const x of uploadTypes) {
+  if (SharedArrayBuffer) {
+    validDatas.push(
+      `new Float32Array(new SharedArrayBuffer(4*${mat.length}))`
+    );
+  }
+  for (const x of validDatas) {
     shouldNotThrow(`gl.${name}(loc, false, ${x});`);
   }
 

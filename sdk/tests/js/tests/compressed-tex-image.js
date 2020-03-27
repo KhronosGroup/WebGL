@@ -70,7 +70,6 @@ if (!gl) {
     testPassed(`Optional ext ${extName} is supported.`);
 
     const data = new Uint8Array(blockByteSize);
-    const sharedBuffer = new SharedArrayBuffer(blockByteSize);
 
     const views = [
       data,
@@ -81,10 +80,14 @@ if (!gl) {
       new Int32Array(data.buffer),
       new Float32Array(data.buffer),
       new DataView(data.buffer),
-
-      new Uint8Array(sharedBuffer),
-      new DataView(sharedBuffer),
     ];
+    if (SharedArrayBuffer) {
+      const sharedBuffer = new SharedArrayBuffer(blockByteSize);
+      views.push(
+        new Uint8Array(sharedBuffer),
+        new DataView(sharedBuffer)
+      );
+    }
 
     for (const view of views) {
       window.g_view = view;

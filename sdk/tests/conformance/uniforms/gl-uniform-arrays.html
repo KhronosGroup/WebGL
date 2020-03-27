@@ -670,12 +670,16 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
                     "should fail with non-multiple array size with gl." + typeInfo.setter);
   }
 
-  const uploadTypes = [
+  const validDatas = [
     `new Float32Array(${srcValues.length})`,
     `new Float32Array(new ArrayBuffer(4*${srcValues.length}))`,
-    `new Float32Array(new SharedArrayBuffer(4*${srcValues.length}))`,
   ];
-  for (const x of uploadTypes) {
+  if (SharedArrayBuffer) {
+    validDatas.push(
+      `new Float32Array(new SharedArrayBuffer(4*${srcValues.length}))`
+    );
+  }
+  for (const x of validDatas) {
     shouldNotThrow(`gl.${typeInfo.setter}(loc, ${x});`);
   }
 

@@ -279,11 +279,15 @@ gl.bindTexture(gl.TEXTURE_2D, tex);
 const validDatas = [
   `new Uint8Array(4)`,
   `new Uint8Array(new ArrayBuffer(4))`,
-  `new Uint8Array(new SharedArrayBuffer(4))`,
   `new Uint8ClampedArray(4)`,
   `new Uint8ClampedArray(new ArrayBuffer(4))`,
-  `new Uint8ClampedArray(new SharedArrayBuffer(4))`,
 ];
+if (SharedArrayBuffer) {
+  validDatas.push(
+    `new Uint8Array(new SharedArrayBuffer(4))`,
+    `new Uint8ClampedArray(new SharedArrayBuffer(4))`
+  );
+}
 for (const x of validDatas) {
   shouldNotThrow(`gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1,1, 0, gl.RGBA, gl.UNSIGNED_BYTE, ${x});`);
   shouldNotThrow(`gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,1, gl.RGBA, gl.UNSIGNED_BYTE, ${x});`);
