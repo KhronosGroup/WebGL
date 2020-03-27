@@ -2162,7 +2162,7 @@ var loadShaderFromScript = function(
   if (!shaderScript) {
     throw("*** Error: unknown script element " + scriptId);
   }
-  shaderSource = shaderScript.text;
+  shaderSource = shaderScript.text.trim();
 
   if (!opt_shaderType) {
     if (shaderScript.type == "x-shader/x-vertex") {

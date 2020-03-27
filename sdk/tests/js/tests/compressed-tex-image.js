@@ -70,6 +70,7 @@ if (!gl) {
     testPassed(`Optional ext ${extName} is supported.`);
 
     const data = new Uint8Array(blockByteSize);
+    const sharedBuffer = new SharedArrayBuffer(blockByteSize);
 
     const views = [
       data,
@@ -80,11 +81,14 @@ if (!gl) {
       new Int32Array(data.buffer),
       new Float32Array(data.buffer),
       new DataView(data.buffer),
+
+      new Uint8Array(sharedBuffer),
+      new DataView(sharedBuffer),
     ];
 
     for (const view of views) {
       window.g_view = view;
-      debug(`\nfrom ${view.constructor.name}`);
+      debug(`\nfrom ${view.constructor.name} of ${view.buffer.constructor.name}`);
       wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
           `gl.compressedTexImage2D(gl.TEXTURE_2D, 0, ext.${enumName}, ${blockSize},${blockSize}, 0, g_view)`);
 
