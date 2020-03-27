@@ -73,6 +73,7 @@ if (!gl) {
 
     const views = [
       data,
+      new Uint8ClampedArray(data.buffer),
       new Int8Array(data.buffer),
       new Uint16Array(data.buffer),
       new Int16Array(data.buffer),
@@ -85,6 +86,7 @@ if (!gl) {
       const sharedBuffer = new SharedArrayBuffer(blockByteSize);
       views.push(
         new Uint8Array(sharedBuffer),
+        new Uint8ClampedArray(sharedBuffer),
         new DataView(sharedBuffer)
       );
     }
