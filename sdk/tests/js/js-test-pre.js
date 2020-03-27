@@ -634,6 +634,17 @@ function shouldThrow(_a, _e)
     testFailed(_a + " should throw " + (typeof _e == "undefined" ? "an exception" : _ev) + ". Was " + _av + ".");
 }
 
+function shouldNotThrow(evalStr, desc) {
+  desc = desc || `\`${evalStr}\``;
+  try {
+    eval(evalStr);
+    testPassed(`${desc} should not throw.`);
+  } catch (e) {
+    testFailed(`${desc} should not throw, but threw exception ${e}.`);
+  }
+}
+
+
 function shouldBeType(_a, _type) {
     var exception;
     var _av;

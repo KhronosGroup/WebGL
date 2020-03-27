@@ -73,6 +73,7 @@ if (!gl) {
 
     const views = [
       data,
+      new Uint8ClampedArray(data.buffer),
       new Int8Array(data.buffer),
       new Uint16Array(data.buffer),
       new Int16Array(data.buffer),
@@ -81,10 +82,18 @@ if (!gl) {
       new Float32Array(data.buffer),
       new DataView(data.buffer),
     ];
+    if (window.SharedArrayBuffer) {
+      const sharedBuffer = new SharedArrayBuffer(blockByteSize);
+      views.push(
+        new Uint8Array(sharedBuffer),
+        new Uint8ClampedArray(sharedBuffer),
+        new DataView(sharedBuffer)
+      );
+    }
 
     for (const view of views) {
       window.g_view = view;
-      debug(`\nfrom ${view.constructor.name}`);
+      debug(`\nfrom ${view.constructor.name} of ${view.buffer.constructor.name}`);
       wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
           `gl.compressedTexImage2D(gl.TEXTURE_2D, 0, ext.${enumName}, ${blockSize},${blockSize}, 0, g_view)`);
 
