@@ -81,7 +81,7 @@ if (!gl) {
       new Float32Array(data.buffer),
       new DataView(data.buffer),
     ];
-    if (SharedArrayBuffer) {
+    if (window.SharedArrayBuffer) {
       const sharedBuffer = new SharedArrayBuffer(blockByteSize);
       views.push(
         new Uint8Array(sharedBuffer),

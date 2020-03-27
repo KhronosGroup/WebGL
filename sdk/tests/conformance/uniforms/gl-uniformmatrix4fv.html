@@ -119,7 +119,7 @@ for (const [A, B, name] of dims) {
     `new Float32Array(${mat.length})`,
     `new Float32Array(new ArrayBuffer(4*${mat.length}))`,
   ];
-  if (SharedArrayBuffer) {
+  if (window.SharedArrayBuffer) {
     validDatas.push(
       `new Float32Array(new SharedArrayBuffer(4*${mat.length}))`
     );

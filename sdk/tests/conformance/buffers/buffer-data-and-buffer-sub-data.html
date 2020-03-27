@@ -101,7 +101,7 @@ function bufferDataSizesTest() {
         { parameter: { mystring: "WebGL Rocks!" }, expectedBufferSize: 0 },
     ];
 
-    if (SharedArrayBuffer) {
+    if (window.SharedArrayBuffer) {
         bufferDataParams.push(
             { parameter: new SharedArrayBuffer(3), expectedBufferSize: 3 },
             { parameter: new Uint8Array(new SharedArrayBuffer(6)), expectedBufferSize: 6 },
@@ -164,7 +164,7 @@ function bufferSubDataTest() {
     shouldThrow("gl.bufferSubData(gl.ARRAY_BUFFER, 10, null)");
     shouldThrow("gl.bufferSubData(gl.ARRAY_BUFFER, 10, undefined)");
 
-    if (SharedArrayBuffer) {
+    if (window.SharedArrayBuffer) {
         const validDatas = [
             'new SharedArrayBuffer(3)',
             'new Uint8Array(new SharedArrayBuffer(3))',

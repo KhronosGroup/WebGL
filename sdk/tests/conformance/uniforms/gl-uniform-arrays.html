@@ -674,7 +674,7 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
     `new Float32Array(${srcValues.length})`,
     `new Float32Array(new ArrayBuffer(4*${srcValues.length}))`,
   ];
-  if (SharedArrayBuffer) {
+  if (window.SharedArrayBuffer) {
     validDatas.push(
       `new Float32Array(new SharedArrayBuffer(4*${srcValues.length}))`
     );

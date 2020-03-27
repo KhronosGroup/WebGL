@@ -343,7 +343,7 @@ function runTest(canvas, antialias) {
       `new Uint8ClampedArray(4)`,
       `new Uint8ClampedArray(new ArrayBuffer(4))`,
     ];
-    if (SharedArrayBuffer) {
+    if (window.SharedArrayBuffer) {
       validDatas.push(
         `new Uint8Array(new SharedArrayBuffer(4))`,
         `new Uint8ClampedArray(new SharedArrayBuffer(4))`
