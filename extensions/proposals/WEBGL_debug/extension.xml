@@ -112,7 +112,7 @@
   </overview>
 
   <idl xml:space="preserve"><![CDATA[
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_debug : EventTarget {
   const GLenum MAX_DEBUG_MESSAGE_LENGTH_KHR = 0x9143;
   const GLenum MAX_DEBUG_GROUP_STACK_DEPTH_KHR = 0x826C;
@@ -155,7 +155,7 @@ interface WEBGL_debug : EventTarget {
   DOMString getObjectLabelKHR(WebGLObject? object);
 }; // interface WEBGL_debug
 
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WebGLDebugMessage : Event {
   readonly attribute GLenum source;
   readonly attribute GLenum type;

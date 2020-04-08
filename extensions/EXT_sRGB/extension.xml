@@ -32,7 +32,7 @@
   </overview>
 
   <idl xml:space="preserve">
-    [NoInterfaceObject]
+    [LegacyNoInterfaceObject]
     interface EXT_sRGB {
       const GLenum SRGB_EXT                                     = 0x8C40;
       const GLenum SRGB_ALPHA_EXT                               = 0x8C42;

@@ -72,7 +72,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface EXT_color_buffer_float {
 }; // interface EXT_color_buffer_float
 </idl>

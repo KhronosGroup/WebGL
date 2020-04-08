@@ -317,7 +317,7 @@ var ctx2 = canvas2.getContext("webgl", {
     </ul>
   </issues>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_shared_resources {
      const GLenum READ_ONLY  = 0x0001;
      const GLenum EXCLUSIVE  = 0x0004;
@@ -338,7 +338,7 @@ interface WEBGL_shared_resources {
 
 callback AcquireSharedResourcesCallback = void ();
 
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WebGLShareGroup {
 };
 

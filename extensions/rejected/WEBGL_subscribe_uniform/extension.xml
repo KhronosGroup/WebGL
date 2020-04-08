@@ -44,7 +44,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_subscribe_uniform {
   const GLenum SUBSCRIBED_VALUES_BUFFER = 0x924B;
 

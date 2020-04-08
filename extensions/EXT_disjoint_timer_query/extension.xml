@@ -48,11 +48,11 @@
   <idl xml:space="preserve">
 typedef unsigned long long GLuint64EXT;
 
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WebGLTimerQueryEXT : WebGLObject {
 };
 
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface EXT_disjoint_timer_query {
   const GLenum QUERY_COUNTER_BITS_EXT      = 0x8864;
   const GLenum CURRENT_QUERY_EXT           = 0x8865;

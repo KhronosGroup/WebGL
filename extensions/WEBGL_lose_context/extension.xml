@@ -29,7 +29,7 @@
     </p>
   </overview>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_lose_context {
       void loseContext();
       void restoreContext();
