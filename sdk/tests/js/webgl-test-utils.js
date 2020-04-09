@@ -1611,6 +1611,17 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
 };
 
 /**
+ * Indicates whether the given context is WebGL 2.0 or greater.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @return {boolean} True if the given context is WebGL 2.0 or greater.
+ */
+var isWebGL2 = function(gl) {
+  // Duck typing is used so that the conformance suite can be run
+  // against libraries emulating WebGL 1.0 on top of WebGL 2.0.
+  return !!gl.drawArraysInstanced;
+};
+
+/**
  * Defines the exception type for a GL error.
  * @constructor
  * @param {string} message The error message.
@@ -3399,6 +3410,7 @@ var API = {
   glTypeToTypedArrayType: glTypeToTypedArrayType,
   hasAttributeCaseInsensitive: hasAttributeCaseInsensitive,
   insertImage: insertImage,
+  isWebGL2: isWebGL2,
   linkProgram: linkProgram,
   loadImageAsync: loadImageAsync,
   loadImagesAsync: loadImagesAsync,
