@@ -2543,9 +2543,15 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
-            For any pixel lying outside the frame buffer, all channels of the associated texel are
-            initialized to 0; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
-            Framebuffer</a>. <br><br>
+            This function behaves as if <cody>texImage2D</cody> were called with null data, followed
+            by <code>copyTexSubImage2D</code>.
+            As in <code>copyTexSubImage2D</code>, for any source pixels lying outside the
+            framebuffer, the corresponding destination texels are left untouched, and so they retain
+            their zero-initialized contents as if <cody>texImage2D</cody> was called with null data.
+            This has the combined effect that, for source pixels lying outside the
+            framebuffer, corresponding destination pixels will have all channels of the associated
+            texels are initialized to 0;
+            see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a>. <br><br>
 
             If this function attempts to read from a complete framebuffer with a missing attachment,
             an <code>INVALID_OPERATION</code> error is generated
