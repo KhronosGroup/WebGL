@@ -131,13 +131,15 @@ function imageLoaded(img) {
 }
 
 (async function() {
-    const img = document.getElementById('img');
-    try {
-        await wtu.awaitOrTimeout(wtu.loadCrossOriginImage(img, defaultImgUrl, localImgUrl), 1000);
-    } catch (e) {
-        console.log(`Image setup failed (${e}), running tests anyway.`);
-    }
-    imageLoaded(img);
+  const img = document.getElementById('img');
+  try {
+    await wtu.awaitOrTimeout(wtu.loadCrossOriginImage(img, defaultImgUrl, localImgUrl), 1000);
+  } catch (e) {
+    testFailed(`Image setup failed (${e}).`);
+    finishTest();
+    return;
+  }
+  imageLoaded(img);
 })();
 </script>
 </body>
