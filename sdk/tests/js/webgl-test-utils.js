@@ -3194,25 +3194,22 @@ var getRelativePath = function(path) {
   return relparts.join("/");
 }
 
-function chooseUrlForCrossOriginImage(imgUrl, localUrl) {
-    if (runningOnLocalhost())
-      return getLocalCrossOrigin() + getRelativePath(localUrl);
+async function loadCrossOriginImage(img, webUrl, localUrl) {
+  img.src = getUrlOptions().imgUrl || webUrl;
+  try {
+    console.log('[loadCrossOriginImage]', 'trying', img.src);
+    await img.decode();
+    return;
+  } catch {}
 
-    return img.src = getUrlOptions().imgUrl || imgUrl;
-}
+  if (runningOnLocalhost()) {
+    img.src = getLocalCrossOrigin() + getRelativePath(localUrl);
+    console.log('[loadCrossOriginImage]', '  trying', img.src);
+    await img.decode();
+    return;
+  }
 
-var setupImageForCrossOriginTest = function(img, imgUrl, localUrl, callback) {
-  window.addEventListener("load", function() {
-    if (typeof(img) == "string")
-      img = document.querySelector(img);
-    if (!img)
-      img = new Image();
-
-    img.addEventListener("load", callback, false);
-    img.addEventListener("error", callback, false);
-
-    img.src = chooseUrlForCrossOriginImage(imgUrl, localUrl);
-  }, false);
+  throw 'createCrossOriginImage failed';
 }
 
 /**
@@ -3357,6 +3354,15 @@ async function awaitTimeout(ms) {
   });
 }
 
+async function awaitOrTimeout(promise, timeout_ms) {
+  async function throwOnTimeout(ms) {
+    await awaitTimeout(ms);
+    throw 'timeout';
+  }
+
+  await Promise.race([promise, throwOnTimeout(timeout_ms)]);
+}
+
 var API = {
   addShaderSource: addShaderSource,
   addShaderSources: addShaderSources,
@@ -3412,6 +3418,7 @@ var API = {
   insertImage: insertImage,
   isWebGL2: isWebGL2,
   linkProgram: linkProgram,
+  loadCrossOriginImage: loadCrossOriginImage,
   loadImageAsync: loadImageAsync,
   loadImagesAsync: loadImagesAsync,
   loadProgram: loadProgram,
@@ -3484,8 +3491,7 @@ var API = {
   runningOnLocalhost: runningOnLocalhost,
   getLocalCrossOrigin: getLocalCrossOrigin,
   getRelativePath: getRelativePath,
-  chooseUrlForCrossOriginImage: chooseUrlForCrossOriginImage,
-  setupImageForCrossOriginTest: setupImageForCrossOriginTest,
+  awaitOrTimeout: awaitOrTimeout,
   awaitTimeout: awaitTimeout,
 
   none: false
