@@ -29,8 +29,7 @@ typedef (Float32Array or sequence<GLfloat>) Float32List;
 typedef (Int32Array or sequence<GLint>) Int32List;
 typedef (Uint32Array or sequence<GLuint>) Uint32List;
 
-[NoInterfaceObject]
-interface WebGL2RenderingContextBase
+interface mixin WebGL2RenderingContextBase
 {
   const GLenum READ_BUFFER                                   = 0x0C02;
   const GLenum UNPACK_ROW_LENGTH                             = 0x0CF2;
@@ -574,11 +573,9 @@ interface WebGL2RenderingContextBase
   [WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray);
   void bindVertexArray(WebGLVertexArrayObject? array);
 };
-WebGL2RenderingContextBase implements WebGLRenderingContextBase;
 
 interface WebGL2RenderingContext
 {
 };
-WebGL2RenderingContext implements WebGL2RenderingContextBase;
-
-
+WebGL2RenderingContext includes WebGLRenderingContextBase;
+WebGL2RenderingContext includes WebGL2RenderingContextBase;

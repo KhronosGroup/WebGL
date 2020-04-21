@@ -29,7 +29,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface OES_texture_half_float_linear { };</idl>
 
   <history>

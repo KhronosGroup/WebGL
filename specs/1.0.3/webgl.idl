@@ -70,8 +70,7 @@ interface WebGLShaderPrecisionFormat {
     readonly attribute GLint precision;
 };
 
-[NoInterfaceObject]
-interface WebGLRenderingContextBase
+interface mixin WebGLRenderingContextBase
 {
 
     /* ClearBufferMask */
@@ -725,7 +724,7 @@ interface WebGLRenderingContextBase
 interface WebGLRenderingContext
 {
 };
-WebGLRenderingContext implements WebGLRenderingContextBase;
+WebGLRenderingContext includes WebGLRenderingContextBase;
 
 
 [Constructor(DOMString type, optional WebGLContextEventInit eventInit)]

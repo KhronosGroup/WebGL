@@ -85,7 +85,7 @@
     </p>
   </overview>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_debug_shader_precision {
 };
   </idl>

@@ -44,7 +44,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface OES_texture_float { }; </idl>
 
   <history>

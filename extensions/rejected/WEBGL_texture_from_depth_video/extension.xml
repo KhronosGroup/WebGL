@@ -41,7 +41,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_texture_from_depth_video {
 };
   </idl>

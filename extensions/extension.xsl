@@ -411,7 +411,7 @@
 <xsl:template match="interface" mode="newfun">
   <dt class="idl-code">
 	<xsl:if test="@noobject = 'true'">
-	  <xsl:text>[NoInterfaceObject]</xsl:text><br/>
+	  <xsl:text>[LegacyNoInterfaceObject]</xsl:text><br/>
 	</xsl:if>
     <xsl:text>interface </xsl:text>
     <em><xsl:value-of select="@name" /></em>

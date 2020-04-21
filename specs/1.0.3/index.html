@@ -1131,8 +1131,7 @@ for (var i = 0; i < numVertices; i++) {
     See <a href="#CONTEXT_LOST">the context lost event</a> for further details.
     </p>
     <pre class="idl">
-[NoInterfaceObject]
-interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
+interface mixin <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
 {
 
     /* ClearBufferMask */
@@ -1786,7 +1785,7 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
 interface <dfn id="WebGLRenderingContext">WebGLRenderingContext</dfn>
 {
 };
-WebGLRenderingContext implements WebGLRenderingContextBase;
+WebGLRenderingContext includes WebGLRenderingContextBase;
 </pre>
 
 <!-- ======================================================================================================= -->

@@ -92,7 +92,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_security_sensitive_resources {
   WebGLFramebuffer? createSecuritySensitiveFramebuffer();
   WebGLTexture? createSecuritySensitiveTexture();

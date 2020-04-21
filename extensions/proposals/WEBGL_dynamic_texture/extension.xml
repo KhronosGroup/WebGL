@@ -192,7 +192,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_dynamic_texture {
   typedef double WDTNanoTime;
 
@@ -501,7 +501,7 @@ WDTNanoTime ustnow();</pre></li></p>
       <p>The <code>WDTStreamFrameInfo</code> interface represents information
       about a frame acquired from a WDTStream.</p>
 
-      <pre class="idl" xml:space="preserve">[NoInterfaceObject] interface WDTStreamFrameInfo {
+      <pre class="idl" xml:space="preserve">[LegacyNoInterfaceObject] interface WDTStreamFrameInfo {
   readonly attribute double frameTime;
   readonly attribute WDTNanoTime presentTime;
 };</pre>
@@ -531,7 +531,7 @@ WDTNanoTime ustnow();</pre></li></p>
       for controlling an image stream being fed to a dynamic texture
       object.</p>
 
-      <pre class="idl" xml:space="preserve">[NoInterfaceObject] interface WDTStream {
+      <pre class="idl" xml:space="preserve">[LegacyNoInterfaceObject] interface WDTStream {
   typedef (HTMLCanvasElement or
            HTMLImageElement or
            HTMLVideoElement) StreamSource;
