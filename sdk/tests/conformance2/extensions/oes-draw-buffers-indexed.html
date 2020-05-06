@@ -216,21 +216,21 @@ function indexedBlendColorTest() {
     wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 255, 0]);
 
     debug("Testing new tokens for getIndexedParameterTest");
-    shouldBe('gl.getIndexedParameter(0, ext.BLEND_EQUATION_RGB)', 'gl.FUNC_ADD');
-    shouldBe('gl.getIndexedParameter(0, ext.BLEND_EQUATION_ALPHA)', 'gl.FUNC_SUBTRACT');
-    shouldBe('gl.getIndexedParameter(0, ext.BLEND_SRC_RGB)', 'gl.ONE');
-    shouldBe('gl.getIndexedParameter(0, ext.BLEND_DST_RGB)', 'gl.ONE');
-    shouldBe('gl.getIndexedParameter(0, ext.BLEND_SRC_ALPHA)', 'gl.ZERO');
-    shouldBe('gl.getIndexedParameter(0, ext.BLEND_DST_ALPHA)', 'gl.ZERO');
-    shouldBe('gl.getIndexedParameter(1, ext.BLEND_EQUATION_RGB)', 'gl.FUNC_ADD');
-    shouldBe('gl.getIndexedParameter(1, ext.BLEND_EQUATION_ALPHA)', 'gl.FUNC_SUBTRACT');
-    shouldBe('gl.getIndexedParameter(1, ext.BLEND_SRC_RGB)', 'gl.SRC_ALPHA');
-    shouldBe('gl.getIndexedParameter(1, ext.BLEND_DST_RGB)', 'gl.ONE_MINUS_SRC_ALPHA');
-    shouldBe('gl.getIndexedParameter(1, ext.BLEND_SRC_ALPHA)', 'gl.ZERO');
-    shouldBe('gl.getIndexedParameter(1, ext.BLEND_DST_ALPHA)', 'gl.ZERO');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_EQUATION_RGB, 0)', 'gl.FUNC_ADD');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_EQUATION_ALPHA, 0)', 'gl.FUNC_SUBTRACT');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_SRC_RGB, 0)', 'gl.ONE');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_DST_RGB, 0)', 'gl.ONE');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_SRC_ALPHA, 0)', 'gl.ZERO');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_DST_ALPHA, 0)', 'gl.ZERO');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_EQUATION_RGB, 1)', 'gl.FUNC_ADD');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_EQUATION_ALPHA, 1)', 'gl.FUNC_SUBTRACT');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_SRC_RGB, 1)', 'gl.SRC_ALPHA');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_DST_RGB, 1)', 'gl.ONE_MINUS_SRC_ALPHA');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_SRC_ALPHA, 1)', 'gl.ZERO');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_DST_ALPHA, 1)', 'gl.ZERO');
 
-    shouldBe('gl.getIndexedParameter(0, ext.COLOR_WRITEMASK)', '[false, false, false, false]');
-    shouldBe('gl.getIndexedParameter(1, ext.COLOR_WRITEMASK)', '[true, true, true, true]');
+    shouldBe('gl.getIndexedParameter(ext.COLOR_WRITEMASK, 0)', '[false, false, false, false]');
+    shouldBe('gl.getIndexedParameter(ext.COLOR_WRITEMASK, 1)', '[true, true, true, true]');
 }
 
 
