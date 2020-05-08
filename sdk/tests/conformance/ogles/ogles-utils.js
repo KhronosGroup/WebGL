@@ -1,24 +1,7 @@
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 OpenGLESTestRunner = (function(){
 var wtu = WebGLTestUtils;
@@ -497,10 +480,29 @@ function drawWithProgram(program, programInfo, test) {
     }
   }
 
+  // Filter out specified built-in uniforms
+  if (programInfo.builtin_uniforms) {
+    var num_builtins_found = 0;
+    var valid_values = programInfo.builtin_uniforms.valid_values;
+    for (var index in valid_values) {
+      var uniform = uniforms[valid_values[index]];
+      if (uniform) {
+        ++num_builtins_found;
+        uniform.builtin = true;
+      }
+    }
+
+    var min_required = programInfo.builtin_uniforms.min_required;
+    if (num_builtins_found < min_required) {
+      testFailed("only found " + num_builtins_found + " of " + min_required +
+                 " required built-in uniforms: " + valid_values);
+    }
+  }
+
   // Check for unset uniforms
   for (var name in uniforms) {
     var uniform = uniforms[name];
-    if (!uniform.used) {
+    if (!uniform.used && !uniform.builtin) {
       testFailed("uniform " + name + " never set");
     }
   }
@@ -563,13 +565,15 @@ function runProgram(programInfo, test, label, callback) {
       var result;
       if (shaders.length == 2) {
         debug("");
+        if (!quietMode()) {
         var consoleDiv = document.getElementById("console");
-        wtu.addShaderSources(
-            gl, consoleDiv, label + " vertex shader", shaders[0], source[0],
-            programInfo.vertexShader);
-        wtu.addShaderSources(
-            gl, consoleDiv, label + " fragment shader", shaders[1], source[1],
-            programInfo.fragmentShader);
+          wtu.addShaderSources(
+              gl, consoleDiv, label + " vertex shader", shaders[0], source[0],
+              programInfo.vertexShader);
+          wtu.addShaderSources(
+              gl, consoleDiv, label + " fragment shader", shaders[1], source[1],
+              programInfo.fragmentShader);
+        }
         var program = wtu.createProgram(gl, shaders[0], shaders[1]);
         result = drawWithProgram(program, programInfo, test);
       }
@@ -603,16 +607,18 @@ function compareResults(expected, actual) {
     diffImg = wtu.makeImageFromCanvas(canvas);
   }
 
-  var div = document.createElement("div");
-  div.className = "testimages";
-  wtu.insertImage(div, "reference", expected.img);
-  wtu.insertImage(div, "test", actual.img);
-  if (diffImg) {
-    wtu.insertImage(div, "diff", diffImg);
-  }
-  div.appendChild(document.createElement('br'));
+  if (!quietMode()) {
+    var div = document.createElement("div");
+    div.className = "testimages";
+    wtu.insertImage(div, "reference", expected.img);
+    wtu.insertImage(div, "test", actual.img);
+    if (diffImg) {
+      wtu.insertImage(div, "diff", diffImg);
+    }
+    div.appendChild(document.createElement('br'));
 
-  console.appendChild(div);
+    console.appendChild(div);
+  }
 
   if (!same) {
     testFailed("images are different");
@@ -620,7 +626,8 @@ function compareResults(expected, actual) {
     testPassed("images are the same");
   }
 
-  console.appendChild(document.createElement('hr'));
+  if (!quietMode())
+    console.appendChild(document.createElement('hr'));
 }
 
 function runCompareTest(test, callback) {
@@ -685,14 +692,16 @@ function runBuildTest(test, callback) {
   function attachAndLink() {
     ++count;
     if (count == 2) {
-      debug("");
-      var c = document.getElementById("console");
-      wtu.addShaderSource(
-          c, "vertex shader", source[0], test.testProgram.vertexShader);
-      debug("compile: " + (success[0] ? "success" : "fail"));
-      wtu.addShaderSource(
-          c, "fragment shader", source[1], test.testProgram.fragmentShader);
-      debug("compile: " + (success[1] ? "success" : "fail"));
+      if (!quietMode()) {
+        debug("");
+        var c = document.getElementById("console");
+        wtu.addShaderSource(
+            c, "vertex shader", source[0], test.testProgram.vertexShader);
+        debug("compile: " + (success[0] ? "success" : "fail"));
+        wtu.addShaderSource(
+            c, "fragment shader", source[1], test.testProgram.fragmentShader);
+        debug("compile: " + (success[1] ? "success" : "fail"));
+      }
       compileSuccess = (success[0] && success[1]);
       if (!test.compstat) {
         if (compileSuccess) {

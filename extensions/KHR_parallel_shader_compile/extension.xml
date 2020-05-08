@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:set sw=2 ts=4: -->
+<?xml-stylesheet href="../../extension.xsl" type="text/xsl"?>
+<extension href="KHR_parallel_shader_compile/">
+  <name>KHR_parallel_shader_compile</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Jie Chen, (jie.a.chen 'at' intel.com)</contributor>
+    <contributor>Geoff Lang, (geofflang 'at' google.com)</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>37</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/KHR/KHR_parallel_shader_compile.txt"
+             name="KHR_parallel_shader_compile">
+      <addendum><code>MAX_SHADER_COMPILER_THREADS_KHR</code> is not supported.</addendum>
+      <addendum><code>maxShaderCompilerThreadsKHR</code> is not supported.</addendum>
+    </mirrors>
+
+    <features>
+      <feature>
+        This extension enables a non-blocking poll operation, so that compile/link status
+        availability (<code>COMPLETION_STATUS_KHR</code>) can be queried without potentially incurring
+        stalls.
+      </feature>
+    </features>
+
+    <p>Notes: <ul style="list-style-type: circle">
+        <li>Implementations are free to optimize shader compilation and program linking via
+            concurrency with or without this extension, but without this extension, there is no way
+            for a user to check compile/link status without potentially blocking and stalling until
+            the result of compilation/linking is known.</li>
+    </ul></p>
+  </overview>
+
+  <idl xml:space="preserve">
+    [NoInterfaceObject]
+    interface KHR_parallel_shader_compile {
+      const GLenum COMPLETION_STATUS_KHR                = 0x91B1;
+    };
+  </idl>
+
+  <samplecode xml:space="preserve">
+    <pre>
+    var canvas = document.createElement("canvas");
+    var gl = canvas.getContext("webgl");
+    var ext = gl.getExtension('KHR_parallel_shader_compile');
+
+    var vSource = "attribute vec2 position; void main() { gl_Position = vec4(position, 0, 1); }";
+    var fSource = "precision mediump float; void main() { gl_FragColor = vec4(1,0,0,1); }";
+
+    var vShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vShader, vSource);
+    gl.compileShader(vShader);
+
+    var fShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fShader, fSource);
+    gl.compileShader(fShader);
+
+    var program = gl.createProgram();
+    gl.attachShader(program, vShader);
+    gl.attachShader(program, fShader);
+    gl.linkProgram(program);
+
+    function checkToUseProgram() {
+      if (gl.getProgramParameter(program, gl.LINK_STATUS) == true) {
+        gl.useProgram(program);
+      } else {
+        // error check.
+      }
+    }
+
+    if (ext) {
+      function checkCompletion() {
+        if (gl.getProgramParameter(program, ext.COMPLETION_STATUS_KHR) == true) {
+          checkToUseProgram();
+        } else {
+          requestAnimationFrame(checkCompletion);
+        }
+      }
+      requestAnimationFrame(checkCompletion);
+    } else {
+      checkToUseProgram();
+    }
+    </pre>
+
+    In general, best practice with or without the extension is:
+
+    <pre>// Assuming lists of `shaders` and `programs`:
+    for (const x of shaders)
+      gl.compileShader(x); // Never check compile status unless subsequent linking fails.
+    for (const x of programs)
+      gl.linkProgram(x);</pre>
+
+    With the extension, apps would be able to poll whether programs have
+    linked without janking, but these are likely to take the same total
+    wall time to link:
+
+    <pre>// Generator yielding a progress ratio [0.0, 1.0].
+    // Without the extension, this will jank and only check one program per generation.
+    function* linkingProgress(programs) {
+      const ext = gl.getExtension('KHR_parallel_shader_compile');
+      let todo = programs.slice();
+      while (todo.length) {
+        if (ext) {
+          todo = todo.filter(x => !gl.getProgramParameter(x, ext.COMPLETION_STATUS_KHR));
+        } else {
+          const x = todo.pop();
+          gl.getProgramParameter(x, gl.LINK_STATUS);
+        }
+        if (!todo.length)
+          return;
+        yield 1.0 - (todo.length / programs.length);
+      }
+    }</pre>
+  </samplecode>
+
+  <history>
+    <revision date="2018/08/07">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2018/09/14">
+      <change>Moved to draft status.</change>
+    </revision>
+    <revision date="2019/01/30">
+      <change>Max threads number removed.</change>
+    </revision>
+    <revision date="2019/04/23">
+      <change>Clarify that this extension is not required for background/concurrent
+              compilation/linking optimizations in implementations.</change>
+      <change>Provide expected best-practice example code.</change>
+    </revision>
+    <revision date="2019/05/10">
+      <change>Moved to community approved.</change>
+    </revision>
+  </history>
+</extension>

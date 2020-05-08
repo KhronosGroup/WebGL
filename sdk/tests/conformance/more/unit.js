@@ -3,26 +3,9 @@ Unit testing library for the OpenGL ES 2.0 HTML Canvas context
 */
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 
 /* -- plaform specific code -- */
@@ -70,6 +53,46 @@ var __testSuccess__ = true;
 var __testFailCount__ = 0;
 var __testLog__;
 var __backlog__ = [];
+
+var getUrlOptions = (function() {
+  var _urlOptionsParsed = false;
+  var _urlOptions = {};
+  return function() {
+    if (!_urlOptionsParsed) {
+      var s = window.location.href;
+      var q = s.indexOf("?");
+      var e = s.indexOf("#");
+      if (e < 0) {
+        e = s.length;
+      }
+      var query = s.substring(q + 1, e);
+      var pairs = query.split("&");
+      for (var ii = 0; ii < pairs.length; ++ii) {
+        var keyValue = pairs[ii].split("=");
+        var key = keyValue[0];
+        var value = decodeURIComponent(keyValue[1]);
+        _urlOptions[key] = value;
+      }
+      _urlOptionsParsed = true;
+    }
+
+    return _urlOptions;
+  }
+})();
+
+if (typeof quietMode == 'undefined') {
+  var quietMode = (function() {
+    var _quietModeChecked = false;
+    var _isQuiet = false;
+    return function() {
+      if (!_quietModeChecked) {
+        _isQuiet = (getUrlOptions().quiet == 1);
+        _quietModeChecked = true;
+      }
+      return _isQuiet;
+    }
+  })();
+}
 
 Object.toSource = function(a, seen){
   if (a == null) return "null";
@@ -240,26 +263,28 @@ function testFailed(assertName, name) {
 }
 
 function testPassed(assertName, name) {
-  var d = document.createElement('div');
-  var h = document.createElement('h3');
-  var d1 = document.createElement("span");
-  h.appendChild(d1);
-  d1.appendChild(document.createTextNode("PASS: "));
-  d1.style.color = "green";
-  h.appendChild(document.createTextNode(
-      name==null ? assertName : name + " (in " + assertName + ")"));
-  d.appendChild(h);
-  var args = []
-  for (var i=2; i<arguments.length; i++) {
-    var a = arguments[i];
-    var p = document.createElement('p');
-    p.style.whiteSpace = 'pre';
-    p.textContent = (a == null) ? "null" :
-                    (typeof a == 'boolean' || typeof a == 'string') ? a : Object.toSource(a);
-    args.push(p.textContent);
-    d.appendChild(p);
+  if (!quietMode()) {
+    var d = document.createElement('div');
+    var h = document.createElement('h3');
+    var d1 = document.createElement("span");
+    h.appendChild(d1);
+    d1.appendChild(document.createTextNode("PASS: "));
+    d1.style.color = "green";
+    h.appendChild(document.createTextNode(
+        name==null ? assertName : name + " (in " + assertName + ")"));
+    d.appendChild(h);
+    var args = []
+    for (var i=2; i<arguments.length; i++) {
+      var a = arguments[i];
+      var p = document.createElement('p');
+      p.style.whiteSpace = 'pre';
+      p.textContent = (a == null) ? "null" :
+                      (typeof a == 'boolean' || typeof a == 'string') ? a : Object.toSource(a);
+      args.push(p.textContent);
+      d.appendChild(p);
+    }
+    __testLog__.appendChild(d);
   }
-  __testLog__.appendChild(d);
   doTestNotify([assertName, name].concat(args).join("--"));
 }
 
@@ -388,6 +413,38 @@ function assertArrayEquals(name, v, p) {
     }
   }
   testPassed("assertArrayEquals", name, v, p);
+  return true;
+}
+
+function assertArrayEqualsWithEpsilon(name, v, p, l) {
+  if (l == null) { l = p; p = v; v = name; name = null; }
+  if (!v) {
+    testFailed("assertArrayEqualsWithEpsilon: first array undefined", name, v, p);
+    return false;
+  }
+  if (!p) {
+    testFailed("assertArrayEqualsWithEpsilon: second array undefined", name, v, p);
+    return false;
+  }
+  if (!l) {
+    testFailed("assertArrayEqualsWithEpsilon: limit array undefined", name, v, p);
+    return false;
+  }
+  if (v.length != p.length) {
+    testFailed("assertArrayEqualsWithEpsilon", name, v, p, l);
+    return false;
+  }
+  if (v.length != l.length) {
+    testFailed("assertArrayEqualsWithEpsilon", name, v, p, l);
+    return false;
+  }
+  for (var ii = 0; ii < v.length; ++ii) {
+    if (Math.abs(v[ii]- p[ii])>l[ii]) {
+      testFailed("assertArrayEqualsWithEpsilon", name, v, p, l);
+      return false;
+    }
+  }
+  testPassed("assertArrayEqualsWithEpsilon", name, v, p, l);
   return true;
 }
 

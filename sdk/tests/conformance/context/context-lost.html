@@ -3,34 +3,13 @@
 <head>
 <meta charset="utf-8">
 <!--
-
-/*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-*/
-
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 -->
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
 <script>
 "use strict";
 var wtu;
@@ -85,6 +64,9 @@ function init()
 
     canvas.addEventListener("webglcontextlost", testLostContext, false);
 
+    // We need to initialize |uniformLocation| before losing context.
+    // Otherwise gl.getUniform() when context is lost will throw.
+    uniformLocation = gl.getUniformLocation(program, "tex");
     loseContext();
 }
 
@@ -161,6 +143,15 @@ function testLostContext()
     shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_UNSUPPORTED");
     shouldBe("gl.getAttribLocation(program, 'u_modelViewProjMatrix')", "-1");
     shouldBe("gl.getVertexAttribOffset(0, gl.VERTEX_ATTRIB_ARRAY_POINTER)", "0");
+
+    // Attempt resize of lost context should succeed, still lost.
+    gl.canvas.width = gl.canvas.width; // Try to hit any same-size resize path.
+    shouldBeTrue("gl.isContextLost()");
+
+    const newSize = gl.canvas.width + 1;
+    gl.canvas.width = newSize;
+    shouldBe("gl.canvas.width", newSize);
+    shouldBeTrue("gl.isContextLost()");
 
     // Test the extension itself.
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "extension.loseContext()");
@@ -243,14 +234,14 @@ function testLostContext()
         "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, arrayBufferView)",
         "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData)",
         "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)",
-        "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas)",
+        "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d)",
         "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video)",
         "gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)",
         "gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)",
         "gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, arrayBufferView)",
         "gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, imageData)",
         "gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, image)",
-        "gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, canvas)",
+        "gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d)",
         "gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, video)",
         "gl.uniform1f(uniformLocation, 0)",
         "gl.uniform1fv(uniformLocation, float32array)",

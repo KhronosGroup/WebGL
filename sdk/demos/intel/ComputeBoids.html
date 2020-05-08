@@ -1,0 +1,328 @@
+<!--
+
+/*
+** Copyright (c) 2018 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ComputeBoids Example.</title>
+<script type="application/javascript" src="../common/webgl-utils.js"></script>
+</head>
+<body>
+<canvas id="example" width="640" height="480"></canvas>
+<script>
+"use strict";
+
+/**
+ * Try this example using chrome canary with below commands:
+ *   Chrome.exe --use-cmd-decoder=passthrough --enable-webgl2-compute-context
+ *              --use-angle=gl --use-gl=angle
+ *
+ * Notes: 1. This example will hang in recently chrome canary. See below bug:
+ *           https://bugs.chromium.org/p/angleproject/issues/detail?id=2810
+ *        2. It's not supported on d3d backend since SSBO for d3d is still
+ *           under development in ANGLE. See below bug:
+ *           https://bugs.chromium.org/p/angleproject/issues/detail?id=1951
+ */
+
+var g_canvas = document.getElementById("example");
+var gl = WebGLUtils.setupWebGL2Compute(g_canvas);
+
+var g_modelBuffer = null;
+var g_particleBuffers = [];
+var g_updateParams = null;
+
+var g_computeProgram = null;
+var g_renderProgram = null;
+
+var pingpong = 0;
+
+const kNumParticles = 1000;
+const kMin = -1;
+const kMax = 1;
+
+function getRandomArbitrary() {
+    return Math.random() * (kMax - kMin) + kMin;
+}
+
+function loadShader(type, shaderSrc) {
+    var shader = gl.createShader(type);
+    // Load the shader source
+    gl.shaderSource(shader, shaderSrc);
+    // Compile the shader
+    gl.compileShader(shader);
+    // Check the compile status
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS) &&
+        !gl.isContextLost()) {
+        var infoLog = gl.getShaderInfoLog(shader);
+        alert("Error compiling shader:\n" + infoLog);
+        gl.deleteShader(shader);
+        return null;
+    }
+    return shader;
+}
+
+function initBuffers() {
+    var model = new Float32Array([
+        -0.01,  -0.02,
+        0.01,  -0.02,
+        0.00, 0.02]);
+
+    g_modelBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, g_modelBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,
+                  model.byteLength,
+                  gl.STATIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, model);
+
+
+    var SimParams = {
+        'deltaT': 0.04,
+        'rule1Distance': 0.1,
+        'rule2Distance': 0.025,
+        'rule3Distance': 0.025,
+        'rule1Scale': 0.02,
+        'rule2Scale': 0.05,
+        'rule3Scale': 0.005,
+        'particleCount': kNumParticles,
+        };
+
+    // SimParams uniform block size is 32 bytes.
+    var data = new ArrayBuffer(32);
+    var view = new Float32Array(data, 0, 7);
+    view[0] = SimParams.deltaT;
+    view[1] = SimParams.rule1Distance;
+    view[2] = SimParams.rule2Distance;
+    view[3] = SimParams.rule3Distance;
+    view[4] = SimParams.rule1Scale;
+    view[5] = SimParams.rule2Scale;
+    view[6] = SimParams.rule3Scale;
+    view = new Int32Array(data, 7 * 4);
+    view[0] = SimParams.particleCount;
+    g_updateParams = gl.createBuffer();
+    gl.bindBuffer(gl.UNIFORM_BUFFER, g_updateParams);
+    gl.bufferData(gl.UNIFORM_BUFFER, new Uint8Array(data), gl.STATIC_DRAW);
+    gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, g_updateParams);
+
+    // particles structure size is 16 bytes
+    var initialParticles = new Float32Array(4 * kNumParticles);
+    for (var i = 0; i < 4 * kNumParticles;)
+    {
+        initialParticles[i] = getRandomArbitrary();
+        initialParticles[i+1] = getRandomArbitrary();
+        initialParticles[i+2] = getRandomArbitrary() * 0.1;
+        initialParticles[i+3] = getRandomArbitrary() * 0.1;
+        i += 4;
+    }
+
+    g_particleBuffers[0] = gl.createBuffer();
+    gl.bindBuffer(gl.SHADER_STORAGE_BUFFER, g_particleBuffers[0]);
+    gl.bufferData(gl.SHADER_STORAGE_BUFFER, initialParticles, gl.DYNAMIC_DRAW);
+    g_particleBuffers[1] = gl.createBuffer();
+    gl.bindBuffer(gl.SHADER_STORAGE_BUFFER, g_particleBuffers[1]);
+    gl.bufferData(gl.SHADER_STORAGE_BUFFER, initialParticles, gl.DYNAMIC_DRAW);
+}
+
+function initRender()
+{
+    gl.viewport(0, 0, g_canvas.width, g_canvas.height);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+    const vShaderStr = `#version 310 es
+        precision mediump float;
+        layout(location = 0) in vec2 a_particlePos;
+        layout(location = 1) in vec2 a_particleVel;
+        layout(location = 2) in vec2 a_pos;
+        void main() {
+            float angle = -atan(a_particleVel.x, a_particleVel.y);
+            vec2 pos = vec2(a_pos.x * cos(angle) - a_pos.y * sin(angle),
+                            a_pos.x * sin(angle) + a_pos.y * cos(angle));
+            gl_Position = vec4(pos + a_particlePos, 0, 1);
+        }
+        `
+    const fShaderStr = `#version 310 es
+        precision mediump float;
+        layout(location = 0) out vec4 fragColor;
+        void main() {
+            fragColor = vec4(1.0);
+        }
+        `
+
+    var vertexShader = loadShader(gl.VERTEX_SHADER, vShaderStr);
+    var fragmentShader = loadShader(gl.FRAGMENT_SHADER, fShaderStr);
+    g_renderProgram = gl.createProgram();
+    gl.attachShader(g_renderProgram, vertexShader);
+    gl.attachShader(g_renderProgram, fragmentShader);
+    // Bind a_particlePos to attribute 0
+    // Bind a_particleVel to attribute 1
+    // Bind a_pos to attribute 2
+    gl.bindAttribLocation(g_renderProgram, 0, "a_particlePos");
+    gl.bindAttribLocation(g_renderProgram, 1, "a_particleVel");
+    gl.bindAttribLocation(g_renderProgram, 2, "a_pos");
+    // Link the program
+    gl.linkProgram(g_renderProgram);
+
+    // Load the vertex data
+    gl.bindBuffer(gl.ARRAY_BUFFER, g_modelBuffer);
+    gl.enableVertexAttribArray(2);
+    gl.vertexAttribPointer(2, 2, gl.FLOAT, false, 0, 0);
+}
+
+function initSim() {
+    const csSource = `#version 310 es
+        layout(local_size_x=${kNumParticles}, local_size_y=1, local_size_z=1) in;
+        struct Particle {
+            vec2 pos;
+            vec2 vel;
+        };
+        layout(std140, binding = 0) uniform SimParams {
+            float deltaT;
+            float rule1Distance;
+            float rule2Distance;
+            float rule3Distance;
+            float rule1Scale;
+            float rule2Scale;
+            float rule3Scale;
+            uint particleCount;
+        } params;
+        layout(std140, binding = 1) buffer ParticlesA {
+            Particle particles[${kNumParticles}];
+        } particlesA;
+        layout(std140, binding = 2) buffer ParticlesB {
+            Particle particles[${kNumParticles}];
+        } particlesB;
+        void main() {
+            // https://github.com/austinEng/Project6-Vulkan-Flocking/blob/master/data/shaders/computeparticles/particle.comp
+            uint index = gl_GlobalInvocationID.x;
+            if (index >= params.particleCount) { return; }
+            vec2 vPos = particlesA.particles[index].pos;
+            vec2 vVel = particlesA.particles[index].vel;
+            vec2 cMass = vec2(0.0, 0.0);
+            vec2 cVel = vec2(0.0, 0.0);
+            vec2 colVel = vec2(0.0, 0.0);
+            int cMassCount = 0;
+            int cVelCount = 0;
+            vec2 pos;
+            vec2 vel;
+            for (uint i = 0u; i < params.particleCount; ++i) {
+                if (i == index) { continue; }
+                pos = particlesA.particles[i].pos.xy;
+                vel = particlesA.particles[i].vel.xy;
+                if (distance(pos, vPos) < params.rule1Distance) {
+                    cMass += pos;
+                    cMassCount++;
+                }
+                if (distance(pos, vPos) < params.rule2Distance) {
+                    colVel -= (pos - vPos);
+                }
+                if (distance(pos, vPos) < params.rule3Distance) {
+                    cVel += vel;
+                    cVelCount++;
+                }
+            }
+            if (cMassCount > 0) {
+                cMass = cMass / vec2(cMassCount) - vPos;
+            }
+            if (cVelCount > 0) {
+                cVel = cVel / vec2(cVelCount);
+            }
+            vVel += cMass * params.rule1Scale + colVel * params.rule2Scale + cVel * params.rule3Scale;
+            // clamp velocity for a more pleasing simulation.
+            vVel = normalize(vVel) * clamp(length(vVel), 0.0, 0.1);
+            // kinematic update
+            vPos += vVel * params.deltaT;
+            // Wrap around boundary
+            if (vPos.x < -1.0) vPos.x = 1.0;
+            if (vPos.x > 1.0) vPos.x = -1.0;
+            if (vPos.y < -1.0) vPos.y = 1.0;
+            if (vPos.y > 1.0) vPos.y = -1.0;
+            particlesB.particles[index].pos = vPos;
+            // Write back
+            particlesB.particles[index].vel = vVel;
+        }
+        `
+    var cs = loadShader(gl.COMPUTE_SHADER, csSource);
+
+    g_computeProgram = gl.createProgram();
+    gl.attachShader(g_computeProgram, cs);
+    gl.linkProgram(g_computeProgram);
+}
+
+function computePass(i)
+{
+    gl.useProgram(g_computeProgram);
+
+    gl.bindBufferBase(gl.SHADER_STORAGE_BUFFER, 1, g_particleBuffers[i]);
+    gl.bindBufferBase(gl.SHADER_STORAGE_BUFFER, 2, g_particleBuffers[(i + 1) % 2]);
+    gl.dispatchCompute(1, 1, 1);
+}
+
+function renderPass(i)
+{
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // Load the vertex data
+    gl.bindBuffer(gl.ARRAY_BUFFER, g_particleBuffers[(i + 1) % 2]);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, 16, 0);
+    gl.vertexAttribDivisor(0, 1);
+
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, 16, 8);
+    gl.vertexAttribDivisor(1, 1);
+
+    gl.useProgram(g_renderProgram);
+    gl.drawArraysInstanced(gl.TRIANGLES, 0, 3, kNumParticles);
+}
+
+function init() {
+    initBuffers();
+    initSim();
+    initRender();
+}
+
+function frame()
+{
+    computePass(pingpong);
+    renderPass(pingpong);
+    pingpong = (pingpong + 1) % 2;
+    requestAnimationFrame(frame);
+}
+
+function main() {
+    if (!gl)
+        return;
+    init();
+    requestAnimationFrame(frame);
+}
+
+main();
+</script>
+
+</body>
+</html>
+

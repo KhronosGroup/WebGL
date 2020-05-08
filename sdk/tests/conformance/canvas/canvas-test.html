@@ -1,28 +1,7 @@
 <!--
-
-/*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-*/
-
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 -->
 
 <!DOCTYPE html>
@@ -31,8 +10,8 @@
 <meta charset="utf-8">
 <title>WebGL Canvas Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -55,6 +34,7 @@ var ctx2d = canvas2d.getContext("2d");
 var gl = wtu.create3DContext(canvas);
 if (!gl) {
   testFailed("context does not exist");
+  finishTest();
 } else {
   testPassed("context exists");
 
@@ -104,11 +84,14 @@ if (!gl) {
       g2d = imgData.data[offset + 1];
       b2d = imgData.data[offset + 2];
       a2d = imgData.data[offset + 3];
-      //debug('' + x + ', ' + y + "(" + offset + ") = " + r2d + ", " + g2d + ", " + b2d + ", " + a2d);
-      return isAboutEqualInt(r2d, r3d) &&
-             isAboutEqualInt(g2d, g3d) &&
-             isAboutEqualInt(b2d, b3d) &&
-             isAboutEqualInt(a2d, a3d);
+      var res = isAboutEqualInt(r2d, r3d) &&
+                isAboutEqualInt(g2d, g3d) &&
+                isAboutEqualInt(b2d, b3d) &&
+                isAboutEqualInt(a2d, a3d);
+      if (!res) {
+        bufferedLogToConsole('at ' + x + ', ' + y + " (offset " + offset + ") = " + r2d + ", " + g2d + ", " + b2d + ", " + a2d);
+      }
+      return res;
     }
 
     var checkPixels = function(r3d,g3d,b3d,a3d) {

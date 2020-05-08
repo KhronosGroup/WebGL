@@ -29,7 +29,7 @@
     </p>
   </overview>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_lose_context {
       void loseContext();
       void restoreContext();
@@ -37,23 +37,45 @@ interface WEBGL_lose_context {
   </idl>
   <newfun>
     <function name="loseContext" type="void">
-      When this function is called and the context is not lost, simulate
+      <p>When this function is called and the context is not lost, simulate
       losing the context so as to trigger the steps described in the WebGL
       spec for handling context lost. The context will remain in the lost
       state according to the WebGL specification until
       <code>restoreContext()</code> is called.  If the context is already
       lost when this function is called, generate an
-      <code>INVALID_OPERATION</code> error.
+      <code>INVALID_OPERATION</code> error.</p>
+
+      <p>Implementations should destroy the underlying graphics context and
+      all graphics resources when this method is called. This is the
+      recommended mechanism for applications to programmatically halt their
+      use of the WebGL API.</p>
+
     </function>
     <function name="restoreContext" type="void">
+      <p>
       When this function is called while the context is lost, and the conditions
       defined by the WebGL specification for restoring the context are
       met, simulate the context being restored so as to trigger the steps
       described in the WebGL spec for handling the context being restored.
+      Because this only enqueues the 'webglcontextrestored' event, the context will not be
+      immediately restored after <code>restoreContext()</code>, but rather is first usably restored
+      within the 'webglcontextrestored' event callback.
+      (i.e. <code>ext.restoreContext(), gl.isContextLost()</code> returns <code>true</code>)
+      </p>
+
+      <p>
       If the context is already restored when this function is called, or if
       the conditions in the WebGL specification for restoring the
       context are not satisfied, or if the context was not lost via <code>loseContext()</code>,
       generate an <code>INVALID_OPERATION</code> error.
+      </p>
+
+      <p>
+      For example, if <code>e.preventDefault()</code> is not called on the 'webglcontextlost'
+      event, the context will not be marked restorable, and <code>restoreContext()</code> will fail.
+      Additionally, the context is not restorable before the 'webglcontextlost' event is complete:
+      calling <code>restoreContext()</code> before 'webglcontextlost' has completed will fail.
+      </p>
     </function>
   </newfun>
   <history>
@@ -99,6 +121,13 @@ interface WEBGL_lose_context {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2017/02/03">
+      <change>Per discussion in working group, document that this extension
+      should destroy the underlying context and all graphics resources.</change>
+    </revision>
+    <revision date="2020/02/06">
+      <change>Clarify timelines and behavior for restoreContext().</change>
     </revision>
   </history>
 </ratified>

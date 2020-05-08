@@ -32,7 +32,7 @@ precision mediump float;
 // of the arithmetic used.
 #define SAFETY_BOUND 500.0
 
-// Macro to scale/bias the range of output.  If input is [-1.0, 1.0], maps to [0.5, 1.0].  
+// Macro to scale/bias the range of output.  If input is [-1.0, 1.0], maps to [0.5, 1.0].
 // Accounts for precision errors magnified by derivative operation.
 #define REDUCE_RANGE(A) ((A) + 3.0) / 4.0
 

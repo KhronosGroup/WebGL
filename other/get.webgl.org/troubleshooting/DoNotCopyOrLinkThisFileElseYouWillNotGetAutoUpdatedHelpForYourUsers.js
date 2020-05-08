@@ -74,7 +74,7 @@ var BrowserDetect = {
   dataBrowser: [
   { string: navigator.userAgent,
     subString: "Chrome",
-    excludeSubstrings: ["OPR/"],
+    excludeSubstrings: ["OPR/", "Edge/"],
     identity: "Chrome"
   },
   { string: navigator.userAgent,
@@ -117,6 +117,10 @@ var BrowserDetect = {
     identity: "Netscape"
   },
   { string: navigator.userAgent,
+    subString: "Edge/",
+    identity: "Edge"
+  },
+  { string: navigator.userAgent,
     subString: "MSIE",
     identity: "Explorer",
     versionSearch: "MSIE"
@@ -147,6 +151,7 @@ var BrowserDetect = {
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.opera.com/", name: "Opera"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "http://www.microsoft.com/en-us/windows/windows-10-upgrade ", name: "Edge"},
       {url: "http://www.microsoft.com/ie", name: "Internet Explorer"}
     ]
   },
@@ -210,7 +215,7 @@ var BrowserDetect = {
   urls: {
     "Chrome": {
       upgradeUrl: "http://www.google.com/support/chrome/bin/answer.py?answer=95346",
-      troubleshootingUrl: "http://www.google.com/support/chrome/bin/answer.py?answer=1220892"
+      troubleshootingUrl: "https://support.google.com/chrome#topic=7438008"
     },
     "Firefox": {
       upgradeUrl: "http://www.mozilla.com/en-US/firefox/new/",
@@ -242,14 +247,18 @@ var BrowserDetect = {
         },
         "Mac": {
           upgradeUrl: "http://www.webkit.org/",
-          troubleshootingUrl: "http://www.webkit.org/blog/919/webgl-draft-specification-now-available/"
+          troubleshootingUrl: "https://support.apple.com/kb/PH21426"
         }
       },
       upgradeUrl: "http://www.webkit.org/",
-      troubleshootingUrl: "http://www.webkit.org/blog/919/webgl-draft-specification-now-available/"
+      troubleshootingUrl: "https://support.apple.com/kb/PH21426"
     },
     "Explorer": {
       upgradeUrl: "http://www.microsoft.com/ie",
+      troubleshootingUrl: "http://msdn.microsoft.com/en-us/library/ie/bg182648(v=vs.85).aspx"
+    },
+    "Edge": {
+      upgradeUrl: "http://www.microsoft.com/en-us/windows/windows-10-upgrade",
       troubleshootingUrl: "http://msdn.microsoft.com/en-us/library/ie/bg182648(v=vs.85).aspx"
     },
     "unknown": {

@@ -7,7 +7,7 @@ several browsers.
 Installation
 ------------
 
-Make sure you have a reasonably new [Node.JS installalled](http://nodejs.org/),
+Make sure you have a reasonably new [Node.JS installed](http://nodejs.org/),
 then run:
 
     cd <WebGL>/other/test-runner
@@ -51,10 +51,30 @@ using the following browser configurations:
     ChromiumWinOpenGL
     FirefoxWinOpenGL
 
+The test runner supports following browser configurations on Android:
+
+    Chrome
+
+NOTE: The platform argument needs to be explicitly passed as 'remote-android'
+to run tests remotely on android. To do this, you need the following:
+
+  - Rooted android device connected to linux host machine
+  - Chrome application installed on connected device
+  - Android SDK installed on your host linux machine
+  - 'adb' in your system path
+  - The 'ant' build system installed in case you want to modify the prebuilt
+    port forwarder apk, see ./android/PortForwarderService/README for more
+    details.
+
+The Android test runner has some limitations: it does not detect browser
+crashes, and the Chrome configuration overwrites command line parameters set for
+Chrome in /data/local/chrome-command-line.
+
 Example invocations:
 
     node ./test-runner
     node ./test-runner --version 1.0.1 --browser Chrome
+    node ./test-runner --browser Chrome --platform remote-android
 
 Results
 -------

@@ -1,28 +1,7 @@
 <!--
-
-/*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-*/
-
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 -->
 <!DOCTYPE html>
 <html>
@@ -30,9 +9,9 @@
 <meta charset="utf-8">
 <title>WebGL Program Compiling/Linking Conformance Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../resources/js-test-pre.js" type="text/javascript"></script>
-<script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
-<script src="../resources/webgl-test-utils.js" type="text/javascript"></script>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/desktop-gl-constants.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
 </head>
 <body>
 <script id="vshader" type="x-shader/x-vertex">
@@ -65,15 +44,16 @@
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
-<script type="text/javascript">
+<script type="application/javascript">
 var wtu = WebGLTestUtils;
+let gl;
 function go() {
     description("Tests that program compiling/linking/using works correctly.");
 
     debug("");
     debug("Canvas.getContext");
 
-    var gl = wtu.create3DContext("canvas");
+    gl = wtu.create3DContext("canvas");
     if (!gl) {
         testFailed("context does not exist");
         return;
@@ -211,7 +191,7 @@ function go() {
 /////// Check getAttachedShaders() /////////////////////////////
 
     function checkGetAttachedShaders(shaders_to_attach, shaders_to_detach, expected_shaders, errmsg) {
-        var prog = gl.createProgram();
+        prog = gl.createProgram();
         for (var i = 0; i < shaders_to_attach.length; ++i)
             gl.attachShader(prog, shaders_to_attach[i]);
         if(gl.getError() != gl.NO_ERROR)
@@ -221,16 +201,17 @@ function go() {
         if(gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in detachShader()");
         assertMsg(doArraysHaveSameContents(gl.getAttachedShaders(prog), expected_shaders), errmsg);
+        shouldBe('gl.getProgramParameter(prog, gl.ATTACHED_SHADERS)', `${expected_shaders.length}`);
     }
     checkGetAttachedShaders([], [], [], "getAttachedShaders should return an empty list by default");
     checkGetAttachedShaders([fs], [], [fs], "attaching a single shader should give the expected list");
     checkGetAttachedShaders([fs, vs], [], [fs, vs],
         "attaching some shaders should give the expected list");
-    checkGetAttachedShaders([fs], [fs], [], "attaching a shader and detaching it shoud leave an empty list");
+    checkGetAttachedShaders([fs], [fs], [], "attaching a shader and detaching it should leave an empty list");
     checkGetAttachedShaders([fs, vs], [fs, vs], [],
-        "attaching some shaders and detaching them in same order shoud leave an empty list");
+        "attaching some shaders and detaching them in same order should leave an empty list");
     checkGetAttachedShaders([fs, vs], [vs, fs], [],
-        "attaching some shaders and detaching them in random order shoud leave an empty list");
+        "attaching some shaders and detaching them in random order should leave an empty list");
     checkGetAttachedShaders([fs, vs], [vs], [fs],
         "attaching and detaching some shaders should leave the difference list");
     checkGetAttachedShaders([fs, vs], [fs], [vs],
@@ -419,7 +400,7 @@ go();
 
 var successfullyParsed = true;
 </script>
-<script src="../../resources/js-test-post.js"></script>
+<script src="../../js/js-test-post.js"></script>
 
 </body>
 </html>

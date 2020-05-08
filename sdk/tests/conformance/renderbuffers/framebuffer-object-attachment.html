@@ -1,28 +1,7 @@
 <!--
-
-/*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-*/
-
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 -->
 
 <!DOCTYPE html>
@@ -30,8 +9,8 @@
 <head>
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -266,7 +245,7 @@ function testFramebufferRequiredCombinations() {
 
     var fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    
+
     var width = 64;
     var height = 64;
 
@@ -290,7 +269,7 @@ function testFramebufferRequiredCombinations() {
     checkFramebufferForAllowedStatuses(ALLOW_COMPLETE);
     checkBufferBits(gl.DEPTH_ATTACHMENT);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, null);
-    
+
     // 3. COLOR_ATTACHMENT0 = RGBA/UNSIGNED_BYTE texture + DEPTH_STENCIL_ATTACHMENT = DEPTH_STENCIL renderbuffer
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, width, height);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
@@ -426,6 +405,7 @@ if (checkValidColorDepthCombination()) {
     testFramebufferIncompleteMissingAttachment();
     testUsingIncompleteFramebuffer();
     testReadingFromMissingAttachment();
+    testBindRenderbufferBeforeFramebufferAttach();
 }
 
 function checkFramebuffer(expected) {
@@ -655,9 +635,44 @@ function testReadingFromMissingAttachment() {
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "After CopyTexSubImage2D from missing attachment");
 }
 
+// [OpenGL ES 2.0.25] Section 4.4.3 page 112
+// [OpenGL ES 3.0.2] Section 4.4.2 page 201
+// 'renderbuffer' must be either zero or the name of an existing renderbuffer object of
+// type 'renderbuffertarget', otherwise an INVALID_OPERATION error is generated.
+function testBindRenderbufferBeforeFramebufferAttach() {
+    debug("");
+    debug("Test calling framebufferRenderbuffer before bindRenderbuffer.");
+
+    let fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+
+    let attachmentTypes = [
+        gl.COLOR_ATTACHMENT0,
+        gl.DEPTH_ATTACHMENT,
+        gl.STENCIL_ATTACHMENT,
+        gl.DEPTH_STENCIL_ATTACHMENT
+    ];
+
+    attachmentTypes.forEach(function(attachmentType) {
+        let strAttachmentType = wtu.glEnumToString(gl, attachmentType);
+        debug("");
+        debug("Testing " + strAttachmentType);
+        let rbo = gl.createRenderbuffer();
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachmentType, gl.RENDERBUFFER, rbo);
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "bindRenderbuffer must be called before attachment to " + strAttachmentType);
+        shouldBe("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl." + strAttachmentType + ", gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)", "gl.NONE");
+        gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, attachmentType, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME);
+        wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Only OBJECT_TYPE can be queried when no image is attached");
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachmentType, gl.RENDERBUFFER, null);
+        gl.deleteRenderbuffer(rbo);
+    });
+
+    gl.deleteFramebuffer(fbo);
+}
+
 var successfullyParsed = true;
 </script>
 
-<script src="../../resources/js-test-post.js"></script>
+<script src="../../js/js-test-post.js"></script>
 </body>
 </html>

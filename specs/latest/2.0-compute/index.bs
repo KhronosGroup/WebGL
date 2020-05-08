@@ -1,0 +1,1089 @@
+<pre class='metadata'>
+Shortname: webgl2-compute
+Title: WebGL 2.0 Compute
+Level: 1
+Status: khronos/ED
+Group: WebGL
+URL: https://www.khronos.org/registry/webgl/specs/latest/2.0-compute/
+
+Editor: Yunchao He, Intel http://intel.com, yunchao.he@intel.com
+Editor: Jiajia Qin, Intel http://intel.com, jiajia.qin@intel.com
+Editor: Ken Russell, Google http://google.com, kbr@google.com
+Editor: Jiawei Shao, Intel http://intel.com, jiawei.shao@intel.com
+Editor: Yizhou Jiang, Intel http://intel.com, yizhou.jiang@intel.com
+Editor: Xinghua Cao, Intel http://intel.com, xinghua.cao@intel.com
+Editor: Jie Chen, Intel http://intel.com, jie.a.chen@intel.com
+Editor: Jiajie Hu, Intel http://intel.com, jiajie.hu@intel.com
+
+Abstract: This is the WebGL 2.0 compute specification.
+  <p>This specification describes an additional rendering context and supports objects for the <a href="http://www.w3.org/TR/html5/the-canvas-element.html">HTML5 Canvas element</a> <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#refsCANVAS">[Canvas]</a>. This context allows rendering using an API that conforms closely to the OpenGL ES 3.1 API. The most important feature in OpenGL ES 3.1 is GPU compute.</p>
+  </p>This document should be read as an extension to the <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/">WebGL 2.0 specification</a>. It will only describe the differences from 2.0.</p>
+  </p>This document is a draft. Implementations based on this document may not be shipped.</p>
+
+</pre>
+
+# Introduction # {#intro}
+  <p>
+    WebGL™ is an immediate mode 3D rendering API designed for the web.
+    This is the WebGL 2.0 compute specification.
+    It is derived from OpenGL® ES 3.1, and provides similar rendering functionality, but in an HTML context.
+  </p>
+  <p>
+    WebGL 2.0 compute extends WebGL 2.0 and expose features in OpenGL ES 3.1. It is not entirely backwards compatible with WebGL 2.0.
+    Existing error-free content written against the core WebGL 2.0 specification without extensions will often run in WebGL 2.0 compute without modification, but this is not always the case.
+    All exceptions to backwards compatibility are recorded in the [Backwards Incompatibility] section.
+    To access the new behavior provided in this specification, the content explicitly requests a new context below.
+  </p>
+
+# Context Creation and Drawing Buffer Presentation # {#context-drawingbuffer}
+  <p>
+    Each WebGLRenderingContext and WebGL2RenderingContext and  WebGL2ComputeRenderingContext has an associated canvas,
+    set upon creation, which is a canvas <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#refsCANVAS">[Canvas]</a>.
+  </p>
+  <p>
+    Each WebGLRenderingContext and WebGL2RenderingContext and  WebGL2ComputeRenderingContext has context creation parameters, set upon creation, in a WebGLContextAttributes object.
+  </p>
+  <p>
+    Each WebGLRenderingContext and WebGL2RenderingContext and  WebGL2ComputeRenderingContext has actual context parameters,
+    set each time the drawing buffer is created, in a WebGLContextAttributes object.
+  </p>
+  <p>
+    Each WebGLRenderingContext and WebGL2RenderingContext and  WebGL2ComputeRenderingContext has a webgl context lost flag, which is initially unset.
+  </p>
+  <p>
+    When the getContext() method of a canvas element is to return a new object for the contextId webgl2Compute
+    <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#refsCANVASCONTEXTS">[\CANVASCONTEXTS]</a>, the user agent must perform the following steps:
+  </p>
+  <p>
+    Create a new WebGL2ComputeRenderingContext object, context.
+  </p>
+  <p>
+    Let context's canvas be the canvas the getContext() method is associated with.
+  </p>
+  <p>
+    Create a new WebGLContextAttributes object, contextAttributes.
+  </p>
+  <p>
+    If getContext() was invoked with a second argument, options, set the attributes of contextAttributes from those specified in options.
+  </p>
+  <p>
+    Create a drawing buffer using the settings specified in contextAttributes, and associate the drawing buffer with context.
+  </p>
+  <p>
+    If drawing buffer creation failed, perform the following steps:
+    Fire a WebGL context creation error at canvas.
+    Return null and terminate these steps.
+    Create a new WebGLContextAttributes object, actualAttributes.
+    Set the attributes of actualAttributes based on the properties of the newly created drawing buffer.
+    Set context's context creation parameters to contextAttributes.
+    Set context's actual context parameters to actualAttributes.
+    Return context.
+  </p>
+
+
+# DOM Interfaces # {#interfaces}
+  <p>
+    This section describes the interfaces and functionality added to the DOM to support runtime access to the functionality described above.
+  </p>
+
+## The WebGL 2 Compute Rendering Context ## {#webgl2-compute-context}
+  <p>
+    The WebGL2ComputeRenderingContext represents the API allowing OpenGL ES 3.1 style rendering into the canvas element.
+  </p>
+
+  <pre class="idl">
+    interface WebGL2ComputeRenderingContextBase {
+      const GLenum  COMPUTE_SHADER                             = 0x91B9;
+      const GLenum  MAX_COMPUTE_UNIFORM_BLOCKS                 = 0x91BB;
+      const GLenum  MAX_COMPUTE_TEXTURE_IMAGE_UNITS            = 0x91BC;
+      const GLenum  MAX_COMPUTE_IMAGE_UNIFORMS                 = 0x91BD;
+      const GLenum  MAX_COMPUTE_SHARED_MEMORY_SIZE             = 0x8262;
+      const GLenum  MAX_COMPUTE_UNIFORM_COMPONENTS             = 0x8263;
+      const GLenum  MAX_COMPUTE_ATOMIC_COUNTER_BUFFERS         = 0x8264;
+      const GLenum  MAX_COMPUTE_ATOMIC_COUNTERS                = 0x8265;
+      const GLenum  MAX_COMBINED_COMPUTE_UNIFORM_COMPONENTS    = 0x8266;
+      const GLenum  MAX_COMPUTE_WORK_GROUP_INVOCATIONS         = 0x90EB;
+      const GLenum  MAX_COMPUTE_WORK_GROUP_COUNT               = 0x91BE;
+      const GLenum  MAX_COMPUTE_WORK_GROUP_SIZE                = 0x91BF;
+      const GLenum  COMPUTE_WORK_GROUP_SIZE                    = 0x8267;
+      const GLenum  DISPATCH_INDIRECT_BUFFER                   = 0x90EE;
+      const GLenum  DISPATCH_INDIRECT_BUFFER_BINDING           = 0x90EF;
+      const GLenum  COMPUTE_SHADER_BIT                         = 0x00000020;
+      const GLenum  DRAW_INDIRECT_BUFFER                       = 0x8F3F;
+      const GLenum  DRAW_INDIRECT_BUFFER_BINDING               = 0x8F43;
+      const GLenum  MAX_UNIFORM_LOCATIONS                      = 0x826E;
+      const GLenum  FRAMEBUFFER_DEFAULT_WIDTH                  = 0x9310;
+      const GLenum  FRAMEBUFFER_DEFAULT_HEIGHT                 = 0x9311;
+      const GLenum  FRAMEBUFFER_DEFAULT_SAMPLES                = 0x9313;
+      const GLenum  FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS = 0x9314;
+      const GLenum  MAX_FRAMEBUFFER_WIDTH                      = 0x9315;
+      const GLenum  MAX_FRAMEBUFFER_HEIGHT                     = 0x9316;
+      const GLenum  MAX_FRAMEBUFFER_SAMPLES                    = 0x9318;
+      const GLenum  UNIFORM                                    = 0x92E1;
+      const GLenum  UNIFORM_BLOCK                              = 0x92E2;
+      const GLenum  PROGRAM_INPUT                              = 0x92E3;
+      const GLenum  PROGRAM_OUTPUT                             = 0x92E4;
+      const GLenum  BUFFER_VARIABLE                            = 0x92E5;
+      const GLenum  SHADER_STORAGE_BLOCK                       = 0x92E6;
+      const GLenum  ATOMIC_COUNTER_BUFFER                      = 0x92C0;
+      const GLenum  TRANSFORM_FEEDBACK_VARYING                 = 0x92F4;
+      const GLenum  ACTIVE_RESOURCES                           = 0x92F5;
+      const GLenum  MAX_NAME_LENGTH                            = 0x92F6;
+      const GLenum  MAX_NUM_ACTIVE_VARIABLES                   = 0x92F7;
+      const GLenum  NAME_LENGTH                                = 0x92F9;
+      const GLenum  TYPE                                       = 0x92FA;
+      const GLenum  ARRAY_SIZE                                 = 0x92FB;
+      const GLenum  OFFSET                                     = 0x92FC;
+      const GLenum  BLOCK_INDEX                                = 0x92FD;
+      const GLenum  ARRAY_STRIDE                               = 0x92FE;
+      const GLenum  MATRIX_STRIDE                              = 0x92FF;
+      const GLenum  IS_ROW_MAJOR                               = 0x9300;
+      const GLenum  ATOMIC_COUNTER_BUFFER_INDEX                = 0x9301;
+      const GLenum  BUFFER_BINDING                             = 0x9302;
+      const GLenum  BUFFER_DATA_SIZE                           = 0x9303;
+      const GLenum  NUM_ACTIVE_VARIABLES                       = 0x9304;
+      const GLenum  ACTIVE_VARIABLES                           = 0x9305;
+      const GLenum  REFERENCED_BY_VERTEX_SHADER                = 0x9306;
+      const GLenum  REFERENCED_BY_FRAGMENT_SHADER              = 0x930A;
+      const GLenum  REFERENCED_BY_COMPUTE_SHADER               = 0x930B;
+      const GLenum  TOP_LEVEL_ARRAY_SIZE                       = 0x930C;
+      const GLenum  TOP_LEVEL_ARRAY_STRIDE                     = 0x930D;
+      const GLenum  LOCATION                                   = 0x930E;
+      const GLenum  VERTEX_SHADER_BIT                          = 0x00000001;
+      const GLenum  FRAGMENT_SHADER_BIT                        = 0x00000002;
+      const GLenum  ALL_SHADER_BITS                            = 0xFFFFFFFF;
+      const GLenum  ATOMIC_COUNTER_BUFFER_BINDING              = 0x92C1;
+      const GLenum  ATOMIC_COUNTER_BUFFER_START                = 0x92C2;
+      const GLenum  ATOMIC_COUNTER_BUFFER_SIZE                 = 0x92C3;
+      const GLenum  MAX_VERTEX_ATOMIC_COUNTER_BUFFERS          = 0x92CC;
+      const GLenum  MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS        = 0x92D0;
+      const GLenum  MAX_COMBINED_ATOMIC_COUNTER_BUFFERS        = 0x92D1;
+      const GLenum  MAX_VERTEX_ATOMIC_COUNTERS                 = 0x92D2;
+      const GLenum  MAX_FRAGMENT_ATOMIC_COUNTERS               = 0x92D6;
+      const GLenum  MAX_COMBINED_ATOMIC_COUNTERS               = 0x92D7;
+      const GLenum  MAX_ATOMIC_COUNTER_BUFFER_SIZE             = 0x92D8;
+      const GLenum  MAX_ATOMIC_COUNTER_BUFFER_BINDINGS         = 0x92DC;
+      const GLenum  ACTIVE_ATOMIC_COUNTER_BUFFERS              = 0x92D9;
+      const GLenum  UNSIGNED_INT_ATOMIC_COUNTER                = 0x92DB;
+      const GLenum  MAX_IMAGE_UNITS                            = 0x8F38;
+      const GLenum  MAX_VERTEX_IMAGE_UNIFORMS                  = 0x90CA;
+      const GLenum  MAX_FRAGMENT_IMAGE_UNIFORMS                = 0x90CE;
+      const GLenum  MAX_COMBINED_IMAGE_UNIFORMS                = 0x90CF;
+      const GLenum  IMAGE_BINDING_NAME                         = 0x8F3A;
+      const GLenum  IMAGE_BINDING_LEVEL                        = 0x8F3B;
+      const GLenum  IMAGE_BINDING_LAYERED                      = 0x8F3C;
+      const GLenum  IMAGE_BINDING_LAYER                        = 0x8F3D;
+      const GLenum  IMAGE_BINDING_ACCESS                       = 0x8F3E;
+      const GLenum  IMAGE_BINDING_FORMAT                       = 0x906E;
+      const GLenum  VERTEX_ATTRIB_ARRAY_BARRIER_BIT            = 0x00000001;
+      const GLenum  ELEMENT_ARRAY_BARRIER_BIT                  = 0x00000002;
+      const GLenum  UNIFORM_BARRIER_BIT                        = 0x00000004;
+      const GLenum  TEXTURE_FETCH_BARRIER_BIT                  = 0x00000008;
+      const GLenum  SHADER_IMAGE_ACCESS_BARRIER_BIT            = 0x00000020;
+      const GLenum  COMMAND_BARRIER_BIT                        = 0x00000040;
+      const GLenum  PIXEL_BUFFER_BARRIER_BIT                   = 0x00000080;
+      const GLenum  TEXTURE_UPDATE_BARRIER_BIT                 = 0x00000100;
+      const GLenum  BUFFER_UPDATE_BARRIER_BIT                  = 0x00000200;
+      const GLenum  FRAMEBUFFER_BARRIER_BIT                    = 0x00000400;
+      const GLenum  TRANSFORM_FEEDBACK_BARRIER_BIT             = 0x00000800;
+      const GLenum  ATOMIC_COUNTER_BARRIER_BIT                 = 0x00001000;
+      const GLenum  SHADER_STORAGE_BARRIER_BIT                 = 0x00002000;
+      const GLenum  ALL_BARRIER_BITS                           = 0xFFFFFFFF;
+      const GLenum  IMAGE_2D                                   = 0x904D;
+      const GLenum  IMAGE_3D                                   = 0x904E;
+      const GLenum  IMAGE_CUBE                                 = 0x9050;
+      const GLenum  IMAGE_2D_ARRAY                             = 0x9053;
+      const GLenum  INT_IMAGE_2D                               = 0x9058;
+      const GLenum  INT_IMAGE_3D                               = 0x9059;
+      const GLenum  INT_IMAGE_CUBE                             = 0x905B;
+      const GLenum  INT_IMAGE_2D_ARRAY                         = 0x905E;
+      const GLenum  UNSIGNED_INT_IMAGE_2D                      = 0x9063;
+      const GLenum  UNSIGNED_INT_IMAGE_3D                      = 0x9064;
+      const GLenum  UNSIGNED_INT_IMAGE_CUBE                    = 0x9066;
+      const GLenum  UNSIGNED_INT_IMAGE_2D_ARRAY                = 0x9069;
+      const GLenum  IMAGE_FORMAT_COMPATIBILITY_TYPE            = 0x90C7;
+      const GLenum  IMAGE_FORMAT_COMPATIBILITY_BY_SIZE         = 0x90C8;
+      const GLenum  IMAGE_FORMAT_COMPATIBILITY_BY_CLASS        = 0x90C9;
+      const GLenum  READ_ONLY                                  = 0x88B8;
+      const GLenum  WRITE_ONLY                                 = 0x88B9;
+      const GLenum  READ_WRITE                                 = 0x88BA;
+      const GLenum  SHADER_STORAGE_BUFFER                      = 0x90D2;
+      const GLenum  SHADER_STORAGE_BUFFER_BINDING              = 0x90D3;
+      const GLenum  SHADER_STORAGE_BUFFER_START                = 0x90D4;
+      const GLenum  SHADER_STORAGE_BUFFER_SIZE                 = 0x90D5;
+      const GLenum  MAX_VERTEX_SHADER_STORAGE_BLOCKS           = 0x90D6;
+      const GLenum  MAX_FRAGMENT_SHADER_STORAGE_BLOCKS         = 0x90DA;
+      const GLenum  MAX_COMPUTE_SHADER_STORAGE_BLOCKS          = 0x90DB;
+      const GLenum  MAX_COMBINED_SHADER_STORAGE_BLOCKS         = 0x90DC;
+      const GLenum  MAX_SHADER_STORAGE_BUFFER_BINDINGS         = 0x90DD;
+      const GLenum  MAX_SHADER_STORAGE_BLOCK_SIZE              = 0x90DE;
+      const GLenum  SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT     = 0x90DF;
+      const GLenum  MAX_COMBINED_SHADER_OUTPUT_RESOURCES       = 0x8F39;
+      const GLenum  DEPTH_STENCIL_TEXTURE_MODE                 = 0x90EA;
+      const GLenum  STENCIL_INDEX                              = 0x1901;
+      const GLenum  MIN_PROGRAM_TEXTURE_GATHER_OFFSET          = 0x8E5E;
+      const GLenum  MAX_PROGRAM_TEXTURE_GATHER_OFFSET          = 0x8E5F;
+      const GLenum  SAMPLE_POSITION                            = 0x8E50;
+      const GLenum  SAMPLE_MASK                                = 0x8E51;
+      const GLenum  SAMPLE_MASK_VALUE                          = 0x8E52;
+      const GLenum  TEXTURE_2D_MULTISAMPLE                     = 0x9100;
+      const GLenum  MAX_SAMPLE_MASK_WORDS                      = 0x8E59;
+      const GLenum  MAX_COLOR_TEXTURE_SAMPLES                  = 0x910E;
+      const GLenum  MAX_DEPTH_TEXTURE_SAMPLES                  = 0x910F;
+      const GLenum  MAX_INTEGER_SAMPLES                        = 0x9110;
+      const GLenum  TEXTURE_BINDING_2D_MULTISAMPLE             = 0x9104;
+      const GLenum  TEXTURE_SAMPLES                            = 0x9106;
+      const GLenum  TEXTURE_FIXED_SAMPLE_LOCATIONS             = 0x9107;
+      const GLenum  TEXTURE_WIDTH                              = 0x1000;
+      const GLenum  TEXTURE_HEIGHT                             = 0x1001;
+      const GLenum  TEXTURE_DEPTH                              = 0x8071;
+      const GLenum  TEXTURE_INTERNAL_FORMAT                    = 0x1003;
+      const GLenum  TEXTURE_RED_SIZE                           = 0x805C;
+      const GLenum  TEXTURE_GREEN_SIZE                         = 0x805D;
+      const GLenum  TEXTURE_BLUE_SIZE                          = 0x805E;
+      const GLenum  TEXTURE_ALPHA_SIZE                         = 0x805F;
+      const GLenum  TEXTURE_DEPTH_SIZE                         = 0x884A;
+      const GLenum  TEXTURE_STENCIL_SIZE                       = 0x88F1;
+      const GLenum  TEXTURE_SHARED_SIZE                        = 0x8C3F;
+      const GLenum  TEXTURE_RED_TYPE                           = 0x8C10;
+      const GLenum  TEXTURE_GREEN_TYPE                         = 0x8C11;
+      const GLenum  TEXTURE_BLUE_TYPE                          = 0x8C12;
+      const GLenum  TEXTURE_ALPHA_TYPE                         = 0x8C13;
+      const GLenum  TEXTURE_DEPTH_TYPE                         = 0x8C16;
+      const GLenum  TEXTURE_COMPRESSED                         = 0x86A1;
+      const GLenum  SAMPLER_2D_MULTISAMPLE                     = 0x9108;
+      const GLenum  INT_SAMPLER_2D_MULTISAMPLE                 = 0x9109;
+      const GLenum  UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE        = 0x910A;
+      const GLenum  VERTEX_ATTRIB_BINDING                      = 0x82D4;
+      const GLenum  VERTEX_ATTRIB_RELATIVE_OFFSET              = 0x82D5;
+      const GLenum  VERTEX_BINDING_DIVISOR                     = 0x82D6;
+      const GLenum  VERTEX_BINDING_OFFSET                      = 0x82D7;
+      const GLenum  VERTEX_BINDING_STRIDE                      = 0x82D8;
+      const GLenum  VERTEX_BINDING_BUFFER                      = 0x8F4F;
+      const GLenum  MAX_VERTEX_ATTRIB_RELATIVE_OFFSET          = 0x82D9;
+      const GLenum  MAX_VERTEX_ATTRIB_BINDINGS                 = 0x82DA;
+      const GLenum  MAX_VERTEX_ATTRIB_STRIDE                   = 0x82E5;
+
+      void dispatchCompute(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z);
+      void dispatchComputeIndirect(GLintptr offset);
+
+      void drawArraysIndirect(GLenum mode, GLintptr offset);
+      void drawElementsIndirect(GLenum mode, GLenum type, GLintptr offset);
+
+      void framebufferParameter(GLenum target, GLenum pname, GLint param);
+      any getFramebufferParameter(GLenum target, GLenum pname);
+
+      any getProgramInterfaceParameter(WebGLProgram program, GLenum programInterface, GLenum pname);
+      any getProgramResource(WebGLProgram program, GLenum programInterface, GLuint index, GLenum props);
+      GLuint getProgramResourceIndex(WebGLProgram program, GLenum programInterface, DOMString name);
+      DOMString? getProgramResourceName(WebGLProgram program, GLenum programInterface, GLuint index);
+      any getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name);
+
+      void programUniform1i(WebGLProgram? program, WebGLUniformLocation? location, GLint v0);
+      void programUniform2i(WebGLProgram? program, WebGLUniformLocation? location, GLint v0, GLint v1);
+      void programUniform3i(WebGLProgram? program, WebGLUniformLocation? location, GLint v0, GLint v1, GLint v2);
+      void programUniform4i(WebGLProgram? program, WebGLUniformLocation? location, GLint v0, GLint v1, GLint v2, GLint v3);
+
+      void programUniform1ui(WebGLProgram? program, WebGLUniformLocation? location, GLuint v0);
+      void programUniform2ui(WebGLProgram? program, WebGLUniformLocation? location, GLuint v0, GLuint v1);
+      void programUniform3ui(WebGLProgram? program, WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2);
+      void programUniform4ui(WebGLProgram? program, WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
+
+      void programUniform1f(WebGLProgram? program, WebGLUniformLocation? location, GLfloat v0);
+      void programUniform2f(WebGLProgram? program, WebGLUniformLocation? location, GLfloat v0, GLfloat v1);
+      void programUniform3f(WebGLProgram? program, WebGLUniformLocation? location, GLfloat v0, GLfloat v1, GLfloat v2);
+      void programUniform4f(WebGLProgram? program, WebGLUniformLocation? location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+
+      void programUniform1iv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Int32List data);
+      void programUniform2iv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Int32List data);
+      void programUniform3iv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Int32List data);
+      void programUniform4iv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Int32List data);
+
+      void programUniform1uiv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Uint32List data);
+      void programUniform2uiv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Uint32List data);
+      void programUniform3uiv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Uint32List data);
+      void programUniform4uiv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Uint32List data);
+
+      void programUniform1fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Float32List data);
+      void programUniform2fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Float32List data);
+      void programUniform3fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Float32List data);
+      void programUniform4fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, Float32List data);
+
+      void programUniformMatrix2fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                               GLboolean transpose, Float32List data);
+      void programUniformMatrix3fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                               GLboolean transpose, Float32List data);
+      void programUniformMatrix4fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                               GLboolean transpose, Float32List data);
+      void programUniformMatrix2x3fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                                 GLboolean transpose, Float32List data);
+      void programUniformMatrix3x2fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                                 GLboolean transpose, Float32List data);
+      void programUniformMatrix2x4fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                                 GLboolean transpose, Float32List data);
+      void programUniformMatrix4x2fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                                 GLboolean transpose, Float32List data);
+      void programUniformMatrix3x4fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                                 GLboolean transpose, Float32List data);
+      void programUniformMatrix4x3fv(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count,
+                                 GLboolean transpose, Float32List data);
+
+      void bindImageTexture(GLuint unit, WebGLTexture? texture, GLint level,
+                            GLboolean layered, GLint layer, GLenum access, GLenum format);
+
+      void memoryBarrier(GLbitfield barriers);
+      void memoryBarrierByRegion(GLbitfield barriers);
+
+      void texStorage2DMultisample(GLenum target, GLsizei samples, GLenum internalformat,
+                                   GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+      any getTexLevelParameter(GLenum target, GLint level, GLenum pname);
+      any getMultisample(GLenum pname, GLuint index);
+      void sampleMask(GLuint index, GLbitfield mask);
+
+      void bindVertexBuffer(GLuint bindingindex, WebGLBuffer? buffer, GLintptr offset, GLsizei stride);
+      void vertexAttribFormat(GLuint attribindex, GLint size, GLenum type,
+                              GLboolean normalized, GLuint relativeoffset);
+      void vertexAttribIFormat(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+      void vertexAttribBinding(GLuint attribindex, GLuint bindingindex);
+      void vertexBindingDivisor(GLuint bindingindex, GLuint divisor);
+    };
+  </pre>
+
+### Framebuffer Object ### {#fbo}
+  <p>
+    <b>
+      void framebufferParameter(GLenum target, GLenum pname, GLint param) (
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-9.2.1">
+          OpenGL ES 3.1 Section 9.2.1</a>,
+        <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glFramebufferParameteri.xhtml"
+          class="nonnormative">man page</a>)
+    </b>
+  </p>
+  <p>
+    Set framebuffer default parameter.
+    </br>See glFramebufferParameteri at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-9.2.1">
+          OpenGL ES 3.1 Section 9.2.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glFramebufferParameteri.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>any getFramebufferParameter(GLenum target, GLenum pname)</b>
+  </p>
+  <p>
+    Set framebuffer default parameter.
+    </br>See glFramebufferParameteri at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-9.2.1">
+          OpenGL ES 3.1 Section 9.2.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glFramebufferParameteri.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+### Texture Object ### {#texture}
+  <p>
+    <b>
+      void texStorage2DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)
+    </b>
+  </p>
+  <p>
+    Establish the data storage, format, dimensions, and number of samples of a multisample texture's image.
+    <br/>See glTexStorage2DMultisample at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-8.8">
+          OpenGL ES 3.1 Section 8.8</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glTexStorage2DMultisample.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+  <p>
+    <b>
+      any getTexLevelParameter(GLenum target, GLint level, GLenum valuepname)
+    </b>
+  </p>
+  <p>
+    Query the level-of-detail information of the given pname for the currently bound texture specified by target.
+    <br/>See glGetTexLevelParameter{if}v at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-8.10.3">
+          OpenGL ES 3.1 Section 8.10.3</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetTexLevelParameter.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+    <br/>
+    The requested pname and its return type are given in the following table:
+    <table width="30%">
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>TEXTURE_SAMPLES</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_FIXED_SAMPLE_LOCATIONS</td><td>GLboolean</td></tr>
+      <tr><td>TEXTURE_WIDTH</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_HEIGHT</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_DEPTH</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_INTERNAL_FORMAT</td><td>GLenum</td></tr>
+      <tr><td>TEXTURE_RED_SIZE</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_GREEN_SIZE</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_BLUE_SIZE</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_ALPHA_SIZE</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_DEPTH_SIZE</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_STENCIL_SIZE</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_SHARED_SIZE</td><td>GLuint</td></tr>
+      <tr><td>TEXTURE_RED_TYPE</td><td>GLenum</td></tr>
+      <tr><td>TEXTURE_GREEN_TYPE</td><td>GLenum</td></tr>
+      <tr><td>TEXTURE_BLUE_TYPE</td><td>GLenum</td></tr>
+      <tr><td>TEXTURE_ALPHA_TYPE</td><td>GLenum</td></tr>
+      <tr><td>TEXTURE_DEPTH_TYPE</td><td>GLenum</td></tr>
+      <tr><td>TEXTURE_COMPRESSED</td><td>GLboolean</td></tr>
+    </table>
+  </p>
+
+### Sampler Object ### {#sampler}
+  <p>
+    <b>
+      any getMultisample(GLenum pname, GLuint index)
+    </b>
+  </p>
+  <p>
+    Query the location of a given sample within the pixel.
+    <br/>See glGetMultisamplefv at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-13.2.1">
+          OpenGL ES 3.1 Section 13.2.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetMultisamplefv.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void sampleMask(GLuint index, GLbitfield mask)
+    </b>
+  </p>
+  <p>
+    Specify the sample mask value to mask for desired mask of index.
+    <br/>See glSampleMaski at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-13.6.3">
+          OpenGL ES 3.1 Section 13.6.3</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glSampleMaski.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+### Uniforms and Attributes ### {#uniforms-attributes}
+  <p>
+    <b>
+      void programUniform[1234][if](WebGLProgram? program, WebGLUniformLocation? location, ...)
+    </b>
+  </p>
+  <p>
+    Set uniform value for a given program.
+    <br/>See glProgramUniform[1234][if] at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.6.1">
+          OpenGL ES 3.1 Section 7.6.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glProgramUniform.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void programUniform[1234][if]v(WebGLProgram? program, WebGLUniformLocation? location, ...)
+    </b>
+  </p>
+  <p>
+    Set uniform value for a given program.
+    <br/>See glProgramUniform[1234][if]v at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.6.1">
+          OpenGL ES 3.1 Section 7.6.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glProgramUniform.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void programUniform[1234]ui(WebGLProgram? program, WebGLUniformLocation? location, ...)
+    </b>
+  </p>
+  <p>
+    Set uniform value for a given program.
+    <br/>See glProgramUniform[1234]ui at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.6.1">
+          OpenGL ES 3.1 Section 7.6.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glProgramUniform.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void programUniform[1234]uiv(WebGLProgram? program, WebGLUniformLocation? location, ...)
+    </b>
+  </p>
+  <p>
+    Set uniform value for a given program.
+    <br>See glProgramUniform[1234]uiv at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.6.1">
+          OpenGL ES 3.1 Section 7.6.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glProgramUniform.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void programUniformMatrix[234][f]v(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, GLboolean transpose, ...)
+    </b>
+  </p>
+  <p>
+    Set uniform value for a given program.
+    <br/>See glProgramUniform[234][f]v at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.6.1">
+          OpenGL ES 3.1 Section 7.6.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glProgramUniform.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void programUniformMatrix[2x3, 3x2, 2x4, 4x2, 3x4, 4x3][f]v(WebGLProgram? program, WebGLUniformLocation? location, GLsizei count, GLboolean transpose, ...)
+    </b>
+  </p>
+  <p>
+    Set uniform value for a given program.
+    <br/>See glProgramUniformMatirx[2x3, 3x2, 2x4, 4x2, 3x4, 4x3][f]v at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.6.1">
+          OpenGL ES 3.1 Section 7.6.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glProgramUniform.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void bindVertexBuffer(GLuint bindingindex, WebGLBuffer? buffer, GLintptr offset, GLsizei stride)
+    </b>
+  </p>
+  <p>
+    Bind vertex buffer to the binding point bindingindex.
+    <br/>See glBindVertexBuffer at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-10.3.1">
+          OpenGL ES 3.1 Section 10.3.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glBindVertexBuffer.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void vertexAttribFormat(GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset)
+    </b>
+  </p>
+  <p>
+    Describe the orgnization of vertex arrays.
+    <br/>See glVertexAttribFormat at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-10.3.1">
+          OpenGL ES 3.1 Section 10.3.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glVertexAttribFormat.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void vertexAttribIFormat(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset)
+    </b>
+  </p>
+  <p>
+    Describe the orgnization of vertex arrays.
+    <br/>See glVertexAttribIFormat at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-10.3.1">
+          OpenGL ES 3.1 Section 10.3.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glVertexAttribIFormat.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void vertexAttribBinding(GLuint attribindex, GLuint bindingindex)
+    </b>
+  </p>
+  <p>
+    Set the association between a vertex attribute and the vertex buffer binding.
+    <br/>See glVertexAttribBinding at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-10.3.1">
+          OpenGL ES 3.1 Section 10.3.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glVertexAttribBinding.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void vertexBindingDivisor(GLuint bindingindex, GLuint divisor)
+    </b>
+  </p>
+  <p>
+    Set the divisor value for attributes taken from the buffer bound to bindingindex between a vertex attribute and the vertex buffer binding.
+    <br/>See glVertexBindingDivisor at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-10.3.2">
+          OpenGL ES 3.1 Section 10.3.2</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glVertexBindingDivisor.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+### Writing to the Drawing Buffers ### {#drawing}
+  <p>
+    <b>
+      void drawArraysIndirect(GLenum mode, GLintptr offset)
+    </b>
+  </p>
+  <p>
+    Draw geometry with vertices by reading parameters via indirect buffer.
+    <br/>See glDrawArraysIndirect at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-10.5">
+          OpenGL ES 3.1 Section 10.5</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glDrawArraysIndirect.xhtml"
+          class="nonnormative">man page</a>
+  </p>
+  <p>
+    <b>
+      void drawElementsIndirect(GLenum mode, GLenum type, GLintptr offset)
+    </b>
+  </p>
+  <p>
+    Draw geometry with indexed vertices by reading parameters via indirect buffer.
+    <br/>See glDrawElementsIndirect at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-10.5">
+          OpenGL ES 3.1 Section 10.5</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glDrawElementsIndirect.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+### Program Interface Query ### {#program-interface}
+  <p>
+    <b>
+      any getProgramInterfaceParameter(WebGLProgram program, GLenum programInterface, GLenum pname)
+    </b>
+  </p>
+  <p>
+    Query a property of the interface programInterface in program program.
+    <br/>See glGetProgramInterfaceiv at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.3.1.1">
+          OpenGL ES 3.1 Section 7.3.1.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetProgramInterfaceiv.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      sequence<any>? getProgramResource(WebGLProgram program, GLenum programInterface, GLuint index, sequence<GLenum> props)
+    </b>
+  </p>
+  <p>
+    Query multiple properties of the interface programInterface in program program.
+    <br/>See glGetProgramResourceiv at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.3.1.1">
+          OpenGL ES 3.1 Section 7.3.1.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetProgramResourceiv.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      DOMString? getProgramResourceName(WebGLProgram program, GLenum programInterface, GLuint index)
+    </b>
+  </p>
+  <p>
+    Query the name string assigned to the single active resource with an index of index in the interface programInterface in program program.
+    <br/>See glGetProgramResourceName at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.3.1.1">
+          OpenGL ES 3.1 Section 7.3.1.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetProgramResourceName.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      GLuint getProgramResourceIndex(WebGLProgram program, GLenum programInterface, DOMString name)
+    </b>
+  </p>
+  <p>
+    Query the unsigned integer index assigned to a resource named name in the interface programInterface in program program.
+    <br/>See glGetProgramResourceIndex at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.3.1.1">
+          OpenGL ES 3.1 Section 7.3.1.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetProgramResourceIndex.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      any getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name)
+    </b>
+  </p>
+  <p>
+    Query the location assigned to a resource named name in the interface programInterface in program program.
+    <br/>See glGetProgramResourceLocation at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.3.1.1">
+          OpenGL ES 3.1 Section 7.3.1.1</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetProgramResourceLocation.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+### Image Binding ### {#image-binding}
+  <p>
+    <b>
+      void bindImageTexture(GLuint unit, WebGLTexture? texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format)
+    </b>
+  </p>
+  <p>
+    Bind a texture to a image unit for image load and store.
+    <br/>See glBindImageTexture at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-8.22">
+          OpenGL ES 3.1 Section 8.22</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glBindImageTexture.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+### Memory Barrior ### {#barrior}
+  <p>
+    <b>
+      void memoryBarrior(GLbitfield barriers)
+    </b>
+  </p>
+  <p>
+    Define a barrier ordering the memory transactions issued prior to the command relative to those issued after the barrier.
+    <br/>See glMemoryBarrier at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.11.2">
+          OpenGL ES 3.1 Section 7.11.2</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glMemoryBarrier.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void memoryBarriorByRegion(GLbitfield barriers)
+    </b>
+  </p>
+  <p>
+    With restrictions, define a barrier ordering the memory transactions issued prior to the command relative to those issued after the barrier.
+    <br/>See glMemoryBarrier at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.11.2">
+          OpenGL ES 3.1 Section 7.11.2</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glMemoryBarrierByRegion.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+### Dispatch Compute ### {#dispatch}
+  <p>
+    <b>
+      void dispatchCompute(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z)
+    </b>
+  </p>
+  <p>
+    Launch one or more work groups and start compute pipeline.
+    <br/>See glDispatchCompute at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-17">
+          OpenGL ES 3.1 Section 17</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glDispatchCompute.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+  <p>
+    <b>
+      void dispatchComputeIndirect(GLintptr offset)
+    </b>
+  </p>
+  <p>
+    Launch one or more work groups and start compute pipeline, with parameter stored in a buffer from offset offset.
+    <br/>See glDispatchComputeIndirect at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-17">
+          OpenGL ES 3.1 Section 17</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glDispatchComputeIndirect.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+  </p>
+
+### More Shader Types ### {#shader-type}
+  <p>
+    <b>
+      WebGLShader? createShader(GLenum type)
+    </b>
+  </p>
+  <p>
+    type accept the following parameters:
+    <table width="30%">
+        <tr><th>type</th></tr>
+        <tr><td>COMPUTE_SHADER</td></tr>
+    </table>
+    <code>COMPUTE_SHADER</code> is also supported by corresponding APIs like <code>createShaderProgram</code>, among other APIs.
+  </p>
+
+### More Binding Point ### {#binding-point}
+  <p>
+    <b>
+      void bindBuffer(GLenum target, WebGLBuffer buffer)
+    </b>
+  </p>
+  <p>
+    target accept the following parameters:
+    <table width="30%">
+        <tr><th>target</th></tr>
+        <tr><td>ATOMIC_COUNTER_BUFFER</td></tr>
+        <tr><td>DISPATCH_INDIRECT_BUFFER</td></tr>
+        <tr><td>DRAW_INDIRECT_BUFFER</td></tr>
+        <tr><td>SHADER_STORAGE_BUFFER</td></tr>
+    </table>
+    For <code>bindBufferRange</code> and <code>bindBufferBase</code>, only <code>ATOMIC_COUNTER_BUFFER</code> and <code>SHADER_STORAGE_BUFFER</code> are supported.
+  </p>
+
+### Setting and Getting States ### {#states}
+  <p>
+    <b>
+      any getParameter(GLenum pname)
+    </b>
+  </p>
+  <p>
+    pname accept the following parameters.
+    The return type of this method now depends on the parameter queried:
+    <table width="30%">
+        <tr><th>pname</th><th>returned type</th></tr>
+        <tr><td>MAX_SAMPLE_MASK_WORDS</td><td>GLuint</td></tr>
+        <tr><td>MAX_COLOR_TEXTURE_SAMPLES</td><td>GLuint</td></tr>
+        <tr><td>MAX_DEPTH_TEXTURE_SAMPLES</td><td>GLuint</td></tr>
+        <tr><td>MAX_INTEGER_SAMPLES</td><td>GLuint</td></tr>
+        <tr><td>TEXTURE_BINDING_2D_MULTISAMPLE</td><td>WebGLTexture</td></tr>
+
+        <tr><td>MAX_VERTEX_ATOMIC_COUNTER_BUFFERS</td><td>GLuint</td></tr>
+		<tr><td>MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS</td><td>GLuint</td></tr>
+		<tr><td>MAX_COMPUTE_ATOMIC_COUNTER_BUFFERS</td><td>GLuint</td></tr>
+        <tr><td>MAX_COMBINED_ATOMIC_COUNTER_BUFFERS</td><td>GLuint</td></tr>
+        <tr><td>MAX_ATOMIC_COUNTER_BUFFER_BINDINGS</td><td>GLuint</td></tr>
+
+        <tr><td>MAX_VERTEX_ATOMIC_COUNTERS</td><td>GLuint</td></tr>
+        <tr><td>MAX_FRAGMENT_ATOMIC_COUNTERS</td><td>GLuint</td></tr>
+        <tr><td>MAX_COMPUTE_ATOMIC_COUNTERS</td><td>GLuint</td></tr>
+        <tr><td>MAX_COMBINED_ATOMIC_COUNTERS</td><td>GLuint</td></tr>
+
+        <tr><td>ATOMIC_COUNTER_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+
+        <tr><td>MAX_COMBINED_SHADER_STORAGE_BLOCKS</td><td>GLuint</td></tr>
+        <tr><td>MAX_COMPUTE_SHADER_STORAGE_BLOCKS</td><td>GLuint</td></tr>
+        <tr><td>MAX_FRAGMENT_SHADER_STORAGE_BLOCKS</td><td>GLuint</td></tr>
+        <tr><td>MAX_VERTEX_SHADER_STORAGE_BLOCKS</td><td>GLuint</td></tr>
+        <tr><td>MAX_SHADER_STORAGE_BLOCK_SIZE</td><td>GLuint</td></tr>
+        <tr><td>MAX_SHADER_STORAGE_BUFFER_BINDINGS</td><td>GLuint</td></tr>
+
+        <tr><td>SHADER_STORAGE_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+
+    </table>
+  </p>
+  <p>
+    <b>
+      any getIndexedParameter(GLenum target, GLuint index)
+    </b>
+  </p>
+  <p>
+    target accept the following parameters.
+    The return type of this method now depends on the parameter queried:
+    <table width="30%">
+        <tr><th>target</th><th>returned type</th></tr>
+		<tr><td>VERTEX_BINDING_OFFSET</td><td>GLintptr</td></tr>
+		<tr><td>VERTEX_BINDING_STRIDE</td><td>GLint</td></tr>
+		<tr><td>VERTEX_BINDING_DIVISOR</td><td>GLint</td></tr>
+		<tr><td>VERTEX_BINDING_BUFFER</td><td>WebGLBuffer</td></tr>
+
+		<tr><td>SAMPLE_MASK_VALUE</td><td>GLbitfield</td></tr>
+
+        <tr><td>ATOMIC_COUNTER_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+        <tr><td>ATOMIC_COUNTER_BUFFER_START</td><td>GLintptr</td></tr>
+        <tr><td>ATOMIC_COUNTER_BUFFER_SIZE</td><td>GLsizeiptr</td></tr>
+
+		<tr><td>IMAGE_BINDING_NAME</td><td>WebGLTexture</td></tr>
+		<tr><td>IMAGE_BINDING_LEVEL</td><td>GLint</td></tr>
+		<tr><td>IMAGE_BINDING_LAYERED</td><td>GLboolean</td></tr>
+		<tr><td>IMAGE_BINDING_LAYER</td><td>GLint</td></tr>
+		<tr><td>IMAGE_BINDING_ACCESS</td><td>GLenum</td></tr>
+		<tr><td>IMAGE_BINDING_FORMAT</td><td>GLenum</td></tr>
+
+		<tr><td>SHADER_STORAGE_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+        <tr><td>SHADER_STORAGE_BUFFER_START</td><td>GLintptr</td></tr>
+		<tr><td>SHADER_STORAGE_BUFFER_SIZE</td><td>GLsizeiptr</td></tr>
+
+		<tr><td>MAX_COMPUTE_WORK_GROUP_COUNT</td><td>GLint</td></tr>
+		<tr><td>MAX_COMPUTE_WORK_GROUP_SIZE</td><td>GLint</td></tr>
+    </table>
+  </p>
+  <p>
+    <b>
+      any getProgramParameter(WebGLProgram? program, GLenum pname)
+    </b>
+  </p>
+  <p>
+    Query program parameter pname give program.
+    <br/>See glGetProgramiv at
+      <span class="gl-spec">
+        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.12">
+          OpenGL ES 3.1 Section 7.12</a>,
+        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetProgramiv.xhtml"
+          class="nonnormative">man page</a>
+      </span>
+    The requested pname and its return type are given in the following table:
+    <table width="30%">
+        <tr><th>pname</th><th>returned type</th></tr>
+        <tr><td>COMPUTE_WORK_GROUP_SIZE</td><td>GLint</td></tr>
+        <tr><td>ACTIVE_ATOMIC_COUNTER_BUFFERS</td><td>GLint</td></tr>
+    </table>
+  </p>
+
+# Other Differences Between WebGL 2.0 compute and WebGL 2.0 # {#diff-with-webgl2}
+## WebGL 2.0 compute can support GLSL ES 310 ## {#gles310}
+  <p>
+    <br/> local size, group size, group ID, invocation ID and so on for compute shader
+    <br/> image
+    <br/> shared memory
+    <br/> barriers
+    <br/> shader storage buffer
+    <br/> atomics
+    <br/> multisample texture
+    <br/> new qualifier like coherent, volatile, restrict, readonly, writeonly, std430, early_fragment_test, etc
+    <br/> new math built-ins
+    <br/> array of arrays
+    <br/> texture gather
+  </p>
+
+## Integer Format Renderbuffer ## {#integer-format-rbo}
+  <p>
+    Renderbuffer can support integer format via RenderbufferStorage()
+  </p>
+
+## Framebuffer without attachment can be complete ## {#fbo-no-attachment}
+  <p>
+    In WebGL 2.0, it is a must that there is at least one attached image in framebuffer. Otherwise, it is framebuffer incomplete. In WebGL 2.0 compute, this requirement is removed.
+  </p>
+
+## Extra restrictions for vertexAttrib*Pointer ## {#vertex-attrib-binding}
+  <p>
+    In WebGL 2.0 compute, vertexAttrib*Pointer has an extra restriction on the maximum stride: MAX_VERTEX_ATTRIB_STRIDE.
+  </p>
+
+# Differences between WebGL 2.0 compute and OpenGL ES 3.1 # {#diff-with-gles31}
+## Program pipeline is not supported in WebGL 2.0 compute ## {#no-program-pipeline}
+  <p>
+    Program pipeline in OpenGL ES 3.1 is not supported in WebGL 2.0 compute. Program pipeline is irrelevant to compute shader and it is not very useful.
+  </p>
+
+## The same layer and level of texture cannot be bound to multiple image units ## {#bind-texture-to-image}
+  <p>
+    In OpenGL ES 3.1, the same layer and level of texture can be bound to multiple image units. But this feature is not allowed in D3D11, and it is not very useful. So this feature is disabled. It generates INVALID_OPERATION otherwise.
+  </p>
+
+## Multiple image variables can't be used to access the same image unit ## {#multiple-image-variables}
+  <p>
+    In OpenGL ES 3.1, Multiple image variables can be used to access the same image unit. But this feature is not allowed in D3D11, and it is not very useful. So this feature is disabled. It generates INVALID_OPERATION otherwise.
+  </p>
+
+## Multiple shader storage blocks are not allowed to bind to a single buffer ## {#multiple-ssbo-to-single-buffer}
+  <p>
+    dispatchCompute generates an INVALID_OPERATION error if more than one shader storage block that are bound to a single buffer are statically used in that dispatch call.
+
+    This is a restriction from D3D11, where the same resource bound to different UAVs is  not allowed.
+  </p>
+
+## gl_HelperInvocation is not supported ## {#unsupported-features}
+  <p>
+    gl_HelperInvocation is a built-in input variable of fragment shader introduced in ESSL 310 (Chapter 7.1.2 Page 106). It needs at least GLSL 450 on desktop OpenGL, and it has no equivalent in HLSL system values in D3D11. So it is not supported in WebGL.
+  </p>
+
+## Presenting particular value in compute shader ## {#values-redef}
+  <p>
+    Define the const and non-const behavior for some corner case like NaN, Inf, 0.0 in compute shader
+  </p>
+
+## std430 layout is requred for shared memory ## {#std430-layout}
+  <p>
+    OpenGL ES 3.1 SPEC does not define which memory layout we should follow to calculate the total memory consumption of shared variables. 
+
+    This extension calculates the usage of shared memory in std430 layout. The total size of active shared variables may not exceed the largest block size that would be obtained if all active variables declared as shared were instead declared as arbitrarily ordered members of a shader storage block qualified with std430.
+  </p>
+
+## Clarify undefined behaviors ## {#undefined-behavior}
+###  Rendering against compute program is not allowed ### {#rendering-against-compute-program}
+  <p>
+    Rendering against compute program is not allowed
+  </p>
+
+### Shadow sampler in texture lookup function ### {#shadow-sampler}
+  <p>
+    Shadow sampler in texture lookup function has a lot of limitation, which will lead to undefined behavior. Find “shadow sam” in GLES spec.
+  </p>
+
+### Sampling from incomplete texture with integer or unsigned integer format ### {#sampling-incomplete-int-tex}
+  <p>
+    Sampling from incomplete texture with integer or unsigned integer format, it will return undefined value. See GLES spec 3.1 on page 275 (the 1st paragraph).
+  </p>
+
+### Sampling from stencil texture via non-unsigned integer sampler ### {#sampling-stencil-uint-texture}
+  <p>
+    Sampling from stencil texture should use a unsigned integer sampler (say usampler2D tex in shader). Otherwise, the result are undefined, see GLES spec 3.1 on page 274. (the last but one paragraph).
+  </p>
+
+### Out-of-bounds access to ssbo or atomic counter in shader ### {#out-of-bounds-access}
+  <p>
+    Out-of-bounds access to shader storage buffers or atomic counter buffers in shader cannot read from or write to data not owned by the application. See <a href="https://www.khronos.org/registry/OpenGL/extensions/KHR/KHR_robust_buffer_access_behavior.txt">KHR_robust_buffer_access_behavior</a>.
+  </p>
+
+### Uninitialized shared variables in shader ### {#uninitialized-shared-variables}
+  <p>
+    Variables declared as shared may not have initializers and their contents are all zero at the beginning of shader execution.
+  </p>
+
+### Image load or store ### {#image-load-store}
+  <p>
+    Read from an image unit with a texture bound as GL_WRITE_ONLY, or write to an image unit with a texture bound as GL_READ_ONLY, the results of that shader operation are undefined and may lead to application termination in OpenGL ES 3.1. It generates INVALID_OPERATION instead when dispatch compute in this spec.
+  </p>
+  <p>
+    If the individual texel identified for an image load or store operation doesn't exist, the access is treated as invalid. An access is considered invalid if
+      * no texture is bound to the selected image unit;
+      * the texture bound to the selected image unit is incomplete;
+      * the texture level bound to the image unit is less than the base level or greater than the maximum level of the texture;
+      * the internal format of the texture bound to the image unit is not RGBA32F, RGBA16F, R32F, RGBA32UI, RGBA16UI, RGBA8UI, R32UI, RGBA32I, RGBA16I, RGBA8I, R32I, RGBA8, RGBA8_SNORM.
+      * the internal format of the texture bound to the image unit is incompatible with the specified format according to ES 3.1 spec table 8.28.
+      * the texture bound to the image unit has layers, and the selected layer or cube map face doesn't exist.
+
+    It generates INVALID_OPERATION when dispatch compute in the cases above for both load and store in this spec.
+  </p>
+  <p>
+    If image load or store operations are considered to involve a format mismatch, undefined values will be returned by image load operations and undefined values will be written by stores in OpenGL ES 3.1 spec. A format mismatch will occur if:
+      * The type of image variable used to access the image unit does not match the target of a texture bound to the image unit with layered set to TRUE.
+      * The type of image variable used to access the image unit does not match the target corresponding to a single layer of a multi-layer texture target bound to the image unit with layered set to FALSE.
+      * The type of image variable used to access the image unit has a component data type(floating-point, signed integer, unsigned integer) incompatible with the format of the image unit.
+      * The format layout qualifier for an image variable used for an image load or atomic operation does not match the format for the image unit, according to ES 3.1 spec table 8.27.
+      * The image variable used for an image store has a format layout qualifier, and that qualifier does not match the format of the image unit, according to table ES 3.1 spec table 8.27.
+
+    It generates INVALID_OPERATION when dispatch compute in this spec;
+  </p>

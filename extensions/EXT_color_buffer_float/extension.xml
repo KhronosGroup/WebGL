@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="EXT_color_buffer_float/">
+<extension href="EXT_color_buffer_float/">
   <name>EXT_color_buffer_float</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
@@ -11,7 +11,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>XX</number>
+  <number>31</number>
 
   <depends>
     <api version="2.0"/>
@@ -19,7 +19,13 @@
 
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_color_buffer_float.txt"
-             name="EXT_color_buffer_float"/>
+             name="EXT_color_buffer_float">
+      <addendum>
+        The sized internal format <code>RGB16F</code> is not color-renderable in this
+        extension. This is a difference in functionality compared to the <a
+        href="../EXT_color_buffer_half_float">EXT_color_buffer_half_float</a> extension.
+      </addendum>
+    </mirrors>
 
     <features>
       <feature>
@@ -33,9 +39,7 @@
       </feature>
 
       <feature>
-        <p>Renderbuffers with these internal formats can be created. Note that
-        textures with these internal formats can be created in core WebGL
-        2.0.</p>
+        <p>Renderbuffers with these internal formats can be created.</p>
       </feature>
 
       <feature>
@@ -57,12 +61,18 @@
         <code>UNSIGNED_BYTE</code> cannot be used for reading from a
         floating-point color buffer.</li>
 
-        <li>Multi-sample floating-point color buffers are not supported.</li>
+        <li>Multi-sample floating-point color renderbuffers may optionally be supported. Limitations
+        are defined in the <a
+        href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_color_buffer_float.txt">EXT_color_buffer_float</a>
+        extension.</li>
+
+        <li>The sized internal format <code>RGB16F</code> is not color-renderable in this
+        extension.</li>
       </ul></p>
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface EXT_color_buffer_float {
 }; // interface EXT_color_buffer_float
 </idl>
@@ -79,5 +89,26 @@ interface EXT_color_buffer_float {
     <revision date="2014/10/29">
       <change>Moved to draft status.</change>
     </revision>
+
+    <revision date="2016/04/14">
+      <change>Moved to community approved status.</change>
+    </revision>
+
+    <revision date="2016/06/16">
+      <change>Added note about RGB16F not being color-renderable.</change>
+    </revision>
+
+    <revision date="2016/07/21">
+      <change>Allowed allocation of multi-sample floating-point color renderbuffers as optional functionality.</change>
+      <change>Changed XML tags to fix incorrect statement that there are no behavioral changes compared to the native extension.</change>
+    </revision>
+
+    <revision date="2016/08/03">
+      <change>Removed incorrect statement about framebuffer completeness and multi-sampled floating-point color renderbuffers.</change>
+    </revision>
+
+    <revision date="2017/04/19">
+      <change>Allowed these float formats for CopyTexImage2D.</change>
+    </revision>
   </history>
-</draft>
+</extension>

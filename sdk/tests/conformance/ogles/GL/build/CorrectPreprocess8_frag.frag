@@ -1,25 +1,8 @@
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 
 
@@ -30,7 +13,7 @@ precision mediump float;
 
 
 #define t1 1
- 
+
 #if(t1==1)
   #define t2 2
 #endif
@@ -45,7 +28,7 @@ precision mediump float;
  #define t4 4
 #elif (t3==3)
  #define t4 44
-#else 
+#else
   #define t4 0
 #endif
 
@@ -63,11 +46,11 @@ precision mediump float;
  #define t7 7
 #endif
 
-#ifndef t8 
+#ifndef t8
  #define t8 8
 #endif
 
-#if defined t8 
+#if defined t8
  #define t9
  #ifdef t9
   #define  t10 10
@@ -103,7 +86,7 @@ precision mediump float;
             #define t15 15
             #define t24 24
          #endif
-      #endif   
+      #endif
    #endif
 #else
    #ifdef t21
@@ -124,9 +107,9 @@ precision mediump float;
 void main(void)
 {
  int sum =0;
- sum = t1+t2+t3+t4+t5; 
+ sum = t1+t2+t3+t4+t5;
  sum = t6+t7+t8+t9+t10;
  sum = t11+t12+t13+t14+t15;
  sum = t16+t20+t22+t23+t25+t24;
-}         
+}
 

@@ -1,25 +1,8 @@
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 
 
@@ -27,11 +10,11 @@
 precision mediump float;
 #endif
 // tests for macro redifinition (t2) and the #if and #else nestings.
-// takes care of elif also. 
+// takes care of elif also.
 
-#define t1 (1+2) 
+#define t1 (1+2)
 #define t2 2
-#define t2 3 
+#define t2 3
 
 // testing the if depth
 #if (t1==3)
@@ -65,11 +48,11 @@ precision mediump float;
 #endif
 
 
-#define t8 8 
-#define t9 9 
+#define t8 8
+#define t9 9
 #define t10 10
 
-void main(void) 
+void main(void)
 {
  int sum=1 ;
  sum = t1+t2;
@@ -77,5 +60,5 @@ void main(void)
  sum = t5+t6;
  sum = t7+t8;
  sum = t9+t10;
-}    
-              
+}
+

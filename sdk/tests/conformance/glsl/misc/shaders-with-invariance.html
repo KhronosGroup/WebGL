@@ -1,28 +1,7 @@
 <!--
-
-/*
-** Copyright (c) 2014 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-*/
-
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 -->
 
 <!DOCTYPE html>
@@ -31,10 +10,10 @@
 <meta charset="utf-8">
 <title>WebGL GLSL Conformance Tests</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
-<link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
-<script src="../../../resources/js-test-pre.js"></script>
-<script src="../../resources/webgl-test-utils.js"></script>
-<script src="../../resources/glsl-conformance-test.js"></script>
+<link rel="stylesheet" href="../../../resources/glsl-feature-tests.css"/>
+<script src="../../../js/js-test-pre.js"></script>
+<script src="../../../js/webgl-test-utils.js"></script>
+<script src="../../../js/glsl-conformance-test.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -199,7 +178,7 @@ void main()
 // GLSL 1.0.17 4.3.5
 "use strict";
 // See GLSL ES spec 1.0.17 section 4.6.4 "Invariance and linkage".
-GLSLConformanceTester.runTests([
+var cases = [
   {
     vShaderId: "vertexShaderVariant",
     vShaderSuccess: true,
@@ -215,14 +194,6 @@ GLSLConformanceTester.runTests([
     fShaderSuccess: true,
     linkSuccess: false,
     passMsg: "vertex shader with invariant varying and fragment shader with variant varying must fail",
-  },
-  {
-    vShaderId: "vertexShaderVariant",
-    vShaderSuccess: true,
-    fShaderId: "fragmentShaderGlobalInvariant",
-    fShaderSuccess: true,
-    linkSuccess: false,
-    passMsg: "vertex shader with variant varying and fragment shader with invariant (global setting) varying must fail",
   },
   {
     vShaderId: "vertexShaderGlobalInvariant",
@@ -271,14 +242,6 @@ GLSLConformanceTester.runTests([
     fShaderSuccess: false,
     linkSuccess: false,
     passMsg: "fragment shader with invariant (separately set in wrong order) varying must fail",
-  },
-  {
-    vShaderId: "vertexShaderInvariant",
-    vShaderSuccess: true,
-    fShaderId: "fragmentShaderGlobalInvariant",
-    fShaderSuccess: true,
-    linkSuccess: true,
-    passMsg: "vertex shader with invariant varying and fragment shader with invariant (global setting) varying must succeed",
   },
   {
     vShaderId: "vertexShaderInvariantGlPosition",
@@ -344,7 +307,25 @@ GLSLConformanceTester.runTests([
     linkSuccess: false,
     passMsg: "fragment shader with invariant gl_FrontFacing must fail compilation",
   },
-]);
+  {
+    vShaderId: "vertexShaderVariant",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShaderGlobalInvariant",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "vertex shader with variant varying and fragment shader with invariant (global setting) varying must succeed",
+  },
+  {
+    vShaderId: "vertexShaderInvariant",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShaderGlobalInvariant",
+    fShaderSuccess: true,
+    linkSuccess: false,
+    passMsg: "vertex shader with invariant varying and fragment shader with invariant (global setting) varying must fail",
+  }
+];
+
+GLSLConformanceTester.runTests(cases);
 var successfullyParsed = true;
 </script>
 </body>

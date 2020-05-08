@@ -17,6 +17,8 @@
     <api version="1.0"/>
 
     <ext name="OES_texture_half_float" require="true"/>
+
+    <subsumed version="2.0" by="EXT_color_buffer_float" />
   </depends>
 
   <overview>
@@ -25,6 +27,10 @@
       <addendum>
         <p>All references to <code>R16F</code> and <code>RG16F</code> types
         are ignored.</p>
+      </addendum>
+      <addendum>
+	<p>WebGL implementations supporting this extension are required to
+	support rendering to <code>RGBA16F</code> format.</p>
       </addendum>
     </mirrors>
 
@@ -35,14 +41,17 @@
         Renderbuffers can be created in these formats. These and textures
         created with <code>type = HALF_FLOAT_OES</code>, which will have one
         of these internal formats, can be attached to framebuffer object color
-        attachments for rendering.</p>
+        attachments for rendering. Implementations supporting this extension are
+	required to support rendering to <code>RGBA16F</code> format.
+	Applications must check framebuffer completeness to determine if
+	<code>RGB16F</code> is supported.</p>
       </feature>
 
       <feature>
         <p><span style="color: red">NOTE:</span> fragment shaders outputs
         gl_FragColor and gl_FragData[0] will only be clamped and converted
-        when the color buffer is fixed-point and <code>BlendColor()</code> and
-        <code>ClearColor()</code> will no longer clamp their parameter values
+        when the color buffer is fixed-point and <code>blendColor()</code> and
+        <code>clearColor()</code> will no longer clamp their parameter values
         on input. Clamping will be applied as necessary at draw time according
         to the type of color buffer in use.</p>
       </feature>
@@ -63,7 +72,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface EXT_color_buffer_half_float {
   const GLenum RGBA16F_EXT = 0x881A;
   const GLenum RGB16F_EXT = 0x881B;
@@ -133,6 +142,14 @@ interface EXT_color_buffer_half_float {
 
     <revision date="2014/11/24">
       <change>Move to community approved.</change>
+    </revision>
+
+    <revision date="2016/05/05">
+      <change>Subsumed in WebGL 2.0 by EXT_color_buffer_float.</change>
+    </revision>
+
+    <revision date="2017/09/14">
+      <change>Require RGBA16F to be color-renderable and RGB16F to be optionally color-renderable.</change>
     </revision>
   </history>
 </extension>

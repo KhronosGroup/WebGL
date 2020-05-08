@@ -61,9 +61,9 @@ void main (void)
 	sum3 = sum3 + a[2][3];
 	sum4 = sum4 + a[3][3];
 
-	if( ( sum1 > 10.0-ERROR_EPSILON && sum1 < 10.0+ERROR_EPSILON  ) && 
-		( sum2 > 26.0-ERROR_EPSILON && sum2 < 26.0+ERROR_EPSILON) && 
-		( sum3 > 42.0-ERROR_EPSILON && sum3 < 42.0+ERROR_EPSILON) && 
+	if( ( sum1 > 10.0-ERROR_EPSILON && sum1 < 10.0+ERROR_EPSILON  ) &&
+		( sum2 > 26.0-ERROR_EPSILON && sum2 < 26.0+ERROR_EPSILON) &&
+		( sum3 > 42.0-ERROR_EPSILON && sum3 < 42.0+ERROR_EPSILON) &&
 		( sum4 > 58.0-ERROR_EPSILON && sum4 < 58.0+ERROR_EPSILON) )
 	gray=1.0;
 	else gray=0.0;

@@ -1,28 +1,7 @@
 <!--
-
-/*
-** Copyright (c) 2013 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-*/
-
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 -->
 <!DOCTYPE html>
 <html>
@@ -31,8 +10,13 @@
 <!-- Prevents Chrome from offering to translate tests which generate
      random characters for things like attribute names -->
 <meta name="google" value="notranslate">
+<meta name="viewport" content="width=device-width">
 <title>WebGL Conformance Tests</title>
 <style>
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     border: 0;
     margin: 0;
@@ -41,6 +25,14 @@
     max-height:100%;
     font-family: Verdana, Arial, sans-serif;
     font-size: 0.8em;
+  }
+
+  input[type=button], select {
+    padding: 2px 6px 2px 6px;
+    margin: 0;
+    border: 1px solid #888;
+    border-radius: 2px;
+    background: #f4f4f4;
   }
 
   a {
@@ -52,14 +44,24 @@
     border-bottom: 1px solid #66D;
   }
 
+  label {
+    white-space: nowrap;
+  }
+
   #testlist {
     position:fixed;
-    top:310px;
+    top:180px;
     left:0;
-    right:0;
+    right: calc(10% + 50px);
     bottom:0px;
     overflow:auto;
-    padding:1em;
+    min-height: 200px;
+  }
+
+  @media screen and (max-width: 500px) {
+    #testlist {
+      font-size: 80%;
+    }
   }
 
   #header {
@@ -67,37 +69,48 @@
     top:0;
     left:0;
     width:100%;
-    height:310px;
-    overflow:auto;
+    height: 160px;
+    overflow: scroll;
     border-bottom: 1px solid #CCC;
   }
 
   #info {
-    text-align: center;
-    min-width: 300px;
+    margin: 0 auto;
+    max-width: 280px;
+  }
+  #logo {
+    width: 68px;
+    height: 40px;
   }
 
-  table {
-    width: 100%;
+  #iframe-container {
+    color: white;
+    display: block;
+    position: fixed;
+    width: 90%;
+    height: calc(100% - 170px);
+    bottom: 0px;
+    left: calc(90% - 50px);
+    transition: left 0.15s;
+  }
+  #iframe-container.iframe-shown {
+    left: 10%;
+  }
+  #iframe-toggle {
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
     height: 100%;
-    border: 0;
+    padding: 0;
+    -webkit-appearance: none;
   }
-
-  #frames {
-    border-left: 1px solid #CCC;
-  }
-
-  #frames td {
-      min-height: 1px;
-      min-width: 1px;
-  }
-
-  #frames iframe {
-    border: 0;
-  }
-  
-  #testList {
-    padding:1em;
+  #test-iframe {
+    display: inline-block;
+    vertical-align: middle;
+    background: white;
+    width: calc(100% - 20px);
+    height: 100%;
+    border: 1px solid black;
   }
 
   .folder {
@@ -106,17 +119,31 @@
 
   .folderHeader {
     white-space: nowrap;
+    position: sticky;
+    top: 0;
+  }
+  .folderHeaderInner {
+    background: white;
+    /* to hide checkboxes from parent headers */
+    position: relative;
+    left: -2em;
+    padding-left: 2em;
   }
 
   .folderName {
     font-weight: bold;
   }
 
+  .folderMessage {
+    margin-left: 1em;
+    font-size: 0.9em;
+  }
+
   .pageHeader {
     white-space: nowrap;
   }
 
-  .testpage { 
+  .testpage {
     border-style: solid;
     border-color: #CCC;
     border-width: 0px 0 1px 0;
@@ -128,7 +155,7 @@
     transition: background-color 0.25s;
   }
 
-  .testpage:first-child { 
+  .testpage:first-child {
     border-width: 1px 0 1px 0;
   }
 
@@ -157,20 +184,28 @@
     padding-left: 1em;
   }
 </style>
-<script type="text/javascript" src="resources/webgl-test-harness.js"></script>
+<script type="application/javascript" src="js/webgl-test-harness.js"></script>
 <script>
 "use strict";
+
+window.onbeforeunload = function() {
+  // Prompt user before reloading
+  return false;
+}
+
 var DEFAULT_CONFORMANCE_TEST_VERSION = "1.0.4 (beta)";
 
 var OPTIONS = {
   version: DEFAULT_CONFORMANCE_TEST_VERSION,
   frames: 1,
-  allowSkip: 0
+  allowSkip: 0,
+  root: null,
+  quiet: 0
 };
 
 var testVersions = [
   "1.0.4 (beta)",
-  "2.0.0 (beta)"
+  "2.0.1 (beta)"
 ];
 
 function start() {
@@ -196,7 +231,7 @@ function start() {
     var names;
     switch (version) {
       case 2:
-        names = ["webgl2", "experimental-webgl2"]; break;
+        names = ["webgl2"]; break;
       default:
         names = ["webgl", "experimental-webgl"]; break;
     }
@@ -217,6 +252,7 @@ function start() {
   var folderCount = 0;
   var autoScrollEnabled = true; // Whether the user prefers to auto scroll
   var autoScroll = true; // Whether auto scroll is actually performed
+  let quickTestMode = true;
 
   var Page = function(reporter, folder, testIndex, url) {
     this.reporter = reporter;
@@ -226,7 +262,11 @@ function start() {
     this.totalSuccessful = 0;
     this.totalTimeouts = 0;
     this.totalSkipped = 0;
+    this.totalFailed = 0;
     this.testIndex = testIndex;
+    this.startTime = new Date();
+    this.totalTime = 0;
+    var that = this;
 
     this.elementId = "page" + pageCount++;
     var li = reporter.localDoc.createElement('li');
@@ -236,9 +276,18 @@ function start() {
     var check = reporter.localDoc.createElement('input');
     check.type = 'checkbox';
     check.checked = true;
+    check.onclick = function() {
+      if (this.checked) {
+        that.folder.enableUp_();
+      }
+      else {
+        that.folder.disableUp_();
+      }
+    };
     div.appendChild(check);
     var button = reporter.localDoc.createElement('input');
     button.type = 'button';
+    button.id = this.elementId + "-button";
     button.value = 'run';
     button.onclick = function() {
       autoScroll = false;
@@ -249,9 +298,17 @@ function start() {
     }
     div.appendChild(button);
     var a = reporter.localDoc.createElement('a');
-    a.href = WebGLTestHarnessModule.getURLWithOptions(url, reporter.selectedWebGLVersion);
+    a.href = WebGLTestHarnessModule.getURLWithOptions(url, {
+      webglVersion: reporter.selectedWebGLVersion,
+      quiet: OPTIONS.quiet,
+      quick: quickTestMode ? 1 : 0,
+    });
     a.target = "_blank";
-    var node = reporter.localDoc.createTextNode(url);
+    const folderName = that.folder.displayName;
+    console.assert(folderName.startsWith("all/"));
+    console.assert(url.startsWith(folderName.substring(4) + "/"));
+    const urlWithoutFolder = url.substring(folderName.length - 4 + 1);
+    var node = reporter.localDoc.createTextNode(urlWithoutFolder);
     a.appendChild(node);
     div.appendChild(a);
     li.setAttribute('class', 'testpage');
@@ -266,6 +323,10 @@ function start() {
     this.check = check;
   };
 
+  Page.prototype.checked = function() {
+    return this.check.checked;
+  }
+
   Page.prototype.addResult = function(msg, success, skipped) {
     ++this.totalTests;
     if (success === undefined) {
@@ -273,14 +334,17 @@ function start() {
       var result = "timeout";
       var css = "timeout";
     } else if (success) {
-      if(skipped) {
-        ++this.totalSkipped;
-      } else {
-        ++this.totalSuccessful;
-      }
+      ++this.totalSuccessful;
       // don't report success.
       return;
     } else {
+      ++this.totalFailed;
+      if (skipped) {
+        // Skipped tests are counted as both skips and failures (because we
+        // don't want to accidentally accept a conformance submission with
+        // skipped tests).
+        ++this.totalSkipped;
+      }
       var result = "failed";
       var css = "fail";
     }
@@ -298,7 +362,10 @@ function start() {
     }
     this.totalTests = 0;
     this.totalSuccessful = 0;
+    this.totalSkipped = 0;
+    this.totalFailed = 0;
     this.totalTimeouts = 0;
+    this.totalTime = 0;
     // remove previous results.
     while (this.resultElem.hasChildNodes()) {
       this.resultElem.removeChild(this.resultElem.childNodes[0]);
@@ -312,6 +379,7 @@ function start() {
       this.elem.classList.remove('testpageskipped');
       this.elem.classList.remove('testpagefail');
       this.elem.classList.remove('testpagesuccess');
+      this.startTime = Date.now();
     }
 
     return this.check.checked && this.folder.checked();
@@ -322,11 +390,27 @@ function start() {
   };
 
   Page.prototype.finishPage = function(success) {
-    if(this.totalSkipped) {
-      var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped)';
+    var shouldRun = this.check.checked && this.folder.checked();
+    if (shouldRun) {
+      this.totalTime = Date.now() - this.startTime;
     } else {
-      var msg = ' (' + this.totalSuccessful + ' of ' + this.totalTests + ' passed)';
+      this.totalTime = 0;
     }
+
+    var passedMsg = ' (Passed: ' + this.totalSuccessful + '/' + this.totalTests;
+    var skippedMsg = '';
+    if (this.totalSkipped > 0) {
+      skippedMsg = ' Skipped: ' + this.totalSkipped + '/' + this.totalTests;
+    }
+    var failedMsg = '';
+    if (this.totalFailed > 0) {
+      failedMsg = ' Failed: ' + this.totalFailed + '/' + this.totalTests;
+    }
+    var timeoutMsg = '';
+    if (this.totalTimeouts > 0) {
+      timeoutMsg = ' Timeout: ' + this.totalTimeouts + '/' + this.totalTests;
+    }
+    var msg = passedMsg + skippedMsg + failedMsg + timeoutMsg + ' in ' + this.totalTime.toFixed(1) + ' ms)';
 
     if (success === undefined) {
       var css = 'testpagetimeout';
@@ -342,6 +426,7 @@ function start() {
     }
     this.elem.classList.add(css);
     this.totalsElem.textContent = msg;
+    this.folder.pageFinished(this, success);
   };
 
   Page.prototype.enableTest = function(re) {
@@ -357,6 +442,18 @@ function start() {
     }
   };
 
+  Page.prototype.toJSON = function() {
+    return {
+      'subtests': this.totalTests,
+      'successful': this.totalSuccessful,
+      'skipped': this.totalSkipped,
+      'failed': this.totalFailed,
+      'timedOut': this.totalTimeouts,
+      'totalTime': this.totalTime,
+    };
+  };
+
+
   var Folder = function(reporter, folder, depth, opt_name) {
     this.reporter = reporter;
     this.depth = depth;
@@ -369,6 +466,11 @@ function start() {
     this.pages = [];
     this.items = [];
     this.folder = folder;
+    this.cachedTotalTime = 0;
+    this.cachedTotalSuccessful = 0;
+    this.cachedTotalSkipped = 0;
+    this.cachedTotalTimeouts = 0;
+    this.cachedTotalTests = 0;
     var that = this;
 
     var doc = reporter.localDoc;
@@ -376,12 +478,23 @@ function start() {
     var li = doc.createElement('li');
     li.id = this.elementId;
     li.classList.add("folder");
-    var div = doc.createElement('div');
-    div.classList.add('folderHeader');
+    var folderHeader = doc.createElement('div');
+    folderHeader.classList.add('folderHeader');
+    var folderHeaderInner = doc.createElement('div');
+    folderHeaderInner.classList.add('folderHeaderInner');
+    folderHeader.appendChild(folderHeaderInner);
     var check = doc.createElement('input');
     check.type = 'checkbox';
     check.checked = true;
-    div.appendChild(check);
+    check.onclick = function() {
+      if (this.checked) {
+        that.enableTest(".*");
+      }
+      else {
+        that.disableTest(".*", true);
+      }
+    };
+    folderHeaderInner.appendChild(check);
     var button = doc.createElement('input');
     button.type = 'button';
     button.value = 'run';
@@ -392,18 +505,23 @@ function start() {
     if (reporter.noSelectedWebGLVersion) {
       button.disabled = true;
     }
-    div.appendChild(button);
+    folderHeaderInner.appendChild(button);
     var h = doc.createElement('span');
     h.classList.add('folderName');
     h.appendChild(doc.createTextNode(this.displayName));
-    div.appendChild(h);
+    folderHeaderInner.appendChild(h);
+    var m = doc.createElement('span');
+    m.classList.add('folderMessage');
+    this.msgNode = doc.createTextNode('');
+    m.appendChild(this.msgNode);
+    folderHeaderInner.appendChild(m);
     var ul = doc.createElement('ul');
-    li.appendChild(div);
+    li.appendChild(folderHeader);
     li.appendChild(ul);
     this.childUL = ul;
     this.elem = li;
     this.check = check;
-    this.folderHeader = div;
+    this.folderHeader = folderHeader;
   };
 
   Folder.prototype.checked = function() {
@@ -423,11 +541,117 @@ function start() {
     return numChildren + this.pages.length;
   };
 
+  Folder.prototype.totalTime = function() {
+    // Check to see if the cached total time needs to be recomputed
+    if (this.cachedTotalTime == -1) {
+      this.cachedTotalTime = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalTime += this.subFolders[name].totalTime();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalTime += this.pages[ii].totalTime;
+      }
+    }
+    return this.cachedTotalTime;
+  };
+
+  Folder.prototype.totalSuccessful = function() {
+    if (this.cachedTotalSuccessful == -1) {
+      this.cachedTotalSuccessful = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalSuccessful += this.subFolders[name].totalSuccessful();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalSuccessful += this.pages[ii].totalSuccessful;
+      }
+    }
+    return this.cachedTotalSuccessful;
+  };
+
+  Folder.prototype.totalSkipped = function() {
+    if (this.cachedTotalSkipped == -1) {
+      this.cachedTotalSkipped = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalSkipped += this.subFolders[name].totalSkipped();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalSkipped += this.pages[ii].totalSkipped;
+      }
+    }
+    return this.cachedTotalSkipped;
+  };
+
+  Folder.prototype.totalFailed = function() {
+    if (this.cachedTotalFailed == -1) {
+      this.cachedTotalFailed = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalFailed += this.subFolders[name].totalFailed();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalFailed += this.pages[ii].totalFailed;
+      }
+    }
+    return this.cachedTotalFailed;
+  };
+
+  Folder.prototype.totalTimeouts = function() {
+    if (this.cachedTotalTimeouts == -1) {
+      this.cachedTotalTimeouts = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalTimeouts += this.subFolders[name].totalTimeouts();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalTimeouts += this.pages[ii].totalTimeouts;
+      }
+    }
+    return this.cachedTotalTimeouts;
+  };
+
+  Folder.prototype.totalTests = function() {
+    if (this.cachedTotalTests == -1) {
+      this.cachedTotalTests = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalTests += this.subFolders[name].totalTests();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalTests += this.pages[ii].totalTests;
+      }
+    }
+    return this.cachedTotalTests;
+  };
+
   Folder.prototype.run = function() {
+    this.msgNode.textContent = '';
     var firstTestIndex = this.firstTestIndex();
     var count = this.numChildren();
     log("run tests: " + firstTestIndex + " to " + (firstTestIndex + count - 1))
     testHarness.runTests({start: firstTestIndex, count: count});
+  };
+
+  Folder.prototype.pageFinished = function(page, success) {
+    this.cachedTotalTime = -1;
+    this.cachedTotalSuccessful = -1;
+    this.cachedTotalSkipped = -1;
+    this.cachedTotalFailed = -1;
+    this.cachedTotalTimeouts = -1;
+    this.cachedTotalTests = -1;
+    var passedMsg = ' (Passed: ' + this.totalSuccessful() + '/' + this.totalTests();
+    var skippedMsg = '';
+    if (this.totalSkipped() > 0) {
+      skippedMsg = ' Skipped: ' + this.totalSkipped() + '/' + this.totalTests();
+    }
+    var failedMsg = '';
+    if (this.totalFailed() > 0) {
+      failedMsg = ' Failed: ' + this.totalFailed() + '/' + this.totalTests();
+    }
+    var timeoutMsg = '';
+    if (this.totalTimeouts() > 0) {
+      timeoutMsg = ' Timeout: ' + this.totalTimeouts() + '/' + this.totalTests();
+    }
+    this.msgNode.textContent = passedMsg + skippedMsg + failedMsg + timeoutMsg + ' in ' + (this.totalTime() / 1000).toFixed(2) + ' seconds)';
+    if (this.folder) {
+      this.folder.pageFinished(page, success);
+    }
   };
 
   Folder.prototype.getSubFolder = function(name) {
@@ -478,6 +702,24 @@ function start() {
     var parent = this.folder;
     if (parent) {
       parent.enableUp_();
+    }
+  }
+
+  Folder.prototype.disableUp_ = function() {
+    var checked = false;
+    for (var name in this.subFolders) {
+      checked = this.subFolders[name].checked();
+      if (checked) {
+        break;
+      }
+    }
+    for (var ii = 0; ii < this.pages.length && checked == false; ++ii) {
+      checked = this.pages[ii].checked();
+    }
+    this.check.checked = checked;
+    var parent = this.folder;
+    if (parent) {
+      parent.disableUp_();
     }
   }
 
@@ -532,6 +774,7 @@ function start() {
     this.root = new Folder(this, null, 0, "all");
     this.resultElem.appendChild(this.root.elem);
     this.callbacks = { };
+    this.startTime = new Date();
 
     if (ctx) {
       this.contextInfo["VENDOR"] = ctx.getParameter(ctx.VENDOR);
@@ -618,28 +861,69 @@ function start() {
   Reporter.prototype.displayFinalResults = function(msg, success) {
     if (success) {
       var totalTests = 0;
-      var totalSuccessful = 0;
-      var totalTimeouts = 0;
-      var totalSkipped = 0;
+      var testsSucceeded = 0;
+      var testsFailed = 0;
+      var testsSkipped = 0;
+      var testsTimedOut = 0;
+
+      var subtestsHit = 0;
+      var subtestsSucceeded = 0;
+      var subtestsTimedOut = 0;
+      var subtestsSkipped = 0;
+      var subtestsFailed = 0;
+
+      var totalTime = Date.now() - this.startTime;
+
       for (var url in this.pagesByURL) {
         var page = this.pagesByURL[url];
-        totalTests += page.totalTests;
-        totalSuccessful += page.totalSuccessful;
-        totalTimeouts += page.totalTimeouts;
-        totalSkipped += page.totalSkipped;
+        totalTests += 1;
+        if (page.totalSkipped) {
+          testsSkipped += 1;
+        }
+        if (page.totalFailed) {
+          testsFailed += 1;
+        } else if (page.totalTimeouts) {
+          testsTimedOut += 1;
+        } else if (page.totalSuccessful) {
+          if (page.totalSuccessful != page.totalTests)
+            throw successes_not_equal_total;
+          testsSucceeded += 1;
+        }
+
+        subtestsHit += page.totalTests;
+        subtestsSucceeded += page.totalSuccessful;
+        subtestsTimedOut += page.totalTimeouts;
+        subtestsSkipped += page.totalSkipped;
+        subtestsFailed += page.totalFailed;
       }
-      var timeout = '';
-      if (totalTimeouts > 0) {
-        timeout = ', ' + totalTimeouts + ' timed out';
+
+      function ratio_str(x, y, name) {
+        return x + '/' + y + ' ' + name + ' (' + (x / y * 100).toFixed(2) + '%)';
       }
-      var msg = ' (' + totalSuccessful + ' of ' +
-                totalTests + ' passed' + timeout + ')';
+      var testsSucceededRatio = ratio_str(testsSucceeded, totalTests, 'tests');
+      var passedMsg = 'Passed ' + testsSucceededRatio + ', ' +
+                      ratio_str(subtestsSucceeded, subtestsHit, 'subtests');
+      var skippedMsg = '';
+      if (testsSkipped > 0) {
+        skippedMsg = ' Skipped ' + ratio_str(testsSkipped, totalTests, 'tests');
+      }
+      var failedMsg = '';
+      if (testsFailed > 0) {
+        failedMsg = ' Failed ' + ratio_str(testsFailed, totalTests, 'tests') + ', ' +
+                    ratio_str(subtestsFailed, subtestsHit, 'subtests');
+      }
+      var timeoutMsg = '';
+      if (testsTimedOut > 0) {
+        timeoutMsg = ' Timeout ' + ratio_str(testsTimedOut, totalTests, 'tests');
+      }
+      var msg = passedMsg + skippedMsg + failedMsg + timeoutMsg;
       this.fullResultsNode.textContent = msg;
 
       // generate a text summary
       var tx = "";
       tx += "WebGL Conformance Test Results\n";
       tx += "Version " + OPTIONS.version + "\n";
+      tx += "Generated on: " + (new Date()).toString() + "\n";
       tx += "\n";
       tx += "-------------------\n\n";
       tx += "User Agent: " + (navigator.userAgent ? navigator.userAgent : "(navigator.userAgent is null)") + "\n";
@@ -649,51 +933,73 @@ function start() {
       tx += "Unmasked VENDOR: " + this.contextInfo["UNMASKED_VENDOR"] + "\n";
       tx += "Unmasked RENDERER: " + this.contextInfo["UNMASKED_RENDERER"] + "\n";
       tx += "WebGL R/G/B/A/Depth/Stencil bits (default config): " + this.contextInfo["RED_BITS"] + "/" + this.contextInfo["GREEN_BITS"] + "/" + this.contextInfo["BLUE_BITS"] + "/" + this.contextInfo["ALPHA_BITS"] + "/" + this.contextInfo["DEPTH_BITS"] + "/" + this.contextInfo["STENCIL_BITS"] + "\n";
-      tx += "\n";
-      tx += "-------------------\n\n";
-      tx += "Test Summary (" + totalTests + " total tests):\n";
-      tx += "Tests PASSED: " + totalSuccessful + "\n";
-      tx += "Tests FAILED: " + (totalTests - totalSuccessful - totalSkipped) + "\n";
-      tx += "Tests TIMED OUT: " + totalTimeouts + "\n";
-      tx += "Tests SKIPPED: " + totalSkipped + "\n";
-      tx += "\n";
-      tx += "-------------------\n\n";
-      if (totalSuccessful < totalTests) {
-        tx += "Failures:\n\n";
-        for (var url in this.pagesByURL) {
-            var page = this.pagesByURL[url];
-            var pageTotalFail = page.totalTests - page.totalSuccessful - page.totalSkipped;
-            if (!(page.totalTests == 0 && page.totalTimeouts == 0) &&
-                pageTotalFail > 0)
-            {
-            tx += url + ": " + pageTotalFail + " tests failed";
-            if (page.totalTimeouts)
-                tx += " (" + page.totalTimeouts + " timed out)";
-            tx += "\n";
-            }
-        }
+      tx += "\n-------------------\n\n";
+
+      var result;
+      if (totalTests && testsSucceeded == totalTests) {
+        result = 'PASS';
       } else {
-        tx += "All tests PASSED\n\n";
+        result = 'FAIL';
       }
-      tx += "\n";
-      tx += "-------------------\n\n";
-      tx += "Complete Test Results (total / pass / fail / timeout / skipped):\n\n";
+      tx += "Test Summary: " + result + " (" + totalTests + " tests):\n";
+      tx += subtestsHit + " subtests ran in " + (totalTime / 1000.0).toFixed(2) + " seconds\n";
+      function record(what, tests, subtests) {
+        tx += what + ": " + tests + " tests, " + subtests + " subtests\n";
+      }
+      record('PASSED', testsSucceeded, subtestsSucceeded);
+      record('NOT PASSED', totalTests - testsSucceeded, subtestsHit - subtestsSucceeded);
+
+      record('FAILED', testsFailed, subtestsFailed);
+      record('TIMED OUT', testsTimedOut, subtestsTimedOut);
+      record('SKIPPED', testsSkipped, subtestsSkipped);
+
+      tx += "\n-------------------\n\n";
+
+      const failureLines = [];
+      const timeoutLines = [];
+      const resultLines = [];
+
       for (var url in this.pagesByURL) {
         var page = this.pagesByURL[url];
-        var pageTotalFail = page.totalTests - page.totalSuccessful - page.totalSkipped;
-        if (!(page.totalTests == 0 && page.totalTimeouts == 0)) {
-          tx += url + ": " + page.totalTests + " / " +
-              page.totalSuccessful + " / " + pageTotalFail + " / " + page.totalTimeouts + " / " + page.totalSkipped + "\n";
+        resultLines.push('    "' + url + '":' + JSON.stringify(page.toJSON()));
+
+        if (page.totalFailed) {
+          failureLines.push('    "' + url + '",');
+        }
+        if (page.totalTimeouts) {
+          timeoutLines.push('    "' + url + '",');
         }
       }
-      tx += "\n";
-      tx += "-------------------\n\n";
-      tx += "Generated on: " + (new Date()).toString() + "\n";
+
+      const lines = [].concat(
+        [
+          '{',
+          '  "failures": [',
+        ],
+        failureLines,
+        [
+          '  ],',
+          '  "timeouts": [',
+        ],
+        timeoutLines,
+        [
+          '  ],',
+          '  "results": {',
+        ],
+        resultLines,
+        [
+        '  },',
+        '}',
+        ]
+      );
+
+      tx += lines.join('\n');
 
       var r = document.getElementById("testResultsAsText");
       while (r.firstChild) r.removeChild(r.firstChild);
       r.appendChild(document.createTextNode(tx));
-      document.getElementById("showTextSummary").style.visibility = "visible";
+      document.getElementById("showTextSummary").disabled = false;
+      document.getElementById("dlTextSummary").disabled = false;
 
       this.postResultsToServer(tx);
     } else {
@@ -704,6 +1010,7 @@ function start() {
   };
 
   Reporter.prototype.postTestStartToServer = function(resultText) {
+    this.startTime = Date.now();
     if(OPTIONS.postResults == undefined || OPTIONS.postResults == 0) {
       return;
     }
@@ -811,89 +1118,17 @@ function start() {
   makeVersionSelect(OPTIONS.version);
 
   // Make iframes
-  var makeIFrames = function() {
-    var toparea = document.getElementById("toparea");
-    var frame = document.getElementById("frames");
-    var areaWidth = Math.max(100, toparea.clientWidth - 300);
-    var areaHeight = Math.max(100, frame.clientHeight);
+  var iframes = [document.getElementById("test-iframe")];
 
-    var numCells = OPTIONS.frames;
-
-    var gridWidth = Math.max(1, Math.ceil(Math.sqrt(numCells)));
-    var gridHeight = gridWidth;
-    var bestAspect = 99999;
-    var bestNumEmptyCells = 99999;
-    var bestNumEmptyCellsColumns = 0;
-    var bestNumEmptyCellsAspect = 99999;
-    var minGoodAspect = 1 / 3;
-    var maxGoodAspect = 3 / 1;
-
-    for (var columns = 1; columns <= numCells; ++columns) {
-        var rows = Math.ceil(numCells / columns);
-        var cellWidth = areaWidth / columns;
-        var cellHeight = areaHeight / rows;
-        var cellAspect = cellWidth / cellHeight;
-        if (cellAspect >= minGoodAspect && cellAspect <= maxGoodAspect) {
-            var numEmptyCells = columns * rows - numCells;
-            // Keep the one with the least number of empty cells.
-            if (numEmptyCells < bestNumEmptyCells) {
-                bestNumEmptyCells = numEmptyCells;
-                bestNumEmptyCellsColumns = columns;
-                bestNumEmptyCellsAspect = cellAspect;
-            // If it's the same number of empty cells keep the one
-            // with the best aspect.
-            } else if (numEmptyCells == bestNumEmptyCells &&
-                  Math.abs(cellAspect - 1) <
-                  Math.abs(bestNumEmptyCellsAspect - 1)) {
-                bestNumEmptyCellsColumns = columns;
-                bestNumEmptyCellsAspect = cellAspect;
-            }
-        }
-        if (Math.abs(cellAspect - 1) < Math.abs(bestAspect - 1)) {
-            gridWidth = columns;
-            gridHeight = rows;
-            bestAspect = cellAspect;
-        }
-    }
-
-    // if we found an aspect with few empty cells use that.
-    var numEmptyCells = gridWidth * gridHeight - numCells;
-    if (bestNumEmptyCellsColumns && bestNumEmptyCells < numEmptyCells) {
-        gridWidth = bestNumEmptyCellsColumns;
-        gridHeight = Math.ceil(numCells / gridWidth);
-    }
-
-    var table = document.createElement("table");
-    table.style.height = areaHeight + "px";
-    var tbody = document.createElement("tbody");
-    var iframes = [];
-    for (var row = 0; row < gridHeight; ++row) {
-      var tr = document.createElement("tr");
-      for (var column = 0; column < gridWidth; ++column) {
-        var td = document.createElement("td");
-        if (numCells > 0) {
-          --numCells;
-          var iframe = document.createElement("iframe");
-          iframe.setAttribute("scrolling", "yes");
-          iframe.style.width = "100%";
-          iframe.style.height = "100%";
-          iframes.push(iframe);
-          td.appendChild(iframe);
-        }
-        tr.appendChild(td);
-      }
-      tbody.appendChild(tr);
-    }
-    table.appendChild(tbody);
-    frame.appendChild(table);
-    return iframes;
-  };
-  var iframes = makeIFrames();
+  var testPath = "00_test_list.txt";
+  if (OPTIONS.root) {
+    testPath = OPTIONS.root + "/" + testPath;
+  }
 
   var reporter = new Reporter(iframes);
   var testHarness = new WebGLTestHarnessModule.TestHarness(
       iframes,
-      '00_test_list.txt',
+      testPath,
       function(type, url, msg, success, skipped) {
         return reporter.reportFunc(type, url, msg, success, skipped);
       },
@@ -947,6 +1182,12 @@ function start() {
     }
   };
 
+  var quickTestModeCheckbox = document.getElementById("quickTestModeCheckbox");
+  quickTestModeCheckbox.checked = quickTestMode;
+  quickTestModeCheckbox.onclick = function() {
+    quickTestMode = quickTestModeCheckbox.checked;
+  };
+
   var textbutton = document.getElementById("showTextSummary");
   textbutton.onclick = function() {
     log("click");
@@ -962,6 +1203,22 @@ function start() {
       textbutton.setAttribute("value", "display text summary");
     }
   };
+
+  function download(filename, text) {
+    var element = document.createElement("a");
+    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+    element.setAttribute("download", filename);
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+  var dltextbutton = document.getElementById("dlTextSummary");
+  dltextbutton.onclick = function() {
+    var textdiv = document.getElementById("testResultsText");
+    download("webgl-conformance-" + OPTIONS.version + ".txt", textdiv.innerText.trim());
+  };
+
   if (reporter.noSelectedWebGLVersion) {
     button.disabled = true;
   }
@@ -974,82 +1231,74 @@ function start() {
     elem.style.display = "";
     reporter.postResultsToServer("Browser does not appear to support the selected version of WebGL");
   }
+
+  const iframeContainer = document.getElementById("iframe-container");
+  const iframeToggle = document.getElementById("iframe-toggle");
+  iframeToggle.value = iframeToggle.getAttribute("data-value-hidden");
+  iframeToggle.onclick = function() {
+    const expanded = iframeToggle.myExpanded = !iframeToggle.myExpanded;
+    if (expanded) {
+      iframeContainer.classList.add("iframe-shown");
+      iframeToggle.value = iframeToggle.getAttribute("data-value-shown");
+    } else {
+      iframeContainer.classList.remove("iframe-shown");
+      iframeToggle.value = iframeToggle.getAttribute("data-value-hidden");
+    }
+  };
 }
 </script>
 </head>
 <body onload="start()">
 
 <div id="testlist">
-
-        <div id="testResultsHTML">
-          <ul id="results">
-          </ul>
-        </div>
-        <div style="display: none;" id="testResultsText">
-          <pre id="testResultsAsText"></pre>
-        </div>
-
+  <div id="testResultsHTML">
+    <ul id="results">
+    </ul>
+  </div>
+  <div style="display: none;" id="testResultsText">
+    <pre id="testResultsAsText"></pre>
+  </div>
 </div> <!-- end of container -->
 
-<div id="header">
+<div id="iframe-container">
+  <input type="button" data-value-hidden="◄" data-value-shown="►" id="iframe-toggle" aria-hidden="true"
+  ><iframe id="test-iframe"></iframe>
+</div>
 
-<table>
-  <tr style="height: 300px;">
-    <td>
-      <table id="toparea">
-        <tr>
-          <td style="width: 300px">
-            <div id="info">
-              <img src="resources/webgl-logo.png" /><br />
-              WebGL Conformance Test Runner<br/>
-              Version 
-              <select id="testVersion">
-              </select>
-              <br/>
-              <a href="../../conformance-suites/"><i>(click here for previous versions)</i></a>
-              <br/>
-              <input type="button" value="run tests" id="runTestsButton"/>
-              <br/>
-              <input type="checkbox" id="autoScrollCheckbox"/>
-              <label for="autoScrollCheckbox">auto scroll</label>
-              <br/>
-              <input type="checkbox" id="hidePassedCheckbox"/>
-              <label for="hidePassedCheckbox">hide passed tests</label>
-              <br/>
-              <input type="button" style="visibility: hidden;" value="display text summary" id="showTextSummary"/>
-              <div id="nowebgl" class="nowebgl" style="display: none;">
-                This browser does not appear to support WebGL
-              </div>
-              <div id="noselectedwebgl" class="nowebgl" style="display: none;">
-                This browser does not appear to support the selected version of WebGL
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div id="loading">
-              Loading Tests...
-            </div>
-            <div>
-              Results:
-              <span id="fullresults">
-              </span>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div id="error-wrap">
-              <pre id="error"></pre>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </td>
-    <td id="frames"></td>
-  </tr>
-</table>
+<div id="header">
+  <div id="info">
+    <div style="text-align:center">
+      <img src="resources/webgl-logo.png" alt="WebGL" id="logo"/>
+      <br/>
+      Conformance Test Runner
+    </div>
+    Version
+    <select id="testVersion">
+    </select>
+    <a href="../../conformance-suites/">(older versions?)</a>
+    <br/>
+    <input type="button" value="run tests" id="runTestsButton"/>
+    <label for="autoScrollCheckbox"><input type="checkbox" id="autoScrollCheckbox"/>auto scroll</label>
+    <label for="hidePassedCheckbox"><input type="checkbox" id="hidePassedCheckbox"/>hide passed</label>
+    <label for="quickTestModeCheckbox"><input type="checkbox" id="quickTestModeCheckbox"/>quick test mode</label>
+    <br/>
+    <input type="button" disabled value="show text summary" id="showTextSummary"/>
+    <input type="button" disabled value="download text" id="dlTextSummary"/>
+    <div id="nowebgl" class="nowebgl" style="display: none;">
+      This browser does not appear to support WebGL
+    </div>
+    <div id="noselectedwebgl" class="nowebgl" style="display: none;">
+      This browser does not appear to support the selected version of WebGL
+    </div>
+    <div id="loading">
+      Loading Tests...
+    </div>
+    <div id="fullresults">
+    </div>
+  </div>
+  <div id="error-wrap">
+    <pre id="error"></pre>
+  </div>
 </div> <!-- end of header -->
 
 </body>

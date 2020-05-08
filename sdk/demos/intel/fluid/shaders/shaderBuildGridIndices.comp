@@ -1,0 +1,63 @@
+#version 310 es
+precision mediump float;
+layout(local_size_x = NUM_THREADS, local_size_y = 1, local_size_z = 1) in;
+
+struct Grid {
+  uint grid;
+  uint padding1;
+  uint padding2;
+  uint padding3;
+};
+
+struct GridIndices {
+  uvec2 indices;
+};
+
+layout(std140, binding = 0) uniform Cb {
+  uint g_iNumParticles;
+  float g_fTimeStep;
+  float g_fSmoothlen;
+  float g_fPressureStiffness;
+  float g_fRestDensity;
+  float g_fDensityCoef;
+  float g_fGradPressureCoef;
+  float g_fLapViscosityCoef;
+  float g_fWallStiffness;
+  vec4 g_vGravity;
+  vec4 g_vGridDim;
+  vec3 g_vPlanes[4];
+}
+cb;
+
+layout(std140, binding = 3) buffer GridRO {
+  readonly Grid data[];
+}
+gridRO;
+
+layout(std140, binding = 5) buffer GridIndicesRW {
+  GridIndices data[];
+}
+gridIndicesRW;
+
+uint GridGetKey(uint keyvaluepair) {
+  return (keyvaluepair >> 16);
+}
+
+void main() {
+  uint G_ID = uint(gl_GlobalInvocationID.x);
+  uint G_ID_PREV = uint((int(G_ID) == 0) ? uint(cb.g_iNumParticles) : G_ID);
+  G_ID_PREV--;
+  uint G_ID_NEXT = uint(int(G_ID) + 1);
+  if (G_ID_NEXT == cb.g_iNumParticles) {
+    G_ID_NEXT = uint(0);
+  }
+  uint cell = GridGetKey(gridRO.data[G_ID].grid);
+  uint cell_prev = GridGetKey(gridRO.data[G_ID_PREV].grid);
+  uint cell_next = GridGetKey(gridRO.data[G_ID_NEXT].grid);
+  if (cell != cell_prev) {
+    gridIndicesRW.data[cell].indices.x = uint(G_ID);
+  }
+  if (cell != cell_next) {
+    gridIndicesRW.data[cell].indices.y = G_ID + uint(1);
+  }
+}

@@ -40,6 +40,7 @@ var successfullyParsed = false;
 var webGL = null;
 var contextAttribs = null;
 var pixel = [0, 0, 0, 1];
+var redChannels = [0, 0, 0];
 var correctColor = null;
 var value;
 
@@ -202,10 +203,12 @@ function testStencil(stencil)
 function testAntialias(antialias)
 {
     debug("Testing antialias = " + antialias);
+    // Both the width and height of canvas are N.
+    var N = 2;
     if (antialias)
-        shouldBeNonNull("webGL = getWebGL(2, 2, { depth: false, stencil: false, alpha: false, antialias: true }, [ 0, 0, 0, 1 ], 1, 0)");
+        shouldBeNonNull("webGL = getWebGL(" + N + ", " + N + ", { depth: false, stencil: false, alpha: false, antialias: true }, [ 0, 0, 0, 1 ], 1, 0)");
     else
-        shouldBeNonNull("webGL = getWebGL(2, 2, { depth: false, stencil: false, alpha: false, antialias: false }, [ 0, 0, 0, 1 ], 1, 0)");
+        shouldBeNonNull("webGL = getWebGL(" + N + ", " + N + ", { depth: false, stencil: false, alpha: false, antialias: false }, [ 0, 0, 0, 1 ], 1, 0)");
     shouldBeNonNull("contextAttribs = webGL.getContextAttributes()");
 
     var vertices = new Float32Array([
@@ -216,9 +219,14 @@ function testAntialias(antialias)
         255, 0, 0, 255,
         255, 0, 0, 255,
         255, 0, 0, 255]);
-    var buf = drawAndReadPixel(webGL, vertices, colors, 0, 0);
-    pixel[0] = buf[0];
-    shouldBe("pixel[0] != 255 && pixel[0] != 0", "contextAttribs.antialias");
+    drawAndReadPixel(webGL, vertices, colors, 0, 0);
+    var buf = new Uint8Array(N * N * 4);
+    webGL.readPixels(0, 0, N, N, webGL.RGBA, webGL.UNSIGNED_BYTE, buf);
+    redChannels[0] = buf[4 * (N + 1)]; // (1, 1)
+    redChannels[1] = buf[4 * N * (N - 1)]; // left top
+    redChannels[2] = buf[4 * (N - 1)]; // right bottom
+    shouldBeTrue("redChannels[1] == 255 && redChannels[2] == 0");
+    shouldBe("redChannels[0] != 255 && redChannels[0] != 0", "contextAttribs.antialias");
 }
 
 function runTest()

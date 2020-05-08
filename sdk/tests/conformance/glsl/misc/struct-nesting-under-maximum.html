@@ -1,28 +1,7 @@
 <!--
-
-/*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-*/
-
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 -->
 
 <!DOCTYPE html>
@@ -31,10 +10,10 @@
 <meta charset="utf-8">
 <title>WebGL GLSL Conformance Tests</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
-<link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
-<script src="../../../resources/js-test-pre.js"></script>
-<script src="../../resources/webgl-test-utils.js"></script>
-<script src="../../resources/glsl-conformance-test.js"></script>
+<link rel="stylesheet" href="../../../resources/glsl-feature-tests.css"/>
+<script src="../../../js/js-test-pre.js"></script>
+<script src="../../../js/webgl-test-utils.js"></script>
+<script src="../../../js/glsl-conformance-test.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -42,19 +21,19 @@
 <script id="vertexShader" type="text/something-not-javascript">
 // shader with struct nesting less than maximum in WebGL spec should succeed
 struct nesting4 {
-  vec4 vecfield;
+    vec4 vecfield;
 };
 
 struct nesting3 {
-  nesting4 field4;
+    nesting4 field4;
 };
 
 struct nesting2 {
-  nesting3 field3;
+    nesting3 field3;
 };
 
 struct nesting1 {
-  nesting2 field2;
+    nesting2 field2;
 };
 
 uniform nesting1 uniform1;

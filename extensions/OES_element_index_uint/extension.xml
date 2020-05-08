@@ -23,7 +23,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface OES_element_index_uint {
 };
   </idl>

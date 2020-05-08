@@ -1,25 +1,8 @@
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 
 
@@ -90,7 +73,7 @@ bool is_all(const in mat4 par, const in float value)
 		ret = false;
 	if(par[0][3] != value)
 		ret = false;
-		
+
 	if(par[1][0] != value)
 		ret = false;
 	if(par[1][1] != value)
@@ -99,7 +82,7 @@ bool is_all(const in mat4 par, const in float value)
 		ret = false;
 	if(par[1][3] != value)
 		ret = false;
-		
+
 	if(par[2][0] != value)
 		ret = false;
 	if(par[2][1] != value)
@@ -108,7 +91,7 @@ bool is_all(const in mat4 par, const in float value)
 		ret = false;
 	if(par[2][3] != value)
 		ret = false;
-		
+
 	if(par[3][0] != value)
 		ret = false;
 	if(par[3][1] != value)
@@ -127,17 +110,17 @@ void set_all(out mat4 par, const in float value)
 	par[0][1] = value;
 	par[0][2] = value;
 	par[0][3] = value;
-	
+
 	par[1][0] = value;
 	par[1][1] = value;
 	par[1][2] = value;
 	par[1][3] = value;
-	
+
 	par[2][0] = value;
 	par[2][1] = value;
 	par[2][2] = value;
 	par[2][3] = value;
-	
+
 	par[3][0] = value;
 	par[3][1] = value;
 	par[3][2] = value;

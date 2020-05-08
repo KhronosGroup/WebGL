@@ -16,10 +16,11 @@
   <number>9</number>
   <depends>
     <api version="1.0"/>
+    <removed version="2.0" />
   </depends>
   <overview>
     <p>This extension exposes the
-      <a href="http://angleproject.googlecode.com/svn/trunk/extensions/ANGLE_depth_texture.txt">ANGLE_depth_texture</a>
+      <a href="https://www.khronos.org/registry/OpenGL/extensions/ANGLE/ANGLE_depth_texture.txt">ANGLE_depth_texture</a>
       functionality to WebGL. ANGLE_depth_texture provides a subset of the
       functionality from the OpenGL ES 2.0 extensions
       <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt">OES_depth_texture</a>
@@ -124,7 +125,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_depth_texture {
   const GLenum UNSIGNED_INT_24_8_WEBGL = 0x84FA;
 };
@@ -259,6 +260,9 @@ interface WEBGL_depth_texture {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2020/03/15">
+      <change>Update ANGLE_depth_texture link.</change>
     </revision>
   </history>
 </ratified>

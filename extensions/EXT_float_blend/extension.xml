@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension href="EXT_float_blend/">
+  <name>EXT_float_blend</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Mark Callow</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>35</number>
+
+  <depends>
+    <api version="1.0"/>
+    <ext name="WEBGL_color_buffer_float" require="false"/>
+    <ext name="EXT_color_buffer_float" require="false"/>
+  </depends>
+
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_float_blend.txt"
+             name="EXT_float_blend"/>
+
+    <features>
+      <feature>
+        <p>An <code>INVALID_OPERATION</code> error will no longer be raised by
+        <code>drawArrays</code> or <code>drawElements</code> when blending is
+        enabled and the draw buffer has 32-bit floating-point components. Note
+        that in order to create such a draw buffer the
+        <a href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_float">
+        EXT_color_buffer_float</a> or
+        <a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_color_buffer_float">
+        WEBGL_color_buffer_float</a> extensions must be enabled. This extension
+        applies to both WebGL 1.0 and 2.0 contexts.</p>
+      </feature>
+      <feature>
+        On supported systems, this extension is implicitly enabled when any of the
+        following extensions are enabled:
+        <ul>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_float">
+          EXT_color_buffer_float</a></li>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float">
+          OES_texture_float</a></li>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_color_buffer_float">
+          WEBGL_color_buffer_float</a></li>
+        </ul>
+        <p>
+        This preserves functionality for content written before this extension was exposed.</p>
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[LegacyNoInterfaceObject]
+interface EXT_float_blend {
+}; // interface EXT_float_blend
+</idl>
+
+  <history>
+    <revision date="2015/04/13">
+      <change>Initial revision.</change>
+    </revision>
+
+    <revision date="2017/01/03">
+      <change>Promoted to draft status after discussion on public_webgl.</change>
+    </revision>
+
+    <revision date="2019/02/01">
+      <change>Backport to WebGL 1.</change>
+    </revision>
+
+    <revision date="2019/03/15">
+      <change>Implicitly enable to preserve existing content.</change>
+      <change>Promote to Community Approved.</change>
+    </revision>
+
+    <revision date="2019/08/27">
+      <change>Clarified that this extension applies to both WebGL 1.0 and 2.0 contexts.</change>
+    </revision>
+  </history>
+</extension>

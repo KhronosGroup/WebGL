@@ -1,25 +1,8 @@
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 
 
@@ -56,7 +39,7 @@ void main (void)
 
 	const float M_PI = 3.14159265358979323846;
 	vec3 c = 2.0 * M_PI * color.rgb;
-	
+
 	vec3 arrVal = c * 2.546478971;
 	int arr0x = int(floor(arrVal.x));
 	int arr0y = int(floor(arrVal.y));
@@ -98,7 +81,7 @@ void main (void)
 		sin_c.x = lerp(sinValues[15], sinValues[16], weight.x);
         else if (arr0x == 16)
                 sin_c.x = sinValues[16];
-		
+
 	if (arr0y == 0)
 		sin_c.y = lerp(sinValues[0], sinValues[1], weight.y);
 	else if (arr0y == 1)
@@ -133,7 +116,7 @@ void main (void)
 		sin_c.y = lerp(sinValues[15], sinValues[16], weight.y);
         else if (arr0y == 16)
                 sin_c.y = sinValues[16];
-		
+
 	if (arr0z == 0)
 		sin_c.z = lerp(sinValues[0], sinValues[1], weight.z);
 	else if (arr0z == 1)

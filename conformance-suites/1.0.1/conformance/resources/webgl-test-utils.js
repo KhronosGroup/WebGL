@@ -630,11 +630,11 @@ function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
 
 /**
  * Tests that an evaluated expression generates a specific GL error.
- * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number} glError The expected gl error.
- * @param {string} evalSTr The string to evaluate.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} evalStr The string to evaluate.
  */
-var shouldGenerateGLError = function(gl, glError, evalStr) {
+var shouldGenerateGLError = function(gl, glErrors, evalStr) {
   var exception;
   try {
     eval(evalStr);
@@ -644,30 +644,55 @@ var shouldGenerateGLError = function(gl, glError, evalStr) {
   if (exception) {
     testFailed(evalStr + " threw exception " + exception);
   } else {
-    var err = gl.getError();
-    if (err != glError) {
-      testFailed(evalStr + " expected: " + getGLErrorAsString(gl, glError) + ". Was " + getGLErrorAsString(gl, err) + ".");
-    } else {
-      testPassed(evalStr + " was expected value: " + getGLErrorAsString(gl, glError) + ".");
-    }
+    glErrorShouldBe(gl, glErrors, "after evaluating: " + evalStr);
+  }
+};
+
+/**
+ * Tests that an evaluated expression either throws an exception or generates a specific GL error.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} evalStr The string to evaluate.
+ * @param {string} opt_msg The optional message to display.
+ */
+var shouldThrowOrGenerateGLError = function(gl, glErrors, evalStr, opt_msg) {
+  var exception;
+  try {
+    eval(evalStr);
+  } catch (e) {
+    exception = e;
+  }
+  if (exception) {
+    testPassed(evalStr + " threw exception " + exception);
+  } else {
+    glErrorShouldBe(gl, glErrors, "after evaluating: " + evalStr);
   }
 };
 
 /**
  * Tests that the first error GL returns is the specified error.
- * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number} glError The expected gl error.
- * @param {string} opt_msg
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} opt_msg Optional additional message.
  */
-var glErrorShouldBe = function(gl, glError, opt_msg) {
+var glErrorShouldBe = function(gl, glErrors, opt_msg) {
+  if (!glErrors.length) {
+    glErrors = [glErrors];
+  }
   opt_msg = opt_msg || "";
   var err = gl.getError();
-  if (err != glError) {
-    testFailed("getError expected: " + getGLErrorAsString(gl, glError) +
-               ". Was " + getGLErrorAsString(gl, err) + " : " + opt_msg);
+  var ndx = glErrors.indexOf(err);
+  var errStrs = [];
+  for (var ii = 0; ii < glErrors.length; ++ii) {
+    errStrs.push(glEnumToString(gl, glErrors[ii]));
+  }
+  var expected = errStrs.join(" or ");
+  if (ndx < 0) {
+    var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
+    testFailed(msg + expected +  ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
   } else {
-    testPassed("getError was expected value: " +
-                getGLErrorAsString(gl, glError) + " : " + opt_msg);
+    var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
+    testPassed(msg + expected + " : " + opt_msg);
   }
 };
 
@@ -675,7 +700,7 @@ var glErrorShouldBe = function(gl, glError, opt_msg) {
  * Links a WebGL program, throws if there are errors.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {!WebGLProgram} program The WebGLProgram to link.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  */
 var linkProgram = function(gl, program, opt_errorCallback) {
   errFn = opt_errorCallback || testFailed;
@@ -947,8 +972,8 @@ var readFileList = function(url) {
  * Loads a shader.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {string} shaderSource The shader source.
- * @param {number} shaderType The type of shader. 
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {number} shaderType The type of shader.
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLShader} The created shader.
  */
 var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
@@ -989,7 +1014,7 @@ var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {file} file The URL of the shader source.
  * @param {number} type The type of shader.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLShader} The created shader.
  */
 var loadShaderFromFile = function(gl, file, type, opt_errorCallback) {
@@ -1014,7 +1039,7 @@ var getScript = function(scriptId) {
  * @param {string} scriptId The id of the script tag.
  * @param {number} opt_shaderType The type of shader. If not passed in it will
  *     be derived from the type of the script tag.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLShader} The created shader.
  */
 var loadShaderFromScript = function(
@@ -1056,7 +1081,7 @@ var loadStandardProgram = function(gl) {
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {string} vertexShaderPath The URL of the vertex shader.
  * @param {string} fragmentShaderPath The URL of the fragment shader.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgramFromFile = function(
@@ -1082,7 +1107,7 @@ var loadProgramFromFile = function(
  *        vertex shader.
  * @param {string} fragmentScriptId The id of the script tag that contains the
  *        fragment shader.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgramFromScript = function loadProgramFromScript(
@@ -1106,7 +1131,7 @@ var loadProgramFromScript = function loadProgramFromScript(
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {string} vertexShader The vertex shader.
  * @param {string} fragmentShader The fragment shader.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgram = function(
@@ -1332,6 +1357,7 @@ var startPlayingAndWaitForVideo = function(video, callback) {
   video.addEventListener('playing', playingListener, true);
   video.addEventListener('timeupdate', timeupdateListener, true);
   video.loop = true;
+  video.muted = true;
   video.play();
 };
 
@@ -1386,6 +1412,7 @@ return {
   startPlayingAndWaitForVideo: startPlayingAndWaitForVideo,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
+  shouldThrowOrGenerateGLError: shouldThrowOrGenerateGLError,
   readFile: readFile,
   readFileList: readFileList,
 
@@ -1393,5 +1420,3 @@ return {
 };
 
 }());
-
-

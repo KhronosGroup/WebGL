@@ -227,6 +227,14 @@ div.note.editor {
     background: #FFDDF8;
     color: black;
 }
+div.note.rationale:before {
+    content: "Rationale";
+    background: #006;
+}
+div.note.rationale {
+    background: #DDF8FF;
+    color: black;
+}
 
 
 /* Class strawman is a strawman proposal. May be inline or a P or DIV */

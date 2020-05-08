@@ -3,26 +3,9 @@ Utilities for the OpenGL ES 2.0 HTML Canvas context
 */
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 
 function loadTexture(gl, elem, mipmaps) {
@@ -1020,6 +1003,40 @@ function assertGLError(gl, err, name, f) {
   return true;
 }
 
+// Assert that f generates a GL error from a list.
+function assertGLErrorIn(gl, expectedErrorList, name, f) {
+  if (f == null) { f = name; name = null; }
+
+  var actualError = 0;
+  try {
+    f();
+  } catch(e) {
+    if ('glError' in e) {
+      actualError = e.glError;
+    } else {
+      testFailed("assertGLError: UNEXPCETED EXCEPTION", name, f);
+      return false;
+    }
+  }
+
+  var expectedErrorStrList = [];
+  var expectedErrorSet = {};
+  for (var i in expectedErrorList) {
+    var cur = expectedErrorList[i];
+    expectedErrorSet[cur] = true;
+    expectedErrorStrList.push(getGLErrorAsString(gl, cur));
+  }
+  var expectedErrorListStr = "[" + expectedErrorStrList.join(", ") + "]";
+
+  if (actualError in expectedErrorSet) {
+    return true;
+  }
+
+  testFailed("assertGLError: expected: " + expectedErrorListStr +
+             " actual: " + getGLErrorAsString(gl, actualError), name, f);
+  return false;
+}
+
 // Assert that f generates some GL error. Used in situations where it's
 // ambigious which of multiple possible errors will be generated.
 function assertSomeGLError(gl, name, f) {
@@ -1061,6 +1078,24 @@ function assertThrowNoGLError(gl, name, f) {
   }
   testPassed("assertThrowNoGLError", name, f);
   return true;
+}
+
+function assertThrows(gl, shouldThrow, info, func) {
+  var didThrow = false;
+  try {
+    func();
+  } catch (e) {
+    var didGLError = (e instanceof GLError);
+    if (!didGLError) {
+      didThrow = true;
+    }
+  }
+
+  var text = shouldThrow ? "Should throw: "
+                         : "Should not throw: ";
+  var func = (didThrow == shouldThrow) ? testPassed : testFailed;
+
+  func(text + info);
 }
 
 Quad = {

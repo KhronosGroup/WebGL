@@ -37,7 +37,7 @@ void main (void)
 	
 	new_mad[0]=new_mad2[0];
 	new_mad[1]=new_mad2[1];
-	  
+	
 	if( (new_mad[0] == 45.0) && (new_mad[1] == 14.0) )
 	  gray=1.0;
 	else gray=0.0;

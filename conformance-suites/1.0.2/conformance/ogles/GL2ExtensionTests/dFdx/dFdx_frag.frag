@@ -32,14 +32,14 @@ precision mediump float;
 // of the arithmetic used.
 #define SAFETY_BOUND 500.0
 
-// Macro to scale/bias the range of output.  If input is [-1.0, 1.0], maps to [0.5, 1.0]..  
+// Macro to scale/bias the range of output.  If input is [-1.0, 1.0], maps to [0.5, 1.0]..
 // Accounts for precision errors magnified by derivative operation.
 #define REDUCE_RANGE(A) ((A) + 3.0) / 4.0
 
 // This fragment shader computes an image representation of the derivative of
 // sine.  The derivative of sine is cosine.  This shader's output is compared to
 // the reference shader that computes an image representation of cosine
-// directly.  
+// directly.
 
 uniform float viewportwidth;
 uniform float viewportheight;

@@ -17,11 +17,11 @@
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt" name="OES_vertex_array_object" />
   </overview>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WebGLVertexArrayObjectOES : WebGLObject {
 };
 
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface OES_vertex_array_object {
     const GLenum VERTEX_ARRAY_BINDING_OES = 0x85B5;
 

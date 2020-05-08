@@ -1,25 +1,8 @@
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 
 
@@ -37,10 +20,10 @@ void main (void)
 {
 	float x;
 	// Declare a constant 4 by 4 matrix with unique elements.
-	const mat4 a = mat4( 1.0,  2.0,  3.0,  4.0,   
-	                     5.0,  6.0,  7.0,  8.0,   
-	                     9.0, 10.0, 11.0, 12.0,   
-	                    13.0, 14.0, 15.0, 16.0);  
+	const mat4 a = mat4( 1.0,  2.0,  3.0,  4.0,
+	                     5.0,  6.0,  7.0,  8.0,
+	                     9.0, 10.0, 11.0, 12.0,
+	                    13.0, 14.0, 15.0, 16.0);
 
 	// Check each element.
 	bool elms = true;

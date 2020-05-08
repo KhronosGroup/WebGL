@@ -1,25 +1,8 @@
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
-**
-** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and/or associated documentation files (the
-** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Materials, and to
-** permit persons to whom the Materials are furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be included
-** in all copies or substantial portions of the Materials.
-**
-** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
 */
 
 
@@ -37,9 +20,9 @@ void main (void)
 {
 	float x;
 	// Declare a 3 by 3 matrix with unique elements.
-	mat3 a = mat3( 1.0, 2.0, 3.0,  
-	               4.0, 5.0, 6.0,  
-	               7.0, 8.0, 9.0); 
+	mat3 a = mat3( 1.0, 2.0, 3.0,
+	               4.0, 5.0, 6.0,
+	               7.0, 8.0, 9.0);
 
 	// Copy the matrix to another non-const matrix.
 	mat3 b = a;
@@ -60,7 +43,7 @@ void main (void)
 	bool rows = true;
 	x = b[0][0] + b[1][0] + b[2][0];
 	if( x < 12.0-ERROR_EPSILON || x > 12.0+ERROR_EPSILON ) rows = false;
-	x = b[0][1] + b[1][1] + b[2][1]; 
+	x = b[0][1] + b[1][1] + b[2][1];
 	if(x < 15.0-ERROR_EPSILON || x > 15.0+ERROR_EPSILON ) rows = false;
 	x = b[0][2] + b[1][2] + b[2][2];
 	if(x < 18.0-ERROR_EPSILON || x > 18.0+ERROR_EPSILON ) rows = false;
