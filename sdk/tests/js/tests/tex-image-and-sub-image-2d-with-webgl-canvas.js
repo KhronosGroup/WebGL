@@ -66,7 +66,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
-        runTest();
+        await runTest();
     }
 
     function setCanvasToRedGreen(ctx, hasAlpha) {
@@ -280,8 +280,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                         --count;
                         if (!count)
                             return;
-                        await wtu.dispatchPromise(function() {});
                     }
+                    await wtu.dispatchPromise(function() {});
                 }
             }
 
