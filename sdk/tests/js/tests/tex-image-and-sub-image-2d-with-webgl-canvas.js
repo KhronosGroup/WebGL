@@ -39,7 +39,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl = wtu.create3DContext("example");
 
         if (!prologue(gl)) {
-            finishTest();
             return;
         }
 
@@ -219,7 +218,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             let visibleCtx = wtu.create3DContext(null, { preserveDrawingBuffer:true, alpha:alpha });
             if (!visibleCtx) {
                 testFailed("context does not exist");
-                finishTest();
                 return;
             }
             let visibleCanvas = visibleCtx.canvas;
