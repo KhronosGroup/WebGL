@@ -1969,6 +1969,14 @@ var cancelAnimFrame = (function() {
 })();
 
 /**
+ * Provides video.requestVideoFrameCallback in a cross browser way.
+ * Returns a property, or undefined if unsuported.
+ */
+var getRequestVidFrameCallback = function() {
+  return HTMLVideoElement.prototype["requestVideoFrameCallback"];
+};
+
+/**
  * Waits for the browser to composite the canvas associated with
  * the WebGL context passed in.
  */
@@ -1992,35 +2000,43 @@ var waitForComposite = function(gl, callback) {
  *        video is ready.
  */
 var startPlayingAndWaitForVideo = function(video, callback) {
-  var gotPlaying = false;
-  var gotTimeUpdate = false;
+  var rvfc = getRequestVidFrameCallback();
 
-  var maybeCallCallback = function() {
-    if (gotPlaying && gotTimeUpdate && callback) {
-      callback(video);
-      callback = undefined;
-      video.removeEventListener('playing', playingListener, true);
-      video.removeEventListener('timeupdate', timeupdateListener, true);
-    }
-  };
+  if(rvfc === undefined) {
+    var gotPlaying = false;
+    var gotTimeUpdate = false;
 
-  var playingListener = function() {
-    gotPlaying = true;
-    maybeCallCallback();
-  };
+    var maybeCallCallback = function() {
+      if (gotPlaying && gotTimeUpdate && callback) {
+        callback(video);
+        callback = undefined;
+        video.removeEventListener('playing', playingListener, true);
+        video.removeEventListener('timeupdate', timeupdateListener, true);
+      }
+    };
 
-  var timeupdateListener = function() {
-    // Checking to make sure the current time has advanced beyond
-    // the start time seems to be a reliable heuristic that the
-    // video element has data that can be consumed.
-    if (video.currentTime > 0.0) {
-      gotTimeUpdate = true;
+    var playingListener = function() {
+      gotPlaying = true;
       maybeCallCallback();
-    }
-  };
+    };
 
-  video.addEventListener('playing', playingListener, true);
-  video.addEventListener('timeupdate', timeupdateListener, true);
+    var timeupdateListener = function() {
+      // Checking to make sure the current time has advanced beyond
+      // the start time seems to be a reliable heuristic that the
+      // video element has data that can be consumed.
+      if (video.currentTime > 0.0) {
+        gotTimeUpdate = true;
+        maybeCallCallback();
+      }
+    };
+
+    video.addEventListener('playing', playingListener, true);
+    video.addEventListener('timeupdate', timeupdateListener, true);
+  } else {
+    // Calls video.requestVideoFrameCallback(_ => { callback(video) })
+    rvfc.call(video, _ => { callback(video) });
+  }
+
   video.loop = true;
   video.muted = true;
   video.play();

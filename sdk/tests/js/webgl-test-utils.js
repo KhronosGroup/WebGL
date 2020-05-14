@@ -2913,21 +2913,12 @@ var requestAnimFrame = function(callback) {
   _requestAnimFrame.call(window, callback);
 };
 
-var _requestVidFrameCallback = null;
-
-
 /**
  * Provides video.requestVideoFrameCallback in a cross browser way.
  * Returns a property, or undefined if unsuported.
  */
 var getRequestVidFrameCallback = function() {
-  if (_requestVidFrameCallback === null) {
-    var vid = document.createElement('video');
-    _requestVidFrameCallback =
-      getPrefixedProperty(vid, "requestVideoFrameCallback");
-  }
-
-  return _requestVidFrameCallback;
+  return HTMLVideoElement.prototype["requestVideoFrameCallback"];
 };
 
 var _cancelAnimFrame;
