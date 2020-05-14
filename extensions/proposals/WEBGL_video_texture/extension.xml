@@ -69,7 +69,7 @@ interface WEBGL_video_texture {
 
     [RaisesException] WebGLVideoFrameInfo shareVideoImageWEBGL(
       GLenum target, HTMLVideoElement video);
-    [RaiseException] bool releaseVideoImageWEBGL(GLenum target);
+    [RaiseException] void releaseVideoImageWEBGL(GLenum target);
 };
   </idl>
 
@@ -163,6 +163,9 @@ interface WEBGL_video_texture {
     <revision date="2019/10/29">
       <change>Allocate enums for TEXTURE_VIDEO_IMAGE_WEBGL and SAMPLER_VIDEO_IMAGE_WEBGL out of
       WebGL's current assigned enum block in the OpenGL extension registry.</change>
+    </revision>
+    <revision date="2020/05/13">
+      <change>Change return type of releaseVideoImageWEBGL from bool to void.</change>
     </revision>
   </history>
 </proposal>
