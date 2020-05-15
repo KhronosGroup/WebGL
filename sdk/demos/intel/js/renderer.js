@@ -136,7 +136,7 @@ window.Renderer = (function () {
         } else {
           if (this.ext !== null) {
             gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, self.texture);
-            ext.VideoElementTargetVideoTexture(ext.TEXTURE_VIDEO_IMAGE, video);
+            ext.shareVideoImageWEBGL(ext.TEXTURE_VIDEO_IMAGE, video);
             gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, null);
           }
         }
@@ -222,7 +222,7 @@ window.Renderer = (function () {
       gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, this.texture);
 
       if (this.videoElement && !this.videoElement.paused && this.ext !== null) {
-        ext.VideoElementTargetVideoTexture(ext.TEXTURE_VIDEO_IMAGE, this.videoElement);
+        ext.shareVideoImageWEBGL(ext.TEXTURE_VIDEO_IMAGE, this.videoElement);
       }
     }
 
@@ -230,6 +230,8 @@ window.Renderer = (function () {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
+
+    ext.releaseVideoImageWEBGL(ext.TEXTURE_VIDEO_IMAGE_WEBGL);
   };
 
   return Renderer;
