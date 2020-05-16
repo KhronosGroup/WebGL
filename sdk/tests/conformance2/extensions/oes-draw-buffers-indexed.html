@@ -245,11 +245,31 @@ function runTestExtension() {
     indexedBlendColorTest();
 }
 
+function runInvalidEnumsTest() {
+    debug("Testing new enums for getIndexedParameterTest being invalid before requesting the extension");
+    gl.getIndexedParameter(0x8009, 0);  // BLEND_EQUATION_RGB
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_EQUATION_RGB');
+    gl.getIndexedParameter(0x883D, 0);  // BLEND_EQUATION_ALPHA
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_EQUATION_ALPHA');
+    gl.getIndexedParameter(0x80C9, 0);  // BLEND_SRC_RGB
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_SRC_RGB');
+    gl.getIndexedParameter(0x80CB, 0);  // BLEND_SRC_ALPHA
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_SRC_ALPHA');
+    gl.getIndexedParameter(0x80C8, 0);  // BLEND_DST_RGB
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_DST_RGB');
+    gl.getIndexedParameter(0x80CA, 0);  // BLEND_DST_ALPHA
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_DST_ALPHA');
+    gl.getIndexedParameter(0x0C23, 0);  // COLOR_WRITEMASK
+    wtu.glErrorShouldBe(gl, [gl.INVALID_OPERATION, gl.INVALID_ENUM], 'invalid operations or invalid enums for COLOR_WRITEMASK');
+}
+
 function runTest() {
   if (!gl) {
     testFailed("context does not exist");
   } else {
     testPassed("context exists");
+
+    runInvalidEnumsTest();
 
     ext = gl.getExtension("OES_draw_buffers_indexed");
 
