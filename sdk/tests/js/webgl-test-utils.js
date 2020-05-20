@@ -3355,11 +3355,15 @@ async function awaitTimeout(ms) {
   });
 }
 
-async function awaitOrTimeout(promise, timeout_ms) {
+async function awaitOrTimeout(promise, opt_timeout_ms) {
   async function throwOnTimeout(ms) {
     await awaitTimeout(ms);
     throw 'timeout';
   }
+
+  let timeout_ms = opt_timeout_ms;
+  if (timeout_ms === undefined)
+    timeout_ms = 5000;
 
   await Promise.race([promise, throwOnTimeout(timeout_ms)]);
 }
