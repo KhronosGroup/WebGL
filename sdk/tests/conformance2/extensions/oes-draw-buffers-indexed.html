@@ -250,7 +250,7 @@ function indexedBlendColorTest() {
     gl.blendFuncSeparate(gl.ONE_MINUS_DST_ALPHA, gl.DST_ALPHA, gl.ONE, gl.ONE);
     gl.colorMask(true, false, true, false);
     wtu.glErrorShouldBe(gl, 0, 'Non-indexed state set without errors');
-    
+
     shouldBe('gl.getParameter(gl.BLEND_EQUATION_RGB)', 'gl.FUNC_SUBTRACT');
     shouldBe('gl.getParameter(gl.BLEND_EQUATION_ALPHA)', 'gl.FUNC_ADD');
     shouldBe('gl.getParameter(gl.BLEND_SRC_RGB)', 'gl.ONE_MINUS_DST_ALPHA');
