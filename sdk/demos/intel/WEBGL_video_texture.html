@@ -93,8 +93,8 @@
       renderer.setVideo('./Test.webm', enable_WEBGL_video_texture).catch(
         function(error) {
           if (error instanceof MediaError && error.code === 4) {
-              onsole.log("Cannot log video from the url");
-              eturn;
+              console.log("Cannot log video from the url");
+              return;
           }
         }
       );
