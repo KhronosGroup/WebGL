@@ -21,7 +21,6 @@ found in the LICENSE.txt file.
 var wtu = WebGLTestUtils;
 var numTests = 10;
 var gl;
-var glAttributes;
 var ctx;
 
 var main = function() {
@@ -31,12 +30,11 @@ var main = function() {
   var updateCanvas = function(width, height, attributes) {
     var canvas = document.getElementById("c3d");
 
-    if (gl && (glAttributes !== attributes)) {
+    if (gl && (gl.attributes !== attributes)) {
       // Attributes changed, recreate the canvas
       var newCanvas = canvas.cloneNode();
       canvas.parentNode.replaceChild(newCanvas, canvas);
       canvas = newCanvas;
-      glAttributes = attributes;
       gl = undefined;
     }
 
@@ -45,11 +43,13 @@ var main = function() {
 
     if (!gl) {
       gl = wtu.create3DContext(canvas, attributes);
-    }
 
-    if (!gl) {
-      testFailed("can't create 3d context");
-      return;
+      if (!gl) {
+        testFailed("can't create 3d context");
+        return;
+      }
+
+      gl.attributes = attributes;
     }
 
     return gl;
@@ -62,7 +62,10 @@ var main = function() {
   };
 
   var testSize = function(width, height, attributes, callback) {
-    var attributesDebugMessage = (attributes ? " attributes: " + JSON.stringify(attributes) : "");
+    let attributesDebugMessage = "";
+    if (attributes) {
+      attributesDebugMessage = " attributes: " + JSON.stringify(attributes);
+    }
     debug("testing " + width + " by " + height + attributesDebugMessage);
     var gl = updateCanvas(width, height, attributes);
     if (!gl) {
@@ -97,7 +100,7 @@ var main = function() {
     });
   };
 
-  var premultipliedAlphaAttributes =  {
+  const premultipliedAlphaAttributes =  {
     premultipliedAlpha: false,
   };
   var tests = [
