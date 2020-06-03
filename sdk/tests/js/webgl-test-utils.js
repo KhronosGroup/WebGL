@@ -2913,12 +2913,24 @@ var requestAnimFrame = function(callback) {
   _requestAnimFrame.call(window, callback);
 };
 
+var _disableRequestVideoFrameCallback = false;
+
 /**
  * Provides video.requestVideoFrameCallback in a cross browser way.
  * Returns a property, or undefined if unsuported.
  */
 var getRequestVidFrameCallback = function() {
+  if (_disableRequestVideoFrameCallback)
+    return undefined;
   return HTMLVideoElement.prototype["requestVideoFrameCallback"];
+};
+
+/**
+ * Disables the use of requestVideoFrameCallback in order to work
+ * around bugs in implementations.
+ */
+var disableRequestVideoFrameCallback = function() {
+  _disableRequestVideoFrameCallback = true;
 };
 
 var _cancelAnimFrame;
@@ -3404,6 +3416,7 @@ var API = {
   comparePixels: comparePixels,
   destroyAllContexts: destroyAllContexts,
   destroyContext: destroyContext,
+  disableRequestVideoFrameCallback: disableRequestVideoFrameCallback,
   dispatchPromise: dispatchPromise,
   displayImageDiff: displayImageDiff,
   drawUnitQuad: drawUnitQuad,
