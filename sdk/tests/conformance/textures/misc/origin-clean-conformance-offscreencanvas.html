@@ -112,7 +112,7 @@ function imageLoaded(img) {
 (async function() {
   let img;
   try {
-    img = await wtu.awaitOrTimeout(wtu.makeCrossOriginImage(defaultImgUrl, localImgUrl));
+    img = await wtu.makeCrossOriginImage(defaultImgUrl, localImgUrl);
   } catch (e) {
     testFailed(`Image setup failed (${e}).`);
     finishTest();

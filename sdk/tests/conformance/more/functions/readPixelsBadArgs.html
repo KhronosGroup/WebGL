@@ -100,7 +100,7 @@ Tests.endUnit = function(gl) {
 
 (async function() {
   try {
-    badCorsImg = await wtu.awaitOrTimeout(wtu.makeCrossOriginImage(defaultImgUrl, localImgUrl));
+    badCorsImg = await wtu.makeCrossOriginImage(defaultImgUrl, localImgUrl);
   } catch (e) {
     badCorsImg = `Image setup failed (${e}).`;
   }
