@@ -3184,9 +3184,9 @@ var getBaseDomain = function(host) {
 
 var runningOnLocalhost = function() {
   let hostname = window.location.hostname;
-  return hostname.indexOf("localhost") != -1 ||
-    hostname.indexOf("127.0.0.1") != -1 ||
-    hostname.indexOf("::1") != -1;
+  return hostname == "localhost" ||
+    hostname == "127.0.0.1" ||
+    hostname == "::1";
 }
 
 var getLocalCrossOrigin = function() {
