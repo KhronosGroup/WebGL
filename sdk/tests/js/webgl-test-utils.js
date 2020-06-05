@@ -3209,21 +3209,43 @@ var getRelativePath = function(path) {
   return relparts.join("/");
 }
 
-async function loadCrossOriginImage(img, webUrl, localUrl) {
-  img.src = getUrlOptions().imgUrl || webUrl;
-  try {
-    console.log('[loadCrossOriginImage]', 'trying', img.src);
-    await img.decode();
-    return;
-  } catch {}
+if (!Promise.any) {
+  Promise.any = async function(pList) {
+    return await new Promise((res, rej) => {
+      async function resolveAs(p) {
+        const ret = await p;
+        res(ret);
+      };
 
-  if (runningOnLocalhost()) {
-    img.src = getLocalCrossOrigin() + getRelativePath(localUrl);
-    console.log('[loadCrossOriginImage]', '  trying', img.src);
-    await img.decode();
-    return;
+      (async function() {
+        const resultList = await Promise.allSettled(pList.map(p => resolveAs(p)));
+        const errList = resultList.filter(x => x.reason);
+        rej({errors: errList});
+      })();
+    });
   }
+}
 
+async function makeCrossOriginImage(webUrl, localUrl) {
+  async function makeImage(info, src) {
+    const img = new Image();
+    img.src = src;
+    console.log(`[makeCrossOriginImage] racing ${info}: ${img.src}`);
+    await img.decode();
+    console.log(`[makeCrossOriginImage] decoded: ${img.src}`);
+    return img;
+  };
+
+  webUrl = getUrlOptions().imgUrl || webUrl;
+  localUrl = getLocalCrossOrigin() + getRelativePath(localUrl);
+
+  try {
+    const ret = await Promise.any([
+      makeImage('web', webUrl),
+      makeImage('local', localUrl),
+    ]);
+    return ret;
+  } catch {}
   throw 'createCrossOriginImage failed';
 }
 
@@ -3376,10 +3398,11 @@ async function awaitOrTimeout(promise, opt_timeout_ms) {
   }
 
   let timeout_ms = opt_timeout_ms;
-  if (timeout_ms === undefined)
+  if (timeout_ms === undefined) {
     timeout_ms = 5000;
+  }
 
-  await Promise.race([promise, throwOnTimeout(timeout_ms)]);
+  return await Promise.race([promise, throwOnTimeout(timeout_ms)]);
 }
 
 var API = {
@@ -3437,7 +3460,6 @@ var API = {
   insertImage: insertImage,
   isWebGL2: isWebGL2,
   linkProgram: linkProgram,
-  loadCrossOriginImage: loadCrossOriginImage,
   loadImageAsync: loadImageAsync,
   loadImagesAsync: loadImagesAsync,
   loadProgram: loadProgram,
@@ -3461,6 +3483,7 @@ var API = {
   log: log,
   loggingOff: loggingOff,
   makeCheckRect: makeCheckRect,
+  makeCrossOriginImage: makeCrossOriginImage,
   makeImage: makeImage,
   makeImageFromCanvas: makeImageFromCanvas,
   makeVideo: makeVideo,

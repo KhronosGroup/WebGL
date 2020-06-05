@@ -14,15 +14,17 @@ found in the LICENSE.txt file.
 </head><body>
 <canvas id="gl" width="16" height="16"></canvas>
 <canvas id="c" width="128" height="128"></canvas>
-<img id="i">
 <script type="application/javascript">
 var wtu = WebGLTestUtils;
 var defaultImgUrl = "https://get.webgl.org/conformance-resources/opengl_logo.jpg";
 var localImgUrl = "../../../resources/opengl_logo.jpg";
+let badCorsImg;
 
 Tests.autoinit = false; // Prevents the test from running until the image is loaded
 
 Tests.startUnit = function () {
+  if (!(badCorsImg instanceof Image)) throw new Error(badCorsImg);
+
   var canvas = document.getElementById('gl');
   var gl = wrapGLContext(getGLContext(canvas));
   return [gl];
@@ -65,12 +67,11 @@ Tests.testReadPixels = function(gl) {
 }
 
 Tests.testReadPixelsSOPIMG = function(gl) {
-    var img = document.getElementById("i");
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     // SOP failure
     assertThrowNoGLError(gl, "throw because img is from another domain",
-      function(){gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);});
+      function(){gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, badCorsImg);});
     gl.bindTexture(gl.TEXTURE_2D, null);
     assertOk("canvas still origin-clean",
       function(){gl.readPixels(0,0,1,1, gl.RGBA, gl.UNSIGNED_BYTE,
@@ -78,9 +79,8 @@ Tests.testReadPixelsSOPIMG = function(gl) {
     gl.deleteTexture(tex);
 }
 Tests.testReadPixelsSOPCanvas = function(gl) {
-    var img = document.getElementById("i");
     var c = document.getElementById("c");
-    c.getContext("2d").drawImage(img, 0, 0);
+    c.getContext("2d").drawImage(badCorsImg, 0, 0);
     assertFail("canvas throws because not origin clean",
       function(){c.getContext("2d").getImageData(0,0,1,1);});
     var tex = gl.createTexture();
@@ -99,13 +99,10 @@ Tests.endUnit = function(gl) {
 };
 
 (async function() {
-  const img = document.getElementById('i');
   try {
-    await wtu.awaitOrTimeout(wtu.loadCrossOriginImage(img, defaultImgUrl, localImgUrl));
+    badCorsImg = await wtu.awaitOrTimeout(wtu.makeCrossOriginImage(defaultImgUrl, localImgUrl));
   } catch (e) {
-    testFailed(`Image setup failed (${e}).`);
-    finishTest();
-    return;
+    badCorsImg = `Image setup failed (${e}).`;
   }
   initTests();
 })();

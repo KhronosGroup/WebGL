@@ -18,7 +18,6 @@ found in the LICENSE.txt file.
 <div id="console"></div>
 <canvas id="canvas1"></canvas>
 <canvas id="canvas2"></canvas>
-<img id="img" style="display:none;">
 <script>
 "use strict";
 var wtu = WebGLTestUtils;
@@ -122,9 +121,10 @@ function imageLoaded(img) {
 }
 
 (async function() {
-  const img = document.getElementById('img');
+  //const img = document.getElementById('img');
+  let img;
   try {
-    await wtu.awaitOrTimeout(wtu.loadCrossOriginImage(img, defaultImgUrl, localImgUrl));
+    img = await wtu.awaitOrTimeout(wtu.makeCrossOriginImage(defaultImgUrl, localImgUrl));
   } catch (e) {
     testFailed(`Image setup failed (${e}).`);
     finishTest();

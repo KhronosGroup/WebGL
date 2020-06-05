@@ -131,9 +131,9 @@ function imageLoaded(img) {
 }
 
 (async function() {
-  const img = document.getElementById('img');
+  let img;
   try {
-    await wtu.awaitOrTimeout(wtu.loadCrossOriginImage(img, defaultImgUrl, localImgUrl), 1000);
+    img = await wtu.awaitOrTimeout(wtu.makeCrossOriginImage(defaultImgUrl, localImgUrl), 1000);
   } catch (e) {
     testFailed(`Image setup failed (${e}).`);
     finishTest();
