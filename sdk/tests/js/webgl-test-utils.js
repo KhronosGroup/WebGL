@@ -3222,19 +3222,19 @@ var getRelativePath = function(path) {
 }
 
 async function loadCrossOriginImage(img, webUrl, localUrl) {
-  img.src = getUrlOptions().imgUrl || webUrl;
-  try {
-    console.log('[loadCrossOriginImage]', 'trying', img.src);
-    await img.decode();
-    return;
-  } catch {}
-
   if (runningOnLocalhost()) {
     img.src = getLocalCrossOrigin() + getRelativePath(localUrl);
     console.log('[loadCrossOriginImage]', '  trying', img.src);
     await img.decode();
     return;
   }
+
+  try {
+    img.src = getUrlOptions().imgUrl || webUrl;
+    console.log('[loadCrossOriginImage]', 'trying', img.src);
+    await img.decode();
+    return;
+  } catch {}
 
   throw 'createCrossOriginImage failed';
 }
