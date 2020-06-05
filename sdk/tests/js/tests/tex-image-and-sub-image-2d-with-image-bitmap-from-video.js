@@ -40,10 +40,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var videoNdx = 0;
         var video;
-
-        // crbug.com/1090960: createImageBitmap is failing for some
-        // videos even after requestVideoFrameCallback fires.
-        wtu.disableRequestVideoFrameCallback();
         function runNextVideo() {
             if (video) {
                 video.pause();
