@@ -3171,13 +3171,16 @@ var getBaseDomain = function(host) {
 }
 
 var runningOnLocalhost = function() {
-  return window.location.hostname.indexOf("localhost") != -1 ||
-      window.location.hostname.indexOf("127.0.0.1") != -1;
+  let hostname = window.location.hostname;
+  return hostname == "localhost" ||
+    hostname == "127.0.0.1" ||
+    hostname == "::1";
 }
 
 var getLocalCrossOrigin = function() {
   var domain;
   if (window.location.host.indexOf("localhost") != -1) {
+    // TODO(kbr): figure out whether to use an IPv6 loopback address.
     domain = "127.0.0.1";
   } else {
     domain = "localhost";
@@ -3210,19 +3213,19 @@ var getRelativePath = function(path) {
 }
 
 async function loadCrossOriginImage(img, webUrl, localUrl) {
-  img.src = getUrlOptions().imgUrl || webUrl;
-  try {
-    console.log('[loadCrossOriginImage]', 'trying', img.src);
-    await img.decode();
-    return;
-  } catch {}
-
   if (runningOnLocalhost()) {
     img.src = getLocalCrossOrigin() + getRelativePath(localUrl);
     console.log('[loadCrossOriginImage]', '  trying', img.src);
     await img.decode();
     return;
   }
+
+  try {
+    img.src = getUrlOptions().imgUrl || webUrl;
+    console.log('[loadCrossOriginImage]', 'trying', img.src);
+    await img.decode();
+    return;
+  } catch {}
 
   throw 'createCrossOriginImage failed';
 }
