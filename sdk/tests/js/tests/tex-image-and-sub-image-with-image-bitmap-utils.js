@@ -6,7 +6,7 @@ found in the LICENSE.txt file.
 
 
 function runOneIterationImageBitmapTest(useTexSubImage, bindingTarget, program, bitmap, flipY, premultiplyAlpha, optionsVal,
-    internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
+    internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance)
 {
     var halfRed = [128, 0, 0];
     var halfGreen = [0, 128, 0];
@@ -125,7 +125,6 @@ function runOneIterationImageBitmapTest(useTexSubImage, bindingTarget, program, 
         loc = gl.getUniformLocation(program, "face");
     }
 
-    var tolerance = 10;
     for (var tt = 0; tt < targets.length; ++tt) {
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
             gl.uniform1i(loc, targets[tt]);
@@ -136,11 +135,11 @@ function runOneIterationImageBitmapTest(useTexSubImage, bindingTarget, program, 
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.
         bufferedLogToConsole("Checking " + (flipY ? "top" : "bottom"));
-        wtu.checkCanvasRect(gl, left, bottom, 2, 2, tl, "shouldBe " + tl, tolerance);
-        wtu.checkCanvasRect(gl, right, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
+        wtu.checkCanvasRect(gl, left, bottom, 2, 2, tl, "shouldBe " + tl + " +/-" + tolerance, tolerance);
+        wtu.checkCanvasRect(gl, right, bottom, 2, 2, tr, "shouldBe " + tr + " +/-" + tolerance, tolerance);
         bufferedLogToConsole("Checking " + (flipY ? "bottom" : "top"));
-        wtu.checkCanvasRect(gl, left, top, 2, 2, bl, "shouldBe " + bl, tolerance);
-        wtu.checkCanvasRect(gl, right, top, 2, 2, br, "shouldBe " + br, tolerance);
+        wtu.checkCanvasRect(gl, left, top, 2, 2, bl, "shouldBe " + bl + " +/-" + tolerance, tolerance);
+        wtu.checkCanvasRect(gl, right, top, 2, 2, br, "shouldBe " + br + " +/-" + tolerance, tolerance);
     }
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
@@ -155,7 +154,7 @@ function resetUnpackParams(gl)
 }
 
 function runOneIterationImageBitmapTestSubSource(useTexSubImage, bindingTarget, program, bitmap, flipY, premultiplyAlpha, optionsVal,
-    internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
+    internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance)
 {
     var halfRed = [128, 0, 0];
     var halfGreen = [0, 128, 0];
@@ -310,8 +309,6 @@ function runOneIterationImageBitmapTestSubSource(useTexSubImage, bindingTarget, 
     var top = flipY ? quarterHeight : (height - halfHeight + quarterHeight);
     var bottom = flipY ? (height - halfHeight + quarterHeight) : quarterHeight;
 
-
-    var tolerance = 10;
     // Draw the triangles
     wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
@@ -319,21 +316,21 @@ function runOneIterationImageBitmapTestSubSource(useTexSubImage, bindingTarget, 
     // the right color.
     // For right side, check pixels closer to left to avoid border in the video tests.
     bufferedLogToConsole("Checking " + (flipY ? "top" : "bottom"));
-    wtu.checkCanvasRect(gl, quarterWidth, bottom, 2, 2, tl, "shouldBe " + tl, tolerance);
-    wtu.checkCanvasRect(gl, halfWidth + quarterWidth / 2, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
+    wtu.checkCanvasRect(gl, quarterWidth, bottom, 2, 2, tl, "shouldBe " + tl + " +/-" + tolerance, tolerance);
+    wtu.checkCanvasRect(gl, halfWidth + quarterWidth / 2, bottom, 2, 2, tr, "shouldBe " + tr + " +/-" + tolerance, tolerance);
     bufferedLogToConsole("Checking " + (flipY ? "bottom" : "top"));
-    wtu.checkCanvasRect(gl, quarterWidth, top, 2, 2, bl, "shouldBe " + bl, tolerance);
-    wtu.checkCanvasRect(gl, halfWidth + quarterWidth / 2, top, 2, 2, br, "shouldBe " + br, tolerance);
+    wtu.checkCanvasRect(gl, quarterWidth, top, 2, 2, bl, "shouldBe " + bl + " +/-" + tolerance, tolerance);
+    wtu.checkCanvasRect(gl, halfWidth + quarterWidth / 2, top, 2, 2, br, "shouldBe " + br + " +/-" + tolerance, tolerance);
 
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
 
 function runTestOnBindingTargetImageBitmap(bindingTarget, program, cases, optionsVal,
-    internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
+                                           internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance)
 {
     cases.forEach(x => {
         runOneIterationImageBitmapTest(x.sub, bindingTarget, program, x.bitmap,
-            x.bitmap.flipY, x.bitmap.premultiply, optionsVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+            x.bitmap.flipY, x.bitmap.premultiply, optionsVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance);
     });
 
     if (wtu.getDefault3DContextVersion() <= 1 ||
@@ -346,11 +343,11 @@ function runTestOnBindingTargetImageBitmap(bindingTarget, program, cases, option
 
     cases.forEach(x => {
         runOneIterationImageBitmapTestSubSource(x.sub, bindingTarget, program, x.bitmap,
-            x.bitmap.flipY, x.bitmap.premultiply, optionsVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+            x.bitmap.flipY, x.bitmap.premultiply, optionsVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance);
     });
 }
 
-function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D)
+function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D, tolerance)
 {
     var cases = [];
     bitmaps.forEach(bitmap => {
@@ -363,11 +360,11 @@ function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelForm
     if (is3D) {
         program = tiu.setupTexturedQuadWith3D(gl, internalFormat);
         runTestOnBindingTargetImageBitmap(gl.TEXTURE_3D, program, cases, optionsVal,
-            internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+            internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance);
     } else {
         program = tiu.setupTexturedQuad(gl, internalFormat);
         runTestOnBindingTargetImageBitmap(gl.TEXTURE_2D, program, cases, optionsVal,
-            internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+            internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance);
     }
 
     // cube map texture must be square
@@ -375,17 +372,19 @@ function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelForm
         if (is3D) {
             program = tiu.setupTexturedQuadWith2DArray(gl, internalFormat);
             runTestOnBindingTargetImageBitmap(gl.TEXTURE_2D_ARRAY, program, cases, optionsVal,
-                internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+                internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance);
         } else {
             program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
             runTestOnBindingTargetImageBitmap(gl.TEXTURE_CUBE_MAP, program, cases, optionsVal,
-                internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+                internalFormat, pixelFormat, pixelType, gl, tiu, wtu, tolerance);
         }
     }
 }
 
-function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D)
+function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D, opt_tolerance)
 {
+    if (opt_tolerance === undefined)
+        opt_tolerance = 10;
     var p1 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "premultiply"})
                 .then(cur => { cur.flipY = false; cur.premultiply = true; return cur; });
     var p2 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "none"})
@@ -402,7 +401,7 @@ function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixel
             return Promise.all([p]);
         }).then( bitmaps => {
             bufferedLogToConsole("All createImageBitmap promises are resolved");
-            runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D);
+            runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D, opt_tolerance);
         }, (e) => {
             // This will fail here when running from file:// instead of https://.
             testFailed("createImageBitmap(source) failed: \"" + e.message + "\"");
