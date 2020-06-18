@@ -135,12 +135,12 @@ function main() {
     var lowDpiDemo = new TeapotDemo(document.getElementById("c2"));
 
     controller = new CameraController(document.body);
-    
+
     controller.onchange = function(xRot, yRot) {
         highDpiDemo.draw();
         lowDpiDemo.draw();
     };
-    
+
     highDpiDemo.startDpiAwareDemo();
     lowDpiDemo.startDemo();
 }
@@ -262,7 +262,7 @@ TeapotDemo.prototype.initTeapot = function(gl) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementVbo);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, teapotIndices, gl.STATIC_DRAW);
     this.numElements = teapotIndices.length;
-    
+
     var wireIndices = this.createWireIndicies(teapotIndices);
     this.wireElementVbo = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.wireElementVbo);
@@ -328,7 +328,7 @@ TeapotDemo.prototype.initShaders = function(gl) {
         gl.deleteProgram(programObject);
         return;
     }
-    
+
     this.programObject = programObject;
     // Look up uniform locations
     this.worldLoc = gl.getUniformLocation(programObject, "world");
@@ -428,7 +428,7 @@ TeapotDemo.prototype.draw = function() {
     gl.enableVertexAttribArray(3);
     gl.vertexAttribPointer(4, 3, gl.FLOAT, false, 0, this.normalsOffset);
     gl.enableVertexAttribArray(4);
-    
+
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementVbo);
     gl.drawElements(gl.TRIANGLES, this.numElements, gl.UNSIGNED_SHORT, 0);
 
