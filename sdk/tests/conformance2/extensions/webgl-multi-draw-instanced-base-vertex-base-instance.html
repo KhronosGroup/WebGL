@@ -133,6 +133,7 @@ const tileSize = [ 1/x_count, 1/y_count ];
 const tilePixelSize = [ Math.floor(width / x_count), Math.floor(height / y_count) ];
 const quadRadius = [ 0.25 * tileSize[0], 0.25 * tileSize[1] ];
 const pixelCheckSize = [ Math.floor(quadRadius[0] * width), Math.floor(quadRadius[1] * height) ];
+const bufferUsageSet = [ gl.STATIC_DRAW, gl.DYNAMIC_DRAW ];
 
 function getTileCenter(x, y) {
   return [ tileSize[0] * (0.5 + x), tileSize[1] * (0.5 + y) ];
@@ -193,18 +194,6 @@ const vertexBuffer = gl.createBuffer();
 const nonIndexedVertexBuffer = gl.createBuffer();
 const instanceIDBuffer = gl.createBuffer();
 
-gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
-gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-
-gl.bindBuffer(gl.ARRAY_BUFFER, nonIndexedVertexBuffer);
-gl.bufferData(gl.ARRAY_BUFFER, nonIndexedVertices, gl.STATIC_DRAW);
-
-gl.bindBuffer(gl.ARRAY_BUFFER, instanceIDBuffer);
-gl.bufferData(gl.ARRAY_BUFFER, instanceIDs, gl.STATIC_DRAW);
-
 const drawArraysDrawCount = x_count / 2;
 let drawArraysParams = {
   drawCount: drawArraysDrawCount,
@@ -235,6 +224,20 @@ for (let v = 0; v < y_count; ++v) {
     drawElementsParams.baseInstances[b] = i;
     ++b;
   }
+}
+
+function setupGeneralBuffers(bufferUsage) {
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, bufferUsage);
+
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, bufferUsage);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, nonIndexedVertexBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, nonIndexedVertices, bufferUsage);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, instanceIDBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, instanceIDs, bufferUsage);
 }
 
 // Check if the extension is either both enabled and supported or
@@ -306,18 +309,18 @@ function doTest(extensionName, multiDraw) {
     return [vs, fs];
   }
 
-  function runValidationTests() {
+  function runValidationTests(bufferUsage) {
     const vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0.2,0.2, 0.8,0.2, 0.5,0.8 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0.2,0.2, 0.8,0.2, 0.5,0.8 ]), bufferUsage);
 
     const indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array([ 0, 1, 2 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array([ 0, 1, 2 ]), bufferUsage);
 
     const instanceBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, instanceBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0, 1, 2 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0, 1, 2 ]), bufferUsage);
 
     const program = wtu.setupProgram(gl, ['vshaderSimple', 'fshader'], ['vPosition, vInstanceID'], [0, 1]);
     expectTrue(program != null, "can compile simple program");
@@ -486,7 +489,7 @@ function doTest(extensionName, multiDraw) {
     }
   }
 
-  function runShaderTests() {
+  function runShaderTests(bufferUsage) {
     const illegalBaseInstanceProgram = wtu.setupProgram(gl, ["vshaderIllegalBaseInstance", "fshader"]);
     expectTrue(illegalBaseInstanceProgram == null, "cannot compile program with gl_BaseInstance but no extension directive");
     const illegalBaseVertexProgram = wtu.setupProgram(gl, ["vshaderIllegalBaseVertex", "fshader"]);
@@ -499,7 +502,7 @@ function doTest(extensionName, multiDraw) {
 
     // gl_BaseInstance and gl_InstanceID
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0, 1,0, 0.5,1, 0,1, 0.5,0, 1,1 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0, 1,0, 0.5,1, 0,1, 0.5,0, 1,1 ]), bufferUsage);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
@@ -534,9 +537,9 @@ function doTest(extensionName, multiDraw) {
 
     // gl_BaseVertex and gl_VertexID
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0, 1,0, 0.5,1, 0,1, 0.5,0, 1,1, 0,0, 1,0, 0.5,1, 0,1 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0, 1,0, 0.5,1, 0,1, 0.5,0, 1,1, 0,0, 1,0, 0.5,1, 0,1 ]), bufferUsage);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array([0, 1, 2, 3, 4, 5]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array([0, 1, 2, 3, 4, 5]), bufferUsage);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
@@ -731,9 +734,14 @@ function doTest(extensionName, multiDraw) {
     });
   }
 
-  runValidationTests();
-  runShaderTests();
-  runPixelTests();
+  for (let i = 0; i < bufferUsageSet.length; i++) {
+    let bufferUsage = bufferUsageSet[i];
+    debug("Testing with BufferUsage = " + bufferUsage);
+    setupGeneralBuffers(bufferUsage);
+    runValidationTests(bufferUsage);
+    runShaderTests(bufferUsage);
+    runPixelTests();
+  }
 }
 
 runTest();
