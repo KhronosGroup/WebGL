@@ -75,7 +75,7 @@ function setup() {
 }
 
 function enableDisableTest() {
-    debug("Testing enableiOES/disableiOES and isEnablediOES");
+    debug("Testing enableiOES/disableiOES");
 
     // Invalid input
     ext.enableiOES(gl.DEPTH_TEST, 0);
@@ -85,20 +85,12 @@ function enableDisableTest() {
     gl.disable(gl.BLEND);
 
     // Valid input
-    shouldBe('ext.isEnablediOES(gl.BLEND, 0)', 'false');
-    shouldBe('ext.isEnablediOES(gl.BLEND, 1)', 'false');
     ext.enableiOES(gl.BLEND, 0);
-    shouldBe('ext.isEnablediOES(gl.BLEND, 0)', 'true');
-    shouldBe('ext.isEnablediOES(gl.BLEND, 1)', 'false');
     shouldBe('gl.isEnabled(gl.BLEND)', 'true');
     ext.disableiOES(gl.BLEND, 0);
     ext.enableiOES(gl.BLEND, 1);
-    shouldBe('ext.isEnablediOES(gl.BLEND, 0)', 'false');
-    shouldBe('ext.isEnablediOES(gl.BLEND, 1)', 'true');
     shouldBe('gl.isEnabled(gl.BLEND)', 'false');
     gl.enable(gl.BLEND);
-    shouldBe('ext.isEnablediOES(gl.BLEND, 0)', 'true');
-    shouldBe('ext.isEnablediOES(gl.BLEND, 1)', 'true');
     shouldBe('gl.isEnabled(gl.BLEND)', 'true');
     wtu.glErrorShouldBe(gl, 0, 'No errors from enable and disable draw buffers blend state');
 }

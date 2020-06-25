@@ -27,6 +27,9 @@
               <code>CONSTANT_ALPHA</code> or <code>ONE_MINUS_CONSTANT_ALPHA</code> are used as blend color factors of another active draw buffer,
               any draw call will generate an <code>INVALID_OPERATION</code> error.
              </addendum>
+             <addendum>
+              This WebGL extension does not expose <code>isEnablediOES</code> entry point.
+             </addendum>
     </mirrors>
 
     <features>
@@ -56,8 +59,6 @@ interface OES_draw_buffers_indexed {
 
   void colorMaskiOES(GLuint buf,
                      GLboolean r, GLboolean g, GLboolean b, GLboolean a);
-
-  [WebGLHandlesContextLoss] GLboolean isEnablediOES(GLenum target, GLuint index);
 };
   </idl>
 
@@ -178,23 +179,6 @@ interface OES_draw_buffers_indexed {
     </function>
   </newfun>
 
-  <newfun>
-    <function name="isEnablediOES" type="GLboolean">
-      <param name="target" type="GLenum"/>
-      <param name="index" type="GLuint"/>
-      <p>
-        Returns whether blending is enabled for a given draw buffer.
-      </p>
-      <p>
-        <code>target</code> must be <code>BLEND</code>.
-      </p>
-      <p>
-        <code>index</code> is an integer <code>i</code> specifying the draw buffer associated with
-        the symbolic constant <code>DRAW_BUFFER<em>i</em></code>.
-      </p>
-    </function>
-  </newfun>
-
   <newtok>
     <function name="getIndexedParameter" type="">
       <param name="target" type="GLenum"/>
@@ -237,6 +221,9 @@ interface OES_draw_buffers_indexed {
     </revision>
     <revision date="2020/03/05">
       <change>Added WebGL-specific limitations, renamed to <code>OES_draw_buffers_indexed</code>.</change>
+    </revision>
+    <revision date="2020/06/25">
+      <change>Removed <code>isEnablediOES</code>.</change>
     </revision>
   </history>
 </draft>
