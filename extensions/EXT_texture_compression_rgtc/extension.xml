@@ -25,6 +25,9 @@
       EXT_texture_compression_rgtc specification must be supported in an implementation of this
       WebGL extension.
     </p>
+    <p>
+      Unlike the OpenGL ES extension, this WebGL extension does not extend <code>texImage2D</code> entry point.
+    </p>
     <features>
       <feature>
         Compression formats <code>COMPRESSED_RED_RGTC1_EXT</code>,
@@ -124,6 +127,9 @@ interface EXT_texture_compression_rgtc {
     </revision>
     <revision date="2018/11/05">
       <change>Moved to Community Approved status.</change>
+    </revision>
+    <revision date="2020/06/25">
+      <change>Clarified <code>texImage2D</code> entry point.</change>
     </revision>
   </history>
 </extension>
