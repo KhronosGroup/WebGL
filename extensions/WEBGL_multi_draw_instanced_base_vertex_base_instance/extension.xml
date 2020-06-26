@@ -77,7 +77,7 @@
 
       <feature>
         When this extension is enabled, the
-        following extensions are enabled explicitly:
+        following extensions are enabled implicitly:
         <ul>
           <li><a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_multi_draw">
           WEBGL_multi_draw</a></li>
@@ -198,6 +198,9 @@ void main() {
     <revision date="2019/09/25">
       <change>Change parameters order.</change>
       <change>Move to draft.</change>
+    </revision>
+    <revision date="2020/06/26">
+      <change>Implicitly enable WEBGL_multi_draw</change>
     </revision>
   </history>
 </draft>

@@ -48,7 +48,7 @@
       
       <feature>
         When this extension is enabled, the
-        following extensions are enabled explicitly:
+        following extensions are enabled implicitly:
         <ul>
           <li><a href="http://www.khronos.org/registry/webgl/extensions/ANGLE_instanced_arrays">
           ANGLE_instanced_arrays</a></li>
@@ -162,6 +162,9 @@ void main() {
     </revision>
     <revision date="2019/10/23">
       <change>Merged features with WEBGL_multi_draw_instanced.</change>
+    </revision>
+    <revision date="2020/06/26">
+      <change>Implicitly enable ANGLE_instanced_arrays</change>
     </revision>
   </history>
 </draft>
