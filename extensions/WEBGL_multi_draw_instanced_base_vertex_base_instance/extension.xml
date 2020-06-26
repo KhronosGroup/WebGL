@@ -74,6 +74,15 @@
         value of base vertex of each draw call to be values in<code>baseVerticesList</code> instead
         of zero.
       </feature>
+
+      <feature>
+        When this extension is enabled, the
+        following extensions are enabled explicitly:
+        <ul>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_multi_draw">
+          WEBGL_multi_draw</a></li>
+        </ul>
+      </feature>
     </features>
   </overview>
 

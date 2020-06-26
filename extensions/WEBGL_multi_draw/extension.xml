@@ -45,6 +45,16 @@
       <feature>The <code>multiDrawArraysWEBGL</code>, <code>multiDrawElementsWEBGL</code>, <code>multiDrawArraysInstancedWEBGL</code>, and <code>multiDrawElementsInstancedWEBGL</code> entry points are added. These provide a counterpoint to instanced rendering and are more flexible for certain scenarios. They behave identically to multiple calls to <code>drawArrays</code>, <code>drawElements</code>, <code>drawArraysInstanced</code>, and <code>drawElementsInstanced</code> except they handle multiple lists of arguments in one call.</feature>
 
       <feature>The <code>gl_DrawID</code> builtin is added to the shading language. For any Multi* draw call variant, the index of the draw <code>i</code> may be read by the vertex shader as <code>gl_DrawID</code>. For non Multi* calls, the value of gl_DrawID is 0.</feature>
+      
+      <feature>
+        When this extension is enabled, the
+        following extensions are enabled explicitly:
+        <ul>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/ANGLE_instanced_arrays">
+          ANGLE_instanced_arrays</a></li>
+        </ul>
+      </feature>
+      
       <glsl extname="GL_ANGLE_multi_draw">
         <stage type="vertex"/>
         <input name="gl_DrawID" type="int" />
