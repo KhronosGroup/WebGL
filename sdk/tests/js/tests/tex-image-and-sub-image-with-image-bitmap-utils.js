@@ -383,8 +383,9 @@ function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelForm
 
 function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D, opt_tolerance)
 {
-    if (opt_tolerance === undefined)
+    if (opt_tolerance === undefined) {
         opt_tolerance = 10;
+    }
     var p1 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "premultiply"})
                 .then(cur => { cur.flipY = false; cur.premultiply = true; return cur; });
     var p2 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "none"})
