@@ -7,6 +7,7 @@
 
   <contributors>
     <contributor>Members of the WebGL working group</contributor>
+    <contributor>Kevin Rogovin (kevinrogovin[at]invisionapp.com</contributor>
   </contributors>
 
   <number>43</number>
@@ -18,6 +19,10 @@
   <overview>
     <mirrors href="https://www.khronos.org/registry/gles/extensions/EXT/EXT_clip_cull_distance.txt"
              name="EXT_clip_cull_distance">
+      <addendum>
+        <p>WebGL implementations can return 0 for the maximum number cull planes
+        (MAX_CULL_DISTANCES_EXT) supported.</p>
+      </addendum>
     </mirrors>
 
     <features>
@@ -77,6 +82,9 @@
     </revision>
     <revision date="2019/09/25">
       <change>Promoted to Draft.</change>
+    </revision>
+    <revision date="2020/07/01">
+      <change>Added addendum that allows for the number of cull planes to be 0.</change>
     </revision>
   </history>
 </draft>
