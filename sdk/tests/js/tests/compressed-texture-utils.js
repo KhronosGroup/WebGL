@@ -192,6 +192,28 @@ var testTexSubImageDimensions = function(gl, validFormats, expectedByteLength, g
     gl.deleteTexture(tex);
 };
 
+var testTexImageLevelDimensions = function(gl, validFormats, expectedByteLength, getBlockDimensions, imageConfigs) {
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+
+    for (var formatId in validFormats) {
+        if (validFormats.hasOwnProperty(formatId)) {
+            var format = validFormats[formatId];
+            var blockSize = getBlockDimensions(format);
+
+            for (let i = 0, len = imageConfigs.length; i < len; ++i) {
+                let c = imageConfigs[i];
+                var data = new Uint8Array(expectedByteLength(c.width, c.height, format));
+                gl.compressedTexImage2D(gl.TEXTURE_2D, c.level, format, c.width, c.height, 0, data);
+                wtu.glErrorShouldBe(gl, c.expectation, c.message);
+            }
+        }
+    }
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.deleteTexture(tex);
+}
+
 return {
     formatToString: formatToString,
     insertCaptionedImg: insertCaptionedImg,
@@ -201,6 +223,7 @@ return {
     testCorrectEnumValuesInExt: testCorrectEnumValuesInExt,
     testFormatRestrictionsOnBufferSize: testFormatRestrictionsOnBufferSize,
     testTexSubImageDimensions: testTexSubImageDimensions,
+    testTexImageLevelDimensions: testTexImageLevelDimensions,
 };
 
 })();
