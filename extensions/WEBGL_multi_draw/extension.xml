@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="WEBGL_multi_draw/">
+<extension href="WEBGL_multi_draw/">
   <name>WEBGL_multi_draw</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -205,10 +205,13 @@ void main() {
       <change>Merged features with WEBGL_multi_draw_instanced.</change>
     </revision>
     <revision date="2020/06/26">
-      <change>Implicitly enable ANGLE_instanced_arrays</change>
+      <change>Implicitly enable ANGLE_instanced_arrays.</change>
     </revision>
     <revision date="2020/07/28">
-      <change>Add new function section</change>
+      <change>Add new function section.</change>
+    </revision>
+    <revision date="2020/07/31">
+      <change>Moved to Community Approved.</change>
     </revision>
   </history>
-</draft>
+</extension>
