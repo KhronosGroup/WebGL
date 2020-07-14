@@ -92,19 +92,19 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
   void multiDrawArraysInstancedBaseInstanceWEBGL(
       GLenum mode,
       Int32array or sequence&lt;GLint&gt; firstsList, GLuint firstsOffset,
-      Int32array or sequence&lt;GLint&gt; countsList, GLuint countsOffset,
-      Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
-      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset,
+      Int32array or sequence&lt;GLsizei&gt; countsList, GLuint countsOffset,
+      Int32array or sequence&lt;GLsizei&gt; instanceCountsList, GLuint instanceCountsOffset,
+      Int32array or sequence&lt;GLuint&gt; baseInstancesList, GLuint baseInstancesOffset,
       GLsizei drawCount
   );
   void multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
       GLenum mode,
-      Int32array or sequence&lt;GLint&gt; countsList, GLuint countsOffset,
+      Int32array or sequence&lt;GLsizei&gt; countsList, GLuint countsOffset,
       GLenum type,
-      Int32array or sequence&lt;GLint&gt; offsetsList, GLuint offsetsOffset,
-      Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
+      Int32array or sequence&lt;GLsizei&gt; offsetsList, GLuint offsetsOffset,
+      Int32array or sequence&lt;GLsizei&gt; instanceCountsList, GLuint instanceCountsOffset,
       Int32array or sequence&lt;GLint&gt; baseVerticesList, GLuint baseVerticesOffset,
-      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset,
+      Int32array or sequence&lt;GLuint&gt; baseInstancesList, GLuint baseInstancesOffset,
       GLsizei drawCount
   );
 };
@@ -115,24 +115,24 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
       <param name="mode" type="GLenum"/>
       <param name="firstsList" type="sequence&lt;GLint&gt;"/>
       <param name="firstsOffset" type="GLuint"/>
-      <param name="countsList" type="sequence&lt;GLint&gt;"/>
+      <param name="countsList" type="sequence&lt;GLsizei&gt;"/>
       <param name="countsOffset" type="GLuint"/>
-      <param name="baseInstancesList" type="sequence&lt;GLint&gt;"/>
+      <param name="baseInstancesList" type="sequence&lt;GLsizei&gt;"/>
       <param name="baseInstancesOffset" type="GLuint"/>
       <param name="drawCount" type="GLsizei"/>
     </function>
     <function name="multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
       <param name="mode" type="GLenum"/>
-      <param name="countsList" type="sequence&lt;GLint&gt;"/>
+      <param name="countsList" type="sequence&lt;GLsizei&gt;"/>
       <param name="countsOffset" type="GLuint"/>
       <param name="type" type="GLenum"/>
-      <param name="offsetsList" type="sequence&lt;GLint&gt;"/>
+      <param name="offsetsList" type="sequence&lt;GLsizei&gt;"/>
       <param name="offsetsOffset" type="GLuint"/>
-      <param name="instanceCountsList" type="sequence&lt;GLint&gt;"/>
+      <param name="instanceCountsList" type="sequence&lt;GLsizei&gt;"/>
       <param name="instanceCountsOffset" type="GLuint"/>
       <param name="baseVerticesList" type="sequence&lt;GLint&gt;"/>
       <param name="baseVerticesOffset" type="GLuint"/>
-      <param name="baseInstancesList" type="sequence&lt;GLint&gt;"/>
+      <param name="baseInstancesList" type="sequence&lt;GLuint&gt;"/>
       <param name="baseInstancesOffset" type="GLuint"/>
       <param name="drawCount" type="GLsizei"/>
     </function>
@@ -201,6 +201,10 @@ void main() {
     </revision>
     <revision date="2020/06/26">
       <change>Implicitly enable WEBGL_multi_draw</change>
+    </revision>
+    <revision date="2020/07/14">
+      <change>Change types of countsList, offsetsList, and instanceCountsList from sequence<GLint> to sequence<GLsizei></change>
+      <change>Change type of baseInstances from sequence<GLint> to sequence<GLuint></change>
     </revision>
   </history>
 </draft>
