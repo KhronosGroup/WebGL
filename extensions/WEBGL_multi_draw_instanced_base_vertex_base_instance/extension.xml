@@ -203,8 +203,8 @@ void main() {
       <change>Implicitly enable WEBGL_multi_draw</change>
     </revision>
     <revision date="2020/07/14">
-      <change>Change types of countsList, offsetsList, and instanceCountsList from sequence<GLint> to sequence<GLsizei></change>
-      <change>Change type of baseInstances from sequence<GLint> to sequence<GLuint></change>
+      <change>Change types of countsList, offsetsList, and instanceCountsList from sequence&lt;GLint&gt; to sequence&lt;GLsizei&gt;</change>
+      <change>Change type of baseInstances from sequence&lt;Lint&gt; to sequence&lt;GLuint&gt;</change>
     </revision>
   </history>
 </draft>
