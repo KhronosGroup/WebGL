@@ -59,7 +59,7 @@ if (!gl) {
 
   gl.bindTexture(gl.TEXTURE_2D, tex);
 
-  function validateExt(extName, enumName, blockSize, blockByteSize) {
+  function validateExt(extName, enumName, blockSize, blockByteSize, expectedSubImageError) {
     debug('\n---------------------------');
     debug('\n' + extName);
     ext = gl.getExtension(extName);
@@ -97,7 +97,7 @@ if (!gl) {
       wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
           `gl.compressedTexImage2D(gl.TEXTURE_2D, 0, ext.${enumName}, ${blockSize},${blockSize}, 0, g_view)`);
 
-      wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+      wtu.shouldGenerateGLError(gl, expectedSubImageError,
           `gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0,0, ${blockSize},${blockSize}, ext.${enumName}, g_view)`);
     }
 
@@ -116,11 +116,11 @@ if (!gl) {
       wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION,
           `gl.compressedTexImage2D(gl.TEXTURE_2D, 0, ext.${enumName}, ${blockSize},${blockSize}, 0, ${blockByteSize}, ${blockByteSize+1})`);
 
-      wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+      wtu.shouldGenerateGLError(gl, expectedSubImageError,
           `gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0,0, ${blockSize},${blockSize}, ext.${enumName}, ${blockByteSize}, 0)`);
-      wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+      wtu.shouldGenerateGLError(gl, expectedSubImageError,
           `gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0,0, ${blockSize},${blockSize}, ext.${enumName}, ${blockByteSize}, 1)`);
-      wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+      wtu.shouldGenerateGLError(gl, expectedSubImageError,
           `gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0,0, ${blockSize},${blockSize}, ext.${enumName}, ${blockByteSize}, ${blockByteSize})`);
       wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION,
           `gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0,0, ${blockSize},${blockSize}, ext.${enumName}, ${blockByteSize}, ${blockByteSize+1})`);
@@ -129,10 +129,10 @@ if (!gl) {
     }
   }
 
-  validateExt('WEBGL_compressed_texture_s3tc', 'COMPRESSED_RGBA_S3TC_DXT5_EXT', 4, 16);
-  validateExt('WEBGL_compressed_texture_etc1', 'COMPRESSED_RGB_ETC1_WEBGL', 4, 8);
-  validateExt('WEBGL_compressed_texture_etc', 'COMPRESSED_RGBA8_ETC2_EAC', 4, 16);
-  validateExt('WEBGL_compressed_texture_astc', 'COMPRESSED_RGBA_ASTC_4x4_KHR', 4, 16);
+  validateExt('WEBGL_compressed_texture_s3tc', 'COMPRESSED_RGBA_S3TC_DXT5_EXT', 4, 16, gl.NO_ERROR);
+  validateExt('WEBGL_compressed_texture_etc1', 'COMPRESSED_RGB_ETC1_WEBGL', 4, 8, gl.INVALID_OPERATION);
+  validateExt('WEBGL_compressed_texture_etc', 'COMPRESSED_RGBA8_ETC2_EAC', 4, 16, gl.NO_ERROR);
+  validateExt('WEBGL_compressed_texture_astc', 'COMPRESSED_RGBA_ASTC_4x4_KHR', 4, 16, gl.NO_ERROR);
 }
 
 var successfullyParsed = true;
