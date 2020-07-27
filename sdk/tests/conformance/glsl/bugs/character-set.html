@@ -32,6 +32,16 @@ void main() {
 }
 </script>
 
+<script id="fs-invalid-2" type="x-shader/x-fragment">
+precision mediump float;
+#if defined(NOT_DEFINED_FOO)
+一些注释
+#endif
+void main() {
+  gl_FragColor = vec4(1, 0, 0, 1);
+}
+</script>
+
 <script id="fs-comment-valid" type="x-shader/x-fragment">
 precision mediump float;
 // some comment: asdf1234~!@#$%^&*()-=[];',./{}:"?><_+
@@ -94,6 +104,12 @@ function runTest() {
             passMsg: 'Unallowed characters detected'
         },
         {
+            fShaderId: 'fs-invalid-2',
+            fShaderSuccess: false,
+            linkSuccess: false,
+            passMsg: 'Non ASCII characters detected that would be cleared by preprocessing step is still invalid'
+        },
+        {
             fShaderId: 'fs-comment-valid',
             fShaderSuccess: true,
             linkSuccess: true,
@@ -103,7 +119,7 @@ function runTest() {
             fShaderId: 'fs-cleared-by-preprocessing-valid',
             fShaderSuccess: true,
             linkSuccess: true,
-            passMsg: 'Unsupported shader extensions cleared by preprocessing step is valid'
+            passMsg: 'Unsupported shader extensions (with invalid ASCII characters) cleared by preprocessing step is valid'
         },
     ]);
 }
