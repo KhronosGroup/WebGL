@@ -94,6 +94,47 @@ interface WEBGL_multi_draw {
 
   </idl>
 
+  <newfun>
+    <function name="multiDrawArraysWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
+      <param name="firstsOffset" type="GLuint"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
+    </function>
+    <function name="multiDrawElementsWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="type" type="GLenum"/>
+      <param name="offsetsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="offsetsOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
+    </function>
+    <function name="multiDrawArraysInstancedWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
+      <param name="firstsOffset" type="GLuint"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="instanceCountsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
+    </function>
+    <function name="multiDrawElementsInstancedWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="type" type="GLenum"/>
+      <param name="offsetsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="offsetsOffset" type="GLuint"/>
+      <param name="instanceCountsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
+    </function>
+  </newfun>
+
   <security>
     The multi-draw APIs are subject to all of the same rules regarding <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#4.5">out-of-range array accesses</a> as the core WebGL APIs.
   </security>
@@ -165,6 +206,9 @@ void main() {
     </revision>
     <revision date="2020/06/26">
       <change>Implicitly enable ANGLE_instanced_arrays</change>
+    </revision>
+    <revision date="2020/07/28">
+      <change>Add new function section</change>
     </revision>
   </history>
 </draft>
