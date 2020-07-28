@@ -76,8 +76,9 @@ description("This test checks character set validation for glsl.");
 debug("");
 debug("Canvas.getContext");
 
-var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("canvas");
+let wtu = WebGLTestUtils;
+let gl = wtu.create3DContext("canvas");
+let consoleDiv = document.getElementById("console");
 if (!gl) {
   testFailed("context does not exist");
 } else {
@@ -89,26 +90,29 @@ if (!gl) {
   runTest();
 }
 
+function testShaderSource(shaderId, expected, msg) {
+    let shaderSource = document.getElementById(shaderId).text;
+    if (!quietMode()) {
+        wtu.addShaderSource(consoleDiv, "test fragment shader", shaderSource);
+    }
+
+    let shader = gl.createShader(gl.FRAGMENT_SHADER);
+    if (shader == null) {
+        testFailed("*** Error: unable to create shader '" + shaderSource + "'");
+        return;
+    }
+
+    gl.shaderSource(shader, shaderSource);
+    wtu.glErrorShouldBe(gl, expected, msg);
+}
+
 function runTest() {
+
+    testShaderSource('fs-invalid-0', gl.INVALID_VALUE, 'Unallowed characters detected');
+    testShaderSource('fs-invalid-1', gl.INVALID_VALUE, 'Unallowed characters detected');
+    testShaderSource('fs-invalid-2', gl.INVALID_VALUE, 'Non ASCII characters detected that would be cleared by preprocessing step is still invalid');
+
     GLSLConformanceTester.runTests([
-        {
-            fShaderId: 'fs-invalid-0',
-            fShaderSuccess: false,
-            linkSuccess: false,
-            passMsg: 'Unallowed characters detected'
-        },
-        {
-            fShaderId: 'fs-invalid-1',
-            fShaderSuccess: false,
-            linkSuccess: false,
-            passMsg: 'Unallowed characters detected'
-        },
-        {
-            fShaderId: 'fs-invalid-2',
-            fShaderSuccess: false,
-            linkSuccess: false,
-            passMsg: 'Non ASCII characters detected that would be cleared by preprocessing step is still invalid'
-        },
         {
             fShaderId: 'fs-comment-valid',
             fShaderSuccess: true,
