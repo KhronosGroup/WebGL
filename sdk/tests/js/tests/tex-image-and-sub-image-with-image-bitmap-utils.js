@@ -82,7 +82,7 @@ function runOneIterationImageBitmapTest(useTexSubImage, bindingTarget, program, 
                    gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
     }
 
-    bufferedLogToConsole("Starts uploading the image into texture");
+    bufferedLogToConsole("Start uploading the image into a texture");
     // Upload the image into the texture
     for (var tt = 0; tt < targets.length; ++tt) {
         if (optionsVal.is3D) {
@@ -101,7 +101,7 @@ function runOneIterationImageBitmapTest(useTexSubImage, bindingTarget, program, 
             }
         }
     }
-    bufferedLogToConsole("Uploading texture completed");
+    bufferedLogToConsole("Uploading into texture completed");
 
     var width = gl.canvas.width;
     var halfWidth = Math.floor(width / 2);
@@ -134,12 +134,22 @@ function runOneIterationImageBitmapTest(useTexSubImage, bindingTarget, program, 
 
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.
+        let skipAlphaTests = (premultiplyAlpha === undefined && optionsVal.alpha != 1.0);
+        let skipStr = " (Skipping checking right pixel since premultiplyAlpha was undefined and alpha != 1.0)";
         bufferedLogToConsole("Checking " + (flipY ? "top" : "bottom"));
         wtu.checkCanvasRect(gl, left, bottom, 2, 2, tl, "shouldBe " + tl + " +/-" + tolerance, tolerance);
-        wtu.checkCanvasRect(gl, right, bottom, 2, 2, tr, "shouldBe " + tr + " +/-" + tolerance, tolerance);
+        if (skipAlphaTests) {
+            bufferedLogToConsole(skipStr);
+        } else {
+            wtu.checkCanvasRect(gl, right, bottom, 2, 2, tr, "shouldBe " + tr + " +/-" + tolerance, tolerance);
+        }
         bufferedLogToConsole("Checking " + (flipY ? "bottom" : "top"));
         wtu.checkCanvasRect(gl, left, top, 2, 2, bl, "shouldBe " + bl + " +/-" + tolerance, tolerance);
-        wtu.checkCanvasRect(gl, right, top, 2, 2, br, "shouldBe " + br + " +/-" + tolerance, tolerance);
+        if (skipAlphaTests) {
+            bufferedLogToConsole(skipStr);
+        } else {
+            wtu.checkCanvasRect(gl, right, top, 2, 2, br, "shouldBe " + br + " +/-" + tolerance, tolerance);
+        }
     }
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
@@ -227,7 +237,7 @@ function runOneIterationImageBitmapTestSubSource(useTexSubImage, bindingTarget, 
 
     var tl, tr, bl, br;
 
-    bufferedLogToConsole("Starts uploading the image into texture");
+    bufferedLogToConsole("Start uploading the image into a texture");
     // Upload the image into the texture
     if (optionsVal.is3D) {
         if (useTexSubImage) {
@@ -297,7 +307,7 @@ function runOneIterationImageBitmapTestSubSource(useTexSubImage, bindingTarget, 
             }
         }
     }
-    bufferedLogToConsole("Uploading texture completed");
+    bufferedLogToConsole("Uploading into texture completed");
 
     var width = gl.canvas.width;
     var halfWidth = Math.floor(width / 2);
@@ -315,12 +325,22 @@ function runOneIterationImageBitmapTestSubSource(useTexSubImage, bindingTarget, 
     // Check the top pixel and bottom pixel and make sure they have
     // the right color.
     // For right side, check pixels closer to left to avoid border in the video tests.
+    let skipAlphaTests = (premultiplyAlpha === undefined && optionsVal.alpha != 1.0);
+    let skipStr = " (Skipping checking right pixel since premultiplyAlpha was undefined and alpha != 1.0)";
     bufferedLogToConsole("Checking " + (flipY ? "top" : "bottom"));
     wtu.checkCanvasRect(gl, quarterWidth, bottom, 2, 2, tl, "shouldBe " + tl + " +/-" + tolerance, tolerance);
-    wtu.checkCanvasRect(gl, halfWidth + quarterWidth / 2, bottom, 2, 2, tr, "shouldBe " + tr + " +/-" + tolerance, tolerance);
+    if (skipAlphaTests) {
+        bufferedLogToConsole(skipStr);
+    } else {
+        wtu.checkCanvasRect(gl, halfWidth + quarterWidth / 2, bottom, 2, 2, tr, "shouldBe " + tr + " +/-" + tolerance, tolerance);
+    }
     bufferedLogToConsole("Checking " + (flipY ? "bottom" : "top"));
     wtu.checkCanvasRect(gl, quarterWidth, top, 2, 2, bl, "shouldBe " + bl + " +/-" + tolerance, tolerance);
-    wtu.checkCanvasRect(gl, halfWidth + quarterWidth / 2, top, 2, 2, br, "shouldBe " + br + " +/-" + tolerance, tolerance);
+    if (skipAlphaTests) {
+        bufferedLogToConsole(skipStr);
+    } else {
+        wtu.checkCanvasRect(gl, halfWidth + quarterWidth / 2, top, 2, 2, br, "shouldBe " + br + " +/-" + tolerance, tolerance);
+    }
 
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
@@ -397,8 +417,13 @@ function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixel
     return Promise.all([p1, p2, p3, p4])
         .catch( () => {
             testPassed("createImageBitmap with options may be rejected if it is not supported. Retrying without options.");
+            // The ImageBitmap's premultiplyAlpha setting will implicitly be
+            // "default", and per spec:
+            // https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#cropped-to-the-source-rectangle-with-formatting
+            // this value is implementation-dependent (either premultiplied or
+            // not). Skip testing the quadrants which have alpha != 1.0.
             var p = createImageBitmap(source)
-                .then(cur => { cur.flipY = false; cur.premultiply = false; return cur; });
+                .then(cur => { cur.flipY = false; cur.premultiply = undefined; return cur; });
             return Promise.all([p]);
         }).then( bitmaps => {
             bufferedLogToConsole("All createImageBitmap promises are resolved");
