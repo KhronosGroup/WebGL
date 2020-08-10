@@ -13,7 +13,7 @@
   <number>44</number>
 
   <depends>
-    <api version="1.0"/>
+    <api version="2.0"/>
   </depends>
 
   <overview>
@@ -72,6 +72,11 @@ interface EXT_texture_norm16 {
     </revision>
     <revision date="2019/09/25">
       <change>Promoted to Draft.</change>
+    </revision>
+    <revision date="2020/08/10">
+      <change>Specialized to WebGL 2.0 after WG agreement, since this
+      extension refers to sized internal formats unavailable in WebGL
+      1.0.</change>
     </revision>
   </history>
 </draft>
