@@ -5,11 +5,11 @@
   working group</a> (public_webgl 'at' khronos.org) </contact>
 
   <contributors>
-    <contributor>PlayCanvas, Snap Inc</contributor>
+    <contributor>Ray Tran, Snap Inc</contributor>
   </contributors>
 
   <number>XYZ</number>
- 
+
   <depends>
     <api version="1.0"/>
     <addendum> The OpenGL ES Shading Language version affects the definition of this extension. </addendum>
