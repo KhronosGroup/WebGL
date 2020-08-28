@@ -9,9 +9,10 @@
   </contributors>
 
   <number>XYZ</number>
-
+ 
   <depends>
     <api version="1.0"/>
+    <addendum> The OpenGL ES Shading Language version affects the definition of this extension. </addendum>
   </depends>
 
   <overview>
@@ -24,10 +25,13 @@
             It provides a mechanism whereby a fragment shader may read existing framebuffer data as input. 
       </feature>
       <feature>
-            Prior to fragment shading, if <code>GL_EXT_shader_framebuffer_fetch</code> is enabled, <code>gl_LastFragData[]</code> is populated with the value last written to the framebuffer at the same (x,y,sample) position. 
+            Using The OpenGL ES Shading Language Version 1.00, prior to fragment shading, if <code>GL_EXT_shader_framebuffer_fetch</code> is enabled, <code>gl_LastFragData[]</code> is populated with the value last written to the framebuffer at the same (x,y,sample) position.               
       </feature>
       <feature>
-            If <code>EXT_shader_framebuffer_fetch_non_coherent</code> is supported, a call to <code>FramebufferFetchBarrierEXT(void)</code> can be made to ensure <code>gl_LastFragData[]</code> is populated with fragment data drawn before the barrier.
+            Using The OpenGL ES Shading Language Version 3.00, prior to fragment shading, if <code>GL_EXT_shader_framebuffer_fetch</code> is enabled, use of <code>inout</code> instead of <code>out</code> when declaring a fragment output will enable the fragment output to be populated with the value last written to the framebuffer at the same (x,y,sample) position.               
+      </feature>
+      <feature>
+            If <code>EXT_shader_framebuffer_fetch_non_coherent</code> is supported, a call to <code>FramebufferFetchBarrierEXT(void)</code> can be made to ensure the populated values are fragment data drawn before the barrier.
       </feature>
     </features>
   </overview>
@@ -45,13 +49,25 @@
 
   <samplecode xml:space="preserve">
     <pre>
+    //The OpenGL ES Shading Language, Version 1.00
     void main(){
-        gl_FragColor = gl_LastFragData[0];
+        float lum = dot(gl_LastFragData[0].rgb, vec3(0.2125, 0.7154, 0.0721));
+        gl_FragColor = vec4(vec3(lum), gl_LastFragData[0].a);
+    }
+    
+    // The OpenGL ES Shading Language, Version 3.00
+    layout (location = 0) inout vec4 colourAttachment0;
+    void main(){
+        float lum = dot(colourAttachment0.rgb, vec3(0.2125, 0.7154, 0.0721));
+        colourAttachment0.rgb = vec3(lum);
     }
     </pre>
   </samplecode>
 
   <history>
+    <revision date="2020/08/28">
+      <change>Updated.</change>
+    </revision>  
     <revision date="2020/05/22">
       <change>Initial revision.</change>
     </revision>
