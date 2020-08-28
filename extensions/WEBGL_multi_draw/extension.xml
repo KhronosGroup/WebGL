@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="WEBGL_multi_draw/">
+<extension href="WEBGL_multi_draw/">
   <name>WEBGL_multi_draw</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -45,6 +45,16 @@
       <feature>The <code>multiDrawArraysWEBGL</code>, <code>multiDrawElementsWEBGL</code>, <code>multiDrawArraysInstancedWEBGL</code>, and <code>multiDrawElementsInstancedWEBGL</code> entry points are added. These provide a counterpoint to instanced rendering and are more flexible for certain scenarios. They behave identically to multiple calls to <code>drawArrays</code>, <code>drawElements</code>, <code>drawArraysInstanced</code>, and <code>drawElementsInstanced</code> except they handle multiple lists of arguments in one call.</feature>
 
       <feature>The <code>gl_DrawID</code> builtin is added to the shading language. For any Multi* draw call variant, the index of the draw <code>i</code> may be read by the vertex shader as <code>gl_DrawID</code>. For non Multi* calls, the value of gl_DrawID is 0.</feature>
+      
+      <feature>
+        When this extension is enabled, the
+        following extensions are enabled implicitly:
+        <ul>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/ANGLE_instanced_arrays">
+          ANGLE_instanced_arrays</a></li>
+        </ul>
+      </feature>
+      
       <glsl extname="GL_ANGLE_multi_draw">
         <stage type="vertex"/>
         <input name="gl_DrawID" type="int" />
@@ -83,6 +93,47 @@ interface WEBGL_multi_draw {
 };
 
   </idl>
+
+  <newfun>
+    <function name="multiDrawArraysWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
+      <param name="firstsOffset" type="GLuint"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
+    </function>
+    <function name="multiDrawElementsWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="type" type="GLenum"/>
+      <param name="offsetsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="offsetsOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
+    </function>
+    <function name="multiDrawArraysInstancedWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
+      <param name="firstsOffset" type="GLuint"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="instanceCountsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
+    </function>
+    <function name="multiDrawElementsInstancedWEBGL" type="void">
+      <param name="mode" type="GLenum"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="GLuint"/>
+      <param name="type" type="GLenum"/>
+      <param name="offsetsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="offsetsOffset" type="GLuint"/>
+      <param name="instanceCountsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="drawCount" type="GLsizei"/>
+    </function>
+  </newfun>
 
   <security>
     The multi-draw APIs are subject to all of the same rules regarding <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#4.5">out-of-range array accesses</a> as the core WebGL APIs.
@@ -153,5 +204,14 @@ void main() {
     <revision date="2019/10/23">
       <change>Merged features with WEBGL_multi_draw_instanced.</change>
     </revision>
+    <revision date="2020/06/26">
+      <change>Implicitly enable ANGLE_instanced_arrays.</change>
+    </revision>
+    <revision date="2020/07/28">
+      <change>Add new function section.</change>
+    </revision>
+    <revision date="2020/07/31">
+      <change>Moved to Community Approved.</change>
+    </revision>
   </history>
-</draft>
+</extension>
