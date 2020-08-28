@@ -708,6 +708,14 @@ function webglHarnessCollectGarbage() {
         return;
     }
 
+    // WebKit's MiniBrowser with the following environment variables set:
+    //   export JSC_useDollarVM=1
+    //   export __XPC_JSC_useDollarVM=1
+    if (window.$vm) {
+        window.$vm.gc();
+        return;
+    }
+
     function gcRec(n) {
         if (n < 1)
             return {};

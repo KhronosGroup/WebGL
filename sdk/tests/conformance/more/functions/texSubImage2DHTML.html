@@ -148,7 +148,7 @@ Tests.endUnit = function(gl) {
 (async function() {
     const img = document.getElementById('i2');
     try {
-        await wtu.awaitOrTimeout(wtu.loadCrossOriginImage(img, defaultImgUrl, localImgUrl), 1000);
+        await wtu.awaitOrTimeout(wtu.loadCrossOriginImage(img, defaultImgUrl, localImgUrl));
     } catch (e) {
         testFailed(`Image setup failed (${e}).`);
         finishTest();

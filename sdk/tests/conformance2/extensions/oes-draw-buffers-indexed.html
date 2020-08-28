@@ -52,8 +52,6 @@ function setup() {
     wtu.setupUnitQuad(gl, 0);
     wtu.glErrorShouldBe(gl, 0, 'No errors from program');
 
-    gl.disable(gl.BLEND);
-
     const tex1 = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
@@ -77,25 +75,23 @@ function setup() {
 }
 
 function enableDisableTest() {
-    debug("Testing enableiOES/disableiOES and isEnablediOES");
+    debug("Testing enableiOES/disableiOES");
 
     // Invalid input
     ext.enableiOES(gl.DEPTH_TEST, 0);
+    ext.disableiOES(gl.DEPTH_TEST, 0);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'target could only be gl.BLEND');
 
+    gl.disable(gl.BLEND);
+
     // Valid input
-    shouldBe('ext.isEnablediOES(gl.BLEND, 0)', 'false');
-    shouldBe('ext.isEnablediOES(gl.BLEND, 1)', 'false');
     ext.enableiOES(gl.BLEND, 0);
-    shouldBe('ext.isEnablediOES(gl.BLEND, 0)', 'true');
-    shouldBe('ext.isEnablediOES(gl.BLEND, 1)', 'false');
+    shouldBe('gl.isEnabled(gl.BLEND)', 'true');
     ext.disableiOES(gl.BLEND, 0);
     ext.enableiOES(gl.BLEND, 1);
-    shouldBe('ext.isEnablediOES(gl.BLEND, 0)', 'false');
-    shouldBe('ext.isEnablediOES(gl.BLEND, 1)', 'true');
-    ext.enableiOES(gl.BLEND, 0);
-    shouldBe('ext.isEnablediOES(gl.BLEND, 0)', 'true');
-    shouldBe('ext.isEnablediOES(gl.BLEND, 1)', 'true');
+    shouldBe('gl.isEnabled(gl.BLEND)', 'false');
+    gl.enable(gl.BLEND);
+    shouldBe('gl.isEnabled(gl.BLEND)', 'true');
     wtu.glErrorShouldBe(gl, 0, 'No errors from enable and disable draw buffers blend state');
 }
 
@@ -231,6 +227,45 @@ function indexedBlendColorTest() {
 
     shouldBe('gl.getIndexedParameter(ext.COLOR_WRITEMASK, 0)', '[false, false, false, false]');
     shouldBe('gl.getIndexedParameter(ext.COLOR_WRITEMASK, 1)', '[true, true, true, true]');
+
+    debug("Testing non-indexed getParamter get state from draw buffer 0");
+    shouldBe('gl.getParameter(gl.BLEND_SRC_RGB)', 'gl.ONE');
+    shouldBe('gl.getParameter(gl.BLEND_DST_RGB)', 'gl.ONE');
+    shouldBe('gl.getParameter(gl.BLEND_SRC_ALPHA)', 'gl.ZERO');
+    shouldBe('gl.getParameter(gl.BLEND_DST_ALPHA)', 'gl.ZERO');
+    shouldBe('gl.getParameter(gl.BLEND_EQUATION_RGB)', 'gl.FUNC_ADD');
+    shouldBe('gl.getParameter(gl.BLEND_EQUATION_ALPHA)', 'gl.FUNC_SUBTRACT');
+    shouldBe('gl.getParameter(gl.COLOR_WRITEMASK)', '[false, false, false, false]');
+
+    debug("Testing non-indexed calls modify all draw buffers state");
+    gl.blendEquationSeparate(gl.FUNC_SUBTRACT, gl.FUNC_ADD);
+    gl.blendFuncSeparate(gl.ONE_MINUS_DST_ALPHA, gl.DST_ALPHA, gl.ONE, gl.ONE);
+    gl.colorMask(true, false, true, false);
+    wtu.glErrorShouldBe(gl, 0, 'Non-indexed state set without errors');
+
+    shouldBe('gl.getParameter(gl.BLEND_EQUATION_RGB)', 'gl.FUNC_SUBTRACT');
+    shouldBe('gl.getParameter(gl.BLEND_EQUATION_ALPHA)', 'gl.FUNC_ADD');
+    shouldBe('gl.getParameter(gl.BLEND_SRC_RGB)', 'gl.ONE_MINUS_DST_ALPHA');
+    shouldBe('gl.getParameter(gl.BLEND_DST_RGB)', 'gl.DST_ALPHA');
+    shouldBe('gl.getParameter(gl.BLEND_SRC_ALPHA)', 'gl.ONE');
+    shouldBe('gl.getParameter(gl.BLEND_DST_ALPHA)', 'gl.ONE');
+    shouldBe('gl.getParameter(gl.COLOR_WRITEMASK)', '[true, false, true, false]');
+
+    shouldBe('gl.getIndexedParameter(ext.BLEND_EQUATION_RGB, 0)', 'gl.FUNC_SUBTRACT');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_EQUATION_ALPHA, 0)', 'gl.FUNC_ADD');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_SRC_RGB, 0)', 'gl.ONE_MINUS_DST_ALPHA');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_DST_RGB, 0)', 'gl.DST_ALPHA');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_SRC_ALPHA, 0)', 'gl.ONE');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_DST_ALPHA, 0)', 'gl.ONE');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_EQUATION_RGB, 1)', 'gl.FUNC_SUBTRACT');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_EQUATION_ALPHA, 1)', 'gl.FUNC_ADD');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_SRC_RGB, 1)', 'gl.ONE_MINUS_DST_ALPHA');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_DST_RGB, 1)', 'gl.DST_ALPHA');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_SRC_ALPHA, 1)', 'gl.ONE');
+    shouldBe('gl.getIndexedParameter(ext.BLEND_DST_ALPHA, 1)', 'gl.ONE');
+
+    shouldBe('gl.getIndexedParameter(ext.COLOR_WRITEMASK, 0)', '[true, false, true, false]');
+    shouldBe('gl.getIndexedParameter(ext.COLOR_WRITEMASK, 1)', '[true, false, true, false]');
 }
 
 function runTestExtension() {
@@ -245,11 +280,31 @@ function runTestExtension() {
     indexedBlendColorTest();
 }
 
+function runInvalidEnumsTest() {
+    debug("Testing new enums for getIndexedParameterTest being invalid before requesting the extension");
+    gl.getIndexedParameter(0x8009, 0);  // BLEND_EQUATION_RGB
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_EQUATION_RGB');
+    gl.getIndexedParameter(0x883D, 0);  // BLEND_EQUATION_ALPHA
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_EQUATION_ALPHA');
+    gl.getIndexedParameter(0x80C9, 0);  // BLEND_SRC_RGB
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_SRC_RGB');
+    gl.getIndexedParameter(0x80CB, 0);  // BLEND_SRC_ALPHA
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_SRC_ALPHA');
+    gl.getIndexedParameter(0x80C8, 0);  // BLEND_DST_RGB
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_DST_RGB');
+    gl.getIndexedParameter(0x80CA, 0);  // BLEND_DST_ALPHA
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, 'BLEND_DST_ALPHA');
+    gl.getIndexedParameter(0x0C23, 0);  // COLOR_WRITEMASK
+    wtu.glErrorShouldBe(gl, [gl.INVALID_OPERATION, gl.INVALID_ENUM], 'invalid operations or invalid enums for COLOR_WRITEMASK');
+}
+
 function runTest() {
   if (!gl) {
     testFailed("context does not exist");
   } else {
     testPassed("context exists");
+
+    runInvalidEnumsTest();
 
     ext = gl.getExtension("OES_draw_buffers_indexed");
 

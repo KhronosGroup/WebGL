@@ -74,6 +74,15 @@
         value of base vertex of each draw call to be values in<code>baseVerticesList</code> instead
         of zero.
       </feature>
+
+      <feature>
+        When this extension is enabled, the
+        following extensions are enabled implicitly:
+        <ul>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_multi_draw">
+          WEBGL_multi_draw</a></li>
+        </ul>
+      </feature>
     </features>
   </overview>
 
@@ -82,20 +91,20 @@
 interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
   void multiDrawArraysInstancedBaseInstanceWEBGL(
       GLenum mode,
-      Int32array or sequence&lt;GLint&gt; firstsList, GLuint firstsOffset,
-      Int32array or sequence&lt;GLint&gt; countsList, GLuint countsOffset,
-      Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
-      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset,
+      (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
+      (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
+      (Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
+      (Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, GLuint baseInstancesOffset,
       GLsizei drawCount
   );
   void multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
       GLenum mode,
-      Int32array or sequence&lt;GLint&gt; countsList, GLuint countsOffset,
+      (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
       GLenum type,
-      Int32array or sequence&lt;GLint&gt; offsetsList, GLuint offsetsOffset,
-      Int32array or sequence&lt;GLint&gt; instanceCountsList, GLuint instanceCountsOffset,
-      Int32array or sequence&lt;GLint&gt; baseVerticesList, GLuint baseVerticesOffset,
-      Int32array or sequence&lt;GLint&gt; baseInstancesList, GLuint baseInstancesOffset,
+      (Int32Array or sequence&lt;GLsizei&gt;) offsetsList, GLuint offsetsOffset,
+      (Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
+      (Int32Array or sequence&lt;GLint&gt;) baseVerticesList, GLuint baseVerticesOffset,
+      (Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, GLuint baseInstancesOffset,
       GLsizei drawCount
   );
 };
@@ -104,26 +113,26 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
   <newfun>
     <function name="multiDrawArraysInstancedBaseInstanceWEBGL" type="void">
       <param name="mode" type="GLenum"/>
-      <param name="firstsList" type="sequence&lt;GLint&gt;"/>
+      <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
       <param name="firstsOffset" type="GLuint"/>
-      <param name="countsList" type="sequence&lt;GLint&gt;"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
       <param name="countsOffset" type="GLuint"/>
-      <param name="baseInstancesList" type="sequence&lt;GLint&gt;"/>
+      <param name="baseInstancesList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
       <param name="baseInstancesOffset" type="GLuint"/>
       <param name="drawCount" type="GLsizei"/>
     </function>
     <function name="multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
       <param name="mode" type="GLenum"/>
-      <param name="countsList" type="sequence&lt;GLint&gt;"/>
+      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
       <param name="countsOffset" type="GLuint"/>
       <param name="type" type="GLenum"/>
-      <param name="offsetsList" type="sequence&lt;GLint&gt;"/>
+      <param name="offsetsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
       <param name="offsetsOffset" type="GLuint"/>
-      <param name="instanceCountsList" type="sequence&lt;GLint&gt;"/>
+      <param name="instanceCountsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
       <param name="instanceCountsOffset" type="GLuint"/>
-      <param name="baseVerticesList" type="sequence&lt;GLint&gt;"/>
+      <param name="baseVerticesList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
       <param name="baseVerticesOffset" type="GLuint"/>
-      <param name="baseInstancesList" type="sequence&lt;GLint&gt;"/>
+      <param name="baseInstancesList" type="(Uint32Array or sequence&lt;GLuint&gt;)"/>
       <param name="baseInstancesOffset" type="GLuint"/>
       <param name="drawCount" type="GLsizei"/>
     </function>
@@ -149,7 +158,7 @@ var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance"
   let firsts = new Int32Array(...);
   let counts = new Int32Array(...);
   let instanceCounts = new Int32Array(...);
-  let baseInstances = new Int32Array(...);
+  let baseInstances = new Uint32Array(...);
   ext.multiDrawArraysInstancedBaseInstanceWEBGL(
       gl.TRIANGLES, first, 0, counts, 0, instanceCounts, 0, baseInstances, 0, counts.length);
 }
@@ -162,7 +171,7 @@ var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance"
   let offsets = new Int32Array(...);
   let instanceCounts = new Int32Array(...);
   let baseVertices = new Int32Array(...);
-  let baseInstances = new Int32Array(...);
+  let baseInstances = new Uint32Array(...);
   ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
       gl.TRIANGLES, counts, 0, gl.UNSIGHNED_SHORT,
       offsets, 0, instanceCounts, 0, baseVertices, 0, baseInstances, 0,
@@ -189,6 +198,16 @@ void main() {
     <revision date="2019/09/25">
       <change>Change parameters order.</change>
       <change>Move to draft.</change>
+    </revision>
+    <revision date="2020/06/26">
+      <change>Implicitly enable WEBGL_multi_draw</change>
+    </revision>
+    <revision date="2020/07/14">
+      <change>Change types of countsList, offsetsList, and instanceCountsList from sequence&lt;GLint&gt; to sequence&lt;GLsizei&gt;</change>
+      <change>Change type of baseInstances from Int32Array to Uint32Array and sequence&lt;GLint&gt; to sequence&lt;GLuint&gt;</change>
+    </revision>
+    <revision date="2020/07/28">
+      <change>Add parentheses around union types in IDL</change>
     </revision>
   </history>
 </draft>

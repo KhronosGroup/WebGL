@@ -5,6 +5,7 @@
 --min-version 1.0.3 array-of-struct-with-int-first-position.html
 --min-version 1.0.4 assign-to-swizzled-twice-in-function.html
 --min-version 1.0.4 bool-type-cast-bug-int-float.html
+--min-version 1.0.4 character-set.html
 --min-version 1.0.3 compare-loop-index-to-uniform.html
 --min-version 1.0.3 complex-glsl-does-not-crash.html
 --min-version 1.0.4 compound-assignment-type-combination.html

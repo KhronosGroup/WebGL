@@ -135,12 +135,12 @@ function main() {
     var lowDpiDemo = new TeapotDemo(document.getElementById("c2"));
 
     controller = new CameraController(document.body);
-    
+
     controller.onchange = function(xRot, yRot) {
         highDpiDemo.draw();
         lowDpiDemo.draw();
     };
-    
+
     highDpiDemo.startDpiAwareDemo();
     lowDpiDemo.startDemo();
 }
@@ -148,8 +148,6 @@ function main() {
 function TeapotDemo(canvas) {
     this.canvas = canvas;
     this.gl = null;
-    this.width = 0;
-    this.height = 0;
     this.bumpTexture = null;
     this.envTexture = null;
     this.programObject = null;
@@ -179,7 +177,7 @@ function TeapotDemo(canvas) {
 
     // Lost context handling
     var self = this;
-    
+
     this.canvas.addEventListener('webglcontextlost', function(e) {
         log("handle context lost");
         e.preventDefault();
@@ -199,10 +197,28 @@ TeapotDemo.prototype.startDemo = function() {
 }
 
 TeapotDemo.prototype.startDpiAwareDemo = function() {
-    var ratio = window.devicePixelRatio ? window.devicePixelRatio : 1;
-    this.canvas.width = this.canvas.clientWidth * ratio;
-    this.canvas.height = this.canvas.clientHeight * ratio;
+    try {
+        let resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                let devicePixelSize = entry.devicePixelContentBoxSize[0];
+                this.resize(devicePixelSize.inlineSize, devicePixelSize.blockSize);
+            }
+        });
+        resizeObserver.observe(this.canvas, { box: "device-pixel-content-box" });
+    } catch (e) {
+        // device-pixel-content-box (or ResizeObserver altogether) is
+        // not supported on this browser. Fall back to the old
+        // algorithm which doesn't handle resizing.
+        let ratio = window.devicePixelRatio ? window.devicePixelRatio : 1;
+        this.resize(this.canvas.clientWidth * ratio, this.canvas.clientHeight * ratio);
+    }
+
     this.init();
+}
+
+TeapotDemo.prototype.resize = function(newWidth, newHeight) {
+    this.canvas.width = newWidth;
+    this.canvas.height = newHeight;
 }
 
 TeapotDemo.prototype.init = function() {
@@ -211,8 +227,6 @@ TeapotDemo.prototype.init = function() {
     if (!gl)
         return;
     this.gl = gl;
-    this.width = this.canvas.width;
-    this.height = this.canvas.height;
 
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -248,7 +262,7 @@ TeapotDemo.prototype.initTeapot = function(gl) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementVbo);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, teapotIndices, gl.STATIC_DRAW);
     this.numElements = teapotIndices.length;
-    
+
     var wireIndices = this.createWireIndicies(teapotIndices);
     this.wireElementVbo = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.wireElementVbo);
@@ -314,7 +328,7 @@ TeapotDemo.prototype.initShaders = function(gl) {
         gl.deleteProgram(programObject);
         return;
     }
-    
+
     this.programObject = programObject;
     // Look up uniform locations
     this.worldLoc = gl.getUniformLocation(programObject, "world");
@@ -350,7 +364,8 @@ TeapotDemo.prototype.initShaders = function(gl) {
 TeapotDemo.prototype.draw = function() {
     var gl = this.gl;
 
-    // Note: the viewport is automatically set up to cover the entire Canvas.
+    // Handle resizes by setting the viewport each time a render is performed.
+    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // For now, don't render if we have incomplete textures, just to
@@ -362,7 +377,7 @@ TeapotDemo.prototype.draw = function() {
 
     // Set up the model, view and projection matrices
     projection.loadIdentity();
-    projection.perspective(45, this.width / this.height, 10, 500);
+    projection.perspective(45, this.canvas.width / this.canvas.height, 10, 500);
     view.loadIdentity();
     view.translate(0, -10, -100.0);
 
@@ -413,7 +428,7 @@ TeapotDemo.prototype.draw = function() {
     gl.enableVertexAttribArray(3);
     gl.vertexAttribPointer(4, 3, gl.FLOAT, false, 0, this.normalsOffset);
     gl.enableVertexAttribArray(4);
-    
+
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementVbo);
     gl.drawElements(gl.TRIANGLES, this.numElements, gl.UNSIGNED_SHORT, 0);
 
