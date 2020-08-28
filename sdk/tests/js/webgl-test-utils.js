@@ -2913,6 +2913,14 @@ var requestAnimFrame = function(callback) {
   _requestAnimFrame.call(window, callback);
 };
 
+/**
+ * Provides video.requestVideoFrameCallback in a cross browser way.
+ * Returns a property, or undefined if unsuported.
+ */
+var getRequestVidFrameCallback = function() {
+  return HTMLVideoElement.prototype["requestVideoFrameCallback"];
+};
+
 var _cancelAnimFrame;
 
 /**
@@ -3115,21 +3123,27 @@ var runSteps = function(steps) {
  *        video is ready.
  */
 var startPlayingAndWaitForVideo = function(video, callback) {
-  var timeWatcher = function() {
-    if (video.currentTime > 0) {
-      callback(video);
-    } else {
-      requestAnimFrame.call(window, timeWatcher);
-    }
-  };
+  var rvfc = getRequestVidFrameCallback();
+  if (rvfc === undefined) {
+    var timeWatcher = function() {
+      if (video.currentTime > 0) {
+        callback(video);
+      } else {
+        requestAnimFrame.call(window, timeWatcher);
+      }
+    };
+
+    timeWatcher();
+  } else {
+    // Calls video.requestVideoFrameCallback(_ => { callback(video) })
+    rvfc.call(video, _ => { callback(video) });
+  }
 
   video.loop = true;
   video.muted = true;
   // See whether setting the preload flag de-flakes video-related tests.
   video.preload = 'auto';
   video.play();
-
-  timeWatcher();
 };
 
 var getHost = function(url) {

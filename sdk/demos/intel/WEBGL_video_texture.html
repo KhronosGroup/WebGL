@@ -1,0 +1,120 @@
+<!--
+
+/*
+** Copyright (c) 2020 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <title>WEBGL_video_texture sample</title>
+
+    <!--
+      This sample demonstrates how to render a 360 degree panoramic video in VR.
+    -->
+
+    <style>
+      #webgl-canvas {
+        box-sizing: border-box;
+        height: 100%;
+        left: 0;
+        margin: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    </style>
+
+    <script src="js/renderer.js"></script>
+  </head>
+  <body>
+    <canvas id="webgl-canvas"></canvas>
+    <script>
+      (function () {
+      "use strict";
+
+      // =====================
+      // WebGL scene setup.
+      // =====================
+
+      // WebGL setup.
+      var webglCanvas = document.getElementById("webgl-canvas");
+      var gl = null;
+      var renderer = null;
+      var ext = null;
+      var enable_WEBGL_video_texture = true;
+      var urlParams = new URLSearchParams(window.location.search);
+      if(urlParams.get('disable_WEBGL_video_texture')) {
+        enable_WEBGL_video_texture = false;
+      }
+
+      var textNode = undefined;
+      if (enable_WEBGL_video_texture) {
+        textNode = document.createTextNode("WEBGL_video_texture: On");
+      } else {
+        textNode = document.createTextNode("WEBGL_video_texture: Off");
+      }
+     document.body.appendChild(textNode);
+
+      gl = webglCanvas.getContext("webgl");
+
+      if (!gl) {
+        console.error("Cannot create webgl context");
+        return;
+      }
+
+      renderer = new Renderer(gl, enable_WEBGL_video_texture, enable_WEBGL_video_texture);
+      renderer.setVideo('./Test.webm', enable_WEBGL_video_texture).catch(
+        function(error) {
+          if (error instanceof MediaError && error.code === 4) {
+              onsole.log("Cannot log video from the url");
+              eturn;
+          }
+        }
+      );
+
+      // Wait until we have a WebGL context to resize and start rendering.
+      window.addEventListener("resize", onResize, false);
+      onResize();
+      window.requestAnimationFrame(onAnimationFrame);
+
+      function onResize () {
+        webglCanvas.width = webglCanvas.offsetWidth * window.devicePixelRatio;
+        webglCanvas.height = webglCanvas.offsetHeight * window.devicePixelRatio;
+      }
+
+      function onAnimationFrame (t) {
+        window.requestAnimationFrame(onAnimationFrame);
+        gl.viewport(0, 0, webglCanvas.width, webglCanvas.height);
+        renderer.render();
+      }
+    })();
+    </script>
+  </body>
+</html>
