@@ -234,6 +234,12 @@
 	<xsl:when test="@require='true'">
 	  <p> Implementations must also support the <xsl:apply-templates select="."/> extension. </p>
 	</xsl:when>
+	<xsl:when test="@require='webgl1'">
+	  <p> In WebGL 1.0 contexts, implementations must also support the <xsl:apply-templates select="."/> extension. </p>
+	</xsl:when>
+	<xsl:when test="@require='webgl2'">
+	  <p> In WebGL 2.0 contexts, implementations must also support the <xsl:apply-templates select="."/> extension. </p>
+	</xsl:when>
 	<xsl:otherwise>
 	  <p> Written against the <xsl:apply-templates select="."/> specification. </p>
 	</xsl:otherwise>
