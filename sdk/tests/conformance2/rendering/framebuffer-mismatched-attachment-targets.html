@@ -132,7 +132,9 @@ function runTest() {
         debug(`mipLevel: ${mipLevel}`);
         color.attach(gl.COLOR_ATTACHMENT0, mipLevel);
         depth.attach(gl.DEPTH_ATTACHMENT, mipLevel);
-        wtu.framebufferStatusShouldBe(gl, gl.FRAMEBUFFER, gl.FRAMEBUFFER_COMPLETE);
+        if (!wtu.framebufferStatusShouldBe(gl, gl.FRAMEBUFFER, [gl.FRAMEBUFFER_COMPLETE, gl.FRAMEBUFFER_UNSUPPORTED])) {
+          continue;
+        }
 
         gl.clear(gl.COLOR_BUFFER_BIT);
         wtu.checkCanvas(gl, [255, 0, 0, 255], `framebuffer layer ${mipLevel} should be cleared red`);
