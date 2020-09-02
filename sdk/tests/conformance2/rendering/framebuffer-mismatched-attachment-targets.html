@@ -132,7 +132,8 @@ function runTest() {
         debug(`mipLevel: ${mipLevel}`);
         color.attach(gl.COLOR_ATTACHMENT0, mipLevel);
         depth.attach(gl.DEPTH_ATTACHMENT, mipLevel);
-        if (!wtu.framebufferStatusShouldBe(gl, gl.FRAMEBUFFER, [gl.FRAMEBUFFER_COMPLETE, gl.FRAMEBUFFER_UNSUPPORTED])) {
+        const maybeStatus = wtu.framebufferStatusShouldBe(gl, gl.FRAMEBUFFER, [gl.FRAMEBUFFER_COMPLETE, gl.FRAMEBUFFER_UNSUPPORTED]);
+        if (!maybeStatus || maybeStatus[0] != gl.FRAMEBUFFER_COMPLETE) {
           continue;
         }
 

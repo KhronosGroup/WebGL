@@ -1759,12 +1759,15 @@ var framebufferStatusShouldBe = function(gl, target, glStatuses, opt_msg) {
     testFailed(msg);
     return false;
   }
-  let msg = "checkFramebufferStatus was " + ((glStatuses.length > 1) ? "one of: " : "expected value: ") + expected;
+  let msg = `checkFramebufferStatus was ${glEnumToString(gl, status)}`;
+  if (glStatuses.length > 1) {
+    msg += `, one of: ${expected}`;
+  }
   if (opt_msg) {
     msg += ": " + opt_msg;
   }
   testPassed(msg);
-  return true;
+  return [status];
 }
 
 /**
