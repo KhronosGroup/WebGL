@@ -53,7 +53,7 @@
 
   <idl xml:space="preserve">
 
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface EXT_texture_norm16 {
   const GLenum R16_EXT = 0x822A;
   const GLenum RG16_EXT = 0x822C;

@@ -87,7 +87,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
   void multiDrawArraysInstancedBaseInstanceWEBGL(
       GLenum mode,

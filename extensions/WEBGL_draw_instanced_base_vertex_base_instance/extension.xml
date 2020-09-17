@@ -43,7 +43,7 @@
         extension must be enabled with the
         <code>#extension GL_ANGLE_base_vertex_base_instance</code> directive, as shown in the
         sample code, to use the extension in a shader.
-        
+
         Likewise the shading language preprocessor
         <code>#define GL_ANGLE_base_vertex_base_instance</code> will be defined to 1 if the
         extension is supported.
@@ -100,7 +100,7 @@
 
   <idl xml:space="preserve">
 
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface WEBGL_draw_instanced_base_vertex_base_instance {
   void drawArraysInstancedBaseInstanceWEBGL(
       GLenum mode, GLint first, GLsizei count,

@@ -39,7 +39,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[LegacyNoInterfaceObject]
 interface OES_draw_buffers_indexed {
   void enableiOES(GLenum target, GLuint index);
 
