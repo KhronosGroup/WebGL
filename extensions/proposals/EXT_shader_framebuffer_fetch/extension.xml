@@ -21,23 +21,23 @@
 
     <features>
       <feature>
-            It provides a mechanism whereby a fragment shader may read existing framebuffer data as input. 
+            It provides a mechanism whereby a fragment shader may read existing framebuffer data as input.
       </feature>
       <feature>
-            Prior to fragment shading, if <code>GL_EXT_shader_framebuffer_fetch</code> is enabled, <code>gl_LastFragData[]</code> is populated with the value last written to the framebuffer at the same (x,y,sample) position. 
+            Prior to fragment shading, if <code>GL_EXT_shader_framebuffer_fetch</code> is enabled, <code>gl_LastFragData[]</code> is populated with the value last written to the framebuffer at the same (x,y,sample) position.
       </feature>
       <feature>
             If <code>EXT_shader_framebuffer_fetch_non_coherent</code> is supported, a call to <code>FramebufferFetchBarrierEXT(void)</code> can be made to ensure <code>gl_LastFragData[]</code> is populated with fragment data drawn before the barrier.
       </feature>
     </features>
   </overview>
-  
+
   <idl xml:space="preserve">
-    [LegacyNoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_shader_framebuffer_fetch {
     };
 
-    [LegacyNoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_shader_framebuffer_fetch_non_coherent {
       void FramebufferFetchBarrierEXT(void);
     };

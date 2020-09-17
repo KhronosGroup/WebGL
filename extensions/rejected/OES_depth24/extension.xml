@@ -30,7 +30,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface OES_depth24 {
   const GLenum DEPTH_COMPONENT24_OES = 0x81A6;
 };
@@ -48,7 +48,7 @@ interface OES_depth24 {
             var fbo = gl.createFramebuffer();
             gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depth);
-            
+
             var fboStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
             console.assert(fboStatus == gl.FRAMEBUFFER_COMPLETE, 'Framebuffer is not complete');
 

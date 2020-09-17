@@ -112,7 +112,7 @@
   </overview>
 
   <idl xml:space="preserve"><![CDATA[
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_debug : EventTarget {
   const GLenum MAX_DEBUG_MESSAGE_LENGTH_KHR = 0x9143;
   const GLenum MAX_DEBUG_GROUP_STACK_DEPTH_KHR = 0x826C;
@@ -155,7 +155,7 @@ interface WEBGL_debug : EventTarget {
   DOMString getObjectLabelKHR(WebGLObject? object);
 }; // interface WEBGL_debug
 
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WebGLDebugMessage : Event {
   readonly attribute GLenum source;
   readonly attribute GLenum type;
@@ -245,7 +245,7 @@ function init(gl) {
 
   <samplecode><div class="example">
     Skip a section of the code.
-    
+
     <pre xml:space="preserve"><![CDATA[
 function draw(gl, ext) {
   ...
@@ -298,7 +298,7 @@ function draw(gl, ext) {
   <samplecode><div class="example">
     Only output a subsection of the code and disable some messages for the
     entire application.
-  
+
     <pre xml:space="preserve"><![CDATA[
 function draw(gl, ext) {
   ...

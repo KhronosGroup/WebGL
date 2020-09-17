@@ -92,7 +92,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_compressed_texture_etc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_R11_EAC                        = 0x9270;
@@ -107,7 +107,7 @@ interface WEBGL_compressed_texture_etc {
     const GLenum COMPRESSED_SRGB8_ALPHA8_ETC2_EAC          = 0x9279;
 };
   </idl>
-  
+
   <newtok>
     <function name="compressedTexImage2D">
       <param name="internalformat" type="GLenum"/>
@@ -124,7 +124,7 @@ interface WEBGL_compressed_texture_etc {
       <code>COMPRESSED_SRGB8_ALPHA8_ETC2_EAC</code>
       <br/>
     </function>
-    
+
     <function name="compressedTexSubImage2D">
       <param name="internalformat" type="GLenum"/>
       Accepted by the <code>internalformat</code> parameter:

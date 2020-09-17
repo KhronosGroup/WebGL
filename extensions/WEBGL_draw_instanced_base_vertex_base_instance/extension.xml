@@ -100,7 +100,7 @@
 
   <idl xml:space="preserve">
 
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_draw_instanced_base_vertex_base_instance {
   void drawArraysInstancedBaseInstanceWEBGL(
       GLenum mode, GLint first, GLsizei count,

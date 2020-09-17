@@ -15,7 +15,7 @@
   </depends>
   <overview>
     <p>
-      This extension exposes the compressed texture format defined in the 
+      This extension exposes the compressed texture format defined in the
       <a href="https://www.opengl.org/registry/specs/KHR/texture_compression_astc_hdr.txt">
       KHR_texture_compression_astc_hdr</a> OpenGL ES extension to WebGL. Consult that extension
       specification for behavioral definitions, including error behaviors.
@@ -70,7 +70,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -87,7 +87,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -104,7 +104,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -121,7 +121,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -138,7 +138,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -155,7 +155,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -172,7 +172,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -189,7 +189,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -206,7 +206,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -223,7 +223,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -240,7 +240,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -257,7 +257,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -274,7 +274,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -291,7 +291,7 @@
           <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR</dt>
           <dd>
             <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
               equal to the following number of bytes:
             </p>
             <blockquote><code>
@@ -304,7 +304,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_compressed_texture_astc {
     /* Compressed Texture Format */
     const GLenum COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0;
@@ -392,7 +392,7 @@ interface WEBGL_compressed_texture_astc {
       <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR</code>
       <br/>
     </function>
-    
+
     <function name="compressedTexSubImage2D">
       <param name="internalformat" type="GLenum"/>
       Accepted by the <code>internalformat</code> parameter:
@@ -431,7 +431,7 @@ interface WEBGL_compressed_texture_astc {
   <errors>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_4x4_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -440,7 +440,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_5x4_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -449,7 +449,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_5x5_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -458,7 +458,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_6x5_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -467,7 +467,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_6x6_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -476,7 +476,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_8x5_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -485,7 +485,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_8x6_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -494,7 +494,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_8x8_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -503,7 +503,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_10x5_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -512,7 +512,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_10x6_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -521,7 +521,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_10x8_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -530,7 +530,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_10x10_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -539,7 +539,7 @@ interface WEBGL_compressed_texture_astc {
     </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_12x10_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>
@@ -548,7 +548,7 @@ interface WEBGL_compressed_texture_astc {
      </error>
     <error enum="INVALID_VALUE">
       The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
-      if the <code>internalformat</code> parameter is 
+      if the <code>internalformat</code> parameter is
       <code>COMPRESSED_RGBA_ASTC_12x12_KHR</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR</code>
       and the byteLength of the ArrayBufferView is not:
       <blockquote><code>

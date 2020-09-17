@@ -28,7 +28,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_get_buffer_sub_data_async {
   // Asynchronous version of getBufferSubData which fulfills the returned promise when the data becomes available.
   Promise&lt;ArrayBuffer&gt; getBufferSubDataAsync(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstBuffer,
