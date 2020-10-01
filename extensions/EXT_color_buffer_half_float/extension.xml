@@ -87,6 +87,8 @@
 interface EXT_color_buffer_half_float {
   const GLenum RGBA16F_EXT = 0x881A;
   const GLenum RGB16F_EXT = 0x881B;
+  const GLenum RG16F_EXT = 0x822F;
+  const GLenum R16F_EXT = 0x822D;
   const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
   const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
 }; // interface EXT_color_buffer_half_float
@@ -167,6 +169,10 @@ interface EXT_color_buffer_half_float {
       <change>Expose to WebGL 2.0 contexts to support devices which can render
       only to 16-bit floating point targets, and therefore can not support
       EXT_color_buffer_float.</change>
+    </revision>
+
+    <revision date="2020/09/30">
+      <change>Add R16F and RG16F to idl.</change>
     </revision>
   </history>
 </extension>
