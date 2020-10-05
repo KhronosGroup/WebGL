@@ -1,0 +1,191 @@
+<!--
+Copyright (c) 2020 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Test TEXTURE_MIN/MAG_FILTER and TEXTURE_MAX_ANISOTROPY</title>
+<link rel="stylesheet" href="../../../resources/js-test-style.css"/>
+<script src="../../../js/js-test-pre.js"></script>
+<script src="../../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description("Test TEXTURE_MIN/MAG_FILTER and TEXTURE_MAX_ANISOTROPY");
+debug("");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext();
+
+if (!gl) {
+    testFailed("WebGL context does not exist");
+} else {
+    testPassed("WebGL context exists");
+
+    testFiltering();
+
+    debug('');
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "End of run");
+}
+
+function makeRgbaFramebuffer(gl, w, h) {
+    const tex = gl.createTexture();
+
+    let was = gl.getParameter(gl.TEXTURE_BINDING_2D);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindTexture(gl.TEXTURE_2D, was);
+
+    const fb = gl.createFramebuffer();
+    was = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+                            gl.TEXTURE_2D, tex, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, was);
+
+    return fb;
+}
+
+function testFiltering() {
+    const RED = [255, 0, 0, 255];
+    const GREEN = [0, 255, 0, 255];
+    const BLUE = [0, 0, 255, 255];
+    const DATA_LEVEL_0 = new Uint8Array([
+        RED[0], RED[1], RED[2], RED[3],
+        GREEN[0], GREEN[1], GREEN[2], GREEN[3],
+        GREEN[0], GREEN[1], GREEN[2], GREEN[3],
+        RED[0], RED[1], RED[2], RED[3],
+    ]);
+
+    const DATA_LEVEL_1 = new Uint8Array([
+        BLUE[0], BLUE[1], BLUE[2], BLUE[3],
+    ]);
+
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, DATA_LEVEL_0);
+    gl.texImage2D(gl.TEXTURE_2D, 1, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, DATA_LEVEL_1);
+
+    const VS = `
+void main() {
+    gl_Position = vec4(0, 0, 0, 1);
+    gl_PointSize = 1.0;
+}
+    `;
+    const FS = `
+uniform sampler2D u_tex0;
+precision mediump float;
+void main() {
+    vec2 pos = gl_PointCoord - vec2(0.5);
+    pos.x *= 1.03;
+    pos += vec2(0.3);
+    gl_FragColor = texture2D(u_tex0, pos, -0.7);
+    //gl_FragColor.rg = pos;
+}
+    `;
+
+    const prog = gl.createProgram();
+    let shader;
+    shader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(shader, VS);
+    gl.compileShader(shader);
+    gl.attachShader(prog, shader);
+
+    shader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(shader, FS);
+    gl.compileShader(shader);
+    gl.attachShader(prog, shader);
+
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    // -
+
+    const fb = makeRgbaFramebuffer(gl, 1, 1);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.viewport(0, 0, 1, 1);
+
+    const MAG = [
+        gl.NEAREST, gl.LINEAR
+    ];
+    const MIN = [
+        {
+            filter: gl.NEAREST,
+            test: (r, g, b, a) => r && !g && !b,
+        }, {
+            filter: gl.LINEAR,
+            test: (r, g, b, a) => r && g && !b,
+        }, {
+            filter: gl.NEAREST_MIPMAP_NEAREST,
+            test: (r, g, b, a) => r && !g && !b,
+        }, {
+            // LINEAR, MIPMAP_NEAREST: Linear within mipmap that's nearest
+            filter: gl.LINEAR_MIPMAP_NEAREST,
+            test: (r, g, b, a) => r && g && !b,
+        }, {
+            // NEAREST, MIPMAP_LINEAR: The opposite
+            filter: gl.NEAREST_MIPMAP_LINEAR,
+            //test: (r, g, b, a) => r && !g && b,
+            // NEAREST_MIPMAP_LINEAR w/ anisotropy sometimes yields RED.
+            test: (r, g, b, a) => !g,
+        }, {
+            filter: gl.LINEAR_MIPMAP_LINEAR,
+            test: (r, g, b, a) => r && g && b,
+        },
+    ];
+
+    const ANISO = [1];
+    const anisoExt = gl.getExtension('EXT_texture_filter_anisotropic');
+    if (anisoExt) {
+        ANISO.push(2);
+    }
+
+    for (const min of MIN) {
+        debug('\nmin: ' + wtu.glEnumToString(gl,min.filter));
+        for (const mag of MAG) {
+            debug(' mag: ' + wtu.glEnumToString(gl,mag));
+            for (const aniso of ANISO) {
+                debug('  aniso: ' + aniso);
+                const res = filtering_result(mag, min.filter, anisoExt, aniso);
+                debug('  res: ' + res);
+                const ok = min.test(res[0], res[1], res[2], res[3]);
+                if (ok) {
+                    testPassed('Result was ' + res.toString());
+                } else {
+                    testFailed('Result was ' + res.toString());
+                }
+            }
+        }
+    }
+}
+
+function filtering_result(mag, min, anisoExt, aniso) {
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, mag);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, min);
+    if (anisoExt) {
+        gl.texParameterf(gl.TEXTURE_2D, anisoExt.TEXTURE_MAX_ANISOTROPY_EXT, aniso);
+    }
+
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.POINTS, 0, 1);
+
+    const data = new Uint8Array(4);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    return data;
+}
+
+var successfullyParsed = true;
+</script>
+<script src="../../../js/js-test-post.js"></script>
+
+</body>
+</html>
+

@@ -34,6 +34,7 @@ if (!gl) {
         if (contextVersion >= 2) {
             runSamplerTestEnabled();
         }
+        testFiltering();
     }
 }
 
@@ -161,6 +162,65 @@ function runSamplerTestEnabled() {
     }
     gl.deleteSampler(sampler);
 }
+
+function makeRgbaFramebuffer(gl, w, h) {
+    const tex = gl.createTexture();
+
+    let was = gl.getParameter(gl.TEXTURE_2D_BINDING);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindTexture(gl.TEXTURE_2D, was);
+
+    const fb = gl.createFramebuffer();
+    was = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+                            gl.TEXTURE_2D, tex, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, was);
+
+    return fb;
+}
+
+function testFiltering() {
+    const fb = makeRgbaFramebuffer(gl, 1, 1);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+
+    const DATA_LEVEL_0 = new Uint8Array([
+        255, 0, 0, 255,
+        0, 255, 0, 255,
+        0, 255, 0, 255,
+        255, 0, 0, 255,
+    ]);
+
+    const DATA_LEVEL_1 = new Uint8Array([
+        0, 0, 255, 255,
+    ]);
+
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, DATA_LEVEL_0);
+    gl.texImage2D(gl.TEXTURE_2D, 1, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, DATA_LEVEL_1);
+
+    const VS = `
+void main() {
+    gl_Position = vec4(0, 0, 0, 1);
+}
+    `;
+    const FS = `
+uniform sampler2D u_tex0;
+void main() {
+    gl_FragColor = texture2D(u_tex0, vec2(0.3, 0.3), 0.3);
+}
+    `;
+
+
+
+
+
+
+
+
+
 
 debug("");
 var successfullyParsed = true;
