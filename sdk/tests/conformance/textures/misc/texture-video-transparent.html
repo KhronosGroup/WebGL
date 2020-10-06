@@ -92,21 +92,22 @@ function runOneIteration(videoElement, useTexSubImage2D)
     const tolerance = 5;
     const red = [255, 0, 0];
     const green = [0, 255, 0];
-    const blue = [0, 0, 255];
+    const blue = [0, 0, 200];
 
     // Check the left and right sides. Make sure that EITHER:
 
     // - Left is green and right is transparent-blended-with-red
     let leftIsGreen = false, leftIsRed = false, rightIsBlue = false, rightIsRed = false;
     let greenRedError = "", redBlueError = "";
+    let leftGreenError = "", rightBlueError = "";
     wtu.checkCanvasRectColor(gl, 4, 4, 8, 24, green, tolerance,
-        /* sameFn */ () => { leftIsGreen = true; }, /* differentFn */ m => {}, debug);
+        /* sameFn */ () => { leftIsGreen = true; }, /* differentFn */ m => { leftGreenError = m; }, debug);
     wtu.checkCanvasRectColor(gl, 20, 4, 8, 24, red, tolerance,
         /* sameFn */ () => { rightIsRed = true; }, /* differentFn */ m => { greenRedError = m; }, debug);
 
     // - Right is blue and left is transparent-blended-with-red
     wtu.checkCanvasRectColor(gl, 20, 4, 8, 24, blue, tolerance,
-        /* sameFn */ () => { rightIsBlue = true; }, /* differentFn */ m => {}, debug);
+        /* sameFn */ () => { rightIsBlue = true; }, /* differentFn */ m => { rightBlueError = m; }, debug);
     wtu.checkCanvasRectColor(gl, 4, 4, 8, 24, red, tolerance,
         /* sameFn */ () => { leftIsRed = true; }, /* differentFn */ m => { redBlueError = m; }, debug);
 
@@ -123,7 +124,7 @@ function runOneIteration(videoElement, useTexSubImage2D)
             testFailed("right is blue, but: " + redBlueError);
         }
     } else {
-        testFailed("neither left is green nor right is blue \n" + greenRedError + "\n" + redBlueError);
+        testFailed("neither left is green nor right is blue \n" + leftGreenError + "\n" + rightBlueError + "\n");
     }
 }
 </script>
