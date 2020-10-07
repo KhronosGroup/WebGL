@@ -70,24 +70,29 @@ function testFiltering() {
 
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, DATA_LEVEL_0);
     gl.texImage2D(gl.TEXTURE_2D, 1, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, DATA_LEVEL_1);
 
     const VS = `
+attribute vec2 a_pos;
+varying vec3 v_pos;
 void main() {
-    gl_Position = vec4(0, 0, 0, 1);
-    gl_PointSize = 1.0;
+    v_pos = a_pos.xyx;
+    v_pos.z *= 0.03;
+    gl_Position = vec4(2.0*v_pos - 1.0, 1);
 }
     `;
     const FS = `
 uniform sampler2D u_tex0;
 precision mediump float;
+varying vec3 v_pos;
 void main() {
-    vec2 pos = gl_PointCoord - vec2(0.5);
-    pos.x *= 1.03;
-    pos += vec2(0.3);
-    gl_FragColor = texture2D(u_tex0, pos, -0.7);
-    //gl_FragColor.rg = pos;
+    vec3 pos = v_pos;
+    pos.xy += 0.1;
+    gl_FragColor = texture2D(u_tex0, pos.xy, +0.3);
+    //gl_FragColor.rgb = pos;
 }
     `;
 
@@ -103,14 +108,31 @@ void main() {
     gl.compileShader(shader);
     gl.attachShader(prog, shader);
 
+    gl.bindAttribLocation(prog, 0, 'a_pos');
     gl.linkProgram(prog);
+    console.log(gl.getShaderInfoLog(shader));
     gl.useProgram(prog);
 
     // -
 
-    const fb = makeRgbaFramebuffer(gl, 1, 1);
+    const VDATA = [
+        0, 0,
+        1, 0,
+        0, 1,
+        1, 1,
+    ];
+    const vbuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(VDATA), gl.STATIC_DRAW);
+
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+    // -
+
+    const fb = makeRgbaFramebuffer(gl, 2, 2);
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.viewport(0, 0, 1, 1);
+    gl.viewport(0, 0, 2, 2);
 
     const MAG = [
         gl.NEAREST, gl.LINEAR
@@ -132,9 +154,7 @@ void main() {
         }, {
             // NEAREST, MIPMAP_LINEAR: The opposite
             filter: gl.NEAREST_MIPMAP_LINEAR,
-            //test: (r, g, b, a) => r && !g && b,
-            // NEAREST_MIPMAP_LINEAR w/ anisotropy sometimes yields RED.
-            test: (r, g, b, a) => !g,
+            test: (r, g, b, a) => r && !g && b,
         }, {
             filter: gl.LINEAR_MIPMAP_LINEAR,
             test: (r, g, b, a) => r && g && b,
@@ -154,7 +174,7 @@ void main() {
             for (const aniso of ANISO) {
                 debug('  aniso: ' + aniso);
                 const res = filtering_result(mag, min.filter, anisoExt, aniso);
-                debug('  res: ' + res);
+                //debug('  res: ' + res);
                 const ok = min.test(res[0], res[1], res[2], res[3]);
                 if (ok) {
                     testPassed('Result was ' + res.toString());
@@ -167,6 +187,20 @@ void main() {
 }
 
 function filtering_result(mag, min, anisoExt, aniso) {
+    const DISABLE_ANISO_FOR_NEAREST = false;
+    if (DISABLE_ANISO_FOR_NEAREST) {
+        if (mag == gl.NEAREST) {
+            aniso = 1.0;
+        }
+        switch (min) {
+            case gl.NEAREST:
+            case gl.NEAREST_MIPMAP_NEAREST:
+            case gl.NEAREST_MIPMAP_LINEAR:
+            case gl.LINEAR_MIPMAP_NEAREST:
+                aniso = 1.0;
+                break;
+        }
+    }
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, mag);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, min);
     if (anisoExt) {
@@ -175,7 +209,7 @@ function filtering_result(mag, min, anisoExt, aniso) {
 
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.drawArrays(gl.POINTS, 0, 1);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     const data = new Uint8Array(4);
     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data);
