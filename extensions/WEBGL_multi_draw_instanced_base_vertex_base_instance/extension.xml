@@ -87,9 +87,9 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[Exposed=Window, LegacyNoInterfaceObject]
 interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
-  void multiDrawArraysInstancedBaseInstanceWEBGL(
+  undefined multiDrawArraysInstancedBaseInstanceWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
       (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
@@ -97,7 +97,7 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
       (Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, GLuint baseInstancesOffset,
       GLsizei drawCount
   );
-  void multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
+  undefined multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
       GLenum type,
