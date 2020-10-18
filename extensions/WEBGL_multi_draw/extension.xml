@@ -64,26 +64,26 @@
 
   <idl xml:space="preserve">
 
-[NoInterfaceObject]
+[Exposed=Window, LegacyNoInterfaceObject]
 interface WEBGL_multi_draw {
-  void multiDrawArraysWEBGL(
+  undefined multiDrawArraysWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
       (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
       GLsizei drawcount);
-  void multiDrawElementsWEBGL(
+  undefined multiDrawElementsWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) countsList, GLuint countsOffset,
       GLenum type,
       (Int32Array or sequence&lt;GLsizei&gt;) offsetsList, GLuint offsetsOffset,
       GLsizei drawcount);
-  void multiDrawArraysInstancedWEBGL(
+  undefined multiDrawArraysInstancedWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
       (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
       (Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
       GLsizei drawcount);
-  void multiDrawElementsInstancedWEBGL(
+  undefined multiDrawElementsInstancedWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) countsList, GLuint countsOffset,
       GLenum type,
