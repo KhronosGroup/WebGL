@@ -63,11 +63,11 @@ interface EXT_disjoint_timer_query {
   const GLenum GPU_DISJOINT_EXT            = 0x8FBB;
 
   WebGLTimerQueryEXT? createQueryEXT();
-  void deleteQueryEXT(WebGLTimerQueryEXT? query);
+  undefined deleteQueryEXT(WebGLTimerQueryEXT? query);
   [WebGLHandlesContextLoss] boolean isQueryEXT(WebGLTimerQueryEXT? query);
-  void beginQueryEXT(GLenum target, WebGLTimerQueryEXT query);
-  void endQueryEXT(GLenum target);
-  void queryCounterEXT(WebGLTimerQueryEXT query, GLenum target);
+  undefined beginQueryEXT(GLenum target, WebGLTimerQueryEXT query);
+  undefined endQueryEXT(GLenum target);
+  undefined queryCounterEXT(WebGLTimerQueryEXT query, GLenum target);
   any getQueryEXT(GLenum target, GLenum pname);
   any getQueryObjectEXT(WebGLTimerQueryEXT query, GLenum pname);
 };
