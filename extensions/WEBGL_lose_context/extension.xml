@@ -31,8 +31,8 @@
   <idl xml:space="preserve">
 [LegacyNoInterfaceObject]
 interface WEBGL_lose_context {
-      void loseContext();
-      void restoreContext();
+      undefined loseContext();
+      undefined restoreContext();
 };
   </idl>
   <newfun>
