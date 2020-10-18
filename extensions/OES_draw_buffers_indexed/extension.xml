@@ -39,25 +39,25 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[Exposed=Window, LegacyNoInterfaceObject]
 interface OES_draw_buffers_indexed {
-  void enableiOES(GLenum target, GLuint index);
+  undefined enableiOES(GLenum target, GLuint index);
 
-  void disableiOES(GLenum target, GLuint index);
+  undefined disableiOES(GLenum target, GLuint index);
 
-  void blendEquationiOES(GLuint buf, GLenum mode);
+  undefined blendEquationiOES(GLuint buf, GLenum mode);
 
-  void blendEquationSeparateiOES(GLuint buf,
+  undefined blendEquationSeparateiOES(GLuint buf,
                                  GLenum modeRGB, GLenum modeAlpha);
 
-  void blendFunciOES(GLuint buf,
+  undefined blendFunciOES(GLuint buf,
                      GLenum src, GLenum dst);
 
-  void blendFuncSeparateiOES(GLuint buf,
+  undefined blendFuncSeparateiOES(GLuint buf,
                              GLenum srcRGB, GLenum dstRGB,
                              GLenum srcAlpha, GLenum dstAlpha);
 
-  void colorMaskiOES(GLuint buf,
+  undefined colorMaskiOES(GLuint buf,
                      GLboolean r, GLboolean g, GLboolean b, GLboolean a);
 };
   </idl>
