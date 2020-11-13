@@ -53,7 +53,7 @@
       can be queried from calling the <code>getSupportedInputs</code> function.
       When the data source is a DOM element (HTMLImageElement, HTMLCanvasElement, or HTMLVideoElement),
       or is an ImageBitmap, ImageData, or OffscreenCanvas object with only 8 bits unsigned integer content,
-      a <code>DOMException</code> should be rasied and the behavior is undefined.
+      the conversion to 16 bit would have to requantize (e.g. 0x42 -> 0x4242).
       </feature>
     </features>
   </overview>
