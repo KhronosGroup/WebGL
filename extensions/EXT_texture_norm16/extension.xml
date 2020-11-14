@@ -46,13 +46,13 @@
       entry points taking <code>ImageBitmap</code>, <code>ImageData</code>,
       <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code>, <code>HTMLVideoElement</code>,
       and <code>OffscreenCanvas</code> are extended to accept the pixel type
-      <code>UNSIGNED_SHORT</code>, with combination internal format being one of
+      <code>UNSIGNED_SHORT</code>, with associated internal format being one of
       <code>R16_EXT</code>, <code>RG16_EXT</code>,
       <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code>.
       Information on whether each type is supported
       can be queried from calling the <code>getSupportedInputs</code> function.
       When the data source is a DOM element (HTMLImageElement, HTMLCanvasElement, or HTMLVideoElement),
-      or is an ImageBitmap, ImageData, or OffscreenCanvas object with only 8 bits unsigned integer content,
+      or is an ImageBitmap, ImageData, or OffscreenCanvas object with only 8 bit per channel unsigned integer content,
       the conversion to 16 bit is requantized (e.g. 0x42 -> 0x4242).
       </feature>
     </features>
@@ -83,7 +83,7 @@ enum TextureNorm16SupportedInputTypes {
   </idl>
 
   <newfun>
-    <function name="getSupportedInputs" type="sequence&lt;DOMString&gt;">
+    <function name="getSupportedInputs" type="sequence&lt;TextureNorm16SupportedInputTypes&gt;">
       Returns the names of the input types supported by the implementation. As of this writing,
       possibly valid return values are "arraybufferview", "imagebitmap", "imagedata",
       "htmlimageelement", "htmlcanvaselement", "htmlvideoelement", and "offscreencanvas" as stated in the idl <code>enum TextureNorm16SupportedInputTypes</code>.
