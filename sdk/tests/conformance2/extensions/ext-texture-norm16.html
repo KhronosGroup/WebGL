@@ -266,7 +266,7 @@ async function runTestExtension() {
     testNorm16Texture(texImageFuncs[i], ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT);
     testNorm16Texture(texImageFuncs[i], ext.RGB16_EXT, gl.RGB, gl.UNSIGNED_SHORT);
     testNorm16Texture(texImageFuncs[i], ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT);
-    
+
     if (texImageFuncs[i] === texImageTypedArray) {
       testNorm16Texture(texImageFuncs[i], ext.R16_SNORM_EXT, gl.RED, gl.SHORT);
       testNorm16Texture(texImageFuncs[i], ext.RG16_SNORM_EXT, gl.RG, gl.SHORT);
