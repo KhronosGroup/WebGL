@@ -29,7 +29,7 @@ void main() {
 </script>
 </head>
 <body>
-<canvas id="example" width="256" height="256"></canvas>
+<canvas id="example"></canvas>
 <div id="description"></div>
 <div id="console"></div>
 <script>
@@ -39,9 +39,11 @@ debug("");
 description("Enabling RASTERIZER_DISCARD should not affect implicit clears");
 
 const wtu = WebGLTestUtils;
-const gl = wtu.create3DContext("example", undefined, 2);
-let leftRectBuffer;
-let numFrames = 30;
+const canvas = document.getElementById("example");
+const sz = canvas.width = canvas.height = 256;
+const gl = wtu.create3DContext(canvas, undefined, 2);
+const NUM_FRAMES = 15;
+let framesToGo = NUM_FRAMES;
 let xTranslationLoc;
 let colorLoc;
 const positionLocation = 0;
@@ -49,23 +51,26 @@ const red = [ 1.0, 0.0, 0.0, 1.0 ];
 const green = [ 0.0, 1.0, 0.0, 1.0 ];
 const transparentBlackRender = [ 0, 0, 0, 0 ];
 const greenRender = [ 0, 255, 0, 255 ];
-const sz = 256; // Must equal canvas width/height
 
 if (!gl) {
     testFailed("WebGL context creation failed");
+    finishTest();
 } else {
     testPassed("WebGL context creation succeeded");
-    runTest();
+    runDrawTest();
 }
 
-function runTest() {
+function runDrawTest() {
+    debug("Verify that draws with rasterizer discard enabled do not interfere with implicit clears");
     let prog = wtu.loadProgramFromScript(gl, "vshader", "fshader");
     gl.useProgram(prog);
     xTranslationLoc = gl.getUniformLocation(prog, "xTranslation");
     colorLoc = gl.getUniformLocation(prog, "color");
-    leftRectBuffer = gl.createBuffer();
+    let leftRectBuffer = gl.createBuffer();
     gl.enableVertexAttribArray(positionLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, leftRectBuffer);
+    // Create a rectangle covering the left half of the viewport, in
+    // normalized device coordinates.
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
          0.0,  1.0,
         -1.0,  1.0,
@@ -74,27 +79,67 @@ function runTest() {
         -1.0, -1.0,
          0.0, -1.0]), gl.STATIC_DRAW);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-    requestAnimationFrame(renderFrame);
+    requestAnimationFrame(renderDrawTestFrame);
 }
 
-function renderFrame() {
-    // Animation is required in order to expose this bug.
+function renderDrawTestFrame() {
+    // Animation is required in order to expose this bug. When it
+    // occurs, the rectangle leaves trails behind it.
     gl.uniform1f(xTranslationLoc, 0.0);
     gl.enable(gl.RASTERIZER_DISCARD);
     gl.uniform4fv(colorLoc, red);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     gl.disable(gl.RASTERIZER_DISCARD);
 
-    gl.uniform1f(xTranslationLoc, (30.0 - numFrames) / 30.0);
-    gl.uniform4fv(colorLoc, green);
+    // Animate the rectangle from the left to the right half of the viewport.
+    gl.uniform1f(xTranslationLoc, (NUM_FRAMES - framesToGo) / NUM_FRAMES);
+    // Draw the last frame with green so any (incorrect) trails are visibly red.
+    if (framesToGo == 0)
+        gl.uniform4fv(colorLoc, green);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-    if (numFrames-- == 0) {
-        wtu.checkCanvasRect(gl, 0, 0, sz / 2, sz, transparentBlackRender, undefined, 3);
-        wtu.checkCanvasRect(gl, sz / 2, 0, sz / 2, sz, greenRender, undefined, 3);
+    if (framesToGo-- == 0) {
+        // The left half of the canvas should be transparent black,
+        // which comes from the implicit clear just before drawing the
+        // rectangle without rasterizer discard enabled.
+        wtu.checkCanvasRect(gl, 0, 0, sz / 2, sz, transparentBlackRender, "left half of canvas should be clear", 3);
+        // The right half of the canvas should be solid green, from
+        // the last render of the translated rectangle.
+        wtu.checkCanvasRect(gl, sz / 2, 0, sz / 2, sz, greenRender, "right half of canvas should be green", 3);
+        runReadPixelsTest();
+    } else {
+        requestAnimationFrame(renderDrawTestFrame);
+    }
+}
+
+function runReadPixelsTest() {
+    debug("Verify that readPixels with rasterizer discard enabled receives implicitly cleared data");
+    framesToGo = NUM_FRAMES;  // Reset state.
+    // Clear to transparent black.
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    // Start with rasterizer discard enabled.
+    gl.enable(gl.RASTERIZER_DISCARD);
+    requestAnimationFrame(renderReadPixelsTestFrame);
+}
+
+function renderReadPixelsTestFrame() {
+    // Rasterizer discard is enabled at the beginning of this test.
+
+    // The canvas should always contain transparent black at the beginning of the frame.
+    wtu.checkCanvasRect(gl, 0, 0, sz, sz, transparentBlackRender, undefined, 3);
+
+    gl.disable(gl.RASTERIZER_DISCARD);
+    // Clear to red.
+    gl.clearColor(1.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    // Enable rasterizer discard again.
+    gl.enable(gl.RASTERIZER_DISCARD);
+
+    if (--framesToGo == 0) {
         finishTest();
     } else {
-        requestAnimationFrame(renderFrame);
+        requestAnimationFrame(renderReadPixelsTestFrame);
     }
 }
 
