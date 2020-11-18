@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2019 The Khronos Group Inc.
+Copyright (c) 2020 The Khronos Group Inc.
 Use of this source code is governed by an MIT-style license that can be
 found in the LICENSE.txt file.
 -->
@@ -32,6 +32,62 @@ var fbos;
 var renderbuffer;
 var readbackBuf = new Uint16Array(4);
 
+// DOM image element of different types
+var typedArrays = {};
+var imageBitmaps = {};
+var imageSrc = {};
+
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    let img = new Image();
+    img.addEventListener('load', e => resolve(img));
+    img.addEventListener('error', () => {
+      console.error(`Failed to load image's URL: ${url}`);
+      reject(new Error(`Failed to load image's URL: ${url}`));
+    });
+    img.src = url;
+  });
+}
+
+function prepareTypedArrays() {
+  let pixelValue;
+
+  pixelValue = 0x7fff;
+  typedArrays[gl.SHORT] = new Int16Array(4).fill(pixelValue);
+
+  pixelValue = 0x6a35;
+  typedArrays[gl.UNSIGNED_SHORT] = new Uint16Array(4).fill(pixelValue);
+}
+
+async function prepareImageSrc() {
+  await Promise.all([
+    loadImage("../../../../resources/1x1-0x7fff-s.png").then((img) => {
+      imageSrc[gl.SHORT] = img;
+    }),
+    loadImage("../../../../resources/1x1-0x6a35.png").then((img) => {
+      imageSrc[gl.UNSIGNED_SHORT] = img;
+
+    })
+  ]);
+}
+
+async function prepareImageBitmaps() {
+  if(!window.createImageBitmap || !window.ImageBitmap) {
+    debug("ImageBitmap isn't supported");
+    return;
+  }
+
+  await createImageBitmap(imageSrc[gl.SHORT], 0, 0, 1, 1).then((img) => {
+    imageBitmaps[gl.SHORT] = img;
+  });
+
+  await createImageBitmap(imageSrc[gl.UNSIGNED_SHORT], 0, 0, 1, 1).then((img) => {
+    imageBitmaps[gl.UNSIGNED_SHORT] = img;
+  });
+
+  console.log("finish prepare ImageBitmaps");
+}
+
 function generateFormatColor(format, value, alpha) {
   alpha = alpha !== undefined ? alpha : 255;
   switch(format) {
@@ -49,49 +105,77 @@ function generateFormatColor(format, value, alpha) {
   }
 }
 
-function testNorm16Texture(internalFormat, format, type) {
-  let pixelValue;
-  let expectedValue;
-  let imageData;
+function texImageSrc(internalFormat, format, type) {
+  debug("texFunc: texImageSrc");
+  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, format, type, imageSrc[type]);
+}
 
-  switch(type) {
+function texImageBitmap(internalFormat, format, type) {
+  if(!window.createImageBitmap || !window.ImageBitmap) {
+    debug("ImageBitmap isn't supported");
+    return;
+  }
+  debug("texFunc: texImageBitmap");
+  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, format, type, imageBitmaps[type]);
+}
+
+function texImageTypedArray(internalFormat, format, type) {
+  debug("texFunc: texImageTypedArray");
+  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, format, type, typedArrays[type]);
+}
+
+function testNorm16Texture(texImageFunc, internalFormat, format, type) {
+  let expectedValue;
+  switch (type) {
     case gl.SHORT:
-      pixelValue = 0x7fff;
-      expectedValue = 0xff;
-      imageData = new Int16Array(4).fill(pixelValue);
+      expectedValue = 0xffff;
       break;
     case gl.UNSIGNED_SHORT:
-      pixelValue = 0x6a35;
-      expectedValue = pixelValue >> 8;
-      imageData = new Uint16Array(4).fill(pixelValue);
+      expectedValue = 0x6a35;
       break;
     default:
       wtu.error("Unreachable: Unknown texture type.");
       break;
   }
 
+  // Render to fbo texture attachment test
+  gl.bindTexture(gl.TEXTURE_2D, textures[1]);
+  gl.texImage2D(gl.TEXTURE_2D, 0, ext.RGBA16_EXT, 1, 1, 0, gl.RGBA, gl.UNSIGNED_SHORT, null);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "rtt bindings succeed");
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0]);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, textures[1], 0);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fbo bindings succeed");
+
   // Texture sampled from
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, textures[0]);
-  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, format, type, imageData);
+  texImageFunc(internalFormat, format, type);
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texture bindings succeed");
 
   gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-  // Read back as gl.UNSIGNED_BYTE
-  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, expectedValue));
+  let readbackBuf = new Uint16Array(4);
+  wtu.checkCanvasRect(gl, 0, 0, 1, 1, generateFormatColor(format, expectedValue, 0xffff), undefined, 0, readbackBuf, gl.UNSIGNED_SHORT);
 }
 
-function testNorm16Render(interalFormat, format, type, tolerance) {
+function testSNorm16TextureImageDisallowed(texImageFunc, internalFormat, format, type) {
+  gl.bindTexture(gl.TEXTURE_2D, textures[0]);
+  texImageFunc(internalFormat, format, type);
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "texture bindings succeed");
+}
+
+function testNorm16Render(texImageFunc, internalFormat, format, type, tolerance) {
   // Only UNSIGNED_SHORT are renderable
-  let pixelValue = 0x6a35;
-  let expectedValue = pixelValue;
-  let imageData = new Uint16Array(4).fill(pixelValue);
+  assertMsg(type === gl.UNSIGNED_SHORT, "Only UNSIGNED_SHORT types are renderable");
+  let expectedValue = 0x6a35;
 
   // Render to fbo texture attachment test
   gl.bindTexture(gl.TEXTURE_2D, textures[1]);
-  gl.texImage2D(gl.TEXTURE_2D, 0, interalFormat, 1, 1, 0, format, type, null);
+  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, format, type, null);
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "rtt bindings succeed");
 
@@ -102,7 +186,7 @@ function testNorm16Render(interalFormat, format, type, tolerance) {
 
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, textures[0]);
-  gl.texImage2D(gl.TEXTURE_2D, 0, interalFormat, 1, 1, 0, format, type, imageData);
+  texImageFunc(internalFormat, format, type);
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texture bindings succeed");
 
@@ -113,7 +197,7 @@ function testNorm16Render(interalFormat, format, type, tolerance) {
   // Renderbuffer test
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[1]);
   gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
-  gl.renderbufferStorage(gl.RENDERBUFFER, interalFormat, 1, 1);
+  gl.renderbufferStorage(gl.RENDERBUFFER, internalFormat, 1, 1);
   gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER,
                             renderbuffer);
   gl.bindRenderbuffer(gl.RENDERBUFFER, null);
@@ -153,7 +237,11 @@ function testSnorm16Unrenderable(internalFormat, format, type) {
                                 "framebuffer should not be complete with SNORM16 texture attached");
 }
 
-function runTestExtension() {
+async function runTestExtension() {
+  prepareTypedArrays();
+  await prepareImageSrc();
+  await prepareImageBitmaps();
+
   textures = [gl.createTexture(), gl.createTexture()];
   fbos = [gl.createFramebuffer(), gl.createFramebuffer()];
   renderbuffer = gl.createRenderbuffer();
@@ -171,24 +259,34 @@ function runTestExtension() {
   let program300 = wtu.setupSimpleTextureProgramESSL300(gl);
   let program100 = wtu.setupTexturedQuad(gl, 0, 1, wtu.simpleHighPrecisionTextureFragmentShader);
 
-  testNorm16Texture(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT);
-  testNorm16Texture(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT);
-  testNorm16Texture(ext.RGB16_EXT, gl.RGB, gl.UNSIGNED_SHORT);
-  testNorm16Texture(ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT);
-  testNorm16Texture(ext.R16_SNORM_EXT, gl.RED, gl.SHORT);
-  testNorm16Texture(ext.RG16_SNORM_EXT, gl.RG, gl.SHORT);
-  testNorm16Texture(ext.RGB16_SNORM_EXT, gl.RGB, gl.SHORT);
-  testNorm16Texture(ext.RGBA16_SNORM_EXT, gl.RGBA, gl.SHORT);
-
-  testNorm16Render(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT, 8);
-  testNorm16Render(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT, 8);
-  testNorm16Render(ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT, 8);
+  // Currently skip test for ImageBitmaps and other types
+  let texImageFuncs = [texImageTypedArray, texImageSrc];
+  for (let i = 0, len = texImageFuncs.length; i < len; i++) {
+    testNorm16Texture(texImageFuncs[i], ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT);
+    testNorm16Texture(texImageFuncs[i], ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT);
+    testNorm16Texture(texImageFuncs[i], ext.RGB16_EXT, gl.RGB, gl.UNSIGNED_SHORT);
+    testNorm16Texture(texImageFuncs[i], ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT);
+    
+    if (texImageFuncs[i] === texImageTypedArray) {
+      testNorm16Texture(texImageFuncs[i], ext.R16_SNORM_EXT, gl.RED, gl.SHORT);
+      testNorm16Texture(texImageFuncs[i], ext.RG16_SNORM_EXT, gl.RG, gl.SHORT);
+      testNorm16Texture(texImageFuncs[i], ext.RGB16_SNORM_EXT, gl.RGB, gl.SHORT);
+      testNorm16Texture(texImageFuncs[i], ext.RGBA16_SNORM_EXT, gl.RGBA, gl.SHORT);
+    } else {
+      testSNorm16TextureImageDisallowed(texImageFuncs[i], ext.R16_SNORM_EXT, gl.RED, gl.SHORT);
+      testSNorm16TextureImageDisallowed(texImageFuncs[i], ext.RG16_SNORM_EXT, gl.RG, gl.SHORT);
+      testSNorm16TextureImageDisallowed(texImageFuncs[i], ext.RGB16_SNORM_EXT, gl.RGB, gl.SHORT);
+      testSNorm16TextureImageDisallowed(texImageFuncs[i], ext.RGBA16_SNORM_EXT, gl.RGBA, gl.SHORT);
+    }
+  }
 
   gl.useProgram(program300);
 
-  testNorm16Render(ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT, 0);
-  testNorm16Render(ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT, 0);
-  testNorm16Render(ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT, 0);
+  for (let i = 0, len = texImageFuncs.length; i < len; i++) {
+    testNorm16Render(texImageFuncs[i], ext.R16_EXT, gl.RED, gl.UNSIGNED_SHORT, 0);
+    testNorm16Render(texImageFuncs[i], ext.RG16_EXT, gl.RG, gl.UNSIGNED_SHORT, 0);
+    testNorm16Render(texImageFuncs[i], ext.RGBA16_EXT, gl.RGBA, gl.UNSIGNED_SHORT, 0);
+  }
 
   testSnorm16Unrenderable(ext.R16_SNORM_EXT, gl.RED, gl.SHORT);
   testSnorm16Unrenderable(ext.RG16_SNORM_EXT, gl.RG, gl.SHORT);
@@ -196,7 +294,7 @@ function runTestExtension() {
   testSnorm16Unrenderable(ext.RGBA16_SNORM_EXT, gl.RGBA, gl.SHORT);
 };
 
-function runTest() {
+async function runTest() {
   if (!gl) {
     testFailed("context does not exist");
   } else {
@@ -207,17 +305,22 @@ function runTest() {
     wtu.runExtensionSupportedTest(gl, "EXT_texture_norm16", ext !== null);
 
     if (ext !== null) {
-      runTestExtension();
+      await runTestExtension();
     } else {
       testPassed("No EXT_texture_norm16 support -- this is legal");
     }
   }
+  shouldBeTrue("successfullyParsed");
+  _addSpan('<br /><span class="pass">TEST COMPLETE</span>');
+  if (_jsTestPreVerboseLogging) {
+      _bufferedLogToConsole('TEST COMPLETE');
+  }
+  notifyFinishedToHarness();
 }
 
 runTest();
 
 var successfullyParsed = true;
 </script>
-<script src="../../js/js-test-post.js"></script>
 </body>
 </html>
