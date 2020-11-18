@@ -165,7 +165,7 @@ function testNorm16Texture(texImageFunc, internalFormat, format, type) {
 function testSNorm16TextureImageDisallowed(texImageFunc, internalFormat, format, type) {
   gl.bindTexture(gl.TEXTURE_2D, textures[0]);
   texImageFunc(internalFormat, format, type);
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "texture bindings succeed");
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "uploads from DOM elements to 16-bit SNORM textures are disallowed");
 }
 
 function testNorm16Render(texImageFunc, internalFormat, format, type, tolerance) {
@@ -310,12 +310,7 @@ async function runTest() {
       testPassed("No EXT_texture_norm16 support -- this is legal");
     }
   }
-  shouldBeTrue("successfullyParsed");
-  _addSpan('<br /><span class="pass">TEST COMPLETE</span>');
-  if (_jsTestPreVerboseLogging) {
-      _bufferedLogToConsole('TEST COMPLETE');
-  }
-  notifyFinishedToHarness();
+  finishTest();
 }
 
 runTest();
