@@ -74,7 +74,7 @@ interface EXT_texture_norm16 {
       <change>Promoted to Community Approved.</change>
     </revision>
     <revision date="2020/12/03">
-      <change>Constraint the scope to only support ArrayBufferView</change>
+      <change>Constrain the scope to only support ArrayBufferView.</change>
     </revision>
   </history>
 </extension>
