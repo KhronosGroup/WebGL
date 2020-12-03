@@ -41,20 +41,6 @@
       <code>Uint16Array</code> with the pixel type <code>UNSIGNED_SHORT</code>
       and <code>Int16Array</code> with the pixel type <code>SHORT</code>.
       </feature>
-
-      <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
-      entry points taking <code>ImageBitmap</code>, <code>ImageData</code>,
-      <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code>, <code>HTMLVideoElement</code>,
-      and <code>OffscreenCanvas</code> are extended to accept the pixel type
-      <code>UNSIGNED_SHORT</code>, with associated internal format being one of
-      <code>R16_EXT</code>, <code>RG16_EXT</code>,
-      <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code>.
-      Information on whether each type is supported
-      can be queried from calling the <code>getSupportedInputs</code> function.
-      When the data source is a DOM element (HTMLImageElement, HTMLCanvasElement, or HTMLVideoElement),
-      or is an ImageBitmap, ImageData, or OffscreenCanvas object with only 8 bit per channel unsigned integer content,
-      the conversion to 16 bit is requantized (e.g. 0x42 -> 0x4242).
-      </feature>
     </features>
   </overview>
 
@@ -70,30 +56,7 @@ interface EXT_texture_norm16 {
   const GLenum RGB16_SNORM_EXT = 0x8F9A;
   const GLenum RGBA16_SNORM_EXT = 0x8F9B;
 };
-
-enum TextureNorm16SupportedInputTypes {
-  "arraybufferview",
-  "imagebitmap",
-  "imagedata",
-  "htmlimageelement",
-  "htmlcanvaselement",
-  "htmlvideoelement",
-  "offscreencanvas"
-};
   </idl>
-
-  <newfun>
-    <function name="getSupportedInputs" type="sequence&lt;TextureNorm16SupportedInputTypes&gt;">
-      Returns the names of the input types supported by the implementation. As of this writing,
-      possibly valid return values are "arraybufferview", "imagebitmap", "imagedata",
-      "htmlimageelement", "htmlcanvaselement", "htmlvideoelement", and "offscreencanvas" as stated in the idl <code>enum TextureNorm16SupportedInputTypes</code>.
-    </function>
-    <div class="note">
-      The intent of the <code>getSupportedInputs</code> function is to not blocking broswers from advertising
-      this extension without having decoding support for 16-bit-per-channel-color-depth unsigned normalized images, and users
-      from using it not caring about the image element uploading.
-    </div>
-  </newfun>
 
   <history>
     <revision date="2019/03/27">
@@ -110,9 +73,8 @@ enum TextureNorm16SupportedInputTypes {
     <revision date="2020/08/13">
       <change>Promoted to Community Approved.</change>
     </revision>
-    <revision date="2020/11/09">
-      <change>Update behaviors for uploading various image element types.</change>
-      <change>Add a new function getSupportedInputs.</change>
+    <revision date="2020/12/03">
+      <change>Constraint the scope to only support ArrayBufferView</change>
     </revision>
   </history>
 </extension>
