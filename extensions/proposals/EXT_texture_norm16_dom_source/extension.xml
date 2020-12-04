@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/EXT_texture_norm16_dom_source/">
+  <name>EXT_texture_norm16_dom_source</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+  <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="2.0"/>
+    <ext name="EXT_texture_norm16" require="true"/>
+  </depends>
+
+  <overview>
+
+    <features>
+      <feature>In addition to support for <code>ArrayBufferView</code> in <code>EXT_texture_norm16</code>,
+      the <code>texImage2D</code> and <code>texSubImage2D</code>
+      entry points taking <code>ImageBitmap</code> and <code>HTMLImageElement</code>
+      are extended to accept the pixel type
+      <code>UNSIGNED_SHORT</code>, with associated internal format being one of
+      <code>R16_EXT</code>, <code>RG16_EXT</code>,
+      <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code>.
+      </feature>
+
+      <feature>The supported <code>HTMLImageElement</code> file format is PNG only.</feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface EXT_texture_norm16_dom_source {
+  const GLenum R16_EXT = 0x822A;
+  const GLenum RG16_EXT = 0x822C;
+  const GLenum RGB16_EXT = 0x8054;
+  const GLenum RGBA16_EXT = 0x805B;
+  const GLenum R16_SNORM_EXT = 0x8F98;
+  const GLenum RG16_SNORM_EXT = 0x8F99;
+  const GLenum RGB16_SNORM_EXT = 0x8F9A;
+  const GLenum RGBA16_SNORM_EXT = 0x8F9B;
+};
+  </idl>
+
+  <history>
+    <revision date="2020/12/03">
+      <change>Initial Draft.</change>
+    </revision>
+  </history>
+</proposal>
