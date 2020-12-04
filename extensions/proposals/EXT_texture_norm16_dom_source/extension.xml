@@ -28,7 +28,18 @@
       <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code>.
       </feature>
 
-      <feature>The supported <code>HTMLImageElement</code> file format is PNG only.</feature>
+      <feature>Uploading 8-bit-per-channel <code>ImageBitmap</code> or <code>HTMLImageelement</code> to pixel type
+      <code>UNSIGNED_SHORT</code> with associated internal format being one of
+      <code>R16_EXT</code>, <code>RG16_EXT</code>,
+      <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code> would throw a DOMException.
+      </feature>
+
+      <feature>Uploading <code>ImageBitmap</code> or <code>HTMLImageelement</code> with fewer channels than that indicated by internal formats
+      would result in channel expanding where red, green, blue channels are populated with 0 and alpha channel are populated with 1.
+      Uploading image sources with more channels that that indicated by internal format would result in channel clamping.
+      </feature>
+
+      <feature>The supported <code>HTMLImageElement</code> file format is PNG only at present.</feature>
     </features>
   </overview>
 
