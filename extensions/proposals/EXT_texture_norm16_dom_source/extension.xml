@@ -35,7 +35,7 @@
 
       <feature>Uploading <code>ImageBitmap</code> or <code>HTMLImageElement</code> with fewer channels than that indicated by the internal format
       result in channel expansion where red, green, and blue channels are populated with 0 and alpha channel is populated with 0xffff.
-      Uploading image sources with more channels that that indicated by internal format would result in channel clamping.
+      Uploading image sources with more channels that that indicated by the internal format would result in channel clamping.
       </feature>
 
       <feature>The supported <code>HTMLImageElement</code> file format is PNG only at present.</feature>
