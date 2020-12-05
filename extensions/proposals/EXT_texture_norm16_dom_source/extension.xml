@@ -17,7 +17,6 @@
   </depends>
 
   <overview>
-
     <features>
       <feature>In addition to support for <code>ArrayBufferView</code> in <code>EXT_texture_norm16</code>,
       the <code>texImage2D</code> and <code>texSubImage2D</code>
@@ -28,34 +27,29 @@
       <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code>.
       </feature>
 
-      <feature>Uploading 8-bit-per-channel <code>ImageBitmap</code> or <code>HTMLImageelement</code> to pixel type
+      <feature>Uploading 8-bit-per-channel <code>ImageBitmap</code> or <code>HTMLImageElement</code> to pixel type
       <code>UNSIGNED_SHORT</code> with associated internal format being one of
       <code>R16_EXT</code>, <code>RG16_EXT</code>,
-      <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code> would throw a DOMException.
+      <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code> throw a DOMException.
       </feature>
 
-      <feature>Uploading <code>ImageBitmap</code> or <code>HTMLImageelement</code> with fewer channels than that indicated by internal formats
-      would result in channel expanding where red, green, blue channels are populated with 0 and alpha channel are populated with 1.
+      <feature>Uploading <code>ImageBitmap</code> or <code>HTMLImageElement</code> with fewer channels than that indicated by the internal format
+      result in channel expansion where red, green, and blue channels are populated with 0 and alpha channel is populated with 0xffff.
       Uploading image sources with more channels that that indicated by internal format would result in channel clamping.
       </feature>
 
       <feature>The supported <code>HTMLImageElement</code> file format is PNG only at present.</feature>
+
+      <feature>
+        When this extension is enabled, the
+        following extensions are enabled implicitly:
+        <ul>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/EXT_texture_norm16">
+          EXT_texture_norm16</a></li>
+        </ul>
+      </feature>
     </features>
   </overview>
-
-  <idl xml:space="preserve">
-[NoInterfaceObject]
-interface EXT_texture_norm16_dom_source {
-  const GLenum R16_EXT = 0x822A;
-  const GLenum RG16_EXT = 0x822C;
-  const GLenum RGB16_EXT = 0x8054;
-  const GLenum RGBA16_EXT = 0x805B;
-  const GLenum R16_SNORM_EXT = 0x8F98;
-  const GLenum RG16_SNORM_EXT = 0x8F99;
-  const GLenum RGB16_SNORM_EXT = 0x8F9A;
-  const GLenum RGBA16_SNORM_EXT = 0x8F9B;
-};
-  </idl>
 
   <history>
     <revision date="2020/12/03">
