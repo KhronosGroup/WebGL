@@ -1403,8 +1403,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         SAMPLE_BUFFERS for the draw framebuffer is zero, the samples corresponding to each pixel location in
         the source are converted to a single sample before being written to the destination.<br><br>
 
-        For any source pixel lying outside the read framebuffer, the corresponding destination pixel remains
-        untouched.<br><br>
+        Any distination pixel who's center corresponds to a point outside the source buffer remain untouched.<br><br>
 
         When blitting to the color attachment of the WebGL context's default back buffer, a context
         created with <code>alpha:false</code> is considered to have internal
