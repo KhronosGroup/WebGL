@@ -77,6 +77,11 @@ void main() {
 "use strict";
 description("Verify precision side effects");
 debug("");
+debug("When this test is run on Adreno (no repros on other vendors so far):");
+debug(" - the result of the expression 0 | (int(e0 == e0) * 0x8000) somehow returns -32768 instead of 32768 despite the variable using highp precision;");
+debug(" - splitting the expression along | fixes the issue (could also be observed with other operators).");
+debug('For additional reference see this <a href="https://github.com/KhronosGroup/WebGL/pull/3192">pull request</a> and <a href="http://crbug.com/1155942">Chromium bug</a>');
+debug("");
 var wtu = WebGLTestUtils;
 function test() {
     var gl = wtu.create3DContext("canvas", undefined, 2);
