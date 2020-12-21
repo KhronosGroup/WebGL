@@ -41,18 +41,10 @@
       <code>Uint16Array</code> with the pixel type <code>UNSIGNED_SHORT</code>
       and <code>Int16Array</code> with the pixel type <code>SHORT</code>.
       </feature>
-
-      <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
-      entry points taking <code>ImageData</code>,
-      <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code> and
-      <code>HTMLVideoElement</code> are extended to accept the pixel type
-      <code>UNSIGNED_SHORT</code>. </feature>
-
     </features>
   </overview>
 
   <idl xml:space="preserve">
-
 [NoInterfaceObject]
 interface EXT_texture_norm16 {
   const GLenum R16_EXT = 0x822A;
@@ -80,6 +72,9 @@ interface EXT_texture_norm16 {
     </revision>
     <revision date="2020/08/13">
       <change>Promoted to Community Approved.</change>
+    </revision>
+    <revision date="2020/12/03">
+      <change>Constrain the scope to only support ArrayBufferView.</change>
     </revision>
   </history>
 </extension>
