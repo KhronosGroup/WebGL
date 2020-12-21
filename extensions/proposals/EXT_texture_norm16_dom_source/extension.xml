@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/EXT_texture_norm16_dom_source/">
+  <name>EXT_texture_norm16_dom_source</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+  <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="2.0"/>
+    <ext name="EXT_texture_norm16" require="true"/>
+  </depends>
+
+  <overview>
+    <features>
+      <feature>In addition to support for <code>ArrayBufferView</code> in <code>EXT_texture_norm16</code>,
+      the <code>texImage2D</code> and <code>texSubImage2D</code>
+      entry points taking <code>ImageBitmap</code> and <code>HTMLImageElement</code>
+      are extended to accept the pixel type
+      <code>UNSIGNED_SHORT</code>, with associated internal format being one of
+      <code>R16_EXT</code>, <code>RG16_EXT</code>,
+      <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code>.
+      </feature>
+
+      <feature>Uploading 8-bit-per-channel <code>ImageBitmap</code> or <code>HTMLImageElement</code> to pixel type
+      <code>UNSIGNED_SHORT</code> with associated internal format being one of
+      <code>R16_EXT</code>, <code>RG16_EXT</code>,
+      <code>RGB16_EXT</code>, and <code>RGBA16_EXT</code> throw a DOMException.
+      </feature>
+
+      <feature>Uploading <code>ImageBitmap</code> or <code>HTMLImageElement</code> with fewer channels than that indicated by the internal format
+      result in channel expansion where red, green, and blue channels are populated with 0 and alpha channel is populated with 0xffff.
+      Uploading image sources with more channels that that indicated by the internal format would result in channel clamping.
+      </feature>
+
+      <feature>The supported <code>HTMLImageElement</code> file format is PNG only at present.</feature>
+
+      <feature>
+        When this extension is enabled, the
+        following extensions are enabled implicitly:
+        <ul>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/EXT_texture_norm16">
+          EXT_texture_norm16</a></li>
+        </ul>
+      </feature>
+    </features>
+  </overview>
+
+  <history>
+    <revision date="2020/12/03">
+      <change>Initial Draft.</change>
+    </revision>
+  </history>
+</proposal>
