@@ -32,6 +32,11 @@
         availability (<code>COMPLETION_STATUS_KHR</code>) can be queried without potentially incurring
         stalls.
       </feature>
+
+      <feature>
+        When the context is lost, completion status queries must return true unconditionally. This is
+        intended to prevent applications from entering an infinite status polling loop.
+      </feature>
     </features>
 
     <p>Notes: <ul style="list-style-type: circle">
@@ -141,6 +146,9 @@
     </revision>
     <revision date="2019/05/10">
       <change>Moved to community approved.</change>
+    </revision>
+    <revision date="2020/11/24">
+      <change>Specify lost context behavior.</change>
     </revision>
   </history>
 </extension>
