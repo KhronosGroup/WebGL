@@ -26,6 +26,7 @@ loops-with-side-effects.html
 --min-version 2.0.1 matrix-row-major-dynamic-indexing.html
 misplaced-version-directive.html
 --min-version 2.0.1 no-attribute-vertex-shader.html
+--min-version 2.0.1 precision-side-effects-bug.html
 sampler-no-precision.html
 --min-version 2.0.1 sampler-array-indexing.html
 sequence-operator-returns-non-constant.html
@@ -42,6 +43,7 @@ short-circuiting-in-loop-condition.html
 texture-offset-out-of-range.html
 --min-version 2.0.1 texture-offset-uniform-texture-coordinate.html
 --min-version 2.0.1 tricky-loop-conditions.html
+--min-version 2.0.1 uint-int-shift-bug.html
 --min-version 2.0.1 unary-minus-operator-in-dynamic-loop.html
 uniform-block-layouts.html
 uniform-block-layout-match.html
