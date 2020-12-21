@@ -35,4 +35,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     handler_class = partial(NoCacheRequestHandler, directory=args.directory)
-    http.server.test(HandlerClass=handler_class, port=args.port, bind=args.bind)
+
+    server = http.server.ThreadingHTTPServer((args.bind, args.port), handler_class)
+    print('Serving ThreadingHTTPServer for', args, '...')
+    server.serve_forever()
