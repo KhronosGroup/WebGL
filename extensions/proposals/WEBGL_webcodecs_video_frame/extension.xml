@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/WEBGL_webcodecs_video_frame/">
+  <name>WEBGL_webcodecs_video_frame</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Jie Chen (jie.a.chen 'at' intel.com)</contributor>
+    <contributor>Kenneth Russell (kbr 'at' google.com)</contributor>
+    <contributor>Dale Curtis (dalecurtis 'at' google.com)</contributor>
+    <contributor>Dan Sanders (sandersd 'at' google.com)</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <p>
+      This extension imports WebCodecs
+      <a href="https://wicg.github.io/web-codecs/#videoframe-interface">VideoFrame</a> to WebGL, and
+      returns a <code>WebGLWebCodecsVideoFrameHandle</code>, which contains all information about
+      the imported textures for <code>VideoFrame</code>, such as texture target, sampler type,
+      colorspace, pixel format, compliant GL extension, and etc. With the information, WebGL can
+      flexibly support more platform-specific extensions, including but not limitted to
+      <a href="https://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt">GL_OES_EGL_image_external</a>,
+      <a href="https://www.khronos.org/registry/OpenGL/extensions/NV/NV_EGL_stream_consumer_external.txt">GL_NV_EGL_stream_consumer_external</a>,
+      and
+      <a href="https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_texture_rectangle.txt">GL_ARB_texture_rectangle</a>,
+      to manipulate VideoFrame in WebGL.
+    </p>
+
+    <features>
+      <feature>
+        <code>importVideoFrame</code> imports a <code>VideoFrame</code> from WebCodecs, and returns
+        a <code>WebGLWebCodecsVideoFrameHandle</code>. If the <code>VideoFrame</code> is not backed
+        by GPU, a TypeError exception will be raised. The <code>VideoFrame</code> keeps being locked
+        until <code>releaseVideoFrame</code> is called. While being locked, WebCodecs must NOT
+        manipulate the <code>VideoFrame</code> anymore.
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+dictionary WebGLWebCodecsTextureInfo {
+  // webgl texture
+  WebGLTexture texture;
+  // texture target: { GL_TEXTURE_2D, GL_TEXTURE_EXTERNAL_OES, ...}
+  GLenum target;
+  // {"sampler", "samplerExternalOES", ...}
+  DOMString samplerType;
+  // {"texture2D", ...}
+  DOMString samplerFunc;
+  // {"r", "rg", "rgb", ...}
+  DOMString components;
+};
+
+dictionary WebGLWebCodecsVideoFrameHandle {
+  // Fixme: angle brackets are not support by xsltproc.
+  FrozenArray WebGLWebCodecsTextureInfo? textureInfoArray;
+  // {"GL_NV_EGL_stream_consumer_external", ...}
+  DOMString? requiredExtension;
+  VideoFrameColorSpace colorSpace;
+  // {"NV12", "I420", "ABGR", ...}
+  DOMString? pixelFormat;
+  // This defines a GLSL "vec3 DoColorConversion(vec3 color)" function, which
+  // can be used to convert the video frame from its original color space to the
+  // current WebGL context's canvas color space.
+  DOMString colorConversionShaderFunc;
+};
+
+[
+  RuntimeEnabled=WebCodecs,
+  LegacyNoInterfaceObject
+] interface WebGLWebCodecsVideoFrame {
+  [CallWith=ExecutionContext, RaisesException]
+    WebGLWebCodecsVideoFrameHandle importVideoFrame(VideoFrame videoFrame);
+  [CallWith=ExecutionContext, RaisesException]
+    boolean releaseVideoFrame(WebGLWebCodecsVideoFrameHandle handle);
+};
+  </idl>
+
+  <samplecode xml:space="preserve">
+
+    <p> First we need to import a <code>VideoFrame</code> from WebCodecs.</p>
+    <pre>
+    let ext = gl.getExtension('WEBGL_webcodecs_video_frame');
+    let videoFrameHandle = ext.importVideoFrame(webcodecsVideoFrame);
+    </pre>
+
+    <p> Next we can assemble the GLSL fragment shader to access the video frame textures.</p>
+    <pre>
+    // Note: there could many textures for 1 VideoFrame. To be simple the sample here assumes only
+    // 1 texture.
+    let texInfo0 = videoFrameHandle.textureInfoArray[0];
+    let fSource =
+        "#extension " + videoFrameHandle.requiredExtension + " : require\n" +
+        "precision mediump float;\n" +
+        "varying mediump vec2 vTexCoord;\n" +
+        "uniform " + texInfo0.samplerType + " _aSampler_0_;\n" +
+        "void main() {\n" +
+        "  vec4 texel;\n" +
+        "  texel = " + texInfo0.samplerFunc + "(_aSampler_0_, vTexCoord);\n" +
+        "  gl_FragColor = texel;\n" +
+        "}\n";
+    </pre>
+
+    <p> After we compiled the shader and linked the program, one last thing that we need to do is to
+    bind textures to the right texture target.
+    </p>
+    <pre>
+    // Note: we also assume only 1 texture for the VideoFrame.
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(texInfo0.target, texInfo0.texture);
+    gl.texParameteri(texInfo0.target, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.uniform1i(gl.getUniformLocation(program, "_aSampler_0_"), 0);
+    </pre>
+
+    <p> Finally everything is ready now. we can draw the VideoFrame. Always don't forget to release
+    the VideoFrame.
+    </p>
+    <pre>
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    ext.releaseVideoFrame(webcodecsVideoFrame);
+    </pre>
+    
+    <p>
+      For a full-fledged sample, please refer to this
+      <a href="https://github.com/KhronosGroup/WebGL/blob/master/extensions/proposals/WEBGL_webcodecs_video_frame/webgl_webcodecs_video_frame.js">webgl_webcodecs_video_frame helper</a>.
+      It handles all the complexity, and makes your life much easier.
+    </p>
+
+  </samplecode>
+
+  <tests/>
+
+  <issues/>
+
+  <history>
+    <revision date="2020/11/25">
+      <change>Initial revision.</change>
+    </revision>
+    </history>
+</proposal>
