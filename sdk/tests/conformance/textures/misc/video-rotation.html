@@ -9,7 +9,7 @@ found in the LICENSE.txt file.
 
 <head>
     <meta charset="utf-8">
-    <title>Verifies EXIF orientation is respected when uploading images to WebGL textures</title>
+    <title>Verifies rotation metadata tag is respected when uploading videos to WebGL textures</title>
     <link rel="stylesheet" href="../../../resources/js-test-style.css" />
     <script src="../../../js/js-test-pre.js"></script>
     <script src="../../../js/webgl-test-utils.js"></script>
@@ -57,11 +57,10 @@ found in the LICENSE.txt file.
 
         function loadVideoElement(filename) {
             return new Promise((resolve) => {
-                const video = new HTMLVideoElement();
-                video.addEventListener('loadeddata', () => {
-                   resolve(video);
-                });
+                const video = document.createElement('video');
+                video.crossOrigin = 'anonymous';
                 video.src = resourcePath + filename;
+                wtu.startPlayingAndWaitForVideo(video, resolve);
             });
         }
 
@@ -84,6 +83,18 @@ found in the LICENSE.txt file.
         }
 
         async function run() {
+            const video = document.createElement('video');
+            if (!video.canPlayType) {
+                testFailed("video.canPlayType required method missing");
+                return;
+            }
+
+            const type = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
+            if (!video.canPlayType(type).replace(/no/, '')) {
+                debug(type + " unsupported");
+                return;
+            };
+
             let tex = gl.createTexture();
             // Bind the texture to the default texture unit 0
             gl.bindTexture(gl.TEXTURE_2D, tex);
