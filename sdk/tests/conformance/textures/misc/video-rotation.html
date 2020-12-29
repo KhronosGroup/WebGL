@@ -9,7 +9,7 @@ found in the LICENSE.txt file.
 
 <head>
     <meta charset="utf-8">
-    <title>Verifies rotation metadata tag is respected when uploading videos to WebGL textures</title>
+    <title>Verifies rotation metadata tag is respected when uploading videos to WebGL textures.</title>
     <link rel="stylesheet" href="../../../resources/js-test-style.css" />
     <script src="../../../js/js-test-pre.js"></script>
     <script src="../../../js/webgl-test-utils.js"></script>
@@ -104,6 +104,9 @@ found in the LICENSE.txt file.
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
+            // These files were created by converting exif-orientation-test-1-normal.jpg to mp4
+            // files, rotating them using the transpose filter, and adding rotate metadata, all
+            // using the ffmpeg CLI.
             const filenames = [
                 "video-rotation-0.mp4",
                 "video-rotation-90.mp4",
