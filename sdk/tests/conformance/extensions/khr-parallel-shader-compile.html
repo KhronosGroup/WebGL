@@ -65,13 +65,6 @@ ${extra || ''}
     gl_FragColor = result;
 }`;
 
-const generateExtraCode = (amount) => {
-    let code = '\n    if (true) { result += vec4(0.0000001) }';
-    for (let i = 0; i < amount; i++)
-        code += code;
-    return code;
-};
-
 let vs = gl.createShader(gl.VERTEX_SHADER);
 let fs = gl.createShader(gl.FRAGMENT_SHADER);
 let program = gl.createProgram();
@@ -119,10 +112,11 @@ let extraCode = '';
         status = gl.getProgramParameter(program, COMPLETION_STATUS_KHR);
         if (status !== true && status !== false) testFailed("status should be a boolean");
 
-        debug("Constructing shader that takes >500ms to compile");
+        const minimumShaderCompileDurationMs = 500;
+        debug(`Constructing shader that takes > ${minimumShaderCompileDurationMs} ms to compile.`);
         let measuredCompileDuration = 0;
         extraCode = '\n    if (true) { result += vec4(0.0000001); }';
-        for (let i = 0; measuredCompileDuration < 500; i++) {
+        for (let i = 0; measuredCompileDuration < minimumShaderCompileDurationMs; i++) {
             extraCode += extraCode;
             extraCode += extraCode;
             if (i < 4) continue;
@@ -153,18 +147,19 @@ let extraCode = '';
         gl.getShaderParameter(fs, COMPLETION_STATUS_KHR);
         gl.getShaderParameter(vs, COMPLETION_STATUS_KHR);
         let duration = performance.now() - start;
-        if (performance.now() - start > 100)
+        if (duration > 100)
             testFailed(`Querying shader status should not wait for compilation. Took ${duration} ms`);
 
         let frames = 0;
+        const maximumTimeToWait = measuredCompileDuration * 4;
         while (!gl.getProgramParameter(program, COMPLETION_STATUS_KHR)
-            && performance.now() - start < measuredCompileDuration * 4) {
+            && performance.now() - start < maximumTimeToWait) {
             frames++;
             await new Promise(requestAnimationFrame);
         }
         duration = performance.now() - start;
         if (!gl.getProgramParameter(program, COMPLETION_STATUS_KHR)) {
-            testFailed(`Program took longer than 4x the expected duration to compile. Expected: ${measuredCompileDuration} ms, actual: ${duration} ms`);
+            testFailed(`Program took longer than ${maximumTimeToWait} ms to compile. Expected: ${measuredCompileDuration} ms, actual: ${duration} ms`);
         } else if (!gl.getShaderParameter(vs, COMPLETION_STATUS_KHR) || !gl.getShaderParameter(fs, COMPLETION_STATUS_KHR)) {
             testFailed('Program linked before shaders finished compiling.');
         } else if (frames <= 6) {
