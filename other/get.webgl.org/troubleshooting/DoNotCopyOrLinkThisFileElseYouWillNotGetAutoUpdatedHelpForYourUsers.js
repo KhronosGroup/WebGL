@@ -148,10 +148,10 @@ var BrowserDetect = {
     subString: "Win",
     identity: "Windows",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-      {url: "http://www.opera.com/", name: "Opera"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://www.microsoft.com/en-us/windows/windows-10-upgrade ", name: "Edge"},
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://www.opera.com", name: "Opera"},
+      {url: "https://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "https://www.microsoft.com/en-us/windows/get-windows-10", name: "Edge"},
       {url: "http://www.microsoft.com/ie", name: "Internet Explorer"}
     ]
   },
@@ -159,24 +159,24 @@ var BrowserDetect = {
     subString: "Mac",
     identity: "Mac",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://www.opera.com/", name: "Opera"},
-      {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "https://www.opera.com", name: "Opera"},
+      {url: "https://webkit.org", name: "WebKit Developer Builds"}
     ]
   },
   { string: navigator.userAgent,
     subString: "iPhone",
     identity: "iPhone/iPod",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"}
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"}
     ]
   },
   { string: navigator.platform,
     subString: "iPad",
     identity: "iPad",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"}
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"}
     ]
   },
   { string: navigator.userAgent,
@@ -191,19 +191,19 @@ var BrowserDetect = {
     subString: "Linux",
     identity: "Linux",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://www.opera.com/", name: "Opera"}
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "https://www.opera.com", name: "Opera"}
     ]
   },
   { string: "unknown",
     subString: "unknown",
     identity: "unknown",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://www.opera.com/", name: "Opera"},
-      {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "https://www.opera.com", name: "Opera"},
+      {url: "https://webkit.org", name: "WebKit Developer Builds"}
     ]
   }
   ],
@@ -215,21 +215,21 @@ var BrowserDetect = {
   urls: {
     "Chrome": {
       upgradeUrl: "http://www.google.com/support/chrome/bin/answer.py?answer=95346",
-      troubleshootingUrl: "https://support.google.com/chrome#topic=7438008"
+      troubleshootingUrl: "https://support.google.com/chrome/thread/1906535?hl=en"
     },
     "Firefox": {
-      upgradeUrl: "http://www.mozilla.com/en-US/firefox/new/",
-      troubleshootingUrl: "https://support.mozilla.com/en-US/kb/how-do-i-upgrade-my-graphics-drivers"
+      upgradeUrl: "https://www.mozilla.org/en-US/firefox/new/",
+      troubleshootingUrl: "https://support.mozilla.org/en-US/kb/upgrade-graphics-drivers-use-hardware-acceleration"
     },
     "Opera": {
       platforms: {
         "Android": {
           upgradeUrl: "https://market.android.com/details?id=com.opera.browser",
-          troubleshootingUrl: "http://www.opera.com/support/"
+          troubleshootingUrl: "https://www.opera.com/help"
         }
       },
-      upgradeUrl: "http://www.opera.com/",
-      troubleshootingUrl: "http://www.opera.com/support/"
+      upgradeUrl: "https://www.opera.com",
+      troubleshootingUrl: "https://www.opera.com/help"
     },
     "Android": {
       upgradeUrl: null,
@@ -238,28 +238,28 @@ var BrowserDetect = {
     "Safari": {
       platforms: {
         "iPhone/iPod": {
-          upgradeUrl: "http://www.apple.com/ios/",
-          troubleshootingUrl: "http://www.apple.com/support/iphone/"
+          upgradeUrl: "https://www.apple.com/ios/",
+          troubleshootingUrl: "https://support.apple.com/iphone"
         },
         "iPad": {
-          upgradeUrl: "http://www.apple.com/ios/",
-          troubleshootingUrl: "http://www.apple.com/support/ipad/"
+          upgradeUrl: "https://www.apple.com/ios/",
+          troubleshootingUrl: "https://support.apple.com/ipad"
         },
         "Mac": {
-          upgradeUrl: "http://www.webkit.org/",
-          troubleshootingUrl: "https://support.apple.com/kb/PH21426"
+          upgradeUrl: "https://webkit.org",
+          troubleshootingUrl: "https://support.apple.com/en-ca/guide/safari/ibrwe2159f50/mac"
         }
       },
-      upgradeUrl: "http://www.webkit.org/",
-      troubleshootingUrl: "https://support.apple.com/kb/PH21426"
+      upgradeUrl: "https://webkit.org",
+      troubleshootingUrl: "https://support.apple.com/en-ca/guide/safari/ibrwe2159f50/mac"
     },
     "Explorer": {
       upgradeUrl: "http://www.microsoft.com/ie",
-      troubleshootingUrl: "http://msdn.microsoft.com/en-us/library/ie/bg182648(v=vs.85).aspx"
+      troubleshootingUrl: "https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/dev-guides/bg182648(v=vs.85)"
     },
     "Edge": {
-      upgradeUrl: "http://www.microsoft.com/en-us/windows/windows-10-upgrade",
-      troubleshootingUrl: "http://msdn.microsoft.com/en-us/library/ie/bg182648(v=vs.85).aspx"
+      upgradeUrl: "https://www.microsoft.com/en-us/windows/get-windows-10",
+      troubleshootingUrl: "https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/dev-guides/bg182648(v=vs.85)"
     },
     "unknown": {
       upgradeUrl: null,
