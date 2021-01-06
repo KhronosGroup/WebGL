@@ -162,14 +162,15 @@ var BrowserDetect = {
       {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "https://www.google.com/chrome/", name: "Google Chrome"},
       {url: "https://www.opera.com", name: "Opera"},
-      {url: "https://webkit.org", name: "WebKit Developer Builds"}
+      {url: "https://developer.apple.com/safari/technology-preview/", name: "Safari Technology Preview"}
     ]
   },
   { string: navigator.userAgent,
     subString: "iPhone",
     identity: "iPhone/iPod",
     browsers: [
-      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"}
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://chrome.com/", name: "Google Chrome"}
     ]
   },
   { string: navigator.platform,
@@ -177,6 +178,7 @@ var BrowserDetect = {
     identity: "iPad",
     browsers: [
       {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"}
+      {url: "https://chrome.com/", name: "Google Chrome"}
     ]
   },
   { string: navigator.userAgent,
@@ -203,7 +205,7 @@ var BrowserDetect = {
       {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "https://www.google.com/chrome/", name: "Google Chrome"},
       {url: "https://www.opera.com", name: "Opera"},
-      {url: "https://webkit.org", name: "WebKit Developer Builds"}
+      {url: "https://developer.apple.com/safari/technology-preview/", name: "Safari Technology Preview"}
     ]
   }
   ],
@@ -246,11 +248,11 @@ var BrowserDetect = {
           troubleshootingUrl: "https://support.apple.com/ipad"
         },
         "Mac": {
-          upgradeUrl: "https://webkit.org",
+          upgradeUrl: "https://developer.apple.com/safari/technology-preview/",
           troubleshootingUrl: "https://support.apple.com/en-ca/guide/safari/ibrwe2159f50/mac"
         }
       },
-      upgradeUrl: "https://webkit.org",
+      upgradeUrl: "https://developer.apple.com/safari/technology-preview/",
       troubleshootingUrl: "https://support.apple.com/en-ca/guide/safari/ibrwe2159f50/mac"
     },
     "Explorer": {
