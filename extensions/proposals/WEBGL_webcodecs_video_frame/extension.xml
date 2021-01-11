@@ -37,10 +37,10 @@
     <features>
       <feature>
         <code>importVideoFrame</code> imports a <code>VideoFrame</code> from WebCodecs, and returns
-        a <code>WebGLWebCodecsVideoFrameHandle</code>. If the <code>VideoFrame</code> is not backed
-        by GPU, a TypeError exception will be raised. The <code>VideoFrame</code> keeps being locked
-        until <code>releaseVideoFrame</code> is called. While being locked, WebCodecs must NOT
-        manipulate the <code>VideoFrame</code> anymore.
+        a <code>WebGLWebCodecsVideoFrameHandle</code>. If the <code>VideoFrame</code> can't be
+        imported, a TypeError exception will be raised. The <code>VideoFrame</code> may keep being
+        locked until <code>releaseVideoFrame</code> is called. While being locked, WebCodecs must
+        NOT manipulate the <code>VideoFrame</code> anymore.
       </feature>
     </features>
   </overview>
@@ -94,7 +94,7 @@ dictionary WebGLWebCodecsVideoFrameHandle {
 
     <p> Next we can assemble the GLSL fragment shader to access the video frame textures.</p>
     <pre>
-    // Note: there could many textures for 1 VideoFrame. To be simple the sample here assumes only
+    // Note: there could be many textures for 1 VideoFrame. To be simple the sample here assumes only
     // 1 texture.
     let texInfo0 = videoFrameHandle.textureInfoArray[0];
     let fSource =
@@ -127,6 +127,7 @@ dictionary WebGLWebCodecsVideoFrameHandle {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.bindTexture(texInfo0.target, null);
     ext.releaseVideoFrame(webcodecsVideoFrame);
     </pre>
     
@@ -146,5 +147,9 @@ dictionary WebGLWebCodecsVideoFrameHandle {
     <revision date="2020/11/25">
       <change>Initial revision.</change>
     </revision>
+    <revision date="2020/12/28">
+      <change>Lift the hardware video frame restriction.</change>
+    </revision>
+
     </history>
 </proposal>
