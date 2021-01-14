@@ -16,9 +16,25 @@ found in the LICENSE.txt file.
 </head>
 <body>
 
-<script id="fs-invalid-0" type="x-shader/x-fragment">
+<script id="fs-ident" type="x-shader/x-fragment">
 precision mediump float;
-$
+FOO
+void main() {
+  gl_FragColor = vec4(1, 0, 0, 1);
+}
+</script>
+<script id="fs-comment" type="x-shader/x-fragment">
+precision mediump float;
+// FOO
+void main() {
+  gl_FragColor = vec4(1, 0, 0, 1);
+}
+</script>
+<script id="fs-ifdef" type="x-shader/x-fragment">
+precision mediump float;
+#if 0
+FOO
+#endif
 void main() {
   gl_FragColor = vec4(1, 0, 0, 1);
 }
@@ -90,8 +106,7 @@ if (!gl) {
   runTest();
 }
 
-function testShaderSource(shaderId, expected, msg) {
-    let shaderSource = document.getElementById(shaderId).text;
+function testShaderSource(shaderSource, msg) {
     if (!quietMode()) {
         wtu.addShaderSource(consoleDiv, "test fragment shader", shaderSource);
     }
@@ -103,29 +118,54 @@ function testShaderSource(shaderId, expected, msg) {
     }
 
     gl.shaderSource(shader, shaderSource);
-    wtu.glErrorShouldBe(gl, expected, msg);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, msg);
+}
+
+function MUST(ifTruthy) {
+    return ifTruthy ? 'MUST' : 'MUST NOT';
 }
 
 function runTest() {
 
-    testShaderSource('fs-invalid-0', gl.INVALID_VALUE, 'Unallowed characters detected');
-    testShaderSource('fs-invalid-1', gl.INVALID_VALUE, 'Unallowed characters detected');
-    testShaderSource('fs-invalid-2', gl.INVALID_VALUE, 'Non ASCII characters detected that would be cleared by preprocessing step is still invalid');
+    const BAD_STRINGS = [
+        '$',
+        '"',
+        '一些注释',
+    ];
+    const TESTS = [
+        ['in identifier', s => s, false],
+        ['in comment', s => `// ${s}`, true, true],
+        ['in ifdef-out', s => `#if 0 \n${s} \n#endif`, false],
+        ['in ifdef-out #preproc', s => `#if 0 \n#${s} \n#endif`, true],
+        ['in #preproc', s => `#${s}`, true],
+    ];
 
-    GLSLConformanceTester.runTests([
-        {
-            fShaderId: 'fs-comment-valid',
-            fShaderSuccess: true,
-            linkSuccess: true,
-            passMsg: 'Unallowed characters and UTF-8 characters in comment are valid'
-        },
-        {
-            fShaderId: 'fs-cleared-by-preprocessing-valid',
-            fShaderSuccess: true,
-            linkSuccess: true,
-            passMsg: 'Unsupported shader extensions (with invalid ASCII characters) cleared by preprocessing step is valid'
-        },
-    ]);
+    const glsl_tests = [];
+
+    for (const s of BAD_STRINGS) {
+        for (const [where, template, validCompile] of TESTS) {
+            const st = template(s);
+            const src = `
+precision mediump float;
+${st}
+void main() {
+  gl_FragColor = vec4(1, 0, 0, 1);
+}`.trim();
+
+            testShaderSource(src, `Out-of-charset string '${s}' allowed ${where} until compilation.`);
+
+            glsl_tests.push(
+                {
+                    fShaderSource: src,
+                    fShaderSuccess: validCompile,
+                    linkSuccess: validCompile,
+                    passMsg: `Out-of-charset string '${s}' ${where} ${MUST(validCompile)} compile.`
+                }
+            );
+        }
+    }
+
+    GLSLConformanceTester.runTests(glsl_tests);
 }
 
 debug("");
