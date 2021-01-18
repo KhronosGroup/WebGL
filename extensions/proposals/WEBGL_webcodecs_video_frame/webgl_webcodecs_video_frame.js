@@ -4,6 +4,12 @@ Use of this source code is governed by an MIT-style license that can be
 found in the LICENSE.txt file.
 */
 
+let webgl_webcodecs_test_context_ = null;
+
+function setTestMode(webgl_webcodecs_test_context) {
+    webgl_webcodecs_test_context_ = webgl_webcodecs_test_context;
+}
+
 function requestWebGLVideoFrameHandler(canvas) {
     let gl = canvas.getContext('webgl');
     if (!gl) {
@@ -290,8 +296,15 @@ function requestWebGLVideoFrameHandler(canvas) {
         let videoFrameHandle = null;
         try {
             videoFrameHandle = ext.importVideoFrame(frame);
+            if (webgl_webcodecs_test_context_ != null) {
+                webgl_webcodecs_test_context_.testPassed("Import frame successfully.");
+            }
         }
         catch (error) {
+            if (webgl_webcodecs_test_context_ != null) {
+                webgl_webcodecs_test_context_.testFailed("Failed to import Videoframe.");
+                webgl_webcodecs_test_context_.finishTest();
+            }
             console.log(error.message);
             return;
         }
@@ -306,15 +319,32 @@ function requestWebGLVideoFrameHandler(canvas) {
         gl.clearColor(0.0, 0.0, 0.0, 0.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        if (webgl_webcodecs_test_context_ != null) {
+            webgl_webcodecs_test_context_.displayed_frame++;
+            if (webgl_webcodecs_test_context_.isFramePixelMatched(gl)) {
+                webgl_webcodecs_test_context_.testPassed("Decoded frame matches encoded frame.");
+            } else {
+                webgl_webcodecs_test_context_.testFailed("Decoded frame is mismatched with the source frame.");
+                webgl_webcodecs_test_context_.finishTest();
+            }
+        }
         unbindVideoFrame(gl, videoFrameHandle, gl.TEXTURE0);
 
         // Immediately schedule rendering of the next frame
         setTimeout(renderFrame, 0);
         ext.releaseVideoFrame(videoFrameHandle);
         frame.destroy();
+        if (webgl_webcodecs_test_context_ != null && webgl_webcodecs_test_context_.displayed_frame
+            == webgl_webcodecs_test_context_.maxFrameTested) {
+            webgl_webcodecs_test_context_.finishTest();
+        }
     }
 
     function handleFrame(frame) {
+        if (webgl_webcodecs_test_context_ != null) {
+            webgl_webcodecs_test_context_.testPassed("Decode frame successfully.");
+        }
         ready_frames.push(frame);
         if (underflow) {
             underflow = false;
