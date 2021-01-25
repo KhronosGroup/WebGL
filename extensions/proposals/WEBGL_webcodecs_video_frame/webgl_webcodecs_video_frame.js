@@ -172,6 +172,14 @@ function requestWebGLVideoFrameHandler(canvas) {
         }
     }
 
+    function unbindVideoFrame(gl, videoFrameHandle, texUnit) {
+        const infoArray = videoFrameHandle.textureInfoArray;
+        for (let i = 0; i < infoArray.length; ++i) {
+            gl.activeTexture(texUnit + i);
+            gl.bindTexture(infoArray[i].target, null);
+        }
+    }
+
     function initVertexBuffers(gl, program, videoFrame, posAttrib, coordAttrib) {
         const vertices = new Float32Array([
             -1.0, -1.0, 1.0, -1.0, 1.0, 1.0,
@@ -298,6 +306,7 @@ function requestWebGLVideoFrameHandler(canvas) {
         gl.clearColor(0.0, 0.0, 0.0, 0.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+        unbindVideoFrame(gl, videoFrameHandle, gl.TEXTURE0);
 
         // Immediately schedule rendering of the next frame
         setTimeout(renderFrame, 0);
