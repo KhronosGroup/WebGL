@@ -148,30 +148,30 @@ var BrowserDetect = {
     subString: "Win",
     identity: "Windows",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://support.google.com/chrome/thread/1906535?hl=en", name: "Google Chrome"},
     ]
   },
   { string: navigator.platform,
     subString: "Mac",
     identity: "Mac",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://support.google.com/chrome/thread/1906535?hl=en", name: "Google Chrome"},
     ]
   },
   { string: navigator.userAgent,
     subString: "iPhone",
     identity: "iPhone/iPod",
     browsers: [
-      //{url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"}
+      //{url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"}
     ]
   },
   { string: navigator.platform,
     subString: "iPad",
     identity: "iPad",
     browsers: [
-      //{url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"}
+      //{url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"}
     ]
   },
   { string: navigator.userAgent,
@@ -186,16 +186,16 @@ var BrowserDetect = {
     subString: "Linux",
     identity: "Linux",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://support.google.com/chrome/thread/1906535?hl=en", name: "Google Chrome"},
     ]
   },
   { string: "unknown",
     subString: "unknown",
     identity: "unknown",
     browsers: [
-      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "https://support.google.com/chrome/thread/1906535?hl=en", name: "Google Chrome"},
     ]
   }
   ],
@@ -206,24 +206,24 @@ var BrowserDetect = {
   */
   urls: {
     "Chrome": {
-      upgradeUrl: "http://get.webgl.org/webgl2/enable.html#chrome",
+      upgradeUrl: "https://get.webgl.org/webgl2/enable.html#chrome",
       //upgradeUrl: "http://www.google.com/support/chrome/bin/answer.py?answer=95346",
       troubleshootingUrl: "http://www.google.com/support/chrome/bin/answer.py?answer=1220892"
     },
     "Firefox": {
-      upgradeUrl: "http://get.webgl.org/webgl2/enable.html#firefox",
-      //upgradeUrl: "http://www.mozilla.com/en-US/firefox/new/",
+      upgradeUrl: "https://get.webgl.org/webgl2/enable.html#firefox",
+      //upgradeUrl: "https://www.mozilla.org/en-US/firefox/new/",
       troubleshootingUrl: "https://support.mozilla.com/en-US/kb/how-do-i-upgrade-my-graphics-drivers"
     },
     "Opera": {
       platforms: {
         "Android": {
           upgradeUrl: "https://market.android.com/details?id=com.opera.browser",
-          troubleshootingUrl: "http://www.opera.com/support/"
+          troubleshootingUrl: "https://www.opera.com/support/"
         }
       },
-      upgradeUrl: "http://www.opera.com/",
-      troubleshootingUrl: "http://www.opera.com/support/"
+      upgradeUrl: "https://www.opera.com/",
+      troubleshootingUrl: "https://www.opera.com/support/"
     },
     "Android": {
       upgradeUrl: null,
@@ -232,28 +232,28 @@ var BrowserDetect = {
     "Safari": {
       platforms: {
         "iPhone/iPod": {
-          upgradeUrl: "http://www.apple.com/ios/",
-          troubleshootingUrl: "http://www.apple.com/support/iphone/"
+          upgradeUrl: "https://www.apple.com/ios/",
+          troubleshootingUrl: "https://support.apple.com/iphone"
         },
         "iPad": {
-          upgradeUrl: "http://www.apple.com/ios/",
+          upgradeUrl: "https://www.apple.com/ios/",
           troubleshootingUrl: "http://www.apple.com/support/ipad/"
         },
         "Mac": {
-          upgradeUrl: "http://www.webkit.org/",
-          troubleshootingUrl: "https://support.apple.com/kb/PH21426"
+          upgradeUrl: "https://webkit.org",
+          troubleshootingUrl: "https://support.apple.com/en-ca/guide/safari/ibrwe2159f50/mac"
         }
       },
-      upgradeUrl: "http://www.webkit.org/",
-      troubleshootingUrl: "https://support.apple.com/kb/PH21426"
+      upgradeUrl: "https://webkit.org",
+      troubleshootingUrl: "https://support.apple.com/en-ca/guide/safari/ibrwe2159f50/mac"
     },
     "Explorer": {
       upgradeUrl: "http://www.microsoft.com/ie",
-      troubleshootingUrl: "http://msdn.microsoft.com/en-us/library/ie/bg182648(v=vs.85).aspx"
+      troubleshootingUrl: "https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/dev-guides/bg182648(v=vs.85)"
     },
     "Edge": {
       upgradeUrl: "http://www.microsoft.com/en-us/windows/windows-10-upgrade",
-      troubleshootingUrl: "http://msdn.microsoft.com/en-us/library/ie/bg182648(v=vs.85).aspx"
+      troubleshootingUrl: "https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/dev-guides/bg182648(v=vs.85)"
     },
     "unknown": {
       upgradeUrl: null,
