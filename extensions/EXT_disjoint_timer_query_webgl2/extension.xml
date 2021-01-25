@@ -40,8 +40,6 @@
   </overview>
 
   <idl xml:space="preserve">
-typedef unsigned long long GLuint64EXT;
-
 [LegacyNoInterfaceObject]
 interface EXT_disjoint_timer_query_webgl2 {
   const GLenum QUERY_COUNTER_BITS_EXT      = 0x8864;
@@ -102,7 +100,7 @@ interface EXT_disjoint_timer_query_webgl2 {
       The return type depends on the parameter queried:
       <table width="30%">
       <tr><th>pname</th><th>returned type</th></tr>
-      <tr><td>TIMESTAMP_EXT</td><td>GLuint64EXT</td></tr>
+      <tr><td>TIMESTAMP_EXT</td><td>GLuint64</td></tr>
       <tr><td>GPU_DISJOINT_EXT</td><td>boolean</td></tr>
       </table>      
     </function>
