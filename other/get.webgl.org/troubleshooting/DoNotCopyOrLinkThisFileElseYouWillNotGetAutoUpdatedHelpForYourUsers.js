@@ -177,7 +177,7 @@ var BrowserDetect = {
     subString: "iPad",
     identity: "iPad",
     browsers: [
-      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"}
+      {url: "https://www.mozilla.org/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "https://chrome.com/", name: "Google Chrome"}
     ]
   },
