@@ -52,3 +52,4 @@ texture-transparent-pixels-initialized.html
 --min-version 1.0.4 texture-video-transparent.html
 --min-version 1.0.4 texture-with-flip-y-and-premultiply-alpha.html
 --min-version 1.0.4 upload-from-srcset-with-empty-data.html
+--min-version 1.0.4 video-rotation.html
