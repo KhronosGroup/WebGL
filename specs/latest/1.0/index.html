@@ -4079,8 +4079,8 @@ extensions.
 
     <h3><a name="CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character Set</a></h3>
 <p>
-    WebGL supports passing any HTML DOMString <a href="#refsDOMSTRING">[DOMSTRING]</a> to <code>shaderSource</code>.
-    However, after GLSL preprocessing and comment stripping, all remaining characters MUST be within the character set of <a href="#refsGLES20GLSL">[GLES20GLSL]</a>.
+    WebGL supports passing any HTML DOMString <a href="#refsDOMSTRING">[DOMSTRING]</a> to <code>shaderSource</code> without error.
+    However during shader compilation, after GLSL preprocessing and comment stripping, all remaining characters MUST be within the character set of <a href="#refsGLES20GLSL">[GLES20GLSL]</a>.
     Otherwise, the shader MUST fail to compile.
 </p>
 <p>
@@ -4090,16 +4090,16 @@ extensions.
             <pre>// &#20320;&#22909;</pre>
         <li>Invalid characters in preprocessor-eliminated blocks
 <pre>#ifdef __cplusplus
-#line 5 "foo.glsl"
+#line 42 "foo.glsl"
 #endif</pre>
-            (The double-quote character is <em>not</em> within the GLSL character set, but since it is removed by preprocessing, this is allowed in shader sources)
+            (The double-quote character is <em>outside</em> the GLSL character set, but since it is removed by preprocessing, this is allowed in shader sources)
     </ul>
 </p>
 <div class="note rationale">
     <p>
         The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> defines the source character set for the OpenGL ES shading language as a subset of ISO/IEC 646:1991, commonly called ASCII <a href="#refsASCII">[ASCII]</a>.
         Some GLSL implementations disallow any characters outside the ASCII range, even in comments.
-        While browsers can handle preprocessing the full DOMString character set, WebGL implementations must ensure that the shader source sent to a GLSL driver only contains ASCII.
+        While browsers MUST correctly handle preprocessing the full DOMString character set, WebGL implementations generally must ensure that the shader source sent to a GLSL driver only contains ASCII for safety.
         Implementations SHOULD preserve line numbers for debugging purposes, potentially by inserting blank lines as needed.
     </p>
 </div>

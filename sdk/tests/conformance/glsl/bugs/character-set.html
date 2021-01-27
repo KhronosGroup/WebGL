@@ -16,69 +16,6 @@ found in the LICENSE.txt file.
 </head>
 <body>
 
-<script id="fs-ident" type="x-shader/x-fragment">
-precision mediump float;
-FOO
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-<script id="fs-comment" type="x-shader/x-fragment">
-precision mediump float;
-// FOO
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-<script id="fs-ifdef" type="x-shader/x-fragment">
-precision mediump float;
-#if 0
-FOO
-#endif
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
-<script id="fs-invalid-1" type="x-shader/x-fragment">
-precision mediump float;
-一些注释
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
-<script id="fs-invalid-2" type="x-shader/x-fragment">
-precision mediump float;
-#if defined(NOT_DEFINED_FOO)
-一些注释
-#endif
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
-<script id="fs-comment-valid" type="x-shader/x-fragment">
-precision mediump float;
-// some comment: asdf1234~!@#$%^&*()-=[];',./{}:"?><_+
-// some comment: 一些注释 (╯‵□′)╯︵┻━┻
-// some comment: \\\\\\\\\
-// some comment: \n\\r\n
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
-<script id="fs-cleared-by-preprocessing-valid" type="x-shader/x-fragment">
-precision mediump float;
-#if defined(GL_GOOGLE_cpp_style_line_directive)
-#line 9 "foo.txt"
-#endif
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
@@ -131,13 +68,14 @@ function runTest() {
         '$',
         '"',
         '一些注释',
+        '#line 42 "foo.glsl"',
     ];
     const TESTS = [
         ['in identifier', s => s, false],
         ['in comment', s => `// ${s}`, true, true],
-        ['in ifdef-out', s => `#if 0 \n${s} \n#endif`, false],
+        ['in ifdef-out', s => `#if 0 \n${s} \n#endif`, true],
         ['in ifdef-out #preproc', s => `#if 0 \n#${s} \n#endif`, true],
-        ['in #preproc', s => `#${s}`, true],
+        ['in #preproc', s => `#${s}`, false],
     ];
 
     const glsl_tests = [];
@@ -152,7 +90,7 @@ void main() {
   gl_FragColor = vec4(1, 0, 0, 1);
 }`.trim();
 
-            testShaderSource(src, `Out-of-charset string '${s}' allowed ${where} until compilation.`);
+            testShaderSource(src, `shaderSource allows Out-of-charset string '${s}' ${where} until compilation.`);
 
             glsl_tests.push(
                 {
