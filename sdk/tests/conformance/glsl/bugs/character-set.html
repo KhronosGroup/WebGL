@@ -76,6 +76,7 @@ function runTest() {
         ['in ifdef-out', s => `#if 0 \n${s} \n#endif`, true],
         ['in ifdef-out #preproc', s => `#if 0 \n#${s} \n#endif`, true],
         ['in #preproc', s => `#${s}`, false],
+        ['in comment after #define', s => `#define TEST  // ${s}`, true], // Regression test for crbug.com/940865
     ];
 
     const glsl_tests = [];
