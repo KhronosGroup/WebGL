@@ -50,13 +50,14 @@ found in the LICENSE.txt file.
     // pixel is matched with another.
     const codec_string = "vp09.00.51.08.00";
 
+    let wtu = WebGLTestUtils;
     let cnv = document.getElementById("src");
     let src_width = cnv.width;
     let src_height = cnv.height;
     let src_color = "rgba(" + kTestPixel[0].toString() + "," + kTestPixel[1].toString() + ","
       + kTestPixel[2].toString() + "," + kTestPixel[3].toString() + ")";
     let frame_counter = 0;
-    let pixelCompareTolerance = 10;
+    let pixelCompareTolerance = 5;
 
     function getQueryVariable(variable) {
       var query = window.location.search.substring(1);
@@ -156,34 +157,13 @@ found in the LICENSE.txt file.
       return decoder;
     }
 
-    // Compare pixels in 4 corner (upper left, upper right, bottom left, bottem right) and center
-    // with given color to decide whether the frame is matched.
     function isFramePixelMatched(gl, th_per_pixel = pixelCompareTolerance) {
-      let pixels = new Uint8Array(src_width * src_height * 4);
-      gl.readPixels(0, 0, src_width, src_height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-      const kPixelPositions = [0, //upper left
-        (src_width - 1) * 4, //upper right
-        (src_width * Math.floor(src_height / 2) + Math.floor(src_width / 2)) * 4, // center
-        (src_width * (src_height - 1) - 1) * 4, //bottom left
-        (src_width * src_height - 1) * 4]; // bottem right
-      let delta_all = 0;
-      for (let i = 0; i < kPixelPositions.length; i++) {
-        let delta = Math.abs(pixels[kPixelPositions[i]] - kTestPixel[0]) // R
-          + Math.abs(pixels[kPixelPositions[i] + 1] - kTestPixel[1]) // G
-          + Math.abs(pixels[kPixelPositions[i] + 2] - kTestPixel[2]) // B
-        delta_all += delta;
-
-      }
-      delta_all = delta_all / kPixelPositions.length;
-      console.log("Average pixel difference:" + delta_all);
-      if (delta_all > th_per_pixel)
-        return false;
-      return true;
+      WebGLTestUtils.checkCanvasRect(gl, 0, 0, src_width, src_width, kTestPixel, "should be orange", pixelCompareTolerance)
     }
 
     function main() {
       if (!("VideoEncoder" in window)) {
-        testFailed("WebCodecs API is not supported.");
+        testPassed("WebCodecs API is not supported.");
         finishTest();
         return;
       }
@@ -200,7 +180,6 @@ found in the LICENSE.txt file.
       setTestMode(webgl_webcodecs_test_context);
       let handleFrame = requestWebGLVideoFrameHandler(cnv);
       if (handleFrame === null) {
-        testFailed("Unable to request WebGL to render video frames.");
         finishTest();
         return;
       }

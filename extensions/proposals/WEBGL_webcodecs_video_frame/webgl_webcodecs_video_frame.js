@@ -322,12 +322,7 @@ function requestWebGLVideoFrameHandler(canvas) {
 
         if (webgl_webcodecs_test_context_ != null) {
             webgl_webcodecs_test_context_.displayed_frame++;
-            if (webgl_webcodecs_test_context_.isFramePixelMatched(gl)) {
-                webgl_webcodecs_test_context_.testPassed("Decoded frame matches encoded frame.");
-            } else {
-                webgl_webcodecs_test_context_.testFailed("Decoded frame is mismatched with the source frame.");
-                webgl_webcodecs_test_context_.finishTest();
-            }
+            webgl_webcodecs_test_context_.isFramePixelMatched(gl);
         }
         unbindVideoFrame(gl, videoFrameHandle, gl.TEXTURE0);
 
