@@ -39,8 +39,10 @@ void main()
 "use strict";
 
 /*
-This test previously concluded from the following sections of the GLSL
-ES 1.0.17 specification:
+This test previously concluded that an attribute in a vertex shader
+would conflict across shaders with a uniform of the same name in the
+fragment shader, based on the following sections of the GLSL ES 1.0.17
+specification:
 
 ---
 Section 4.2.6
@@ -61,9 +63,6 @@ Section 4.3.4
 
 The uniform qualifier is used to declare global variables
 ---
-
-that an attribute in a vertex shader would conflict with a uniform of
-the same name in the fragment shader.
 
 GLSL ES 3.00 later confirmed that pipeline stages have distinct
 namespaces. The OpenGL ES working group confirmed in discussions
