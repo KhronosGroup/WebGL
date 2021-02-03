@@ -139,6 +139,7 @@ function runOneTest(gl, info) {
   // Reuse identical shaders so we test shared shader.
   var vShader = vShaderDB[vSource];
   if (!vShader) {
+    // loadShader, with opt_skipCompileStatus: true.
     vShader = wtu.loadShader(gl, vSource, gl.VERTEX_SHADER, null, null, null, null, true);
     let compiledVShader = vShader;
     if (vShader && !gl.getShaderParameter(vShader, gl.COMPILE_STATUS)) {
@@ -182,6 +183,7 @@ function runOneTest(gl, info) {
   // Reuse identical shaders so we test shared shader.
   var fShader = fShaderDB[fSource];
   if (!fShader) {
+    // loadShader, with opt_skipCompileStatus: true.
     fShader = wtu.loadShader(gl, fSource, gl.FRAGMENT_SHADER, null, null, null, null, true);
     let compiledFShader = fShader;
     if (fShader && !gl.getShaderParameter(fShader, gl.COMPILE_STATUS)) {
