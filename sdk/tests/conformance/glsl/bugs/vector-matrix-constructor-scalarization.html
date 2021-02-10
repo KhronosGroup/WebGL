@@ -149,12 +149,14 @@ function runDrawTest() {
     // Buffers returned from setupQuad above, and ignored, are already bound.
     wtu.drawUnitQuad(gl);
 
-    // Top and bottom halves should be equal. Go through one
+    // Top and bottom halves should be roughly equal. Go through one
     // horizontal scanline in the middle.
     const compareHeight = sz / 4;
     let pixelValue = new Uint8Array(4);
     let allEqual = true;
-    const tolerance = 3;
+    // Empirically found that tolerance between the top and bottom
+    // needs to be up to roughly 8 on some platforms.
+    const tolerance = 8;
     let tempBuf = new Uint8Array(4);
     // Step over some pixels to spew slightly fewer comparison messages.
     for (let x = 0; x < sz; x += 4) {
