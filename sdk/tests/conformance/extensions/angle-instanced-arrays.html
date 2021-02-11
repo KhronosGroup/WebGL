@@ -282,6 +282,8 @@ function runOutputTests() {
 
     debug("");
     debug("Testing drawArraysInstancedANGLE with attributes 'divisor' reset to 0");
+    debug("Correct rendering output: 4 yellow triangles");
+    debug("Possible incorrect rendering output: missing triangles, or triangles with different color at each vertex");
     ext.vertexAttribDivisorANGLE(colorLoc, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     ext.drawArraysInstancedANGLE(gl.TRIANGLES, 3, 3, instanceCount);
