@@ -162,8 +162,10 @@ function runOneTest(gl, info) {
       }
     }
     // Save the shaders so we test shared shader.
-    if (vShader) {
-      vShaderDB[vSource] = vShader;
+    if (compiledVShader) {
+      vShaderDB[vSource] = compiledVShader;
+    } else {
+      vShader = null;
     }
   }
 
@@ -209,8 +211,10 @@ function runOneTest(gl, info) {
     }
 
     // Safe the shaders so we test shared shader.
-    if (fShader) {
-      fShaderDB[fSource] = fShader;
+    if (compiledFShader) {
+      fShaderDB[fSource] = compiledFShader;
+    } else {
+      fShader = null;
     }
   }
 
