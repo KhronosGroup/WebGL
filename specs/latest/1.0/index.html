@@ -730,6 +730,12 @@ typedef unrestricted float GLclampf;
 // The power preference settings are documented in the WebGLContextAttributes
 // section of the specification.
 enum WebGLPowerPreference { "default", "low-power", "high-performance" };
+
+enum WebGLPixelFormat {
+    "RGBA8",
+    "SRGB8_ALPHA8",
+    "RGBA16F",
+};
 </pre>
 
 <!-- ======================================================================================================= -->
@@ -753,6 +759,7 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
     WebGLPowerPreference powerPreference = "default";
     boolean failIfMajorPerformanceCaveat = false;
     boolean desynchronized = false;
+    WebGLPixelFormat pixelFormat;
 };</pre>
 
     <h4>Context creation parameters</h4>
@@ -918,6 +925,50 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
                   input and rasterization is critical.
                 </p>
               </div>
+            </dd>
+        <dt><span class=prop-value>pixelFormat</span></dt>
+            <dd>
+              <p>
+                If defined, require a backbuffer of a specific effective internal format.
+                This is a requirement, and if the requested format is not availible, context creation will fail.
+              </p>
+              <p>
+                The allowed values are:
+              </p>
+              <dl><dd>
+                  <p>
+                    <em>undefined</em>
+                  </p>
+                  <p>
+                    If not defined, choose implicitly based on <code>alpha</code>.
+                    This is the historical behavior.
+                  </p>
+                  <p>
+                    <em><code>"RGBA8"</code></em>
+                  </p>
+                  <p>
+                    Explicitly require an RGBA8 backbuffer.
+                    This is similar to <code>{alpha: true, pixelFormat: "implicit"}</code>.
+                    This is the same effective format as a renderbuffer or texture specified with a <code>sizedFormat</code> or <code>internalFormat</code> of <code>RGBA8</code>,
+                    or a texture specified with <code>{internalFormat: RGBA, unpackFormat: RGBA, unpackType: UNSIGNED_BYTE}</code>.
+                  </p>
+                  <p>
+                    <em><code>"SRGB8_ALPHA8"</code></em>
+                  </p>
+                  <p>
+                    Explicitly require an SRGB8_ALPHA8 "sRGB-encoded" backbuffer.
+                    This is the same effective format as a renderbuffer or texture specified with a <code>sizedFormat</code> or <code>internalFormat</code> of <code>SRGB8_ALPHA8</code>,
+                    or a texture specified with <code>{internalFormat: SRGB_ALPHA, unpackFormat: SRGB_ALPHA, unpackType: UNSIGNED_BYTE}</code>.
+                  </p>
+                  <p>
+                    <em><code>"RGBA16F"</code></em>
+                  </p>
+                  <p>
+                    Explicitly require an RGBA16F half-precision floating point backbuffer.
+                    This is the same effective format as a renderbuffer or texture specified with a <code>sizedFormat</code> or <code>internalFormat</code> of <code>RGBA16F</code>,
+                    or a texture specified with <code>{internalFormat: RGBA, unpackFormat: RGBA, unpackType: HALF_FLOAT_OES}</code>.
+                  </p>
+              </dd></dl>
             </dd>
     </dl>
     <div class="example">

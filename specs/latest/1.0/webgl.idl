@@ -3,7 +3,7 @@
 // WebGL IDL definitions scraped from the Khronos specification:
 // https://www.khronos.org/registry/webgl/specs/latest/
 
-// Copyright (c) 2019 The Khronos Group Inc.
+// Copyright (c) 2021 The Khronos Group Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and/or associated documentation files (the
@@ -44,6 +44,12 @@ typedef unrestricted float GLclampf;
 // section of the specification.
 enum WebGLPowerPreference { "default", "low-power", "high-performance" };
 
+enum WebGLPixelFormat {
+    "RGBA8",
+    "SRGB8_ALPHA8",
+    "RGBA16F",
+};
+
 
 dictionary WebGLContextAttributes {
     boolean alpha = true;
@@ -55,6 +61,7 @@ dictionary WebGLContextAttributes {
     WebGLPowerPreference powerPreference = "default";
     boolean failIfMajorPerformanceCaveat = false;
     boolean desynchronized = false;
+    WebGLPixelFormat pixelFormat;
 };
 
 [Exposed=(Window,Worker)]
@@ -756,7 +763,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
 
 [Exposed=(Window,Worker),
  Constructor(DOMString type,
- optional WebGLContextEventInit eventInit)]
+ optional WebGLContextEventInit eventInit = {})]
 interface WebGLContextEvent : Event {
     readonly attribute DOMString statusMessage;
 };
