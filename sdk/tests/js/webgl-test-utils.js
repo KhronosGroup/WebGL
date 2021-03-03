@@ -3329,12 +3329,12 @@ function comparePixels(cmp, ref, tolerance, diff) {
 }
 
 function destroyContext(gl) {
-  gl.canvas.width = 1;
-  gl.canvas.height = 1;
   const ext = gl.getExtension('WEBGL_lose_context');
   if (ext) {
     ext.loseContext();
   }
+  gl.canvas.width = 1;
+  gl.canvas.height = 1;
 }
 
 function destroyAllContexts() {
