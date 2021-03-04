@@ -150,9 +150,8 @@ for (var i = 0; i < invalidSet.length; ++i) {
   var validShaderSource = generateShaderSource(undefined, invalidSet[i]);
   context.shaderSource(vShader, validShaderSource);
   shouldBe("context.getError()", "context.NO_ERROR");
-  var invalidShaderSource = generateShaderSource(invalidSet[i], undefined);
-  context.shaderSource(vShader, invalidShaderSource);
-  shouldBe("context.getError()", "context.INVALID_VALUE");
+  // Test of invalid identifier characters removed after
+  // https://github.com/KhronosGroup/WebGL/pull/3206 .
 }
 
 debug("");
