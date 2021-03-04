@@ -16,53 +16,6 @@ found in the LICENSE.txt file.
 </head>
 <body>
 
-<script id="fs-invalid-0" type="x-shader/x-fragment">
-precision mediump float;
-$
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
-<script id="fs-invalid-1" type="x-shader/x-fragment">
-precision mediump float;
-一些注释
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
-<script id="fs-invalid-2" type="x-shader/x-fragment">
-precision mediump float;
-#if defined(NOT_DEFINED_FOO)
-一些注释
-#endif
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
-<script id="fs-comment-valid" type="x-shader/x-fragment">
-precision mediump float;
-// some comment: asdf1234~!@#$%^&*()-=[];',./{}:"?><_+
-// some comment: 一些注释 (╯‵□′)╯︵┻━┻
-// some comment: \\\\\\\\\
-// some comment: \n\\r\n
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
-<script id="fs-cleared-by-preprocessing-valid" type="x-shader/x-fragment">
-precision mediump float;
-#if defined(GL_GOOGLE_cpp_style_line_directive)
-#line 9 "foo.txt"
-#endif
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}
-</script>
-
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
@@ -90,8 +43,7 @@ if (!gl) {
   runTest();
 }
 
-function testShaderSource(shaderId, expected, msg) {
-    let shaderSource = document.getElementById(shaderId).text;
+function testShaderSource(shaderSource, msg) {
     if (!quietMode()) {
         wtu.addShaderSource(consoleDiv, "test fragment shader", shaderSource);
     }
@@ -103,29 +55,56 @@ function testShaderSource(shaderId, expected, msg) {
     }
 
     gl.shaderSource(shader, shaderSource);
-    wtu.glErrorShouldBe(gl, expected, msg);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, msg);
+}
+
+function MUST(ifTruthy) {
+    return ifTruthy ? 'MUST' : 'MUST NOT';
 }
 
 function runTest() {
 
-    testShaderSource('fs-invalid-0', gl.INVALID_VALUE, 'Unallowed characters detected');
-    testShaderSource('fs-invalid-1', gl.INVALID_VALUE, 'Unallowed characters detected');
-    testShaderSource('fs-invalid-2', gl.INVALID_VALUE, 'Non ASCII characters detected that would be cleared by preprocessing step is still invalid');
+    const BAD_STRINGS = [
+        '$',
+        '"',
+        '一些注释',
+        '#line 42 "foo.glsl"',
+    ];
+    const TESTS = [
+        ['in identifier', s => s, false],
+        ['in comment', s => `// ${s}`, true, true],
+        ['in ifdef-out', s => `#if 0 \n${s} \n#endif`, true],
+        ['in ifdef-out #preproc', s => `#if 0 \n#${s} \n#endif`, true],
+        ['in #preproc', s => `#${s}`, false],
+        ['in comment after #define', s => `#define TEST  // ${s}`, true], // Regression test for crbug.com/940865
+    ];
 
-    GLSLConformanceTester.runTests([
-        {
-            fShaderId: 'fs-comment-valid',
-            fShaderSuccess: true,
-            linkSuccess: true,
-            passMsg: 'Unallowed characters and UTF-8 characters in comment are valid'
-        },
-        {
-            fShaderId: 'fs-cleared-by-preprocessing-valid',
-            fShaderSuccess: true,
-            linkSuccess: true,
-            passMsg: 'Unsupported shader extensions (with invalid ASCII characters) cleared by preprocessing step is valid'
-        },
-    ]);
+    const glsl_tests = [];
+
+    for (const s of BAD_STRINGS) {
+        for (const [where, template, validCompile] of TESTS) {
+            const st = template(s);
+            const src = `
+precision mediump float;
+${st}
+void main() {
+  gl_FragColor = vec4(1, 0, 0, 1);
+}`.trim();
+
+            testShaderSource(src, `shaderSource allows Out-of-charset string '${s}' ${where} until compilation.`);
+
+            glsl_tests.push(
+                {
+                    fShaderSource: src,
+                    fShaderSuccess: validCompile,
+                    linkSuccess: validCompile,
+                    passMsg: `Out-of-charset string '${s}' ${where} ${MUST(validCompile)} compile.`
+                }
+            );
+        }
+    }
+
+    GLSLConformanceTester.runTests(glsl_tests);
 }
 
 debug("");
