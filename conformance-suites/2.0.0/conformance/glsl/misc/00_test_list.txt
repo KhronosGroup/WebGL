@@ -36,7 +36,6 @@ shader-with-clipvertex.vert.html
 --min-version 1.0.2 shader-with-conditional-scoping-negative.html
 shader-with-default-precision.frag.html
 shader-with-default-precision.vert.html
---max-version 1.9.9 shader-with-define-line-continuation.frag.html
 shader-with-dfdx-no-ext.frag.html
 shader-with-dfdx.frag.html
 --min-version 1.0.2 shader-with-do-loop.html
@@ -90,7 +89,6 @@ shader-with-webgl-identifier.vert.html
 shader-without-precision.frag.html
 --min-version 1.0.3 shaders-with-constant-expression-loop-conditions.html
 --min-version 1.0.3 shaders-with-invariance.html
---min-version 1.0.3 shaders-with-name-conflicts.html
 --min-version 1.0.2 shaders-with-mis-matching-uniforms.html
 --min-version 1.0.2 shaders-with-mis-matching-varyings.html
 --min-version 1.0.2 shaders-with-missing-varyings.html
