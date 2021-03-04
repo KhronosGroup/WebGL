@@ -53,7 +53,7 @@
     </function>
     <function name="renderbufferStorage">
       <param name="internalformat" type="GLenum"/>
-      Accepted by the <code>internalformat</code> parameter: <code>SRGB_ALPHA8_EXT</code>
+      Accepted by the <code>internalformat</code> parameter: <code>SRGB8_ALPHA8_EXT</code>
     </function>
     <function name="getFramebufferAttachmentParameter">
       <param name="pname" type="GLenum"/>
