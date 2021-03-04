@@ -610,6 +610,10 @@ image.src = "http://other-domain.com/image.jpg";
         a function, variable, structure name, or structure field starting with these prefixes must
         not be allowed to load.
     </p>
+    <p>
+        WebGL 1.0 implementations must additionally support the line continuation character '\' in
+        shaders.
+    </p>
 
 <!-- ======================================================================================================= -->
 
@@ -4078,25 +4082,38 @@ extensions.
 </p>
 
     <h3><a name="CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character Set</a></h3>
-
 <p>
-    The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> defines the source character set for
-    the OpenGL ES shading language to be ISO/IEC 646:1991, commonly called ASCII <a href="#refsASCII">[ASCII]</a>.
-    If a string containing a character not in this set is passed to any of the shader-related entry
-    points <code>bindAttribLocation</code>, <code>getAttribLocation</code>, <code>getUniformLocation</code>,
-    or <code>shaderSource</code>, an <code>INVALID_VALUE</code> error will be generated. The exception is
-    that any character allowed in an HTML DOMString <a href="#refsDOMSTRING">[DOMSTRING]</a> may be used
-    in GLSL comments. Such use must not generate an error.
+    WebGL supports passing any HTML DOMString <a href="#refsDOMSTRING">[DOMSTRING]</a> to <code>shaderSource</code> without error.
+    However during shader compilation, after GLSL preprocessing and comment stripping, all remaining characters MUST be within the character set of <a href="#refsGLES20GLSL">[GLES20GLSL]</a>.
+    Otherwise, the shader MUST fail to compile.
 </p>
-
-<div class="note">
+<p>
+    In particular, this allows for:
+    <ul>
+        <li>Non-ASCII unicode in comments
+            <pre>// &#20320;&#22909;</pre>
+        <li>Invalid characters in preprocessor-eliminated blocks
+<pre>#ifdef __cplusplus
+#line 42 "foo.glsl"
+#endif</pre>
+            (The double-quote character is <em>outside</em> the GLSL character set, but since it is removed by preprocessing, this is allowed in shader sources)
+    </ul>
+</p>
+<div class="note rationale">
     <p>
-        Some GLSL implementations disallow characters outside the ASCII range, even in comments. The
-        WebGL implementation needs to prevent errors in such cases. The recommended technique is to
-        preprocess the GLSL string, removing all comments, but maintaining the line numbering for
-        debugging purposes by inserting newline characters as needed.
+        The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> defines the source character set for the OpenGL ES shading language as a subset of ISO/IEC 646:1991, commonly called ASCII <a href="#refsASCII">[ASCII]</a>.
+        Some GLSL implementations disallow any characters outside the ASCII range, even in comments.
+        While browsers MUST correctly handle preprocessing the full DOMString character set, WebGL implementations generally must ensure that the shader source sent to a GLSL driver only contains ASCII for safety.
+        Implementations SHOULD preserve line numbers for debugging purposes, potentially by inserting blank lines as needed.
     </p>
 </div>
+<p>
+    If a string containing a character <em>not</em> in this set is passed to any of the other shader-related entry points
+    <code>bindAttribLocation</code>,
+    <code>getAttribLocation</code>,
+    or <code>getUniformLocation</code>,
+    an <code>INVALID_VALUE</code> error will be generated.
+</p>
 
     <h3><a name="MAX_STRUCT_NESTING">Maximum Nesting of Structures in GLSL Shaders</a></h3>
 
