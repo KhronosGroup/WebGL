@@ -3,7 +3,7 @@
 // WebGL IDL definitions scraped from the Khronos specification:
 // https://www.khronos.org/registry/webgl/specs/latest/
 
-// Copyright (c) 2019 The Khronos Group Inc.
+// Copyright (c) 2021 The Khronos Group Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and/or associated documentation files (the
@@ -488,6 +488,7 @@ interface mixin WebGLRenderingContextBase
 
     const GLenum RGBA4                          = 0x8056;
     const GLenum RGB5_A1                        = 0x8057;
+    const GLenum RGBA8                          = 0x8058;
     const GLenum RGB565                         = 0x8D62;
     const GLenum DEPTH_COMPONENT16              = 0x81A5;
     const GLenum STENCIL_INDEX8                 = 0x8D48;
@@ -544,6 +545,8 @@ interface mixin WebGLRenderingContextBase
 
     sequence<DOMString>? getSupportedExtensions();
     object? getExtension(DOMString name);
+
+    undefined backbufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
 
     void activeTexture(GLenum texture);
     void attachShader(WebGLProgram program, WebGLShader shader);
@@ -756,7 +759,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
 
 [Exposed=(Window,Worker),
  Constructor(DOMString type,
- optional WebGLContextEventInit eventInit)]
+ optional WebGLContextEventInit eventInit = {})]
 interface WebGLContextEvent : Event {
     readonly attribute DOMString statusMessage;
 };
