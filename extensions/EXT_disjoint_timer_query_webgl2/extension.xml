@@ -47,7 +47,7 @@ interface EXT_disjoint_timer_query_webgl2 {
   const GLenum TIMESTAMP_EXT               = 0x8E28;
   const GLenum GPU_DISJOINT_EXT            = 0x8FBB;
 
-  void queryCounterEXT(WebGLQuery query, GLenum target);
+  undefined queryCounterEXT(WebGLQuery query, GLenum target);
 };
   </idl>
 
@@ -60,14 +60,14 @@ interface EXT_disjoint_timer_query_webgl2 {
   </newtok>
 
   <newtok>
-    <function name="endQuery" type="void">
+    <function name="endQuery" type="undefined">
       <param name="target" type="GLenum"/>
       <code>target</code> accepts <code>TIME_ELAPSED_EXT</code>.
     </function>
   </newtok>
 
   <newfun>
-    <function name="queryCounterEXT" type="void">
+    <function name="queryCounterEXT" type="undefined">
       <param name="query" type="WebGLQuery"/>
       <param name="target" type="GLenum"/>
       <code>target</code> accepts <code>TIMESTAMP_EXT</code>.

@@ -331,12 +331,12 @@ interface WEBGL_shared_resources {
          WebGLSharedObject resource,
          GLenum mode,
          AcquireSharedResourcesCallback callback);
-     void releaseSharedResource(
+     undefined releaseSharedResource(
          WebGLSharedObject resource);
-     void cancelAcquireSharedResource(long id);
+     undefined cancelAcquireSharedResource(long id);
 };
 
-callback AcquireSharedResourcesCallback = void ();
+callback AcquireSharedResourcesCallback = undefined ();
 
 [Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WebGLShareGroup {

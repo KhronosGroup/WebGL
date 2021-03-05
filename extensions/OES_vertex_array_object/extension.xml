@@ -26,9 +26,9 @@ interface OES_vertex_array_object {
     const GLenum VERTEX_ARRAY_BINDING_OES = 0x85B5;
 
     WebGLVertexArrayObjectOES? createVertexArrayOES();
-    void deleteVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
+    undefined deleteVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
     [WebGLHandlesContextLoss] GLboolean isVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
-    void bindVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
+    undefined bindVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
 };
   </idl>
 
@@ -38,7 +38,7 @@ interface OES_vertex_array_object {
   </newfun>
 
   <newfun>
-    <function name="deleteVertexArrayOES" type="void">
+    <function name="deleteVertexArrayOES" type="undefined">
       <param name="arrayObject" type="WebGLVertexArrayObjectOES?"/>
     </function>
   </newfun>
@@ -53,7 +53,7 @@ interface OES_vertex_array_object {
   </newfun>
 
   <newfun>
-    <function name="bindVertexArrayOES" type="void">
+    <function name="bindVertexArrayOES" type="undefined">
       <param name="arrayObject" type="WebGLVertexArrayObjectOES?"/>
     </function>
   </newfun>

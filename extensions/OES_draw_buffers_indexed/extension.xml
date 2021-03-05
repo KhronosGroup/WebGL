@@ -41,29 +41,29 @@
   <idl xml:space="preserve">
 [NoInterfaceObject]
 interface OES_draw_buffers_indexed {
-  void enableiOES(GLenum target, GLuint index);
+  undefined enableiOES(GLenum target, GLuint index);
 
-  void disableiOES(GLenum target, GLuint index);
+  undefined disableiOES(GLenum target, GLuint index);
 
-  void blendEquationiOES(GLuint buf, GLenum mode);
+  undefined blendEquationiOES(GLuint buf, GLenum mode);
 
-  void blendEquationSeparateiOES(GLuint buf,
+  undefined blendEquationSeparateiOES(GLuint buf,
                                  GLenum modeRGB, GLenum modeAlpha);
 
-  void blendFunciOES(GLuint buf,
+  undefined blendFunciOES(GLuint buf,
                      GLenum src, GLenum dst);
 
-  void blendFuncSeparateiOES(GLuint buf,
+  undefined blendFuncSeparateiOES(GLuint buf,
                              GLenum srcRGB, GLenum dstRGB,
                              GLenum srcAlpha, GLenum dstAlpha);
 
-  void colorMaskiOES(GLuint buf,
+  undefined colorMaskiOES(GLuint buf,
                      GLboolean r, GLboolean g, GLboolean b, GLboolean a);
 };
   </idl>
 
   <newfun>
-    <function name="enableiOES" type="void">
+    <function name="enableiOES" type="undefined">
       <param name="target" type="GLenum"/>
       <param name="index" type="GLuint"/>
       <p>
@@ -80,7 +80,7 @@ interface OES_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="disableiOES" type="void">
+    <function name="disableiOES" type="undefined">
       <param name="target" type="GLenum"/>
       <param name="index" type="GLuint"/>
       <p>
@@ -97,7 +97,7 @@ interface OES_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="blendEquationiOES" type="void">
+    <function name="blendEquationiOES" type="undefined">
       <param name="buf" type="GLuint"/>
       <param name="mode" type="GLenum"/>
       <p>
@@ -111,7 +111,7 @@ interface OES_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="blendEquationSeparateiOES" type="void">
+    <function name="blendEquationSeparateiOES" type="undefined">
       <param name="buf" type="GLuint"/>
       <param name="modeRGB" type="GLenum"/>
       <param name="modeAlpha" type="GLenum"/>
@@ -127,7 +127,7 @@ interface OES_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="blendFunciOES" type="void">
+    <function name="blendFunciOES" type="undefined">
       <param name="buf" type="GLuint"/>
       <param name="src" type="GLenum"/>
       <param name="dst" type="GLenum"/>
@@ -143,7 +143,7 @@ interface OES_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="blendFuncSeparateiOES" type="void">
+    <function name="blendFuncSeparateiOES" type="undefined">
       <param name="buf" type="GLuint"/>
       <param name="srcRGB" type="GLenum"/>
       <param name="dstRGB" type="GLenum"/>
@@ -162,7 +162,7 @@ interface OES_draw_buffers_indexed {
   </newfun>
 
   <newfun>
-    <function name="colorMaskiOES" type="void">
+    <function name="colorMaskiOES" type="undefined">
       <param name="buf" type="GLuint"/>
       <param name="r" type="GLboolean"/>
       <param name="g" type="GLboolean"/>

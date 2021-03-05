@@ -39,7 +39,7 @@
 
     [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_shader_framebuffer_fetch_non_coherent {
-      void FramebufferFetchBarrierEXT(void);
+      undefined FramebufferFetchBarrierEXT(void);
     };
   </idl>
 
