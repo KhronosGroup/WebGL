@@ -52,7 +52,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=Window, LegacyNoInterfaceObject]
 interface EXT_float_blend {
 }; // interface EXT_float_blend
 </idl>
