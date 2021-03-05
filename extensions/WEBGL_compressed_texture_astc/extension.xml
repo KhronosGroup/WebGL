@@ -304,7 +304,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_compressed_texture_astc {
     /* Compressed Texture Format */
     const GLenum COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0;
