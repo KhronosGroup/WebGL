@@ -29,7 +29,7 @@
 interface WEBGL_texture_source_iframe {
   Promise<void> bindTextureSource(GLenum target, HTMLIFrameElement iframe);
   Promise<void> requestFrame(GLenum target);
-  void setEventForwarding(function(Event));
+  undefined setEventForwarding(function(Event));
 };
   ]]></idl>
   <newfun>
@@ -84,7 +84,7 @@ interface WEBGL_texture_source_iframe {
         fulfilled. The content of the texture during this period is undefined.
       </p>
     </function>
-    <function name="setEventForwarding" type="void">
+    <function name="setEventForwarding" type="undefined">
       <param name="func" type="Function"/>
       <p>
         This function allows an application to define an event forwarding
