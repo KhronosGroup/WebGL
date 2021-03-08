@@ -41,7 +41,7 @@
   </overview>
 
   <idl xml:space="preserve">
-    [LegacyNoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_clip_cull_distance {
       const GLenum MAX_CLIP_DISTANCES_EXT                       = 0x0D32;
       const GLenum MAX_CULL_DISTANCES_EXT                       = 0x82F9;

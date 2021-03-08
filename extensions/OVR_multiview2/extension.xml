@@ -82,7 +82,7 @@ interface OVR_multiview2 {
 };
   </idl>
   <newfun>
-    <function name="framebufferTextureMultiviewOVR" type="void">
+    <function name="framebufferTextureMultiviewOVR" type="undefined">
       <param name="target" type="GLenum"/>
       <param name="attachment" type="GLenum"/>
       <param name="texture" type="GLuint"/>
