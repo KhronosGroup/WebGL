@@ -66,24 +66,24 @@
 
 [NoInterfaceObject]
 interface WEBGL_multi_draw {
-  void multiDrawArraysWEBGL(
+  undefined multiDrawArraysWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
       (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
       GLsizei drawcount);
-  void multiDrawElementsWEBGL(
+  undefined multiDrawElementsWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) countsList, GLuint countsOffset,
       GLenum type,
       (Int32Array or sequence&lt;GLsizei&gt;) offsetsList, GLuint offsetsOffset,
       GLsizei drawcount);
-  void multiDrawArraysInstancedWEBGL(
+  undefined multiDrawArraysInstancedWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
       (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
       (Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
       GLsizei drawcount);
-  void multiDrawElementsInstancedWEBGL(
+  undefined multiDrawElementsInstancedWEBGL(
       GLenum mode,
       (Int32Array or sequence&lt;GLint&gt;) countsList, GLuint countsOffset,
       GLenum type,
@@ -95,7 +95,7 @@ interface WEBGL_multi_draw {
   </idl>
 
   <newfun>
-    <function name="multiDrawArraysWEBGL" type="void">
+    <function name="multiDrawArraysWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
       <param name="firstsOffset" type="GLuint"/>
@@ -103,7 +103,7 @@ interface WEBGL_multi_draw {
       <param name="countsOffset" type="GLuint"/>
       <param name="drawCount" type="GLsizei"/>
     </function>
-    <function name="multiDrawElementsWEBGL" type="void">
+    <function name="multiDrawElementsWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
       <param name="countsOffset" type="GLuint"/>
@@ -112,7 +112,7 @@ interface WEBGL_multi_draw {
       <param name="offsetsOffset" type="GLuint"/>
       <param name="drawCount" type="GLsizei"/>
     </function>
-    <function name="multiDrawArraysInstancedWEBGL" type="void">
+    <function name="multiDrawArraysInstancedWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
       <param name="firstsOffset" type="GLuint"/>
@@ -122,7 +122,7 @@ interface WEBGL_multi_draw {
       <param name="instanceCountsOffset" type="GLuint"/>
       <param name="drawCount" type="GLsizei"/>
     </function>
-    <function name="multiDrawElementsInstancedWEBGL" type="void">
+    <function name="multiDrawElementsInstancedWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
       <param name="countsOffset" type="GLuint"/>

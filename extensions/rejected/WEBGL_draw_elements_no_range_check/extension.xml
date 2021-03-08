@@ -62,7 +62,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_draw_elements_no_range_check {
 };
   </idl>

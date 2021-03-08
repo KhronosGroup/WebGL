@@ -44,7 +44,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_subscribe_uniform {
   const GLenum SUBSCRIBED_VALUES_BUFFER = 0x924B;
 
@@ -52,13 +52,13 @@ interface WEBGL_subscribe_uniform {
   const GLenum MOUSE_POSITION = 0x924C;
 
   WebGLValuebuffer? createValuebuffer();
-  void deleteValuebuffer(WebGLValuebuffer? buffer);
-  void isValuebuffer(WebGLValuebuffer? buffer);
-  void bindValuebuffer(GLenum target, WebGLValuebuffer? buffer);
+  undefined deleteValuebuffer(WebGLValuebuffer? buffer);
+  undefined isValuebuffer(WebGLValuebuffer? buffer);
+  undefined bindValuebuffer(GLenum target, WebGLValuebuffer? buffer);
 
-  void subscribeValue(GLenum traget, GLenum subscription);
-  void populateSubscribedValues(GLenum target);
-  void uniformValuebuffer(WebGLUniformLocation? location, GLenum target, GLenum subscription);
+  undefined subscribeValue(GLenum traget, GLenum subscription);
+  undefined populateSubscribedValues(GLenum target);
+  undefined uniformValuebuffer(WebGLUniformLocation? location, GLenum target, GLenum subscription);
 }; // interface WEBGL_subscribe_uniform
   </idl>
 
@@ -66,7 +66,7 @@ interface WEBGL_subscribe_uniform {
     <function name="createValuebuffer" type="WebGLValuebuffer">
     Creates and returns a <code>Valuebuffer</code> object.</function>
 
-    <function name="deleteValuebuffer" type="void"><param
+    <function name="deleteValuebuffer" type="undefined"><param
     name="buffer" type="WebGLValuebuffer"/>Deletes a <code>Valuebuffer</code>
     object.</function>
 
@@ -74,22 +74,22 @@ interface WEBGL_subscribe_uniform {
     name="buffer" type="WebGLValuebuffer"/>Returns whether an object is a 
     <code>Valuebuffer</code> object.</function>
 
-    <function name="bindValuebuffer" type="void"><param
+    <function name="bindValuebuffer" type="undefined"><param
     name="target" type="GLenum"/><param
     name="buffer" type="WebGLValuebuffer"/>Lets you use a named 
     <code>Valuebuffer</code> object.</function>
 
-    <function name="subscribeValuebuffer" type="void"><param
+    <function name="subscribeValuebuffer" type="undefined"><param
     name="target" type="GLenum"/><param
     name="subscription" type="GLenum"/>Subscribes the currently bound 
     <code>Valuebuffer</code> object to a subscription target.</function>
 
-    <function name="populateSubscribedValues" type="void"><param
+    <function name="populateSubscribedValues" type="undefined"><param
     name="target" type="GLenum"/>Populates the currently bound 
     <code>Valuebuffer</code> object with the state of the subscriptions to
     which it is subscribed.</function>
 
-    <function name="uniformValuebuffer" type="void"><param
+    <function name="uniformValuebuffer" type="undefined"><param
     name="location" type="WebGLUniformLocation"/><param
     name="target" type="GLenum"/><param
     name="subscription" type="GLenum"/>Modifies the value of a uniform variable
@@ -123,7 +123,7 @@ interface WEBGL_subscribe_uniform {
     <p><code>SUBSCRIBED_VALUES_BUFFER</code> 
     is accepted as the target parameter to bindValuebuffer</p></function>
 
-    <function name="subscribeValuebuffer" type="void"><param
+    <function name="subscribeValuebuffer" type="undefined"><param
     name="target" type="GLenum"/><param
     name="subscription" type="GLenum"/>
     <p><code>SUBSCRIBED_VALUES_BUFFER</code> 
@@ -131,12 +131,12 @@ interface WEBGL_subscribe_uniform {
     <p><code>MOUSE_POSITION</code> 
     is accepted as the subscription parameter to subscribeValuebuffer</p></function>
 
-    <function name="populateSubscribedValues" type="void"><param
+    <function name="populateSubscribedValues" type="undefined"><param
     name="target" type="GLenum"/>
     <p><code>SUBSCRIBED_VALUES_BUFFER</code> 
     is accepted as the target parameter to populateSubscribedValues</p></function>
 
-    <function name="uniformValuebuffer" type="void"><param
+    <function name="uniformValuebuffer" type="undefined"><param
     name="location" type="WebGLUniformLocation"/><param
     name="target" type="GLenum"/><param
     name="subscription" type="GLenum"/>
