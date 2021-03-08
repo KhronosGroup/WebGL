@@ -36,7 +36,7 @@
   </overview>
   
   <idl xml:space="preserve">
-    [LegacyNoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_frag_depth {
     };
   </idl>

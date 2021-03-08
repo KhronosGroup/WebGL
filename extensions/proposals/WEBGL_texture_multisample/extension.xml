@@ -31,7 +31,7 @@
     interface WEBGL_texture_storage_multisample {
       const GLenum TEXTURE_2D_MULTISAMPLE = 0x9100;
 
-      void texStorage2DMultisample(GLenum target,
+      undefined texStorage2DMultisample(GLenum target,
                                    GLsizei samples,
                                    GLenum internalformat,
                                    GLsizei width,

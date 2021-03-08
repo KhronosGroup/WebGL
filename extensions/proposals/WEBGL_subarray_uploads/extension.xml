@@ -26,17 +26,17 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_subarray_uploads {
-    void bufferSubData(GLenum target, GLsizeiptr bufferOffset, GLsizeiptr subarrayOffset,
+    undefined bufferSubData(GLenum target, GLsizeiptr bufferOffset, GLsizeiptr subarrayOffset,
                        GLsizeiptr subarraySize, (ArrayBuffer or SharedArrayBuffer) data);
 
-    void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
+    undefined compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                  GLsizei width, GLsizei height, GLenum sizedFormat,
                                  GLsizeiptr subarrayOffset, GLsizeiptr subarraySize,
                                  (ArrayBuffer or SharedArrayBuffer) data);
 
-    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
+    undefined texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                        GLsizei width, GLsizei height, GLenum format, GLenum type,
                        GLsizeiptr subarrayOffset, GLsizeiptr subarraySize,
                        (ArrayBuffer or SharedArrayBuffer) data);
@@ -44,7 +44,7 @@ interface WEBGL_subarray_uploads {
   </idl>
 
   <newfun>
-    <function name="bufferSubData" type="void">
+    <function name="bufferSubData" type="undefined">
       <param name="target" type="GLenum"/>
       <param name="bufferOffset" type="GLsizeiptr"/>
       <param name="subarrayOffset" type="GLsizeiptr"/>
@@ -53,7 +53,7 @@ interface WEBGL_subarray_uploads {
       Upload data from a subarray of an ArrayBuffer or SharedArrayBuffer.
     </function>
 
-    <function name="compressedTexSubImage2D" type="void">
+    <function name="compressedTexSubImage2D" type="undefined">
       <param name="target" type="GLenum"/>
       <param name="level" type="GLint"/>
       <param name="xoffset" type="GLint"/>
@@ -67,7 +67,7 @@ interface WEBGL_subarray_uploads {
       Upload data from a subarray of an ArrayBuffer or SharedArrayBuffer.
     </function>
 
-    <function name="texSubImage2D" type="void">
+    <function name="texSubImage2D" type="undefined">
       <param name="target" type="GLenum"/>
       <param name="level" type="GLint"/>
       <param name="xoffset" type="GLint"/>
