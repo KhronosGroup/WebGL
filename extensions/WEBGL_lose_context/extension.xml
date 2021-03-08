@@ -29,14 +29,14 @@
     </p>
   </overview>
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_lose_context {
-      void loseContext();
-      void restoreContext();
+      undefined loseContext();
+      undefined restoreContext();
 };
   </idl>
   <newfun>
-    <function name="loseContext" type="void">
+    <function name="loseContext" type="undefined">
       <p>When this function is called and the context is not lost, simulate
       losing the context so as to trigger the steps described in the WebGL
       spec for handling context lost. The context will remain in the lost
@@ -51,7 +51,7 @@ interface WEBGL_lose_context {
       use of the WebGL API.</p>
 
     </function>
-    <function name="restoreContext" type="void">
+    <function name="restoreContext" type="undefined">
       <p>
       When this function is called while the context is lost, and the conditions
       defined by the WebGL specification for restoring the context are

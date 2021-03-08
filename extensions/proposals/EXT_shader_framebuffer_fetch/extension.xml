@@ -33,13 +33,13 @@
   </overview>
   
   <idl xml:space="preserve">
-    [LegacyNoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_shader_framebuffer_fetch {
     };
 
-    [LegacyNoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_shader_framebuffer_fetch_non_coherent {
-      void FramebufferFetchBarrierEXT(void);
+      undefined FramebufferFetchBarrierEXT(void);
     };
   </idl>
 

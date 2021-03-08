@@ -74,7 +74,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_compressed_texture_pvrtc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_PVRTC_4BPPV1_IMG      = 0x8C00;

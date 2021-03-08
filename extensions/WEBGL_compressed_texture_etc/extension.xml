@@ -92,7 +92,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_compressed_texture_etc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_R11_EAC                        = 0x9270;

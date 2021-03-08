@@ -73,7 +73,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_color_buffer_float {
   const GLenum RGBA32F_EXT = 0x8814;
   const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
@@ -82,7 +82,7 @@ interface WEBGL_color_buffer_float {
   </idl>
 
   <newtok>
-    <function name="renderbufferStorage" type="void"><param name="target"
+    <function name="renderbufferStorage" type="undefined"><param name="target"
     type="GLenum"/><param name="internalformat" type="GLenum"/><param
     name="width" type="GLsizei"/><param name="height"
     type="GLsizei"/><code>RGBA32F_EXT</code> is accepted as the
