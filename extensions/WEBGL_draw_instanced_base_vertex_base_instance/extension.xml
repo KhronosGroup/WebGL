@@ -112,14 +112,14 @@ interface WEBGL_draw_instanced_base_vertex_base_instance {
   </idl>
 
   <newfun>
-    <function name="drawArraysInstancedBaseInstanceWEBGL" type="void">
+    <function name="drawArraysInstancedBaseInstanceWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="first" type="GLint"/>
       <param name="count" type="GLsizei"/>
       <param name="instanceCount" type="GLsizei"/>
       <param name="baseInstance" type="GLuint"/>
     </function>
-    <function name="drawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
+    <function name="drawElementsInstancedBaseVertexBaseInstanceWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="count" type="GLsizei"/>
       <param name="type" type="GLenum"/>

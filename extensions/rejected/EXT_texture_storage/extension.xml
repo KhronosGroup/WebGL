@@ -40,12 +40,12 @@
   <idl xml:space="preserve">
 interface EXT_texture_storage {
     const GLenum TEXTURE_IMMUTABLE_FORMAT_EXT = 0x912F;
-    void texStorage2DEXT(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
+    undefined texStorage2DEXT(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
 }
 </idl>
 
   <newfun>
-    <function name="texStorage2DEXT" type="void">
+    <function name="texStorage2DEXT" type="undefined">
       <param name="target" type="GLenum"/>
       <param name="levels" type="GLsizei"/>
       <param name="internalformat" type="GLenum"/>

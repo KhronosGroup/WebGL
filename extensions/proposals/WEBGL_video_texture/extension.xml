@@ -69,7 +69,7 @@ interface WEBGL_video_texture {
 
     [RaisesException] WebGLVideoFrameInfo shareVideoImageWEBGL(
       GLenum target, HTMLVideoElement video);
-    [RaiseException] void releaseVideoImageWEBGL(GLenum target);
+    [RaiseException] undefined releaseVideoImageWEBGL(GLenum target);
 };
   </idl>
 
