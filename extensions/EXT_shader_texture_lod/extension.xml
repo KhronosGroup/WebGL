@@ -81,7 +81,7 @@
   </overview>
   
   <idl xml:space="preserve">
-    [LegacyNoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_shader_texture_lod {
     };
   </idl>
