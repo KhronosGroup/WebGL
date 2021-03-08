@@ -192,7 +192,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_dynamic_texture {
   typedef double WDTNanoTime;
 
@@ -204,7 +204,7 @@ interface WEBGL_dynamic_texture {
   WDTStream? createStream();
  
   WDTNanoTime getLastDrawingBufferPresentTime();
-  void setDrawingBufferPresentTime(WDTNanoTime pt);
+  undefined setDrawingBufferPresentTime(WDTNanoTime pt);
   WDTNanoTime ustnow();
 }; // interface WEBGL_dynamic_texture
 </idl>
@@ -230,7 +230,7 @@ interface WEBGL_dynamic_texture {
     the last time the DrawingBuffer was presented to the screen, i.e., after
     the last return of the script to the browser.</function>
 
-    <function name="setDBPresentationTime" type="void"><param
+    <function name="setDBPresentationTime" type="undefined"><param
     name="presentTime" type="WDTNanoTime"/>Sets the UST at which the drawing
     buffer should be presented after the script returns to the
     browser.</function>
@@ -242,7 +242,7 @@ interface WEBGL_dynamic_texture {
   <newfun>
     <p>On <code>WDTStream</code>:</p>
 
-    <function name="WDTStream.connectSource" type="void"><param name="source"
+    <function name="WDTStream.connectSource" type="undefined"><param name="source"
     type="StreamSource"/>Connects the <code>StreamSource</code> specified by
     <em>source</em> as the producer for the stream. <code>StreamSource</code>
     can be an <code>HTMLCanvasElement</code>, <code>HTMLImageElement</code> or
@@ -259,7 +259,7 @@ interface WEBGL_dynamic_texture {
     image is latched. <code>WDTStream</code> returns <code>true</code> when an
     image is successfully latched, <code>false</code> otherwise.</function>
 
-    <function name="WDTStream.releaseImage" type="void">Releases the latched
+    <function name="WDTStream.releaseImage" type="undefined">Releases the latched
     image. Subsequent samping of the <code>WebGLTexture</code>, that was bound
     to the <code>TEXTURE_EXTERNAL_OES</code> target of the active texture unit
     when the WDTStream was created, will return opaque black.</function>
@@ -271,7 +271,7 @@ interface WEBGL_dynamic_texture {
     <p>The meaning and use of these tokens is exactly as described in <a
     href="https://www.khronos.org/registry/gles/extensions/NV/NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.</p>
 
-    <function name="bindTexture" type="void"><param name="target"
+    <function name="bindTexture" type="undefined"><param name="target"
     type="GLenum"/><param name="texture"
     type="WebGLTexture?"/><code>TEXTURE_EXTERNAL_OES</code> is accepted as a
     target by the <code>target</code> parameter of
@@ -501,7 +501,7 @@ WDTNanoTime ustnow();</pre></li></p>
       <p>The <code>WDTStreamFrameInfo</code> interface represents information
       about a frame acquired from a WDTStream.</p>
 
-      <pre class="idl" xml:space="preserve">[LegacyNoInterfaceObject] interface WDTStreamFrameInfo {
+      <pre class="idl" xml:space="preserve">[Exposed=(Window,Worker), LegacyNoInterfaceObject] interface WDTStreamFrameInfo {
   readonly attribute double frameTime;
   readonly attribute WDTNanoTime presentTime;
 };</pre>
@@ -531,7 +531,7 @@ WDTNanoTime ustnow();</pre></li></p>
       for controlling an image stream being fed to a dynamic texture
       object.</p>
 
-      <pre class="idl" xml:space="preserve">[LegacyNoInterfaceObject] interface WDTStream {
+      <pre class="idl" xml:space="preserve">[Exposed=(Window,Worker), LegacyNoInterfaceObject] interface WDTStream {
   typedef (HTMLCanvasElement or
            HTMLImageElement or
            HTMLVideoElement) StreamSource;
@@ -554,12 +554,12 @@ WDTNanoTime ustnow();</pre></li></p>
   attribute WDTNanotime acquireTimeout;
   attribute WDTNanoTime consumerLatency;
 
-  void connectSource(StreamSource source);
-  void disconnect();
+  undefined connectSource(StreamSource source);
+  undefined disconnect();
   StreamSource? getSource();
 
   boolean acquireImage();
-  void releaseImage();
+  undefined releaseImage();
 };</pre>
 
       <h4>5.16.2.1 Attributes</h4>

@@ -138,7 +138,7 @@ module webgl {
 interface OES_foo_bar {
   const GLenum NEW_ENUM = 0xF00;
 
-  void doSomethingNew(GLenum state, GLuint value);
+  undefined doSomethingNew(GLenum state, GLuint value);
 }; // interface OES_foo_bar
 
 }; // module webgl
@@ -147,7 +147,7 @@ interface OES_foo_bar {
   <!-- new functions -->
 
   <newfun>
-    <function name="loseContext" type="void"> XHTML description </function>
+    <function name="loseContext" type="undefined"> XHTML description </function>
   </newfun>
 
   <!-- new types -->
