@@ -81,7 +81,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_compressed_texture_atc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_ATC_WEBGL                     = 0x8C92;
