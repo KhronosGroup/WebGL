@@ -123,6 +123,7 @@ found in the LICENSE.txt file.
           return;
 
         if (pending_outputs > 30) {
+          console.log("drop this frame");
           // Too many frames in flight, encoder is overwhelmed
           // let's drop this frame.
           value.close();
@@ -130,7 +131,7 @@ found in the LICENSE.txt file.
           return;
         }
 
-        if(!keep_going) {
+        if(frame_counter == kMaxFrame) {
           frame_reader.releaseLock();
           processor.readable.cancel();
           value.close();

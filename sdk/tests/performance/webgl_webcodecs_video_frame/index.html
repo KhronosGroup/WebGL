@@ -121,9 +121,8 @@
         }
 
         if(!keep_going) {
-          frame_reader.releaseLock();
-          processor.readable.cancel();
           value.close();
+          frame_reader.read().then(processFrame);
           return;
         }
 
