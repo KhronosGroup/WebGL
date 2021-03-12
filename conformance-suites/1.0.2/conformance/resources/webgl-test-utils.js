@@ -2000,13 +2000,8 @@ var waitForComposite = function(gl, callback) {
  *        video is ready.
  */
 var startPlayingAndWaitForVideo = function(video, callback) {
-  if (video.error) {
-    testFailed("Video playback failed: " + e.message);
-    return;
-  }
-
   video.addEventListener(
-      'error', e => { testFailed("Video playback failed: " + e.message); },
+      'error', e => { testFailed('Video playback failed: ' + e.message); },
       true);
 
   var rvfc = getRequestVidFrameCallback();
@@ -2048,7 +2043,11 @@ var startPlayingAndWaitForVideo = function(video, callback) {
 
   video.loop = true;
   video.muted = true;
-  video.play();
+  try {
+    await video.play();
+  } catch (error) {
+    testFailed('Video failed to play(): ' + error);
+  }
 };
 
 return {
