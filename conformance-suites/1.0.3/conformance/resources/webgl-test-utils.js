@@ -2594,6 +2594,10 @@ var runSteps = function(steps) {
  *        video is ready.
  */
 var startPlayingAndWaitForVideo = function(video, callback) {
+  if (video.error) {
+    testFailed('Video failed to load: ' + video.error);
+    return;
+  }
   video.addEventListener(
       'error', e => { testFailed('Video playback failed: ' + e.message); },
       true);
@@ -2636,11 +2640,7 @@ var startPlayingAndWaitForVideo = function(video, callback) {
 
   video.loop = true;
   video.muted = true;
-  try {
-    await video.play();
-  } catch (error) {
-    testFailed('Video failed to play(): ' + error);
-  }
+  video.play();
 };
 
 var getHost = function(url) {

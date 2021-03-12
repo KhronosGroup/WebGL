@@ -3132,7 +3132,7 @@ var runSteps = function(steps) {
  * @param {!function(!HTMLVideoElement): void} callback Function to call when
  *        video is ready.
  */
-var startPlayingAndWaitForVideo = function(video, callback) {
+async function startPlayingAndWaitForVideo(video, callback) {
   video.addEventListener(
       'error', e => { testFailed('Video playback failed: ' + e.message); },
       true);
