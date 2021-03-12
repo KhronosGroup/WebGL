@@ -1335,6 +1335,15 @@ var getRequestVidFrameCallback = function() {
  *        video is ready.
  */
 var startPlayingAndWaitForVideo = function(video, callback) {
+  if (video.error) {
+    testFailed("Video playback failed: " + e.message);
+    return;
+  }
+
+  video.addEventListener(
+      'error', e => { testFailed("Video playback failed: " + e.message); },
+      true);
+
   var rvfc = getRequestVidFrameCallback();
 
   if(rvfc === undefined) {
