@@ -3462,15 +3462,15 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
         given object.
     </p>
     <pre class="idl">
-[Exposed=(Window,Worker),
- Constructor(DOMString type,
- optional WebGLContextEventInit eventInit = {})]
-interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : <a href="http://www.w3.org/TR/domcore/#event">Event</a> {
+[Exposed=(Window,Worker)]
+interface WebGLContextEvent : Event {
+    constructor(DOMString type,
+ optional WebGLContextEventInit eventInit = {});
     readonly attribute DOMString statusMessage;
 };
 
 // EventInit is defined in the DOM4 specification.
-dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventinit">EventInit</a> {
+dictionary WebGLContextEventInit : EventInit {
     DOMString statusMessage = "";
 };</pre>
 
