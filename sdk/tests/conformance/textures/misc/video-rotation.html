@@ -89,14 +89,11 @@ found in the LICENSE.txt file.
                 return;
             }
 
-            let prefer_vp9 = false;
-            if (!video.canPlayType('video/mp4; codecs="avc1.42E01E"').replace(/no/, '')) {
-                if (!video.canPlayType('video/mp4; codecs="vp09.00.10.08"').replace(/no/, '')) {
-                    testFailed("No supported video types.");
-                    return;
-                }
-
-                prefer_vp9 = true;
+            let supports_h264 = !!video.canPlayType('video/mp4; codecs="avc1.42E01E"').replace(/no/, '');
+            let supports_vp9 = !!video.canPlayType('video/mp4; codecs="vp09.00.10.08"').replace(/no/, '');
+            if (!supports_h264 && !supports_vp9) {
+                testFailed("No supported video types.");
+                return;
             }
 
             let tex = gl.createTexture();
@@ -141,9 +138,14 @@ found in the LICENSE.txt file.
                 "video-rotation-270",
             ];
 
-            for (let fn of filenames) {
-                fn += (prefer_vp9 ? ".vp9" : "" ) + ".mp4";
-                await testVideoElement(fn);
+            if (supports_h264) {
+                for (let fn of filenames)
+                    await testVideoElement(fn + ".mp4");
+            }
+
+            if (supports_vp9) {
+                for (let fn of filenames)
+                    await testVideoElement(fn + ".vp9.mp4");
             }
 
             finishTest();
