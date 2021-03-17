@@ -3132,7 +3132,11 @@ var runSteps = function(steps) {
  * @param {!function(!HTMLVideoElement): void} callback Function to call when
  *        video is ready.
  */
-var startPlayingAndWaitForVideo = function(video, callback) {
+async function startPlayingAndWaitForVideo(video, callback) {
+  video.addEventListener(
+      'error', e => { testFailed('Video playback failed: ' + e.message); },
+      true);
+
   var rvfc = getRequestVidFrameCallback();
   if (rvfc === undefined) {
     var timeWatcher = function() {
@@ -3153,7 +3157,11 @@ var startPlayingAndWaitForVideo = function(video, callback) {
   video.muted = true;
   // See whether setting the preload flag de-flakes video-related tests.
   video.preload = 'auto';
-  video.play();
+  try {
+    await video.play();
+  } catch (error) {
+    testFailed('Video failed to play(): ' + error);
+  }
 };
 
 var getHost = function(url) {
