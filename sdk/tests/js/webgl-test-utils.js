@@ -3132,7 +3132,12 @@ var runSteps = function(steps) {
  * @param {!function(!HTMLVideoElement): void} callback Function to call when
  *        video is ready.
  */
-async function startPlayingAndWaitForVideo(video, callback) {
+function startPlayingAndWaitForVideo(video, callback) {
+  if (video.error) {
+    testFailed('Video failed to load: ' + video.error);
+    return;
+  }
+
   video.addEventListener(
       'error', e => { testFailed('Video playback failed: ' + e.message); },
       true);
@@ -3157,11 +3162,7 @@ async function startPlayingAndWaitForVideo(video, callback) {
   video.muted = true;
   // See whether setting the preload flag de-flakes video-related tests.
   video.preload = 'auto';
-  try {
-    await video.play();
-  } catch (error) {
-    testFailed('Video failed to play(): ' + error);
-  }
+  video.play();
 };
 
 var getHost = function(url) {
