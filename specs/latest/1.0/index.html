@@ -396,23 +396,24 @@
     </div>
 
     <dl class="methods">
-        <dt class="idl-code">undefined backbufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
+        <dt class="idl-code">undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
         <dd>
-            Respecify the size and format of the backbuffer,
+            Respecify the format and size of the drawing buffer,
             similar to <code>renderbufferStorage</code> as used on Renderbuffers.
 
-            Clearing behavior is equivalent to setting <code>HTMLCanvasElement.width</code> and <code>HTMLCanvasElement.height</code>, followed by changing the backbuffer format.
+            Clearing behavior is equivalent to setting <code>HTMLCanvasElement.width</code> and <code>HTMLCanvasElement.height</code>, followed by changing the drawing buffer format.
             This method respects <code>WebGLContextAttributes.antialias</code>.
 
             <div class="note">
-                <code>backbufferStorage</code> allows for efficiently respecifying width and height together simultaneously.
+                <code>drawingBufferStorage</code> allows for efficiently respecifying width and height together simultaneously.
                 With <code>HTMLCanvasElement.width</code> and <code>HTMLCanvasElement.height</code>,
                 setting one and then the other can incur intermediate reallocations, though User Agents do try to optimize these out.
             </div>
 
-            If <code>backbufferStorage</code> is successful, the default framebuffer's effective internal format becomes <code>sizedFormat</code>.
+            If <code>drawingBufferStorage</code> is successful, the <code>drawingBufferFormat</code> becomes <code>sizedFormat</code>.
+            <code>drawingBufferWidth</code> and <code>drawingBufferHeight</code> become <code>width</code> and <code>height</code> respectively.
             Operations on the default framebuffer therefore behave as if operating on a non-default framebuffer with an attachment of <code>sizedFormat</code>.
-            E.g. after <code>backbufferStorage(gl.RGBA16F, 1, 1)</code>, because the framebuffer is "floatish",
+            E.g. after <code>drawingBufferStorage(gl.RGBA16F, 1, 1)</code>, because the framebuffer is "floatish",
             readPixels's main format/type pair is <code>RGBA</code>/<code>FLOAT</code> instead of <code>RGBA</code>/<code>UNSIGNED_BYTE</code>.
 
             If <code>WebGLContextAttributes.alpha</code> is <code>false</code>, generate <code>INVALID_OPERATION</code>.
@@ -1770,6 +1771,7 @@ interface mixin <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</d
     [Exposed=Worker] readonly attribute OffscreenCanvas canvas;
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
+    readonly attribute GLenum drawingBufferFormat;
 
     [WebGLHandlesContextLoss] WebGLContextAttributes? getContextAttributes();
     [WebGLHandlesContextLoss] boolean isContextLost();
@@ -1777,7 +1779,7 @@ interface mixin <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</d
     sequence&lt;DOMString&gt;? getSupportedExtensions();
     object? getExtension(DOMString name);
 
-    undefined backbufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
+    undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
 
     void activeTexture(GLenum texture);
     void attachShader(WebGLProgram program, WebGLShader shader);
@@ -2027,6 +2029,20 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             </code>
             of type <code>GLsizei</code>
         <dd>
+            The actual height of the drawing buffer. May be different from the
+            <code>height</code> attribute of the <code>HTMLCanvasElement</code> if
+            the implementation is unable to satisfy the requested width or height.
+
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLRenderingContext-drawingBufferFormat">
+                    drawingBufferFormat
+                </a>
+            </code>
+            of type <code>GLenum</code>
+        <dd>
+            The current effective format of the drawing buffer.
+            Initially <code>RGBA8</code> or <code>RGB8</code> for <code>alpha:true</code> and <code>alpha:false</code> respectively.
             The actual height of the drawing buffer. May be different from the
             <code>height</code> attribute of the <code>HTMLCanvasElement</code> if
             the implementation is unable to satisfy the requested width or height.
