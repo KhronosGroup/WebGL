@@ -557,7 +557,7 @@ interface mixin WebGLRenderingContextBase
     undefined blendEquationSeparate(GLenum modeRGB, GLenum modeAlpha);
     undefined blendFunc(GLenum sfactor, GLenum dfactor);
     undefined blendFuncSeparate(GLenum srcRGB, GLenum dstRGB,
-                           GLenum srcAlpha, GLenum dstAlpha);
+                                GLenum srcAlpha, GLenum dstAlpha);
 
     [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
     undefined clear(GLbitfield mask);
@@ -568,10 +568,10 @@ interface mixin WebGLRenderingContextBase
     undefined compileShader(WebGLShader shader);
 
     undefined copyTexImage2D(GLenum target, GLint level, GLenum internalformat,
-                        GLint x, GLint y, GLsizei width, GLsizei height,
-                        GLint border);
+                             GLint x, GLint y, GLsizei width, GLsizei height,
+                             GLint border);
     undefined copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
-                           GLint x, GLint y, GLsizei width, GLsizei height);
+                                GLint x, GLint y, GLsizei width, GLsizei height);
 
     WebGLBuffer? createBuffer();
     WebGLFramebuffer? createFramebuffer();
@@ -603,10 +603,10 @@ interface mixin WebGLRenderingContextBase
     undefined finish();
     undefined flush();
     undefined framebufferRenderbuffer(GLenum target, GLenum attachment,
-                                 GLenum renderbuffertarget,
-                                 WebGLRenderbuffer? renderbuffer);
+                                      GLenum renderbuffertarget,
+                                      WebGLRenderbuffer? renderbuffer);
     undefined framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget,
-                              WebGLTexture? texture, GLint level);
+                                   WebGLTexture? texture, GLint level);
     undefined frontFace(GLenum mode);
 
     undefined generateMipmap(GLenum target);
@@ -657,7 +657,7 @@ interface mixin WebGLRenderingContextBase
     undefined polygonOffset(GLfloat factor, GLfloat units);
 
     undefined renderbufferStorage(GLenum target, GLenum internalformat,
-                             GLsizei width, GLsizei height);
+                                  GLsizei width, GLsizei height);
     undefined sampleCoverage(GLclampf value, GLboolean invert);
     undefined scissor(GLint x, GLint y, GLsizei width, GLsizei height);
 
@@ -697,7 +697,7 @@ interface mixin WebGLRenderingContextBase
     undefined vertexAttrib4fv(GLuint index, Float32List values);
 
     undefined vertexAttribPointer(GLuint index, GLint size, GLenum type,
-                             GLboolean normalized, GLsizei stride, GLintptr offset);
+                                  GLboolean normalized, GLsizei stride, GLintptr offset);
 
     undefined viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 };
@@ -709,27 +709,27 @@ interface mixin WebGLRenderingContextOverloads
     undefined bufferSubData(GLenum target, GLintptr offset, [AllowShared] BufferSource data);
 
     undefined compressedTexImage2D(GLenum target, GLint level, GLenum internalformat,
-                              GLsizei width, GLsizei height, GLint border,
-                              [AllowShared] ArrayBufferView data);
+                                   GLsizei width, GLsizei height, GLint border,
+                                   [AllowShared] ArrayBufferView data);
     undefined compressedTexSubImage2D(GLenum target, GLint level,
-                                 GLint xoffset, GLint yoffset,
-                                 GLsizei width, GLsizei height, GLenum format,
-                                 [AllowShared] ArrayBufferView data);
+                                      GLint xoffset, GLint yoffset,
+                                      GLsizei width, GLsizei height, GLenum format,
+                                      [AllowShared] ArrayBufferView data);
 
     undefined readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
-                    GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels);
+                         GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels);
 
     undefined texImage2D(GLenum target, GLint level, GLint internalformat,
-                    GLsizei width, GLsizei height, GLint border, GLenum format,
-                    GLenum type, [AllowShared] ArrayBufferView? pixels);
+                         GLsizei width, GLsizei height, GLint border, GLenum format,
+                         GLenum type, [AllowShared] ArrayBufferView? pixels);
     undefined texImage2D(GLenum target, GLint level, GLint internalformat,
-                    GLenum format, GLenum type, TexImageSource source); // May throw DOMException
+                         GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
     undefined texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
-                       GLsizei width, GLsizei height,
-                       GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels);
+                            GLsizei width, GLsizei height,
+                            GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels);
     undefined texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
-                       GLenum format, GLenum type, TexImageSource source); // May throw DOMException
+                            GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
     undefined uniform1fv(WebGLUniformLocation? location, Float32List v);
     undefined uniform2fv(WebGLUniformLocation? location, Float32List v);
