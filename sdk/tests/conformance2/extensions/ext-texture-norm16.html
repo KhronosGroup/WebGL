@@ -159,9 +159,9 @@ function runInternalFormatQueryTest()
     debug("testing the internal format query");
 
     var maxSamples = gl.getParameter(gl.MAX_SAMPLES);
-    var formats = new Array(ext.R16_EXT, ext.RG16_EXT, ext.RGBA16_EXT);
-    for (var fmt = 0; fmt < formats.length; ++fmt) {
-        var samples = gl.getInternalformatParameter(gl.RENDERBUFFER, formats[fmt], gl.SAMPLES);
+    const formats = [ext.R16_EXT, ext.RG16_EXT, ext.RGBA16_EXT];
+    for (const format of formats) {
+        var samples = gl.getInternalformatParameter(gl.RENDERBUFFER, format, gl.SAMPLES);
         if (samples == null || samples.length == 0 || samples[0] < maxSamples) {
             testFailed("the maximum value in SAMPLES should be at least " + maxSamples);
             return;
