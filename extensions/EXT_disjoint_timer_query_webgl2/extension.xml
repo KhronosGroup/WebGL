@@ -109,8 +109,8 @@ interface EXT_disjoint_timer_query_webgl2 {
   <samplecode xml:space="preserve">
     <pre>
         // Example (1) -- uses beginQuery/endQuery.
-        var ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
-        var query = gl.createQuery();
+        let ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+        let query = gl.createQuery();
         gl.beginQuery(ext.TIME_ELAPSED_EXT, query);
 
         // Draw object
@@ -119,25 +119,29 @@ interface EXT_disjoint_timer_query_webgl2 {
         gl.endQuery(ext.TIME_ELAPSED_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        var available = gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE);
-        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+        let available = gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE);
+        let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
 
         if (available &amp;&amp; !disjoint) {
           // See how much time the rendering of the object took in nanoseconds.
-          var timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
+          let timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
 
           // Do something useful with the time.  Note that care should be
           // taken to use all significant bits of the result, not just the
           // least significant 32 bits.
           adjustObjectLODBasedOnDrawTime(timeElapsed);
+
+          // Clean up the query object.
+          gl.deleteQuery(query);
+          query = null;
         }
 
         //----------------------------------------------------------------------
 
         // Example (2) -- same as the example above, but uses queryCounterEXT instead.
-        var ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
-        var startQuery = gl.createQuery();
-        var endQuery = gl.createQuery();
+        let ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+        let startQuery = gl.createQuery();
+        let endQuery = gl.createQuery();
         ext.queryCounterEXT(startQuery, ext.TIMESTAMP_EXT);
 
         // Draw object
@@ -146,30 +150,36 @@ interface EXT_disjoint_timer_query_webgl2 {
         ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        var available = gl.getQueryParameter(endQuery, gl.QUERY_RESULT_AVAILABLE);
-        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+        let available = gl.getQueryParameter(endQuery, gl.QUERY_RESULT_AVAILABLE);
+        let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
 
         if (available &amp;&amp; !disjoint) {
           // See how much time the rendering of the object took in nanoseconds.
-          var timeStart = gl.getQueryParameter(startQuery, gl.QUERY_RESULT);
-          var timeEnd = gl.getQueryParameter(endQuery, gl.QUERY_RESULT);
+          let timeStart = gl.getQueryParameter(startQuery, gl.QUERY_RESULT);
+          let timeEnd = gl.getQueryParameter(endQuery, gl.QUERY_RESULT);
 
           // Do something useful with the time.  Note that care should be
           // taken to use all significant bits of the result, not just the
           // least significant 32 bits.
           adjustObjectLODBasedOnDrawTime(timeEnd - timeStart);
+
+          // Clean up the query objects.
+          gl.deleteQuery(startQuery);
+          gl.deleteQuery(endQuery);
+          startQuery = null;
+          endQuery = null;
         }
 
         //----------------------------------------------------------------------
 
         // Example (3) -- check the number of timestamp bits to determine how to best
         // measure elapsed time.
-        var ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
-        var timeElapsedQuery;
-        var startQuery;
-        var endQuery;
+        let ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+        let timeElapsedQuery;
+        let startQuery;
+        let endQuery;
 
-        var useTimestamps = false;
+        let useTimestamps = false;
 
         if (gl.getQuery(ext.TIMESTAMP_EXT, ext.QUERY_COUNTER_BITS_EXT) > 0) {
           useTimestamps = true;
@@ -198,11 +208,11 @@ interface EXT_disjoint_timer_query_webgl2 {
         }
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+        let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
         if (disjoint) {
           // Have to redo all of the measurements.
         } else {
-          var available;
+          let available;
           if (useTimestamps) {
             available = gl.getQueryParameter(endQuery, gl.QUERY_RESULT_AVAILABLE);
           } else {
@@ -210,11 +220,11 @@ interface EXT_disjoint_timer_query_webgl2 {
           }
 
           if (available) {
-            var timeElapsed;
+            let timeElapsed;
             if (useTimestamps) {
               // See how much time the rendering of the object took in nanoseconds.
-              var timeStart = gl.getQueryParameter(startQuery, gl.QUERY_RESULT);
-              var timeEnd = gl.getQueryParameter(endQuery, gl.QUERY_RESULT);
+              let timeStart = gl.getQueryParameter(startQuery, gl.QUERY_RESULT);
+              let timeEnd = gl.getQueryParameter(endQuery, gl.QUERY_RESULT);
               timeElapsed = timeEnd - timeStart;
             } else {
               timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
@@ -224,6 +234,12 @@ interface EXT_disjoint_timer_query_webgl2 {
             // taken to use all significant bits of the result, not just the
             // least significant 32 bits.
             adjustObjectLODBasedOnDrawTime(timeElapsed);
+
+            // Clean up the query objects.
+            gl.deleteQuery(startQuery);
+            gl.deleteQuery(endQuery);
+            startQuery = null;
+            endQuery = null;
           }
         }
     </pre>
@@ -236,6 +252,9 @@ interface EXT_disjoint_timer_query_webgl2 {
     </revision>
     <revision date="2016/10/11">
       <change>Fixed errors in sample code pointed out by @juj.</change>
+    </revision>
+    <revision date="2021/04/01">
+      <change>Clean up query objects via deleteQuery. Modernize examples' JavaScript code.</change>
     </revision>
   </history>
 </extension>
