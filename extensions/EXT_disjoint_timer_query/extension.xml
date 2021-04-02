@@ -224,6 +224,7 @@ interface EXT_disjoint_timer_query {
         ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
+        // (Note that this code might be called multiple times)
         if (query) {
           let available = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
           let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
@@ -260,6 +261,7 @@ interface EXT_disjoint_timer_query {
         ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
+        // (Note that this code might be called multiple times)
         if (startQuery) {
           let available = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
           let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
@@ -324,6 +326,7 @@ interface EXT_disjoint_timer_query {
         }
 
         // ...at some point in the future, after returning control to the browser and being called again:
+        // (Note that this code might be called multiple times)
         if (startQuery || endQuery || timeElapsedQuery) {
           let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
           let available;
