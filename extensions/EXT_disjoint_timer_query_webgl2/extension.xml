@@ -119,21 +119,26 @@ interface EXT_disjoint_timer_query_webgl2 {
         gl.endQuery(ext.TIME_ELAPSED_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        let available = gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE);
-        let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+        if (query) {
+          let available = gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE);
+          let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
 
-        if (available &amp;&amp; !disjoint) {
-          // See how much time the rendering of the object took in nanoseconds.
-          let timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
+          if (available &amp;&amp; !disjoint) {
+            // See how much time the rendering of the object took in nanoseconds.
+            let timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
 
-          // Do something useful with the time.  Note that care should be
-          // taken to use all significant bits of the result, not just the
-          // least significant 32 bits.
-          adjustObjectLODBasedOnDrawTime(timeElapsed);
+            // Do something useful with the time.  Note that care should be
+            // taken to use all significant bits of the result, not just the
+            // least significant 32 bits.
+            adjustObjectLODBasedOnDrawTime(timeElapsed);
+          }
 
-          // Clean up the query object.
-          gl.deleteQuery(query);
-          query = null;
+          if (available || disjoint) {
+            // Clean up the query object.
+            gl.deleteQuery(query);
+            // Don't re-enter this polling loop.
+            query = null;
+          }
         }
 
         //----------------------------------------------------------------------
@@ -150,24 +155,30 @@ interface EXT_disjoint_timer_query_webgl2 {
         ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        let available = gl.getQueryParameter(endQuery, gl.QUERY_RESULT_AVAILABLE);
-        let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+        if (startQuery) {
+          let available = gl.getQueryParameter(endQuery, gl.QUERY_RESULT_AVAILABLE);
+          let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
 
-        if (available &amp;&amp; !disjoint) {
-          // See how much time the rendering of the object took in nanoseconds.
-          let timeStart = gl.getQueryParameter(startQuery, gl.QUERY_RESULT);
-          let timeEnd = gl.getQueryParameter(endQuery, gl.QUERY_RESULT);
+          if (available &amp;&amp; !disjoint) {
+            // See how much time the rendering of the object took in nanoseconds.
+            let timeStart = gl.getQueryParameter(startQuery, gl.QUERY_RESULT);
+            let timeEnd = gl.getQueryParameter(endQuery, gl.QUERY_RESULT);
 
-          // Do something useful with the time.  Note that care should be
-          // taken to use all significant bits of the result, not just the
-          // least significant 32 bits.
-          adjustObjectLODBasedOnDrawTime(timeEnd - timeStart);
+            // Do something useful with the time.  Note that care should be
+            // taken to use all significant bits of the result, not just the
+            // least significant 32 bits.
+            adjustObjectLODBasedOnDrawTime(timeEnd - timeStart);
+          }
 
-          // Clean up the query objects.
-          gl.deleteQuery(startQuery);
-          gl.deleteQuery(endQuery);
-          startQuery = null;
-          endQuery = null;
+          if (available || disjoint) {
+            // Clean up the query objects.
+            gl.deleteQuery(startQuery);
+            gl.deleteQuery(endQuery);
+
+            // Don't re-enter this polling loop.
+            startQuery = null;
+            endQuery = null;
+          }
         }
 
         //----------------------------------------------------------------------
@@ -208,38 +219,49 @@ interface EXT_disjoint_timer_query_webgl2 {
         }
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
-        if (disjoint) {
-          // Have to redo all of the measurements.
-        } else {
+        if (startQuery || endQuery || timeElapsedQuery) {
+          let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
           let available;
-          if (useTimestamps) {
-            available = gl.getQueryParameter(endQuery, gl.QUERY_RESULT_AVAILABLE);
+          if (disjoint) {
+            // Have to redo all of the measurements.
           } else {
-            available = gl.getQueryParameter(timeElapsedQuery, gl.QUERY_RESULT_AVAILABLE);
-          }
-
-          if (available) {
-            let timeElapsed;
             if (useTimestamps) {
-              // See how much time the rendering of the object took in nanoseconds.
-              let timeStart = gl.getQueryParameter(startQuery, gl.QUERY_RESULT);
-              let timeEnd = gl.getQueryParameter(endQuery, gl.QUERY_RESULT);
-              timeElapsed = timeEnd - timeStart;
+              available = gl.getQueryParameter(endQuery, gl.QUERY_RESULT_AVAILABLE);
             } else {
-              timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
+              available = gl.getQueryParameter(timeElapsedQuery, gl.QUERY_RESULT_AVAILABLE);
             }
 
-            // Do something useful with the time.  Note that care should be
-            // taken to use all significant bits of the result, not just the
-            // least significant 32 bits.
-            adjustObjectLODBasedOnDrawTime(timeElapsed);
+            if (available) {
+              let timeElapsed;
+              if (useTimestamps) {
+                // See how much time the rendering of the object took in nanoseconds.
+                let timeStart = gl.getQueryParameter(startQuery, gl.QUERY_RESULT);
+                let timeEnd = gl.getQueryParameter(endQuery, gl.QUERY_RESULT);
+                timeElapsed = timeEnd - timeStart;
+              } else {
+                timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
+              }
 
+              // Do something useful with the time.  Note that care should be
+              // taken to use all significant bits of the result, not just the
+              // least significant 32 bits.
+              adjustObjectLODBasedOnDrawTime(timeElapsed);
+            }
+          }
+
+          if (available || disjoint) {
             // Clean up the query objects.
-            gl.deleteQuery(startQuery);
-            gl.deleteQuery(endQuery);
-            startQuery = null;
-            endQuery = null;
+            if (useTimestamps) {
+              gl.deleteQuery(startQuery);
+              gl.deleteQuery(endQuery);
+              // Don't re-enter the polling loop above.
+              startQuery = null;
+              endQuery = null;
+            } else {
+              gl.deleteQuery(timeElapsedQuery);
+              // Don't re-enter the polling loop above.
+              timeElapsedQuery = null;
+            }
           }
         }
     </pre>
