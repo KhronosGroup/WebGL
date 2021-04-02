@@ -20,6 +20,10 @@ DO NOT EDIT!
 
 """
 
+_DO_NOT_EDIT_TEST_LIST_WARNING = """# This file is auto-generated from multisample_test_generator.py
+# DO NOT EDIT!
+"""
+
 _HTML_TEMPLATE = """<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -46,6 +50,7 @@ functional.gles3.es3fMultisampleTests.run(gl, [%(start)s, %(end)s]);
 </html>
 """
 
+# Note: must match CaseType in es3fMultisampleTests.js.
 _GROUPS = [
   'default_fbo',
   'fbo_4_samples',
@@ -80,6 +85,7 @@ def GenerateTests():
 
 def GenerateTestList(filelist):
   file = open("00_test_list.txt", "wb")
+  file.write(_DO_NOT_EDIT_TEST_LIST_WARNING)
   file.write('\n'.join(filelist))
   file.close
 
