@@ -15,7 +15,11 @@ Editor: Xinghua Cao, Intel http://intel.com, xinghua.cao@intel.com
 Editor: Jie Chen, Intel http://intel.com, jie.a.chen@intel.com
 Editor: Jiajie Hu, Intel http://intel.com, jiajie.hu@intel.com
 
+
 Abstract: This is the WebGL 2.0 compute specification.
+  <p style="color:red;hyphens:none;"> The WebGL 2.0 Compute specification was a tremendous effort spearheaded by Intel to bring compute shader support to the web via the WebGL rendering context. During the development of this specification, the decision was made to halt further expansion of the WebGL API, and instead focus the contributors' efforts on the <a href="https://gpuweb.github.io/gpuweb/">WebGPU specification</a>.</p>
+  <p style="color:red;hyphens:none;">For this reason, this specification should be considered obsolete. The WebGL working group thanks all of the contributors to this specification for their tremendous efforts in specifying and implementing this significant potential addition to the WebGL API. WebGPU will be the path forward for compute shaders on the web.</p>
+
   <p>This specification describes an additional rendering context and supports objects for the <a href="http://www.w3.org/TR/html5/the-canvas-element.html">HTML5 Canvas element</a> <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#refsCANVAS">[Canvas]</a>. This context allows rendering using an API that conforms closely to the OpenGL ES 3.1 API. The most important feature in OpenGL ES 3.1 is GPU compute.</p>
   </p>This document should be read as an extension to the <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/">WebGL 2.0 specification</a>. It will only describe the differences from 2.0.</p>
   </p>This document is a draft. Implementations based on this document may not be shipped.</p>
