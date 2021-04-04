@@ -214,8 +214,8 @@ interface EXT_disjoint_timer_query {
   <samplecode xml:space="preserve">
     <pre>
         // Example (1) -- uses beginQueryEXT/endQueryEXT.
-        var ext = gl.getExtension('EXT_disjoint_timer_query');
-        var query = ext.createQueryEXT();
+        let ext = gl.getExtension('EXT_disjoint_timer_query');
+        let query = ext.createQueryEXT();
         ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query);
 
         // Draw object
@@ -224,25 +224,35 @@ interface EXT_disjoint_timer_query {
         ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        var available = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
-        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+        // (Note that this code might be called multiple times)
+        if (query) {
+          let available = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
+          let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
 
-        if (available &amp;&amp; !disjoint) {
-          // See how much time the rendering of the object took in nanoseconds.
-          var timeElapsed = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_EXT);
+          if (available &amp;&amp; !disjoint) {
+            // See how much time the rendering of the object took in nanoseconds.
+            let timeElapsed = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_EXT);
 
-          // Do something useful with the time.  Note that care should be
-          // taken to use all significant bits of the result, not just the
-          // least significant 32 bits.
-          adjustObjectLODBasedOnDrawTime(timeElapsed);
+            // Do something useful with the time.  Note that care should be
+            // taken to use all significant bits of the result, not just the
+            // least significant 32 bits.
+            adjustObjectLODBasedOnDrawTime(timeElapsed);
+          }
+
+          if (available || disjoint) {
+            // Clean up the query object.
+            ext.deleteQueryEXT(query);
+            // Don't re-enter this polling loop.
+            query = null;
+          }
         }
 
         //----------------------------------------------------------------------
 
         // Example (2) -- same as the example above, but uses queryCounterEXT instead.
-        var ext = gl.getExtension('EXT_disjoint_timer_query');
-        var startQuery = ext.createQueryEXT();
-        var endQuery = ext.createQueryEXT();
+        let ext = gl.getExtension('EXT_disjoint_timer_query');
+        let startQuery = ext.createQueryEXT();
+        let endQuery = ext.createQueryEXT();
         ext.queryCounterEXT(startQuery, ext.TIMESTAMP_EXT);
 
         // Draw object
@@ -251,30 +261,43 @@ interface EXT_disjoint_timer_query {
         ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        var available = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
-        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+        // (Note that this code might be called multiple times)
+        if (startQuery) {
+          let available = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
+          let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
 
-        if (available &amp;&amp; !disjoint) {
-          // See how much time the rendering of the object took in nanoseconds.
-          var timeStart = ext.getQueryObjectEXT(startQuery, ext.QUERY_RESULT_EXT);
-          var timeEnd = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_EXT);
+          if (available &amp;&amp; !disjoint) {
+            // See how much time the rendering of the object took in nanoseconds.
+            let timeStart = ext.getQueryObjectEXT(startQuery, ext.QUERY_RESULT_EXT);
+            let timeEnd = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_EXT);
 
-          // Do something useful with the time.  Note that care should be
-          // taken to use all significant bits of the result, not just the
-          // least significant 32 bits.
-          adjustObjectLODBasedOnDrawTime(timeEnd - timeStart);
+            // Do something useful with the time.  Note that care should be
+            // taken to use all significant bits of the result, not just the
+            // least significant 32 bits.
+            adjustObjectLODBasedOnDrawTime(timeEnd - timeStart);
+          }
+
+          if (available || disjoint) {
+            // Clean up the query objects.
+            ext.deleteQueryEXT(startQuery);
+            ext.deleteQueryEXT(endQuery);
+
+            // Don't re-enter this polling loop.
+            startQuery = null;
+            endQuery = null;
+          }
         }
 
         //----------------------------------------------------------------------
 
         // Example (3) -- check the number of timestamp bits to determine how to best
         // measure elapsed time.
-        var ext = gl.getExtension('EXT_disjoint_timer_query');
-        var timeElapsedQuery;
-        var startQuery;
-        var endQuery;
+        let ext = gl.getExtension('EXT_disjoint_timer_query');
+        let timeElapsedQuery;
+        let startQuery;
+        let endQuery;
 
-        var useTimestamps = false;
+        let useTimestamps = false;
 
         if (ext.getQueryEXT(ext.TIMESTAMP_EXT, ext.QUERY_COUNTER_BITS_EXT) > 0) {
           useTimestamps = true;
@@ -303,32 +326,49 @@ interface EXT_disjoint_timer_query {
         }
 
         // ...at some point in the future, after returning control to the browser and being called again:
-        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
-        if (disjoint) {
-          // Have to redo all of the measurements.
-        } else {
-          var available;
-          if (useTimestamps) {
-            available = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
+        // (Note that this code might be called multiple times)
+        if (startQuery || endQuery || timeElapsedQuery) {
+          let disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+          let available;
+          if (disjoint) {
+            // Have to redo all of the measurements.
           } else {
-            available = ext.getQueryObjectEXT(timeElapsedQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
-          }
-
-          if (available) {
-            var timeElapsed;
             if (useTimestamps) {
-              // See how much time the rendering of the object took in nanoseconds.
-              var timeStart = ext.getQueryObjectEXT(startQuery, ext.QUERY_RESULT_EXT);
-              var timeEnd = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_EXT);
-              timeElapsed = timeEnd - timeStart;
+              available = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
             } else {
-              timeElapsed = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_EXT);
+              available = ext.getQueryObjectEXT(timeElapsedQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
             }
 
-            // Do something useful with the time.  Note that care should be
-            // taken to use all significant bits of the result, not just the
-            // least significant 32 bits.
-            adjustObjectLODBasedOnDrawTime(timeElapsed);
+            if (available) {
+              let timeElapsed;
+              if (useTimestamps) {
+                // See how much time the rendering of the object took in nanoseconds.
+                let timeStart = ext.getQueryObjectEXT(startQuery, ext.QUERY_RESULT_EXT);
+                let timeEnd = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_EXT);
+                timeElapsed = timeEnd - timeStart;
+              } else {
+                timeElapsed = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_EXT);
+              }
+
+              // Do something useful with the time.  Note that care should be
+              // taken to use all significant bits of the result, not just the
+              // least significant 32 bits.
+              adjustObjectLODBasedOnDrawTime(timeElapsed);
+            }
+          }
+
+          if (available || disjoint) {
+            // Clean up the query objects.
+            if (useTimestamps) {
+              ext.deleteQueryEXT(startQuery);
+              ext.deleteQueryEXT(endQuery);
+              // Don't re-enter the polling loop above.
+              startQuery = null;
+              endQuery = null;
+            } else {
+              ext.deleteQueryEXT(timeElapsedQuery);
+              timeElapsedQuery = null;
+            }
           }
         }
     </pre>
@@ -358,6 +398,9 @@ interface EXT_disjoint_timer_query {
     </revision>
     <revision date="2016/09/30">
       <change>Added clarifying note that this document only applies to WebGL 1.0. Minor reformatting and typo fixes.</change>
+    </revision>
+    <revision date="2021/04/01">
+      <change>Clean up query objects via deleteQueryEXT. Modernize examples' JavaScript code.</change>
     </revision>
   </history>
 </extension>
