@@ -11,6 +11,7 @@ copy-texture-image-luma-format.html
 copy-texture-image-webgl-specific.html
 --min-version 2.0.1 generate-mipmap-with-large-base-level.html
 gl-get-tex-parameter.html
+--min-version 2.0.1 immutable-tex-render-feedback.html
 --min-version 2.0.1 integer-cubemap-texture-sampling.html
 --min-version 2.0.1 integer-cubemap-specification-order-bug.html
 mipmap-fbo.html

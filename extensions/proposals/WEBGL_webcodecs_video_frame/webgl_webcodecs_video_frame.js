@@ -329,7 +329,7 @@ function requestWebGLVideoFrameHandler(canvas) {
         // Immediately schedule rendering of the next frame
         setTimeout(renderFrame, 0);
         ext.releaseVideoFrame(videoFrameHandle);
-        frame.destroy();
+        frame.close();
         if (webgl_webcodecs_test_context_ != null && webgl_webcodecs_test_context_.displayed_frame
             == webgl_webcodecs_test_context_.maxFrameTested) {
             webgl_webcodecs_test_context_.finishTest();
