@@ -65,7 +65,7 @@ function runTestExtension() {
   // * <height> is not a multiple of four, and <height> plus <yoffset> is
   //           not equal to TEXTURE_HEIGHT; or
   // * <xoffset> or <yoffset> is not a multiple of four.
-  ctu.testTexSubImageDimensions(gl, validFormats, expectedByteLength, getBlockDimensions,
+  ctu.testTexSubImageDimensions(gl, ext, validFormats, expectedByteLength, getBlockDimensions,
     16, 16, [
       { xoffset: 0, yoffset: 0, width: 4, height: 3,
         expectation: gl.INVALID_OPERATION, message: "height is not a multiple of 4" },
@@ -82,7 +82,7 @@ function runTestExtension() {
   // Test TexImage validation on level dimensions combinations.
   // When level equals 0, width and height must be a multiple of 4.
   // When level is larger than 0, this constraint doesn't apply.
-  ctu.testTexImageLevelDimensions(gl, validFormats, expectedByteLength, getBlockDimensions,
+  ctu.testTexImageLevelDimensions(gl, ext, validFormats, expectedByteLength, getBlockDimensions,
     [
       { level: 0, width: 4, height: 3,
         expectation: gl.INVALID_OPERATION, message: "level is 0, height is not a multiple of 4" },
