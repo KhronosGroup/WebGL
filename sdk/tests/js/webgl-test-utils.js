@@ -1733,6 +1733,10 @@ var glErrorShouldBe = function(gl, glErrors, opt_msg) {
   return glErrorShouldBeImpl(gl, glErrors, true, opt_msg);
 };
 
+const glErrorAssert = function(gl, glErrors, opt_msg) {
+  return glErrorShouldBeImpl(gl, glErrors, false, opt_msg);
+};
+
 /**
  * Tests that the given framebuffer has a specific status
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
@@ -3453,6 +3457,7 @@ var API = {
   getAttribMap: getAttribMap,
   getUniformMap: getUniformMap,
   glEnumToString: glEnumToString,
+  glErrorAssert: glErrorAssert,
   glErrorShouldBe: glErrorShouldBe,
   glTypeToTypedArrayType: glTypeToTypedArrayType,
   hasAttributeCaseInsensitive: hasAttributeCaseInsensitive,
