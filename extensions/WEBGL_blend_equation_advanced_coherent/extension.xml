@@ -55,7 +55,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_blend_equation_advanced_coherent  {
   const GLenum MULTIPLY       = 0x9294;
   const GLenum SCREEN         = 0x9295;

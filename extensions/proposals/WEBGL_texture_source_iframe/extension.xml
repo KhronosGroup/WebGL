@@ -25,7 +25,7 @@
     limitaion may be lifted in the future.</p>
   </overview>
   <idl xml:space="preserve"><![CDATA[
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_texture_source_iframe {
   Promise<void> bindTextureSource(GLenum target, HTMLIFrameElement iframe);
   Promise<void> requestFrame(GLenum target);
