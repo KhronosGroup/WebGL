@@ -27,7 +27,7 @@
   </overview>
 
   <idl xml:space="preserve">
-    [NoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface WEBGL_texture_storage_multisample {
       const GLenum TEXTURE_2D_MULTISAMPLE = 0x9100;
 

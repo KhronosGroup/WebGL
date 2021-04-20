@@ -64,7 +64,7 @@
 
   <idl xml:space="preserve">
 
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_multi_draw {
   undefined multiDrawArraysWEBGL(
       GLenum mode,
