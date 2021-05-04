@@ -181,8 +181,11 @@ var methods = [
 ];
 
 // Properties to be ignored because they were added in versions of the
-// spec that are backward-compatible with this version
+// spec that are backward-compatible with this version or are added in
+// other specs.
 var ignoredMethods = [
+// Added by WebXR.
+"makeXRCompatible",
 ];
 
 function assertFunction(v, f) {
