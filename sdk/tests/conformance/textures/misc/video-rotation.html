@@ -105,32 +105,36 @@ found in the LICENSE.txt file.
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-            // These files were created by converting exif-orientation-test-1-normal.jpg to mp4
+            // These files were created by converting exif-orientation-test.psd to mp4
             // files, rotating them using the transpose filter, and adding rotate metadata, all
             // using the ffmpeg command-line tool.
             //
             // From sdk/tests/resources/ directory:
             //
             // 0:
-            // ffmpeg -noautorotate -i exif-orientation-test-1-normal.jpg -pix_fmt yuv420p -y temp.mp4 &&
+            // ffmpeg -noautorotate -i exif-orientation-originals\exif-orientation-test.psd -vf scale=128x96 -pix_fmt yuv420p -y temp.mp4
             // ffmpeg -i temp.mp4 -c copy -metadata:s:v:0 rotate=0 video-rotation-0.mp4
-            // ffmpeg -noautorotate -i exif-orientation-test-1-normal.jpg -pix_fmt yuv420p -crf 0 -vcodec libvpx-vp9 -y temp.mp4 &&
+            // ffmpeg -noautorotate -i exif-orientation-originals\exif-orientation-test.psd -vf scale=128x96 -pix_fmt yuv420p -crf 0 -vcodec libvpx-vp9 -y temp.mp4
             // ffmpeg -i temp.mp4 -c copy -metadata:s:v:0 rotate=0 video-rotation-0.vp9.mp4
+            //
             // 90:
-            // ffmpeg -noautorotate -i exif-orientation-test-1-normal.jpg -vf "transpose=2" -pix_fmt yuv420p -y temp.mp4 &&
+            // ffmpeg -noautorotate -i exif-orientation-originals\exif-orientation-test.psd -vf scale=128x96,transpose=2 -pix_fmt yuv420p -y temp.mp4
             // ffmpeg -i temp.mp4 -c copy -metadata:s:v:0 rotate=270 video-rotation-90.mp4
-            // ffmpeg -noautorotate -i exif-orientation-test-1-normal.jpg -vf "transpose=2" -pix_fmt yuv420p -crf 0 -vcodec libvpx-vp9 -y temp.mp4 &&
+            // ffmpeg -noautorotate -i exif-orientation-originals\exif-orientation-test.psd -vf scale=128x96,transpose=2 -pix_fmt yuv420p -crf 0 -vcodec libvpx-vp9 -y temp.mp4
             // ffmpeg -i temp.mp4 -c copy -metadata:s:v:0 rotate=270 video-rotation-90.vp9.mp4
+            //
             // 180:
-            // ffmpeg -noautorotate -i exif-orientation-test-1-normal.jpg -vf "transpose=2,transpose=2" -pix_fmt yuv420p -y temp.mp4 &&
+            // ffmpeg -noautorotate -i exif-orientation-originals\exif-orientation-test.psd -vf scale=128x96,transpose=2,transpose=2 -pix_fmt yuv420p -y temp.mp4
             // ffmpeg -i temp.mp4 -c copy -metadata:s:v:0 rotate=180 video-rotation-180.mp4
-            // ffmpeg -noautorotate -i exif-orientation-test-1-normal.jpg -vf "transpose=2,transpose=2" -pix_fmt yuv420p -crf 0 -vcodec libvpx-vp9 -y temp.mp4 &&
+            // ffmpeg -noautorotate -i exif-orientation-originals\exif-orientation-test.psd -vf scale=128x96,transpose=2,transpose=2 -pix_fmt yuv420p -crf 0 -vcodec libvpx-vp9 -y temp.mp4
             // ffmpeg -i temp.mp4 -c copy -metadata:s:v:0 rotate=180 video-rotation-180.vp9.mp4
+            //
             // 270:
-            // ffmpeg -noautorotate -i exif-orientation-test-1-normal.jpg -vf "transpose=1" -pix_fmt yuv420p -y temp.mp4 &&
+            // ffmpeg -noautorotate -i exif-orientation-originals\exif-orientation-test.psd -vf scale=128x96,transpose=1 -pix_fmt yuv420p -y temp.mp4
             // ffmpeg -i temp.mp4 -c copy -metadata:s:v:0 rotate=90 video-rotation-270.mp4
-            // ffmpeg -noautorotate -i exif-orientation-test-1-normal.jpg -vf "transpose=1" -pix_fmt yuv420p -crf 0 -vcodec libvpx-vp9 -y temp.mp4 &&
+            // ffmpeg -noautorotate -i exif-orientation-originals\exif-orientation-test.psd -vf scale=128x96,transpose=1 -pix_fmt yuv420p -crf 0 -vcodec libvpx-vp9 -y temp.mp4
             // ffmpeg -i temp.mp4 -c copy -metadata:s:v:0 rotate=90 video-rotation-270.vp9.mp4
+
             const filenames = [
                 "video-rotation-0",
                 "video-rotation-90",
