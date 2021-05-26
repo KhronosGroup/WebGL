@@ -25,8 +25,7 @@
       This extension exposes the <code>MultiDrawArraysInstancedBaseInstanceANGLE</code> and
       <code>MultiDrawElementsInstancedBaseVertexBaseInstanceANGLE</code> entrypoints as
       <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and
-      <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>. In addition the vertex
-      shader builtins <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> are added.
+      <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>.
     </addendum>
     <addendum>
       The implementation must validate the arrays and indices referenced by
@@ -41,16 +40,6 @@
       <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#RANGE_CHECKING">
         Range Checking
       </a> of the WebGL specification.
-    </addendum>
-    <addendum>
-      Although the extension is named WEBGL_multi_draw_instanced_base_vertex_base_instance, the
-      extension must be enabled with the
-      <code>#extension GL_ANGLE_base_vertex_base_instance</code> directive, as shown in the sample
-      code, to use the extension in a shader.
-
-      Likewise the shading language preprocessor
-      <code>#define GL_ANGLE_base_vertex_base_instance</code> will be defined to 1 if the
-      extension is supported.
     </addendum>
 
     <div class="nonnormative">
@@ -180,9 +169,8 @@ var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance"
     </pre>
     <pre>
 #version 300 es
-#extension GL_ANGLE_base_vertex_base_instance : require
 void main() {
-    gl_Position = vec4(gl_BaseVertex, gl_InstanceID + gl_BaseInstance, 0, 1);
+    gl_Position = vec4(gl_VertexID, gl_InstanceID, 0, 1);
 }
     </pre>
   </samplecode>
@@ -211,6 +199,9 @@ void main() {
     </revision>
     <revision date="2021/05/18">
       <change>Add [AllowShared] to all typed array arguments for compatibility with multi-threaded WebAssembly.</change>
+    </revision>
+    <revision date="2021/05/26">
+      <change>Removed GLSL extension and builtins.</change>
     </revision>
   </history>
 </draft>
