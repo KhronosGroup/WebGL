@@ -201,7 +201,7 @@ void main() {
       <change>Add [AllowShared] to all typed array arguments for compatibility with multi-threaded WebAssembly.</change>
     </revision>
     <revision date="2021/05/26">
-      <change>Remove GLSL aspects.</change>
+      <change>Removed GLSL extension and builtins.</change>
     </revision>
   </history>
 </draft>
