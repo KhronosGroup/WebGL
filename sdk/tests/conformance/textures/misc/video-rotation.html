@@ -29,7 +29,9 @@ found in the LICENSE.txt file.
         let gl = wtu.create3DContext(canvas);
         let program = tiu.setupTexturedQuad(gl, gl.RGBA);
         const resourcePath = "../../../resources/";
-        const tolerance = 10;
+        const mp4Tolerance = 10;
+        // Significantly higher tolerance needed for VP9 tests. http://crbug.com/1219015 .
+        const vp9Tolerance = 45;
 
         const expectedColors = {
             top: { location: [0.5, 0.25], color: [255, 0, 0] },
@@ -43,7 +45,7 @@ found in the LICENSE.txt file.
             bufferedLogToConsole(str);
         }
 
-        function checkPixels() {
+        function checkPixels(tolerance) {
             for (let place in expectedColors) {
                 let color = expectedColors[place];
                 let loc = color.location;
@@ -64,7 +66,7 @@ found in the LICENSE.txt file.
             });
         }
 
-        async function testVideoElement(filename) {
+        async function testVideoElement(filename, isVP9) {
             const video = await loadVideoElement(filename);
 
             output("----------------------------------------------------------------");
@@ -73,13 +75,14 @@ found in the LICENSE.txt file.
             output("  Testing texImage2D");
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
             wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-            checkPixels();
+            const localTolerance = isVP9 ? vp9Tolerance : mp4Tolerance;
+            checkPixels(localTolerance);
 
             output("  Testing texSubImage2D");
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, video.videoWidth, video.videoHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, video);
             wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-            checkPixels();
+            checkPixels(localTolerance);
         }
 
         async function run() {
@@ -144,12 +147,12 @@ found in the LICENSE.txt file.
 
             if (supports_h264) {
                 for (let fn of filenames)
-                    await testVideoElement(fn + ".mp4");
+                    await testVideoElement(fn + ".mp4", false);
             }
 
             if (supports_vp9) {
                 for (let fn of filenames)
-                    await testVideoElement(fn + ".vp9.mp4");
+                    await testVideoElement(fn + ".vp9.mp4", true);
             }
 
             finishTest();
