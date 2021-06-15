@@ -1721,6 +1721,7 @@ interface mixin <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</d
     [Exposed=Worker] readonly attribute OffscreenCanvas canvas;
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
+    attribute PredefinedColorSpace colorSpace = "srgb";
 
     [WebGLHandlesContextLoss] WebGLContextAttributes? getContextAttributes();
     [WebGLHandlesContextLoss] boolean isContextLost();
@@ -1979,6 +1980,20 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             The actual height of the drawing buffer. May be different from the
             <code>height</code> attribute of the <code>HTMLCanvasElement</code> if
             the implementation is unable to satisfy the requested width or height.
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLRenderingContext-colorSpace">
+                    colorSpace
+                </a>
+            </code>
+            of type <code><a href="https://html.spec.whatwg.org/multipage/canvas.html#predefinedcolorspace">PredefinedColorSpace</a></code>
+            <a href="#refsPREDEFINEDCOLORSPACE">(specification)</a>
+        <dd>
+            The color space in which the drawing buffer's contents are assumed to
+            have been produced. Changing this attribute affects the on-screen display
+            of the rendering context, but does not change the drawing buffer's
+            contents. This attribute also affects how <code>TexImageSource</code>
+            sources are uploaded to textures.
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -2653,10 +2668,23 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             The width and height of the texture are set as specified in section
             <a href="#TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a>.<br><br>
 
-            The source image data is conceptually first converted to the data type and format
-            specified by the <em>format</em> and <em>type</em> arguments, and then transferred to
-            the WebGL implementation. Format conversion is performed according to the following table.
-            If a packed pixel format is specified which would imply loss of bits of precision from the
+            First, the source image data is conceptually converted to the color space
+            specified by the <a href="#DOM-WebGLRenderingContext-colorSpace">colorSpace</a>
+            attribute, except in the following situations:
+
+            <ul>
+            <li> the source image data is an <code>HTMLImageElement</code>, and
+                 the <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> pixel storage
+                 parameter is set to <code>NONE</code>. </li>
+            <li> the source image data is an <code>ImageBitmap</code>, in which case
+                 all color space conversions were assumed to have occurred
+                 during <code>ImageBitmap</code> construction. </li>
+            </ul>
+
+            Next, the source image data is converted to the data type and format specified by
+            the <em>format</em> and <em>type</em> arguments, and then transferred to the WebGL
+            implementation. Format conversion is performed according to the following table.  If a
+            packed pixel format is specified which would imply loss of bits of precision from the
             image data, this loss of precision must occur. <br><br>
 
             <table class="foo">
@@ -2799,12 +2827,8 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             <a href="#TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a>.<br><br>
 
             See <a href="#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of
-            the <em>format</em> and <em>type</em> arguments, and notes on
-            the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. <br><br>
-
-            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-            pixel storage parameters that affect the behavior of this function when it is called
-            with any argument type other than <code>ImageBitmap</code>. <br><br>
+            the <em>format</em> and <em>type</em> arguments, handling of WebGL-specific pixel
+            storage parameters, and potential color space transformations of the input. <br><br>
 
             The first pixel transferred from the source to the WebGL implementation corresponds
             to the upper left corner of the source. This behavior is modified by the
@@ -4554,6 +4578,11 @@ extensions.
         <dt id="refsWEBCODECS">[WEBCODECS]</dt>
         <dd>(Non-normative) <cite><a href="https://w3c.github.io/webcodecs/">WebCodecs API</a></cite>,
             C. Cunningham, P. Adenot, B. Aboba. W3C.
+        </dd>
+        <dt id="refsPREDEFINEDCOLORSPACE">[PREDEFINEDCOLORSPACE]</dt>
+        <dd><cite><a href="https://html.spec.whatwg.org/multipage/canvas.html#predefinedcolorspace">
+            HTML Living Standard - The PredefinedColorSpace enum</a></cite>,
+            WHATWG.
         </dd>
     </dl>
 
