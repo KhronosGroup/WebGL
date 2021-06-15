@@ -1993,7 +1993,10 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             have been produced. Changing this attribute affects the on-screen display
             of the rendering context, but does not change the drawing buffer's
             contents. This attribute also affects how <code>TexImageSource</code>
-            sources are uploaded to textures.
+            sources are uploaded to textures in this context, and how the contents of
+            this context's drawing buffer are interpreted when they are drawn to a 2D
+            canvas context, or uploaded to textures in another WebGL
+            or <a href="#refsWEBGPU">WebGPU</a> rendering context.
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -4583,6 +4586,11 @@ extensions.
         <dd><cite><a href="https://html.spec.whatwg.org/multipage/canvas.html#predefinedcolorspace">
             HTML Living Standard - The PredefinedColorSpace enum</a></cite>,
             WHATWG.
+        </dd>
+        <dt id="refsWEBGPU">[WEBGPU]</dt>
+        <dd><cite><a href="https://gpuweb.github.io/gpuweb/">
+            WebGPU Editor's Draft</a></cite>,
+            WebGPU Community Group.
         </dd>
     </dl>
 
