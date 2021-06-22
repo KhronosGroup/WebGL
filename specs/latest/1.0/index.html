@@ -743,7 +743,7 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
     <!-- The capitalization rules here match those of the crossOrigin
     attribute, which was added to HTMLMediaElement on behalf of
     WebGL. -->
-    <pre class="idl">dictionary <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
+    <pre class="idl">dictionary <dfn data-dfn-type="dictionary" id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
     boolean alpha = true;
     boolean depth = true;
     boolean stencil = false;
@@ -945,7 +945,7 @@ var context = canvas.getContext('webgl',
         an <b><a name="webgl-object-invalidated-flag">invalidated</a></b> flag, which is initially unset.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLObject">WebGLObject</dfn> {
+interface <dfn data-dfn-type="interface" id="WebGLObject">WebGLObject</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -963,7 +963,7 @@ interface <dfn id="WebGLObject">WebGLObject</dfn> {
         .
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLBuffer">WebGLBuffer</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLBuffer">WebGLBuffer</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -981,7 +981,7 @@ interface <dfn id="WebGLBuffer">WebGLBuffer</dfn> : WebGLObject {
         .
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLFramebuffer">WebGLFramebuffer</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLFramebuffer">WebGLFramebuffer</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -999,7 +999,7 @@ interface <dfn id="WebGLFramebuffer">WebGLFramebuffer</dfn> : WebGLObject {
         .
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLProgram">WebGLProgram</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLProgram">WebGLProgram</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1017,7 +1017,7 @@ interface <dfn id="WebGLProgram">WebGLProgram</dfn> : WebGLObject {
         .
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1035,7 +1035,7 @@ interface <dfn id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> : WebGLObject {
         .
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLShader">WebGLShader</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLShader">WebGLShader</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1053,7 +1053,7 @@ interface <dfn id="WebGLShader">WebGLShader</dfn> : WebGLObject {
         .
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLTexture">WebGLTexture</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLTexture">WebGLTexture</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1065,7 +1065,7 @@ interface <dfn id="WebGLTexture">WebGLTexture</dfn> : WebGLObject {
         in a shader program.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLUniformLocation">WebGLUniformLocation</dfn> {
+interface <dfn data-dfn-type="interface" id="WebGLUniformLocation">WebGLUniformLocation</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1077,7 +1077,7 @@ interface <dfn id="WebGLUniformLocation">WebGLUniformLocation</dfn> {
         from the getActiveAttrib and getActiveUniform calls.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLActiveInfo">WebGLActiveInfo</dfn> {
+interface <dfn data-dfn-type="interface" id="WebGLActiveInfo">WebGLActiveInfo</dfn> {
     readonly attribute GLint size;
     readonly attribute GLenum type;
     readonly attribute DOMString name;
@@ -1128,7 +1128,7 @@ interface <dfn id="WebGLActiveInfo">WebGLActiveInfo</dfn> {
         from the getShaderPrecisionFormat call.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLShaderPrecisionFormat">WebGLShaderPrecisionFormat</dfn> {
+interface <dfn data-dfn-type="interface" id="WebGLShaderPrecisionFormat">WebGLShaderPrecisionFormat</dfn> {
     readonly attribute GLint rangeMin;
     readonly attribute GLint rangeMax;
     readonly attribute GLint precision;
@@ -1296,7 +1296,7 @@ typedef (ImageBitmap or
 typedef ([AllowShared] Float32Array or sequence&lt;GLfloat&gt;) Float32List;
 typedef ([AllowShared] Int32Array or sequence&lt;GLint&gt;) Int32List;
 
-interface mixin <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
+interface mixin <dfn data-dfn-type="interface" id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
 {
 
     /* ClearBufferMask */
@@ -1930,7 +1930,7 @@ interface mixin <dfn id="WebGLRenderingContextOverloads">WebGLRenderingContextOv
 };
 
 [Exposed=(Window,Worker)]
-interface <dfn id="WebGLRenderingContext">WebGLRenderingContext</dfn>
+interface <dfn data-dfn-type="interface" id="WebGLRenderingContext">WebGLRenderingContext</dfn>
 {
 };
 WebGLRenderingContext includes WebGLRenderingContextBase;
@@ -3463,7 +3463,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
     </p>
     <pre class="idl">
 [Exposed=(Window,Worker)]
-interface <dfn id="WebGLContextEvent">WebGLContextEvent</dfn> : <a href="http://www.w3.org/TR/domcore/#event">Event</a> {
+interface <dfn data-dfn-type="interface" id="WebGLContextEvent">WebGLContextEvent</dfn> : <a href="http://www.w3.org/TR/domcore/#event">Event</a> {
     constructor(DOMString type, optional WebGLContextEventInit eventInit = {});
     readonly attribute DOMString statusMessage;
 };
