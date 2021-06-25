@@ -28,6 +28,7 @@ loops-with-side-effects.html
 misplaced-version-directive.html
 --min-version 2.0.1 no-attribute-vertex-shader.html
 --min-version 2.0.1 precision-side-effects-bug.html
+--min-version 2.0.1 reciprocal-sqrt-of-sum-of-squares-crash.html
 sampler-no-precision.html
 --min-version 2.0.1 sampler-array-indexing.html
 sequence-operator-returns-non-constant.html
