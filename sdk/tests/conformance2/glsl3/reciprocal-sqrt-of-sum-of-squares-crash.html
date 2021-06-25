@@ -32,6 +32,8 @@ out vec4 fragmentColor;
 void main()
 {
     vec2 p = gl_FragCoord.xy;
+    // This expression meets the requirement of being the reciprocal
+    // square root of a sum of squares.
     float d = 1.0 / length(p);
 #if CRASH
     if (p.x > 0.0)
