@@ -300,7 +300,7 @@ typedef unsigned long long GLuint64;
         </span>.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLQuery">WebGLQuery</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLQuery">WebGLQuery</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -326,7 +326,7 @@ interface <dfn id="WebGLQuery">WebGLQuery</dfn> : WebGLObject {
         </span>.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLSampler">WebGLSampler</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLSampler">WebGLSampler</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -364,7 +364,7 @@ interface <dfn id="WebGLSampler">WebGLSampler</dfn> : WebGLObject {
     <p>
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLSync">WebGLSync</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLSync">WebGLSync</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -390,7 +390,7 @@ interface <dfn id="WebGLSync">WebGLSync</dfn> : WebGLObject {
         </span>.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLTransformFeedback">WebGLTransformFeedback</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLTransformFeedback">WebGLTransformFeedback</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -416,7 +416,7 @@ interface <dfn id="WebGLTransformFeedback">WebGLTransformFeedback</dfn> : WebGLO
         </span>.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn id="WebGLVertexArrayObject">WebGLVertexArrayObject</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLVertexArrayObject">WebGLVertexArrayObject</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -431,7 +431,7 @@ interface <dfn id="WebGLVertexArrayObject">WebGLVertexArrayObject</dfn> : WebGLO
     <pre class="idl">
 typedef ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) Uint32List;
 
-interface mixin <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
+interface mixin <dfn data-dfn-type="interface" id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
 {
   const GLenum READ_BUFFER                                   = 0x0C02;
   const GLenum UNPACK_ROW_LENGTH                             = 0x0CF2;
@@ -882,7 +882,7 @@ interface mixin <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase<
   undefined bindVertexArray(WebGLVertexArrayObject? array);
 };
 
-interface mixin <dfn id="WebGL2RenderingContextOverloads">WebGL2RenderingContextOverloads</dfn>
+interface mixin <dfn data-dfn-type="interface" id="WebGL2RenderingContextOverloads">WebGL2RenderingContextOverloads</dfn>
 {
   // WebGL1:
   undefined bufferData(GLenum target, GLsizeiptr size, GLenum usage);
@@ -977,7 +977,7 @@ interface mixin <dfn id="WebGL2RenderingContextOverloads">WebGL2RenderingContext
 };
 
 [Exposed=(Window,Worker)]
-interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn>
+interface <dfn data-dfn-type="interface" id="WebGL2RenderingContext">WebGL2RenderingContext</dfn>
 {
 };
 WebGL2RenderingContext includes WebGLRenderingContextBase;
