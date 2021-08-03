@@ -301,9 +301,24 @@ function runTestExtension() {
         debug("Testing NPOT textures");
         ctu.testTexImageLevelDimensions(gl, ext, validFormats, expectedByteLength, getBlockDimensions,
           [
+            { level: 0, width: 0, height: 0, expectation: gl.NO_ERROR, message: "0: 0x0 is valid" },
+            { level: 0, width: 1, height: 1, expectation: gl.INVALID_OPERATION, message: "0: 1x1 is invalid" },
+            { level: 0, width: 2, height: 2, expectation: gl.INVALID_OPERATION, message: "0: 2x2 is invalid" },
+            { level: 0, width: 3, height: 3, expectation: gl.INVALID_OPERATION, message: "0: 3x3 is invalid" },
+            { level: 0, width: 10, height: 10, expectation: gl.INVALID_OPERATION, message: "0: 10x10 is invalid" },
+            { level: 0, width: 11, height: 11, expectation: gl.INVALID_OPERATION, message: "0: 11x11 is invalid" },
+            { level: 0, width: 11, height: 12, expectation: gl.INVALID_OPERATION, message: "0: 11x12 is invalid" },
+            { level: 0, width: 12, height: 11, expectation: gl.INVALID_OPERATION, message: "0: 12x11 is invalid" },
             { level: 0, width: 12, height: 12, expectation: gl.NO_ERROR, message: "0: 12x12 is valid" },
+            { level: 1, width:  0, height:  0, expectation: gl.NO_ERROR, message: "1: 0x0, is valid" },
+            { level: 1, width:  3, height:  3, expectation: gl.INVALID_OPERATION, message: "1: 3x3, is invalid" },
+            { level: 1, width:  5, height:  5, expectation: gl.INVALID_OPERATION, message: "1: 5x5, is invalid" },
+            { level: 1, width:  5, height:  6, expectation: gl.INVALID_OPERATION, message: "1: 5x6, is invalid" },
+            { level: 1, width:  6, height:  5, expectation: gl.INVALID_OPERATION, message: "1: 6x5, is invalid" },
             { level: 1, width:  6, height:  6, expectation: gl.NO_ERROR, message: "1: 6x6, is valid" },
+            { level: 2, width:  0, height:  0, expectation: gl.NO_ERROR, message: "2: 0x0, is valid" },
             { level: 2, width:  3, height:  3, expectation: gl.NO_ERROR, message: "2: 3x3, is valid" },
+            { level: 3, width:  1, height:  3, expectation: gl.NO_ERROR, message: "3: 1x3, is valid" },
             { level: 3, width:  1, height:  1, expectation: gl.NO_ERROR, message: "3: 1x1, is valid" },
         ]);
 
