@@ -92,10 +92,16 @@ function runTestExtension() {
         expectation: gl.INVALID_OPERATION, message: "level is 0, width is not a multiple of 4" },
       { level: 0, width: 4, height: 4,
         expectation: gl.NO_ERROR, message: "is valid" },
+      { level: 1, width: 1, height: 1,
+        expectation: gl.INVALID_OPERATION, message: "implied base mip 2x2 is invalid" },
+      { level: 1, width: 1, height: 2,
+        expectation: gl.INVALID_OPERATION, message: "implied base mip 2x4 is invalid" },
+      { level: 1, width: 2, height: 1,
+        expectation: gl.INVALID_OPERATION, message: "implied base mip 4x2 is invalid" },
       { level: 1, width: 2, height: 2,
-        expectation: gl.NO_ERROR, message: "level > 0, is valid" },
-      { level: 2, width: 1, height: 1,
-        expectation: gl.NO_ERROR, message: "level > 0, is valid" },
+        expectation: gl.NO_ERROR, message: "implied base mip 4x4 is valid" },
+      { level: 2, width: 1, height: 3,
+        expectation: gl.NO_ERROR, message: "implied base mip 4x12 is valid" },
   ]);
 
   // Test that RGTC enums are not accepted by texImage2D
