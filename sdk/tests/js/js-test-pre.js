@@ -89,7 +89,17 @@ function nonKhronosFrameworkNotifyDone() {
   }
 }
 
+const RESULTS = {
+  pass: 0,
+  fail: 0,
+};
+
 function reportTestResultsToHarness(success, msg) {
+  if (success) {
+    RESULTS.pass += 1;
+  } else {
+    RESULTS.fail += 1;
+  }
   if (window.parent.webglTestHarness) {
     window.parent.webglTestHarness.reportResults(window.location.pathname, success, msg);
   }
