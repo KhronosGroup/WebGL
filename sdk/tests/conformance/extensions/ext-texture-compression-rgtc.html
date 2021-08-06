@@ -82,6 +82,16 @@ function runTestExtension() {
   // Test TexImage validation on level dimensions combinations.
   // When level equals 0, width and height must be a multiple of 4.
   // When level is larger than 0, this constraint doesn't apply.
+
+  let npotExpectation, npotMessage;
+  if (contextVersion >= 2) {
+    npotExpectation = gl.NO_ERROR;
+    npotMessage = "valid";
+  } else {
+    npotExpectation = gl.INVALID_VALUE;
+    npotMessage = "invalid";
+  }
+
   ctu.testTexImageLevelDimensions(gl, ext, validFormats, expectedByteLength, getBlockDimensions,
     [
       { level: 0, width: 4, height: 3,
@@ -101,7 +111,7 @@ function runTestExtension() {
       { level: 1, width: 2, height: 2,
         expectation: gl.NO_ERROR, message: "implied base mip 4x4 is valid" },
       { level: 2, width: 1, height: 3,
-        expectation: gl.NO_ERROR, message: "implied base mip 4x12 is valid" },
+        expectation: npotExpectation, message: "implied base mip 4x12 is " + npotMessage },
   ]);
 
   // Test that RGTC enums are not accepted by texImage2D

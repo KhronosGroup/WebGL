@@ -683,14 +683,16 @@ function testDXTTexture(test, useTexStorage) {
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
 
         if (width == 4) {
+            // The width/height of the implied base level must be a multiple of the block size.
             gl.compressedTexImage2D(gl.TEXTURE_2D, 1, format, 1, height, 0, data);
-            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
+            wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions for level > 0");
             gl.compressedTexImage2D(gl.TEXTURE_2D, 1, format, 2, height, 0, data);
             wtu.glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
         }
         if (height == 4) {
+            // The width/height of the implied base level must be a multiple of the block size.
             gl.compressedTexImage2D(gl.TEXTURE_2D, 1, format, width, 1, 0, data);
-            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
+            wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions for level > 0");
             gl.compressedTexImage2D(gl.TEXTURE_2D, 1, format, width, 2, 0, data);
             wtu.glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
         }
