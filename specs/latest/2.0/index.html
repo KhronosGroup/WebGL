@@ -4201,13 +4201,13 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         Implementations must support at least one of the following:
         <ul>
             <li><a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_etc/">WEBGL_compressed_texture_etc</a>
-            <li><a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc/">WEBGL_compressed_texture_s3tc</a>
+            <li><a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc/">WEBGL_compressed_texture_s3tc</a> and <a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc_srgb/">WEBGL_compressed_texture_s3tc_srgb</a>
         <ul>
     </p>
     <div class="note rationale">
         <p>
             To best support our ecosystem, we require implementations to support either S3TC formats (universal on desktop) or ETC2/EAC formats (universal on mobile).
-            This allows for authors to supply only two formats for resources and expect all implementations and devices to support running their content.
+            This guarantees to authors that they can always use compressed textures (including srgb variants) on all devices while maintaining support for as few as two different formats.
         </p>
     </div>
 

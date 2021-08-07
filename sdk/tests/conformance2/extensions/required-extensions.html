@@ -31,7 +31,15 @@ function hasExt(name) {
     return supportedExts.indexOf(name) >= 0;
 }
 
-shouldBeTrue("hasExt('WEBGL_compressed_texture_s3tc') || hasExt('WEBGL_compressed_texture_etc')");
+const has_s3tc = hasExt('WEBGL_compressed_texture_s3tc');
+const has_s3tc_srgb = hasExt('WEBGL_compressed_texture_s3tc_srgb');
+const has_etc = hasExt('WEBGL_compressed_texture_etc');
+
+debug(`has_s3tc: ${has_s3tc}`);
+debug(`has_s3tc_srgb: ${has_s3tc_srgb}`);
+debug(`has_etc: ${has_etc}`);
+
+shouldBeTrue("((has_s3tc && has_s3tc_srgb) || has_etc)");
 
 debug("")
 var successfullyParsed = true;
