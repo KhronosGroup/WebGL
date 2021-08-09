@@ -4196,17 +4196,25 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
       point it's better to spec what we implemented.
     </div>
 
-    <h3>Required implementation choice of compressed texture formats</h3>
+    <h3>Required compressed texture formats</h3>
     <p>
-        Implementations must support at least one of the following:
+        Implementations must support at least one suite of compressed texture formats.
+    </p>
+    <p>
+        <br>Implementations must support:
         <ul>
-            <li><a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_etc/">WEBGL_compressed_texture_etc</a>
-            <li><a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc/">WEBGL_compressed_texture_s3tc</a> and <a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc_srgb/">WEBGL_compressed_texture_s3tc_srgb</a>
-        <ul>
+          <li><a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_etc/">WEBGL_compressed_texture_etc</a> AND/OR
+          <li>(
+            <ul>
+              <li><a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc/">WEBGL_compressed_texture_s3tc</a> AND
+              <li><a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc_srgb/">WEBGL_compressed_texture_s3tc_srgb</a> AND
+              <li><a href="https://www.khronos.org/registry/webgl/extensions/EXT_texture_compression_rgtc/">EXT_texture_compression_rgtc</a>
+            </ul>)
+        </ul>
     </p>
     <div class="note rationale">
         <p>
-            To best support our ecosystem, we require implementations to support either S3TC formats (universal on desktop) or ETC2/EAC formats (universal on mobile).
+            To best support our ecosystem, we require implementations to support either S3TC and RGTC formats (universal on desktop) or ETC2/EAC formats (universal on mobile).
             This guarantees to authors that they can always use compressed textures (including srgb variants) on all devices while maintaining support for as few as two different formats.
         </p>
     </div>
