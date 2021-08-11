@@ -112,6 +112,11 @@ function reportSkippedTestResultsToHarness(success, msg) {
 }
 
 function notifyFinishedToHarness() {
+  if (window._didNotifyFinishedToHarness) {
+    testFailed("Duplicate notifyFinishedToHarness()");
+  }
+  window._didNotifyFinishedToHarness = true;
+
   if (window.parent.webglTestHarness) {
     window.parent.webglTestHarness.notifyFinished(window.location.pathname);
   }
