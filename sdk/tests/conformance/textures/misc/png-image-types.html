@@ -99,7 +99,6 @@ const gl = wtu.create3DContext();
 wtu.setupTexturedQuad(gl);
 gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
 
-let completed = 0;
 (async () => {
     for (const [type, testCase] of Object.entries(testData)) {
         if (testCase.src.length != 2) throw new Error('testCase.src.length != 2');
