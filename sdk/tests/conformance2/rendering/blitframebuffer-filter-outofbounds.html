@@ -97,7 +97,7 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
             debug("Both the read framebuffer and draw framebuffer bounds are [0, 0, 8, 8]");
             debug(`Blitting from src region [${args.slice(0, 4)}] to dst region [${args.slice(4, 8)}]`);
             debug(`Expects changed dst region of [${changedDstRect}]`);
-            debug(`Explaination: ${test.desc}`);
+            debug(`Explanation: ${test.desc}`);
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
             gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
             gl.bindTexture(gl.TEXTURE_2D, tex_draw);
