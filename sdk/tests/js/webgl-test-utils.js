@@ -2927,14 +2927,6 @@ var requestAnimFrame = function(callback) {
   _requestAnimFrame.call(window, callback);
 };
 
-/**
- * Provides video.requestVideoFrameCallback in a cross browser way.
- * Returns a property, or undefined if unsuported.
- */
-var getRequestVidFrameCallback = function() {
-  return HTMLVideoElement.prototype["requestVideoFrameCallback"];
-};
-
 var _cancelAnimFrame;
 
 /**
@@ -3136,22 +3128,30 @@ var runSteps = function(steps) {
  * @param {!function(!HTMLVideoElement): void} callback Function to call when
  *        video is ready.
  */
-function startPlayingAndWaitForVideo(video, callback) {
-  (async () => {
-    video.load(); // reset it
-    video.loop = true;
-    video.muted = true;
-    // See whether setting the preload flag de-flakes video-related tests.
-    video.preload = 'auto';
-    try {
-      await video.play();
-    } catch (e) {
-      testFailed('video.play failed: ' + e);
-      return;
-    }
-    callback(video);
-  })();
-};
+async function startPlayingAndWaitForVideo(video, callback) {
+  if (video.error) {
+    testFailed('Video failed to load: ' + video.error);
+    return;
+  }
+
+  video.loop = true;
+  video.muted = true;
+  // See whether setting the preload flag de-flakes video-related tests.
+  video.preload = 'auto';
+
+  try {
+    await video.play();
+  } catch (e) {
+    testFailed('video.play failed: ' + e);
+    return;
+  }
+
+  if (video.requestVideoFrameCallback) {
+    await new Promise(go => video.requestVideoFrameCallback(go));
+  }
+
+  callback(video);
+}
 
 var getHost = function(url) {
   url = url.replace("\\", "/");
