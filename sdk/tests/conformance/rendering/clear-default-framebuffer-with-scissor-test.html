@@ -21,7 +21,7 @@ found in the LICENSE.txt file.
 
 <script>
 "use strict";
-// This test exposes an Intel D3D driver issue.
+// This test exposes an issue in older Intel D3D drivers.
 var wtu = WebGLTestUtils;
 
 function test_clear_with_scissor_on_canvas()
@@ -34,6 +34,7 @@ function test_clear_with_scissor_on_canvas()
   gl.clearColor(0, 1, 0, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
+  // The issue is found in the Chromium compositor so we need another canvas element for reproduction.
   var canvas2D = document.getElementById("canvas-2d");
   var context2D = canvas2D.getContext('2d');
   context2D.drawImage(canvasWebGL, 0, 0);
