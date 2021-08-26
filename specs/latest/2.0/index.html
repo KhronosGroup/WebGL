@@ -4214,7 +4214,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
     </p>
     <div class="note rationale">
         <p>
-            To best support our ecosystem, we require implementations to support either S3TC and RGTC formats (universal on desktop) or ETC2/EAC formats (universal on mobile).
+            To best support our ecosystem, we require implementations to support either ETC2/EAC formats (universal on GLES3 or similar drivers) or S3TC formats (universal all other drivers).
             This guarantees to authors that they can always use compressed textures (including srgb variants) on all devices while maintaining support for as few as two different formats.
         </p>
     </div>
