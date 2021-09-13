@@ -15,6 +15,11 @@ import sys
 import time
 
 try:
+    import lsb_release
+except ImportError:
+    pass
+
+try:
     # For Python 3.0 and later
     from urllib.request import urlopen
 except ImportError:
@@ -554,7 +559,10 @@ class HostOS(OS):
         if self.is_cros():
             version = platform.platform()
         elif self.is_linux():
-            version = platform.dist()[1]
+            try:
+                version = platform.dist()[1]
+            except AttributeError:
+                version = lsb_release.get_distro_information()['RELEASE']
         elif self.is_mac():
             version = platform.mac_ver()[0]
         elif self.is_ios():
@@ -612,11 +620,11 @@ class Browser(object):
                 self.path = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
         elif self.os.is_win():
             if self.name == 'chrome' or self.name == 'chrome_stable':
-                self.path = '%s/Google/Chrome/Application/chrome.exe' % self.os.programfilesx86
+                self.path = '%s/Google/Chrome/Application/chrome.exe' % self.os.programfiles
             elif self.name == 'chrome_canary':
                 self.path = '%s/../Local/Google/Chrome SxS/Application/chrome.exe' % self.os.appdata
             elif self.name == 'firefox' or self.name == 'firefox_stable':
-                self.path = '%s/Mozilla Firefox/firefox.exe' % self.os.programfilesx86
+                self.path = '%s/Mozilla Firefox/firefox.exe' % self.os.programfiles
             elif self.name == 'firefox_nightly':
                 self.path = '%s/Nightly/firefox.exe' % self.os.programfiles
             elif self.name == 'edge':
@@ -788,7 +796,7 @@ class Webdriver(object):
                     service_args = ['--verbose', '--log-path=log/chromedriver.log']
                 else:
                     service_args = []
-                self.driver = selenium.webdriver.Chrome(executable_path=self.path, chrome_options=chrome_options, service_args=service_args)
+                self.driver = selenium.webdriver.Chrome(executable_path=self.path, options=chrome_options, service_args=service_args)
             elif browser.is_safari():
                 capabilities = DesiredCapabilities.SAFARI.copy()
                 if tools:
