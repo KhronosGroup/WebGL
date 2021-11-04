@@ -3286,6 +3286,8 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             <dd>
             If <em>first</em> is negative, an <code>INVALID_VALUE</code> error will be generated.
             If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
+            If the <em>mode</em> is <code>POINTS</code> and the current program does not set
+            <code>gl_PointSize</code> value, an <code>INVALID_OPERATION</code> error will be generated.
         <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDrawElements.xml">man page</a>)</span>
         <dd>
@@ -3297,6 +3299,8 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             then a non-null <code>WebGLBuffer</code> must be bound to the <code>ELEMENT_ARRAY_BUFFER</code>
             binding point or an <code>INVALID_OPERATION</code> error will be generated.<br><br>
             If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
+            If the <em>mode</em> is <code>POINTS</code> and the current program does not set
+            <code>gl_PointSize</code> value, an <code>INVALID_OPERATION</code> error will be generated.
 
             WebGL performs additional error checking beyond that specified in OpenGL ES 2.0 during
             calls to <code>drawArrays</code>
@@ -4452,6 +4456,17 @@ extensions.
             If the primitive under consideration is a point, then clipping passes it unchanged if it
             lies within the clip volume; otherwise, it is discarded.
         </blockquote>
+    </p>
+</div>
+
+<h3>Undefined Point Size</h3>
+<p>
+    Draw calls with <code>POINTS</code> primitives are rejected when the bound program does not set
+    <code>gl_PointSize</code>.
+</p>
+<div class="note rationale">
+    <p>
+        Point rendering with undefined point size is undefined in GLES and may be unsupported in other APIs.
     </p>
 </div>
 
