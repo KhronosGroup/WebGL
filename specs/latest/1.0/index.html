@@ -3892,9 +3892,19 @@ framebuffer attachment complete, non-zero, and have the same width and height, m
 framebuffer being framebuffer complete:
 
 <ul>
-<li> <code>COLOR_ATTACHMENT0</code> = <code>RGBA/UNSIGNED_BYTE</code> texture
-<li> <code>COLOR_ATTACHMENT0</code> = <code>RGBA/UNSIGNED_BYTE</code> texture + <code>DEPTH_ATTACHMENT</code> = <code>DEPTH_COMPONENT16</code> renderbuffer
-<li> <code>COLOR_ATTACHMENT0</code> = <code>RGBA/UNSIGNED_BYTE</code> texture + <code>DEPTH_STENCIL_ATTACHMENT</code> = <code>DEPTH_STENCIL</code> renderbuffer
+<li> renderbuffer or color-renderable texture
+<li> renderbuffer or color-renderable texture + <code>DEPTH_ATTACHMENT</code> = <code>DEPTH_COMPONENT16</code> renderbuffer
+<li> renderbuffer or color-renderable texture + <code>DEPTH_STENCIL_ATTACHMENT</code> = <code>DEPTH_STENCIL</code> renderbuffer
+</ul>
+
+A texture is color-renderable if it has any of the following format-type pairs:
+
+<ul>
+<li> <code>RGBA</code>, <code>UNSIGNED_BYTE</code>
+<li> <code>RGB</code>, <code>UNSIGNED_BYTE</code>
+<li> <code>RGBA</code>, <code>UNSIGNED_SHORT_4_4_4_4</code>
+<li> <code>RGBA</code>, <code>UNSIGNED_SHORT_4_4_4_4</code>
+<li> <code>RGB</code>, <code>UNSIGNED_SHORT_5_6_5</code>
 </ul>
 
 <h3><a name="TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a></h3>
