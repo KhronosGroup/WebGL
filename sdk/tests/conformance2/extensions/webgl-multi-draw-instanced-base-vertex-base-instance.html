@@ -310,7 +310,7 @@ function testGlslBuiltins() {
       const vert_src = `\
 #version 300 es
 #line 405
-layout(location = 0) in int a_vertex_id; // Same as first_vert+gl_VertexID
+layout(location = 0) in int a_vertex_id; // Same as gl_VertexID
 out vec4 v_color;
 
 void main() {
@@ -330,7 +330,7 @@ void main() {
       const vert_src = `\
 #version 300 es
 #line 425
-layout(location = 0) in int a_vertex_id; // Same as first_vert+gl_VertexID
+layout(location = 0) in int a_vertex_id; // Same as gl_VertexID
 layout(location = 1) in int a_instance_div1; // Same as base_instance+gl_InstanceID
 layout(location = 2) in int a_instance_div2; // Same as base_instance+floor(gl_InstanceID/2)
 layout(location = 3) in int a_instance_div3; // Same as base_instance+floor(gl_InstanceID/3)
@@ -469,8 +469,13 @@ void main() {
     gl.disable(gl.SCISSOR_TEST);
     gl.clearBufferfv(gl.COLOR, 0, [1,0,0,1]);
 
-    const last_gl_vert_id = desc.base_vert + desc.vert_count - 1;
-    const last_vert_id = desc.first_vert + last_gl_vert_id;
+    // From OpenGL ES 3.2 spec section 10.5
+    // https://www.khronos.org/registry/OpenGL/specs/es/3.2/es_spec_3.2.pdf
+    // The index of any element transferred to the GL by DrawArraysOneInstance
+    // is referred to as its vertex ID, and may be read by a vertex shader as gl_VertexID.
+    // The vertex ID of the ith element transferred is first + i.
+    const last_gl_vert_id = desc.base_vert + desc.first_vert + desc.vert_count - 1;
+    const last_vert_id = last_gl_vert_id;
     const last_inst_id = desc.inst_count - 1;
     const last_inst_div1 = desc.base_inst + last_inst_id;
     const last_inst_div2 = desc.base_inst + Math.floor(last_inst_id / 2);
@@ -506,7 +511,6 @@ function doTest(extensionName, multiDraw) {
     const vs = [
       '#version 300 es',
       config.isMultiDraw ? '#extension GL_ANGLE_multi_draw : require' : '',
-      //'#extension GL_ANGLE_base_vertex_base_instance : require',
       '#define kCountX ' + countX.toString(),
       '#define kCountY ' + countY.toString(),
       'layout(location = 0) in vec2 vPosition;',
