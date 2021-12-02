@@ -786,3 +786,16 @@ function finishTest() {
   document.body.appendChild(epilogue);
 }
 
+/// Prefer `call(() => { ... })` to `(() => { ... })()`\
+/// This way, it's clear up-front that we're calling not just defining.
+function call(fn) {
+    return fn();
+}
+
+/// `for (const i of range(3))` => 0, 1, 2
+/// Don't use `for...in range(n)`, it will not work.
+function* range(n) {
+  for (let i = 0; i < n; i++) {
+    yield i;
+  }
+}
