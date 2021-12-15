@@ -43,7 +43,13 @@ debug(`has_etc: ${has_etc}`);
 
 shouldBeTrue("((has_s3tc && has_s3tc_srgb && has_rgtc) || has_etc)");
 
-debug("")
+// ETC1 extension must not be exposed on WebGL 2.0 contexts without ETC2.
+debug("");
+const has_etc1 = hasExt('WEBGL_compressed_texture_etc1');
+debug(`has_etc1: ${has_etc1}`);
+shouldBeTrue("has_etc1 == has_etc");
+
+debug("");
 var successfullyParsed = true;
 </script>
 
