@@ -4455,6 +4455,28 @@ extensions.
     </p>
 </div>
 
+<h3>gl_PointSize must be set in vertex shader when drawing POINTS</h3>
+
+<p>
+If <code>POINTS</code> primitives are drawn, then the vertex shader for the currently bound program
+must set the built-in output variable <code>gl_PointSize</code>, or the draw will have no effect.
+</p>
+
+<div class="note rationale">
+<p>
+The OpenGL ES and OpenGL GLSL ES specifications define that if the built-in vertex shader output
+variable <code>gl_PointSize</code> is not written to, then its value is undefined in later shader
+stages. As a consequence, in these specifications, it is undefined whether the draw has an effect.
+</p>
+
+<p>
+
+The WebGL API clarifies this behavior by guaranteeing that such draws have no effect. All of the
+validation for the draw operation, including generation of any errors, is still performed.
+</p>
+</div>
+
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
