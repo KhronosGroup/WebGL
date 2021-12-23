@@ -98,10 +98,10 @@ function runPixelProgram(gl, prog) {
 // GLES 2.0.25 p63
 const FORMAT_INFO_WEBGL1 = {
     RGBA8  : { filter: true, render: true     , unpack: ['RGBA', 'UNSIGNED_BYTE'] },
-    RGB8   : { filter: true, render: undefined, unpack: ['RGB', 'UNSIGNED_BYTE'] },
-    RGBA4  : { filter: true, render: undefined, unpack: ['RGBA', 'UNSIGNED_SHORT_4_4_4_4'] },
-    RGB5_A1: { filter: true, render: undefined, unpack: ['RGBA', 'UNSIGNED_SHORT_5_5_5_1'] },
-    RGB565 : { filter: true, render: undefined, unpack: ['RGB', 'UNSIGNED_SHORT_5_6_5'] },
+    RGB8   : { filter: true, render: true     , unpack: ['RGB', 'UNSIGNED_BYTE'] },
+    RGBA4  : { filter: true, render: true     , unpack: ['RGBA', 'UNSIGNED_SHORT_4_4_4_4'] },
+    RGB5_A1: { filter: true, render: true     , unpack: ['RGBA', 'UNSIGNED_SHORT_5_5_5_1'] },
+    RGB565 : { filter: true, render: true     , unpack: ['RGB', 'UNSIGNED_SHORT_5_6_5'] },
     LA8    : { filter: true, render: false    , unpack: ['LUMINANCE_ALPHA', 'UNSIGNED_BYTE'] },
     L8     : { filter: true, render: false    , unpack: ['LUMINANCE', 'UNSIGNED_BYTE'] },
     A8     : { filter: true, render: false    , unpack: ['ALPHA', 'UNSIGNED_BYTE'] },
