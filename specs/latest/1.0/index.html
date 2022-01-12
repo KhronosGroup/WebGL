@@ -3038,15 +3038,26 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             objects attached to a program affect neither that program's link status, nor the
             executable code that program may reference. <br><br>
 
-            If the given program is linked successfully and is also the current program object in
-            use as defined by <code>useProgram</code>, below, then the generated executable code
-            will be immediately installed as part of the current rendering state. Otherwise any
-            executable code referenced by the current rendering state is unmodified by a call to
-            linkProgram. <br><br>
+            If the given program is also the the current program object in use as defined
+            by <code>useProgram</code>, below, then:
+
+            <ul>
+
+            <li> If the program is linked successfully, the generated executable code is immediately
+            installed as part of the current rendering state. </li>
+
+            <li> If the program is not linked successfully, the executable code referenced by the
+            current rendering state is immediately invalidated. Further draw calls that utilize the
+            current program generate an <code>INVALID_OPERATION</code> error.
+            See <a href="#CURRENT_PROGRAM_INVALIDATED">Current program invalidated upon unsuccessful
+            link</a>.
+
+            </ul>
 
             See <a href="#PACKING_RESTRICTIONS">Packing Restrictions for Uniforms and Varyings</a>
             for additional constraints enforced in, and additional validation performed by, WebGL
             implementations.
+
         <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glShaderSource.xml">man page</a>)</span>
         <dd>
@@ -4452,6 +4463,23 @@ extensions.
             If the primitive under consideration is a point, then clipping passes it unchanged if it
             lies within the clip volume; otherwise, it is discarded.
         </blockquote>
+    </p>
+</div>
+
+<h3><a name="CURRENT_PROGRAM_INVALIDATED">Current program invalidated upon unsuccessful link</a></h3>
+<p>
+
+    In the WebGL API, if the program passed to <code>linkProgram</code> is also the current program
+    object in use as defined by <code>useProgram</code>, and the link is unsuccessful, then the
+    executable code referenced by the current rendering state is immediately invalidated. Further
+    draw calls that utilize the current program generate an <code>INVALID_OPERATION</code> error.
+</p>
+<div class="note rationale">
+    <p>
+        Rejecting draw calls eagerly against programs whose relink has failed makes WebGL
+        implementations more robust. The OpenGL ES API's behavior is that the current executable is
+        preserved until the current program is changed. Correctly implementing this behavior in all
+        scenarios is challenging, and has led to security bugs.
     </p>
 </div>
 
