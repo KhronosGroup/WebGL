@@ -44,8 +44,9 @@
   </overview>
 
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface OES_texture_float { }; </idl>
+[Exposed=(Window,Worker)]
+interface WebGLExtensionOesTextureFloat {
+}; </idl>
 
   <history>
     <revision date="2010/11/29">
@@ -86,6 +87,10 @@ interface OES_texture_float { }; </idl>
 
     <revision date="2017/09/14">
       <change>Clarify behaviors regarding WEBGL_color_buffer_float.</change>
+    </revision>
+
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </ratified>

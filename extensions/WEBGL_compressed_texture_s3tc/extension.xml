@@ -98,8 +98,8 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_compressed_texture_s3tc {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglCompressedTextureS3tc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_S3TC_DXT1_EXT        = 0x83F0;
     const GLenum COMPRESSED_RGBA_S3TC_DXT1_EXT       = 0x83F1;
@@ -125,6 +125,9 @@ interface WEBGL_compressed_texture_s3tc {
     </revision>
     <revision date="2019/10/24">
       <change>Added a note about <code>COMPRESSED_RGB_S3TC_DXT1_EXT</code> support.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </ratified>

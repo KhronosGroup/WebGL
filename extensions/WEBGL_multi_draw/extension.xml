@@ -64,8 +64,8 @@
 
   <idl xml:space="preserve">
 
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_multi_draw {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglMultiDraw {
   undefined multiDrawArraysWEBGL(
       GLenum mode,
       ([AllowShared] Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
@@ -212,6 +212,9 @@ void main() {
     </revision>
     <revision date="2021/05/18">
       <change>Add [AllowShared] to all typed array arguments for compatibility with multi-threaded WebAssembly.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </extension>

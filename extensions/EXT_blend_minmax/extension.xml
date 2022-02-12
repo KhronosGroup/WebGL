@@ -31,8 +31,8 @@
   </overview>
 
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface EXT_blend_minmax {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionExtBlendMinmax {
   const GLenum MIN_EXT = 0x8007;
   const GLenum MAX_EXT = 0x8008;
 };
@@ -65,6 +65,9 @@ interface EXT_blend_minmax {
     </revision>
     <revision date="2015/05/29">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </ratified>

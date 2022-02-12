@@ -112,8 +112,8 @@
   </overview>
 
   <idl xml:space="preserve"><![CDATA[
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_debug : EventTarget {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglDebug : EventTarget {
   const GLenum MAX_DEBUG_MESSAGE_LENGTH_KHR = 0x9143;
   const GLenum MAX_DEBUG_GROUP_STACK_DEPTH_KHR = 0x826C;
   const GLenum DEBUG_GROUP_STACK_DEPTH_KHR = 0x826D;
@@ -153,20 +153,20 @@ interface WEBGL_debug : EventTarget {
 
   undefined objectLabelKHR(WebGLObject? object, DOMString label);
   DOMString getObjectLabelKHR(WebGLObject? object);
-}; // interface WEBGL_debug
+};
 
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+[Exposed=(Window,Worker)]
 interface WebGLDebugMessage : Event {
   readonly attribute GLenum source;
   readonly attribute GLenum type;
   readonly attribute GLuint id;
   readonly attribute GLenum severity;
   readonly attribute DOMString message;
-}; // interface WebGLDebugMessage
+};
   ]]></idl>
 
   <newfun>
-    <p>On <code>WEBGL_debug</code>:</p>
+    <p>On <code>WebGLExtensionWebglDebug</code>:</p>
 
     <function name="debugMessageControlKHR" type="undefined">
       <param name="source" type="GLenum"/>
@@ -354,6 +354,9 @@ function draw(gl, ext) {
   <history>
     <revision date="2015/09/18">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </proposal>

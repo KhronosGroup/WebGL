@@ -39,8 +39,8 @@
   </overview>
 
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface OES_draw_buffers_indexed {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionOesDrawBuffersIndexed {
   undefined enableiOES(GLenum target, GLuint index);
 
   undefined disableiOES(GLenum target, GLuint index);
@@ -227,6 +227,9 @@ interface OES_draw_buffers_indexed {
     </revision>
     <revision date="2021/11/04">
       <change>Moved to community approved.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </extension>

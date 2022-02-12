@@ -71,8 +71,8 @@
 
   <idl xml:space="preserve">
 
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_draw_instanced_base_vertex_base_instance {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglDrawInstancedBaseVertexBaseInstance {
   undefined drawArraysInstancedBaseInstanceWEBGL(
       GLenum mode, GLint first, GLsizei count,
       GLsizei instanceCount, GLuint baseInstance);
@@ -161,6 +161,9 @@ void main() {
     </revision>
     <revision date="2021/05/26">
       <change>Removed GLSL extension and builtins.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </draft>

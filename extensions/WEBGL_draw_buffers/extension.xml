@@ -100,8 +100,8 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_draw_buffers {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglDrawBuffers {
     const GLenum COLOR_ATTACHMENT0_WEBGL     = 0x8CE0;
     const GLenum COLOR_ATTACHMENT1_WEBGL     = 0x8CE1;
     const GLenum COLOR_ATTACHMENT2_WEBGL     = 0x8CE2;
@@ -187,6 +187,9 @@ interface WEBGL_draw_buffers {
     </revision>
     <revision date="2016/07/23">
       <change>Revised behavior of the same image is attached to more than one color attachment point.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </ratified>

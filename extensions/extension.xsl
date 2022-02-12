@@ -71,7 +71,7 @@
       <xsl:call-template name="logo" />
 
       <h1><xsl:value-of select="$title" /></h1>
-      
+
       <xsl:if test="$spec_status='proposal'">
       <p><strong>DO NOT IMPLEMENT!!!</strong></p>
       </xsl:if>
@@ -188,7 +188,7 @@
     </body>
   </html>
 </xsl:template>
-  
+
 <xsl:template name="logo">
   <xsl:comment>begin-logo</xsl:comment>
   <div class="left">
@@ -416,9 +416,6 @@
 </xsl:template>
 <xsl:template match="interface" mode="newfun">
   <dt class="idl-code">
-	<xsl:if test="@noobject = 'true'">
-	  <xsl:text>[Exposed=(Window,Worker), LegacyNoInterfaceObject]</xsl:text><br/>
-	</xsl:if>
     <xsl:text>interface </xsl:text>
     <em><xsl:value-of select="@name" /></em>
     <xsl:text> {</xsl:text><br/>

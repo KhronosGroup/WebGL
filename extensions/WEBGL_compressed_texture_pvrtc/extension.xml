@@ -14,7 +14,7 @@
   </depends>
   <overview>
     <p>
-      This extension exposes the compressed texture formats defined in the 
+      This extension exposes the compressed texture formats defined in the
       <a href="http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt">
       IMG_texture_compression_pvrtc</a> OpenGL extension to WebGL.
     </p>
@@ -74,8 +74,8 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_compressed_texture_pvrtc {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglCompressedTexturePvrtc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_PVRTC_4BPPV1_IMG      = 0x8C00;
     const GLenum COMPRESSED_RGB_PVRTC_2BPPV1_IMG      = 0x8C01;
@@ -95,6 +95,9 @@ interface WEBGL_compressed_texture_pvrtc {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </extension>

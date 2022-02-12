@@ -14,12 +14,10 @@
     <p>WebGL implementations might mask the <code>RENDERER</code> and <code>VENDOR</code> strings of the underlying graphics driver for privacy reasons. This extension exposes new tokens to query this information in a guaranteed manner for debugging purposes.</p>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_debug_renderer_info {
-
-      const GLenum UNMASKED_VENDOR_WEBGL            = 0x9245;
-      const GLenum UNMASKED_RENDERER_WEBGL          = 0x9246;
-
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglDebugRendererInfo {
+    const GLenum UNMASKED_VENDOR_WEBGL            = 0x9245;
+    const GLenum UNMASKED_RENDERER_WEBGL          = 0x9246;
 };
   </idl>
   <newtok>
@@ -90,6 +88,9 @@ interface WEBGL_debug_renderer_info {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </ratified>

@@ -52,9 +52,9 @@
   </overview>
 
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface EXT_float_blend {
-}; // interface EXT_float_blend
+[Exposed=(Window,Worker)]
+interface WebGLExtensionExtFloatBlend {
+};
 </idl>
 
   <history>
@@ -77,6 +77,10 @@ interface EXT_float_blend {
 
     <revision date="2019/08/27">
       <change>Clarified that this extension applies to both WebGL 1.0 and 2.0 contexts.</change>
+    </revision>
+
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </extension>

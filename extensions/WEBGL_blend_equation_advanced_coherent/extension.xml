@@ -4,7 +4,7 @@
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
   working group</a> (public_webgl 'at' khronos.org) </contact>
-  
+
   <contributors>
 	<contributor>Ashley Gullen (ashley at scirra dot com)</contributor>
     <contributor>Members of the WebGL working group</contributor>
@@ -20,12 +20,12 @@
     <mirrors href="https://www.opengl.org/registry/specs/KHR/blend_equation_advanced.txt"
              name="KHR_blend_equation_advanced_coherent">
     </mirrors>
-	
+
     <div class="nonnormative">
       <p>This extension exposes the KHR_blend_equation_advanced_coherent functionality to WebGL.</p>
 
       <p>CanvasRenderingContext2D provides a series of common blend functions with globalCompositeOperation, such as "multiply" and "screen". KHR_blend_equation_advanced_coherent provides, with the exception of "xor", exactly the same list of blend functions for WebGL, as detailed below:</p>
-	  
+
 	  <ul>
 		<li>"multiply": MULTIPLY_KHR</li>
 		<li>"screen": SCREEN_KHR</li>
@@ -43,9 +43,9 @@
 		<li>"color": HSL_COLOR_KHR</li>
 		<li>"luminosity": HSL_LUMINOSITY_KHR</li>
 	  </ul>
-	  
+
 	  <p>These effects are useful for high-quality artistic blends. They can be implemented using shaders and rendering via an intermediate texture. However this has a high performance overhead both in draw calls and GPU bandwidth. Advanced blend modes allow a much simpler, high-performance way of implementing these blends. Using shaders rendering to an intermediate texture can be used as a fallback if this extension is not supported.</p>
-	  
+
 	  <p>Note only the coherent variant of this extension is exposed in order to eliminate the possibility of undefined behavior in KHR_blend_equation_advanced. This also simplifies the extension and removes the need to insert blend barriers during rendering.</p>
     </div>
 
@@ -55,8 +55,8 @@
   </overview>
 
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_blend_equation_advanced_coherent  {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglBlendEquationAdvancedCoherent  {
   const GLenum MULTIPLY       = 0x9294;
   const GLenum SCREEN         = 0x9295;
   const GLenum OVERLAY        = 0x9296;
@@ -105,25 +105,29 @@ gl.getParameter(gl.BLEND_EQUATION) == ext.MULTIPLY;
   <issues/>
 
   <history>
-  
+
     <revision date="2019/09/25">
       <change>Moved to draft after WebGL F2F of September 2019</change>
     </revision>
-	
+
     <revision date="2018/09/13">
       <change>Forked from WEBGL_blend_equation_advanced to specify only the coherent variant</change>
     </revision>
-	
+
     <revision date="2018/08/23">
       <change>Converted to extension XML format</change>
     </revision>
-	
-	<revision date="2018/08/21">
+
+    <revision date="2018/08/21">
       <change>Revised description</change>
     </revision>
-	
-	<revision date="2015/05/26">
+
+    <revision date="2015/05/26">
       <change>Original draft as a TXT file</change>
+    </revision>
+
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </draft>

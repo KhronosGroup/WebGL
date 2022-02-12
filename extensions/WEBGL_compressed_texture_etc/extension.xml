@@ -92,8 +92,8 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_compressed_texture_etc {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglCompressedTextureEtc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_R11_EAC                        = 0x9270;
     const GLenum COMPRESSED_SIGNED_R11_EAC                 = 0x9271;
@@ -107,7 +107,7 @@ interface WEBGL_compressed_texture_etc {
     const GLenum COMPRESSED_SRGB8_ALPHA8_ETC2_EAC          = 0x9279;
 };
   </idl>
-  
+
   <newtok>
     <function name="compressedTexImage2D">
       <param name="internalformat" type="GLenum"/>
@@ -124,7 +124,7 @@ interface WEBGL_compressed_texture_etc {
       <code>COMPRESSED_SRGB8_ALPHA8_ETC2_EAC</code>
       <br/>
     </function>
-    
+
     <function name="compressedTexSubImage2D">
       <param name="internalformat" type="GLenum"/>
       Accepted by the <code>internalformat</code> parameter:
@@ -184,6 +184,9 @@ interface WEBGL_compressed_texture_etc {
       not advertise this extension if these compressed texture formats are decompressed. Renamed to
       WEBGL_compressed_texture_etc after further discussion. Promoted to community
       approved.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </extension>
