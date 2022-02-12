@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/WEBGL_subarray_uploads/">
+<rejected href="proposals/WEBGL_subarray_uploads/">
   <name>WEBGL_subarray_uploads</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -87,5 +87,8 @@ interface WEBGL_subarray_uploads {
     <revision date="2016/06/07">
       <change>Initial revision</change>
     </revision>
+    <revision date="2022/01/27">
+      <change>Rejected during WG conference call.</change>
+    </revision>
   </history>
-</proposal>
+</rejected>
