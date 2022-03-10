@@ -16,11 +16,9 @@
     </p>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_debug_shaders {
-
-      DOMString getTranslatedShaderSource(WebGLShader shader);
-
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglDebugShaders {
+    DOMString getTranslatedShaderSource(WebGLShader shader);
 };
   </idl>
   <newfun>
@@ -74,6 +72,9 @@ interface WEBGL_debug_shaders {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </ratified>

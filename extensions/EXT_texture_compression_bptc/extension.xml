@@ -75,8 +75,8 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface EXT_texture_compression_bptc {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionExtTextureCompressionBptc {
     const GLenum COMPRESSED_RGBA_BPTC_UNORM_EXT = 0x8E8C;
     const GLenum COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT = 0x8E8D;
     const GLenum COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT = 0x8E8E;
@@ -141,6 +141,9 @@ interface EXT_texture_compression_bptc {
     </revision>
     <revision date="2020/07/07">
       <change>Clarified WebGL-specific dimensions restriction.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </extension>

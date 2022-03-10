@@ -48,12 +48,12 @@
   <idl xml:space="preserve">
 typedef unsigned long long GLuint64EXT;
 
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+[Exposed=(Window,Worker)]
 interface WebGLTimerQueryEXT : WebGLObject {
 };
 
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface EXT_disjoint_timer_query {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionExtDisjointTimerQuery {
   const GLenum QUERY_COUNTER_BITS_EXT      = 0x8864;
   const GLenum CURRENT_QUERY_EXT           = 0x8865;
   const GLenum QUERY_RESULT_EXT            = 0x8866;
@@ -401,6 +401,9 @@ interface EXT_disjoint_timer_query {
     </revision>
     <revision date="2021/04/01">
       <change>Clean up query objects via deleteQueryEXT. Modernize examples' JavaScript code.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </extension>

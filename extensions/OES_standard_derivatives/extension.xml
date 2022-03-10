@@ -37,8 +37,8 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface OES_standard_derivatives {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionOesStandardDerivatives {
     const GLenum FRAGMENT_SHADER_DERIVATIVE_HINT_OES = 0x8B8B;
 };
   </idl>
@@ -57,6 +57,9 @@ interface OES_standard_derivatives {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </ratified>

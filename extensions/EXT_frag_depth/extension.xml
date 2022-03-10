@@ -34,10 +34,10 @@
       </glsl>
     </features>
   </overview>
-  
+
   <idl xml:space="preserve">
-    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
-    interface EXT_frag_depth {
+    [Exposed=(Window,Worker)]
+    interface WebGLExtensionExtFragDepth {
     };
   </idl>
 
@@ -65,6 +65,9 @@
     </revision>
     <revision date="2015/05/29">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </ratified>

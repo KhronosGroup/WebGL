@@ -14,7 +14,7 @@
   </depends>
   <overview>
     <p>
-      This extension exposes the compressed texture format defined in the 
+      This extension exposes the compressed texture format defined in the
       <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_compressed_ETC1_RGB8_texture.txt">
       OES_compressed_ETC1_RGB8_texture</a> OpenGL ES extension to WebGL.
     </p>
@@ -59,10 +59,10 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WEBGL_compressed_texture_etc1 {
+[Exposed=(Window,Worker)]
+interface WebGLExtensionWebglCompressedTextureEtc1 {
     /* Compressed Texture Format */
-    const GLenum COMPRESSED_RGB_ETC1_WEBGL = 0x8D64; 
+    const GLenum COMPRESSED_RGB_ETC1_WEBGL = 0x8D64;
 };
   </idl>
   <history>
@@ -86,6 +86,9 @@ interface WEBGL_compressed_texture_etc1 {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2022/02/11">
+      <change>Rename and expose prototype.</change>
     </revision>
   </history>
 </extension>

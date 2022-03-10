@@ -6,7 +6,7 @@
 http://www.khronos.org/registry/webgl/extensions/
 -->
 <extension href="template/">
-  <!-- The name of the extension. This is also the string which is passed to the 
+  <!-- The name of the extension. This is also the string which is passed to the
        WebGLRenderingContext getExtension API to enable the extension. For example, if
        the extension were OES_texture_float, then the extension would be fetched and
        enabled with a call to getExtension("OES_texture_float")
@@ -163,7 +163,7 @@ interface OES_foo_bar {
       <p>After attempting a connection, the plumber is no longer the same.</p>
     </interface>
 
-    <interface name="Agency" noobject="true"> <member>void
+    <interface name="Agency"> <member>void
     register(Plumber);</member> <member>Plumber find();</member> XHTML
     </interface>
   </newtypes>

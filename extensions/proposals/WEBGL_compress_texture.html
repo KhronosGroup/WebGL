@@ -62,7 +62,7 @@ interface WebGLCompressedTexture : WebGLObject {
     readonly attribute GLenum error;
 };
 
-interface WEBGL_compress_texture {
+interface WebGLExtensionWebglCompressTexture {
     const GLenum PRESERVE_ALPHA = 0x0001;
     const GLenum PRESERVE_TRANSPARENCY = 0x0002;
     const GLenum PRESERVE_RGB = 0x0004;
@@ -176,6 +176,7 @@ interface WEBGL_compress_texture {
       <li> 2011/04/04 Initial draft.</li>
       <li> 2011/04/05 Fixed typos. Changed error mechanism. Added size.</li>
       <li> 2012/01/03 Removed webgl module per changes to Web IDL spec</li>
+      <li> 2022/02/11 Rename and expose prototype.</li>
       </ul>
     </p>
 </body>
