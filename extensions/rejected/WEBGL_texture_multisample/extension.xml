@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- vi:set sw=2 ts=4: -->
 <?xml-stylesheet href="../../extension.xsl" type="text/xsl"?>
-<proposal href="proposals/WEBGL_texture_multisample/">
+<rejected href="proposals/WEBGL_texture_multisample/">
   <name>WEBGL_texture_multisample</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -44,5 +44,8 @@
     <revision date="2017/12/18">
       <change>Initial revision.</change>
     </revision>
+    <revision date="2022/01/27">
+      <change>Rejected during WG conference call.</change>
+    </revision>
   </history>
-</proposal>
+</rejected>
