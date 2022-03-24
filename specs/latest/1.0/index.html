@@ -1721,7 +1721,8 @@ interface mixin <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</d
     [Exposed=Worker] readonly attribute OffscreenCanvas canvas;
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
-    attribute PredefinedColorSpace colorSpace = "srgb";
+    attribute PredefinedColorSpace drawingBufferColorSpace = "srgb";
+    attribute PredefinedColorSpace unpackColorSpace = "srgb";
 
     [WebGLHandlesContextLoss] WebGLContextAttributes? getContextAttributes();
     [WebGLHandlesContextLoss] boolean isContextLost();
@@ -1982,21 +1983,31 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             the implementation is unable to satisfy the requested width or height.
         <dt>
             <code class=attribute-name>
-                <a id="DOM-WebGLRenderingContext-colorSpace">
-                    colorSpace
+                <a id="DOM-WebGLRenderingContext-drawingBufferColorSpace">
+                    drawingBufferColorSpace
                 </a>
             </code>
             of type <code><a href="https://html.spec.whatwg.org/multipage/canvas.html#predefinedcolorspace">PredefinedColorSpace</a></code>
             <a href="#refsPREDEFINEDCOLORSPACE">(specification)</a>
         <dd>
             The color space in which the drawing buffer's contents are assumed to
-            have been produced. Changing this attribute affects the on-screen display
-            of the rendering context, but does not change the drawing buffer's
-            contents. This attribute also affects how <code>TexImageSource</code>
-            sources are uploaded to textures in this context, and how the contents of
-            this context's drawing buffer are interpreted when they are drawn to a 2D
-            canvas context, or uploaded to textures in another WebGL
-            or <a href="#refsWEBGPU">WebGPU</a> rendering context.
+            have been produced. Changing this attribute causes the drawing buffer to
+            be reallocated; its current contents are lost. This attribute affects the
+            on-screen display of the rendering context, and the interpretation of
+            this context's drawing buffer when it is drawn to a 2D canvas context, or
+            uploaded to textures in another WebGL or <a href="#refsWEBGPU">WebGPU</a>
+            rendering context.
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLRenderingContext-unpackColorSpace">
+                    unpackColorSpace
+                </a>
+            </code>
+            of type <code><a href="https://html.spec.whatwg.org/multipage/canvas.html#predefinedcolorspace">PredefinedColorSpace</a></code>
+            <a href="#refsPREDEFINEDCOLORSPACE">(specification)</a>
+        <dd>
+            The color space into which <code>TexImageSource</code> sources are
+            converted when uploading them to textures in this context.
     </dl>
 
 <!-- ======================================================================================================= -->
