@@ -17,7 +17,7 @@
       <b>Note: this extension is deprecated.</b> On systems that support this compressed texture
       format, please consider using the <a
       href="../WEBGL_compressed_texture_etc">WEBGL_compressed_texture_etc</a> or <a
-      href="WEBGL_compressed_texture_astc">WEBGL_compressed_texture_astc</a> formats instead. They
+      href="../WEBGL_compressed_texture_astc">WEBGL_compressed_texture_astc</a> formats instead. They
       are more widely supported and offer a larger range of quality controls.
     </p>
     <p>
