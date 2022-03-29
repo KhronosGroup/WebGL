@@ -14,6 +14,13 @@
   </depends>
   <overview>
     <p>
+      <b>Note: this extension is deprecated.</b> On systems that support this compressed texture
+      format, please consider using the <a
+      href="../WEBGL_compressed_texture_etc">WEBGL_compressed_texture_etc</a> or <a
+      href="WEBGL_compressed_texture_astc">WEBGL_compressed_texture_astc</a> formats instead. They
+      are more widely supported and offer a larger range of quality controls.
+    </p>
+    <p>
       This extension exposes the compressed texture formats defined in the 
       <a href="http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt">
       IMG_texture_compression_pvrtc</a> OpenGL extension to WebGL.
@@ -95,6 +102,9 @@ interface WEBGL_compressed_texture_pvrtc {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2022/03/28">
+      <change>Added deprecation note and recommended ETC or ASTC formats instead.</change>
     </revision>
   </history>
 </extension>
