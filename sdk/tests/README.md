@@ -65,6 +65,18 @@ There are various URL options you can pass in.
 
                  Note the tests are not required to run with anything other than frames = 1.
 
+To individual tests you can pass
+
+    showRenderer: 1 to show the renderer or unmasked renderer if `WEBGL_debug_renderer_info`
+                  is available
+
+    runUntilFail: 1 to re-run the test until it fails
+
+    Also, all of [the context creation attributes](https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
+    
+                  Example: some-test.html?powerPreference=high-performance&antialias=false&depth=false
+   
+
 History
 -------
 
