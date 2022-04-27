@@ -83,7 +83,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
         }
         // Handle target color space.
-        if (unpackColorSpace) { 
+        if (unpackColorSpace) {
           gl.unpackColorSpace = unpackColorSpace;
         }
         // Handle the source sub-rectangle if specified (WebGL 2.0 only)
