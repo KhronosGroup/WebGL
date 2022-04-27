@@ -3296,6 +3296,94 @@ function linearChannelToSRGB(value) {
     return Math.trunc(value * 255 + 0.5);
 }
 
+/**
+ * Return the named color in the specified color space.
+ * @param {string} colorName The name of the color to convert.
+ *        Supported color names are:
+ *            'Red', which is maximum sRGB red.
+ *            'Green', which is maximum sRGB green.
+ * @param {string} colorSpace The color space to convert to. Supported
+          color spaces are:
+ *            null, which is treated as sRGB
+ *            'srgb'
+ *            'display-p3'.
+ * @return {!Array.<number>} color The color in the specified color
+ *        space as an 8-bit RGBA array with unpremultiplied alpha.
+ */
+var namedColorInColorSpace = function(colorName, colorSpace) {
+  var result;
+  switch (colorSpace) {
+    case null:
+    case 'srgb':
+      switch(colorName) {
+        case 'Red':
+          return [255, 0, 0, 255];
+        case 'Green':
+          return [0, 255, 0, 255];
+          break;
+        default:
+          throw 'unexpected color name: ' + colorName;
+      };
+      break;
+    case 'display-p3':
+      switch(colorName) {
+        case 'Red':
+          return [234, 51, 35, 255];
+          break;
+        case 'Green':
+          return [117, 251, 76, 255];
+          break;
+        default:
+          throw 'unexpected color name: ' + colorName;
+      }
+      break;
+    default:
+      throw 'unexpected color space: ' + colorSpace;
+  }
+}
+
+/**
+ * Return the named color as it would be sampled with the specified
+ * internal format
+ * @param {!Array.<number>} color The color as an 8-bit RGBA array.
+ * @param {string} internalformat The internal format.
+ * @return {!Array.<number>} color The color, as it would be sampled by
+ *        the specified internal format, as an 8-bit RGBA array.
+ */
+var colorAsSampledWithInternalFormat = function(color, internalFormat) {
+  switch (internalFormat) {
+    case 'ALPHA':
+      return [0, 0, 0, color[3]];
+    case 'LUMINANCE':
+    case 'LUMINANCE_ALPHA':
+      return [color[0], color[0], color[0], color[3]];
+    case 'SRGB8':
+    case 'SRGB8_ALPHA8':
+      return [sRGBChannelToLinear(color[0]),
+              sRGBChannelToLinear(color[1]),
+              sRGBChannelToLinear(color[2]),
+              color[3]];
+    case 'R16F':
+    case 'R32F':
+    case 'R8':
+    case 'R8UI':
+    case 'RED':
+    case 'RED_INTEGER':
+      return [result[0], 0, 0, 0];
+    case 'RG':
+    case 'RG16F':
+    case 'RG32F':
+    case 'RG8':
+    case 'RG8UI':
+    case 'RG_INTEGER':
+      return [color[0], color[1], 0, 0];
+      break;
+    default:
+      break;
+  }
+  return color;
+}
+
 function comparePixels(cmp, ref, tolerance, diff) {
     if (cmp.length != ref.length) {
         testFailed("invalid pixel size.");
@@ -3515,6 +3603,10 @@ var API = {
 
   // fullscreen api
   setupFullscreen: setupFullscreen,
+
+  // color converter API
+  namedColorInColorSpace: namedColorInColorSpace,
+  colorAsSampledWithInternalFormat: colorAsSampledWithInternalFormat,
 
   // sRGB converter api
   sRGBToLinear: sRGBToLinear,
