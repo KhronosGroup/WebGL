@@ -3355,6 +3355,7 @@ var colorAsSampledWithInternalFormat = function(color, internalFormat) {
     case 'ALPHA':
       return [0, 0, 0, color[3]];
     case 'LUMINANCE':
+      return [color[0], color[0], color[0], 255];
     case 'LUMINANCE_ALPHA':
       return [color[0], color[0], color[0], color[3]];
     case 'SRGB8':

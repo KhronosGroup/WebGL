@@ -55,10 +55,14 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (sourceSubRectangle) {
             sourceSubRectangleString = ' sourceSubRectangle=' + sourceSubRectangle;
         }
+        unpackColorSpaceString = '';
+        if (unpackColorSpace) {
+            unpackColorSpaceString = ' unpackColorSpace=' + unpackColorSpace;
+        }
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
               ' with flipY=' + flipY + ' bindingTarget=' +
               (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP') +
-              sourceSubRectangleString);
+              sourceSubRectangleString + unpackColorSpaceString);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Disable any writes to the alpha channel
         gl.colorMask(1, 1, 1, 0);
@@ -149,12 +153,13 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             loc = gl.getUniformLocation(program, "face");
         }
 
+        // Compute the test colors. This test only tests RGB (not A).
         const topColor = wtu.colorAsSampledWithInternalFormat(
             wtu.namedColorInColorSpace(topColorName, unpackColorSpace),
-            internalFormat);
+            internalFormat).slice(0, 3);
         const bottomColor = wtu.colorAsSampledWithInternalFormat(
             wtu.namedColorInColorSpace(bottomColorName, unpackColorSpace),
-            internalFormat);
+            internalFormat).slice(0, 3);
         for (var tt = 0; tt < targets.length; ++tt) {
             if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
                 gl.uniform1i(loc, targets[tt]);
