@@ -809,9 +809,9 @@ var TexImageUtils = (function() {
    */
   var crossProductTestCasesWithUnpackColorSpaces = function(cases, unpackColorSpaces)
   {
-    var caseWithColorSpace = function(c, cs) { return Object.assign({}, c, {unpackColorSpace:cs}); }
+    var caseWithColorSpace = function(c, cs) { return {...c, ...{unpackColorSpace:cs}}; }
     var casesList = unpackColorSpaces.map(cs => cases.map(c => caseWithColorSpace(c, cs)));
-    return [].concat.apply([], casesList);
+    return casesList.flat();
   }
 
   /**
