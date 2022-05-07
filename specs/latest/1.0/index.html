@@ -1990,13 +1990,13 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             of type <code><a href="https://html.spec.whatwg.org/multipage/canvas.html#predefinedcolorspace">PredefinedColorSpace</a></code>
             <a href="#refsPREDEFINEDCOLORSPACE">(specification)</a>
         <dd>
-            The color space in which the drawing buffer's contents are assumed to
-            have been produced. Changing this attribute causes the drawing buffer to
-            be reallocated; its current contents are lost. This attribute affects the
-            on-screen display of the rendering context, and the interpretation of
-            this context's drawing buffer when it is drawn to a 2D canvas context, or
-            uploaded to textures in another WebGL or <a href="#refsWEBGPU">WebGPU</a>
-            rendering context.
+            The color space used to interpret the drawing buffer's content values.
+            Changing this attribute causes the drawing buffer to be reallocated; its
+            current contents are lost. This attribute affects the on-screen display
+            of the rendering context, and the interpretation of this context's
+            drawing buffer when it is drawn to a 2D canvas context, or uploaded to
+            textures in another WebGL or <a href="#refsWEBGPU">WebGPU</a> rendering
+            context.
         <dt>
             <code class=attribute-name>
                 <a id="DOM-WebGLRenderingContext-unpackColorSpace">
@@ -2682,18 +2682,21 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             The width and height of the texture are set as specified in section
             <a href="#TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a>.<br><br>
 
-            First, the source image data is conceptually converted to the color space
-            specified by the <a href="#DOM-WebGLRenderingContext-unpackColorSpace">unpackColorSpace</a>
-            attribute, except in the following situations:
+            First, the source image data is conceptually converted to the color space specified by
+            the <a href="#DOM-WebGLRenderingContext-unpackColorSpace">unpackColorSpace</a>
+            attribute, except if the source image data is an <code>HTMLImageElement</code>, and
+            the <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> pixel storage parameter is set
+            to <code>NONE</code>. <br><br>
 
-            <ul>
-            <li> the source image data is an <code>HTMLImageElement</code>, and
-                 the <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> pixel storage
-                 parameter is set to <code>NONE</code>. </li>
-            <li> the source image data is an <code>ImageBitmap</code>, in which case
-                 all color space conversions were assumed to have occurred
-                 during <code>ImageBitmap</code> construction. </li>
-            </ul>
+            <div class="note rationale">
+
+            This color space conversion applies to <code>ImageBitmap</code> objects as well, though
+            other texture unpack parameters do not apply to <code>ImageBitmap</code>s because they
+            are expected to be specified during <code>ImageBitmap</code> construction.
+            Implementation experience revealed that it was beneficial to
+            perform <code>ImageBitmap</code>s' color space conversion as late as possible when
+            uploading to WebGL textures.
+            </div>
 
             Next, the source image data is converted to the data type and format specified by
             the <em>format</em> and <em>type</em> arguments, and then transferred to the WebGL
