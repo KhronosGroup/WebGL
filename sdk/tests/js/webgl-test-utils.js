@@ -3300,20 +3300,23 @@ function linearChannelToSRGB(value) {
  * Return the named color in the specified color space.
  * @param {string} colorName The name of the color to convert.
  *        Supported color names are:
- *            'Red', which is maximum sRGB red.
- *            'Green', which is maximum sRGB green.
+ *            'Red', which is the CSS color color('srgb' 1 0 0 1)
+ *            'Green', which is the CSS color color('srgb' 0 1 0 1)
  * @param {string} colorSpace The color space to convert to. Supported
           color spaces are:
  *            null, which is treated as sRGB
  *            'srgb'
  *            'display-p3'.
+ *        Documentation on the formulas for color conversion between
+ *        spaces can be found at
+              https://www.w3.org/TR/css-color-4/#predefined-to-predefined
  * @return {!Array.<number>} color The color in the specified color
  *        space as an 8-bit RGBA array with unpremultiplied alpha.
  */
 var namedColorInColorSpace = function(colorName, colorSpace) {
   var result;
   switch (colorSpace) {
-    case null:
+    case undefined:
     case 'srgb':
       switch(colorName) {
         case 'Red':

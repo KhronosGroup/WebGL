@@ -800,18 +800,22 @@ var TexImageUtils = (function() {
     if ('unpackColorSpace' in gl)
       return ['srgb', 'display-p3'];
     else
-      return [null];
+      return [undefined];
   }
 
   /**
    * For each entry in unpackColorSpaces, duplicate all of cases, adding an
    * unpackColorSpace key with its value set to that entry to each case.
    */
-  var crossProductTestCasesWithUnpackColorSpaces = function(cases, unpackColorSpaces)
+  var crossProductTestCasesWithUnpackColorSpaces = function(testCaseList, unpackColorSpaces)
   {
-    var caseWithColorSpace = function(c, cs) { return {...c, ...{unpackColorSpace:cs}}; }
-    var casesList = unpackColorSpaces.map(cs => cases.map(c => caseWithColorSpace(c, cs)));
-    return casesList.flat();
+    var testCaseWithUnpackColorSpace = function(testCase, colorSpace)
+    {
+      return {...testCase, ...{unpackColorSpace:colorSpace}};
+    }
+    var listOfTestCaseLists = unpackColorSpaces.map(colorSpace =>
+        testCaseList.map(testCase => testCaseWithUnpackColorSpace(testCase, colorSpace)));
+    return listOfTestCaseLists.flat();
   }
 
   /**
