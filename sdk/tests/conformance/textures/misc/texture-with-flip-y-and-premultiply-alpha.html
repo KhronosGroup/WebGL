@@ -30,8 +30,8 @@ var tex = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, tex);
 
 function testUpload() {
-  // Because WEBGL_depth_texture is enabled, UNSIGNED_SHORT becomes a valid type, but RGBA/UNSIGNED_SHORT is invalid.
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_SHORT, new Uint16Array(2*2*4));
+  // Because WEBGL_depth_texture is enabled, UNSIGNED_SHORT becomes a valid type, but LUMINANCE/UNSIGNED_SHORT is invalid.
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 2, 2, 0, gl.LUMINANCE, gl.UNSIGNED_SHORT, new Uint16Array(2*2));
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texImage2D() with invalid format/type combination");
 }
 
