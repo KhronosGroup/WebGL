@@ -127,10 +127,11 @@ async function runTest(gl, sampleCount) {
       0,0
     */
 
-    wtu.checkCanvasRect(gl, 0, 0, w / 4, h , u8Red, 'left edge')
-    wtu.checkCanvasRect(gl, w * 3 / 4, 0, w / 4, h, u8Green, 'right edge');
-    wtu.checkCanvasRect(gl, w / 4, 0, w / 4, h, u8LightRed, 'left of center');
-    wtu.checkCanvasRect(gl, w / 2, 0, w / 4, h, u8LightGreen, 'right of center');
+    const tolerance = 2; // For multisampling resolution differences between GPUs
+    wtu.checkCanvasRect(gl, 0, 0, w / 4, h , u8Red, 'left edge', tolerance)
+    wtu.checkCanvasRect(gl, w * 3 / 4, 0, w / 4, h, u8Green, 'right edge', tolerance);
+    wtu.checkCanvasRect(gl, w / 4, 0, w / 4, h, u8LightRed, 'left of center', tolerance);
+    wtu.checkCanvasRect(gl, w / 2, 0, w / 4, h, u8LightGreen, 'right of center', tolerance);
 
     finishTest();
 }
