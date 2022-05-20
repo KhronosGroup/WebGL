@@ -127,7 +127,8 @@ function runTest(gl, sampleCount) {
 
     const check = (x, y, w, h, expected, msg) => {
       gl.bindFramebuffer(gl.FRAMEBUFFER, dFB);
-      wtu.checkCanvasRect(gl, x, y, w, h, expected, msg);
+      const tolerance = 2; // For multisampling resolution differences between GPUs
+      wtu.checkCanvasRect(gl, x, y, w, h, expected, msg, tolerance);
     };
 
     const f32Red    = [1, 0, 0, 1];
