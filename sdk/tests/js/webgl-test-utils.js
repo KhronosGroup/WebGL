@@ -3373,7 +3373,7 @@ var colorAsSampledWithInternalFormat = function(color, internalFormat) {
     case 'R8UI':
     case 'RED':
     case 'RED_INTEGER':
-      return [result[0], 0, 0, 0];
+      return [color[0], 0, 0, 0];
     case 'RG':
     case 'RG16F':
     case 'RG32F':
