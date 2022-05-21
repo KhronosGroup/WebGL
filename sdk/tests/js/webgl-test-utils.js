@@ -1573,6 +1573,29 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
   if (!hasAttributeCaseInsensitive(attributes, "antialias")) {
     attributes.antialias = false;
   }
+
+  const parseString = v => v;
+  const parseBoolean = v => v.toLowerCase().startsWith('t') || parseFloat(v) > 0;
+  const params = new URLSearchParams(window.location.search);
+  for (const [key, parseFn] of Object.entries({
+    alpha: parseBoolean,
+    antialias: parseBoolean,
+    depth: parseBoolean,
+    desynchronized: parseBoolean,
+    failIfMajorPerformanceCaveat: parseBoolean,
+    powerPreference: parseString,
+    premultipliedAlpha: parseBoolean,
+    preserveDrawingBuffer: parseBoolean,
+    stencil: parseBoolean,
+  })) {
+    const value = params.get(key);
+    if (value) {
+      const v = parseFn(value);
+      attributes[key] = v;
+      debug(`setting context attribute: ${key} = ${v}`);
+    }
+  }
+
   if (!opt_version) {
     opt_version = getDefault3DContextVersion();
   }
@@ -1607,6 +1630,12 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
     }
     window._wtu_contexts.push(context);
   }
+
+  if (params.get('showRenderer')) {
+    const ext = context.getExtension('WEBGL_debug_renderer_info');
+    debug(`RENDERER: ${context.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : context.RENDERER)}`);
+  }
+
   return context;
 };
 
