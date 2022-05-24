@@ -13,7 +13,7 @@ browser's WebGL implementation, either via this test suite or otherwise,
 please report them through your browser vendor's bug tracking system.
 
 FOR WEBGL IMPLEMENTORS: Please follow the instructions below to create
-a formal conformance submission.
+a formal conformance submission:
 
 1. Open webgl-conformance-tests.html in your target browser
 
@@ -31,7 +31,7 @@ about what constitutes a conformant WebGL implementation.
 Usage Notes:
 ------------
 
-There are various URL options you can pass in.
+There are various URL options you can pass in:
 
     run:         Set to 1 to start the tests automatically
 
@@ -65,7 +65,7 @@ There are various URL options you can pass in.
 
                  Note the tests are not required to run with anything other than frames = 1.
 
-To individual tests you can pass
+To individual tests you can pass:
 
     showRenderer: 1 to show the renderer or unmasked renderer if `WEBGL_debug_renderer_info`
                   is available
