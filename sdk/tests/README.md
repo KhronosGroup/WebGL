@@ -75,7 +75,10 @@ To individual tests you can pass:
     Also, all of [the context creation attributes](https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
     
                   Example: some-test.html?powerPreference=high-performance&antialias=false&depth=false
-   
+
+The tests at https://www.khronos.org/registry/webgl/sdk/tests/ are kept up-to-date with a GitHub webhook. If you suspect these tests are not in sync with GitHub, please verify the webhook log file here:
+
+   https://www.khronos.org/webgl/pull-github/logs/github.log
 
 History
 -------
