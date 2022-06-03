@@ -1,0 +1,151 @@
+<!--
+Copyright (c) 2022 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL use the maximum uniform blocks conformance tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+debug("");
+description("Test using the maximum number of uniform blocks");
+
+const wtu = WebGLTestUtils;
+const gl = wtu.create3DContext(undefined, undefined, 2);
+
+function assertEq(a, b, msg) {
+  (a === b ? testPassed : testFailed)(msg);
+}
+
+function testMaxUniformBlocks(gl, numVertexUniformBlocks, numFragmentUniformBlocks, maxUniformBufferBindings) {
+  debug('');
+  debug(`test ${numVertexUniformBlocks} vertex uniform blocks and ${numFragmentUniformBlocks} fragment uniform blocks`);
+
+  const vs = `\
+  #version 300 es
+  ${new Array(numVertexUniformBlocks).fill(0).map((_, i) => `uniform vBlk${i} { uint v${i}; };`).join('\n')}
+  flat out highp uvec4 vsOut;
+  void main() {
+    gl_Position = vec4(0, 0, 0, 1);
+    gl_PointSize = 1.0;
+    uint v = 0u;
+    ${new Array(numVertexUniformBlocks).fill(0).map((_, i) => `v += v${i};`).join('\n')}
+    vsOut = uvec4(v);
+  }
+  `;
+
+  const fs = `\
+  #version 300 es
+  precision highp float;
+  ${new Array(numFragmentUniformBlocks).fill(0).map((_, i) => `uniform fBlk${i} { uint f${i}; };`).join('\n')}
+  flat in highp uvec4 vsOut;
+  out highp uvec4 fsOut;
+  void main() {
+    uint f = 0u;
+    ${new Array(numFragmentUniformBlocks).fill(0).map((_, i) => `f += f${i};`).join('\n')}
+    fsOut = uvec4(vsOut.x, f, 0, 0);
+  }
+  `;
+
+  const program = wtu.setupProgram(gl, [vs, fs]);
+
+  // Start at the last binding point so we can check the highest point works.
+  let uniformBindingIndex = maxUniformBufferBindings - 1;
+
+  const bindUniformBufferWithData = (prefix, numBlocks, baseValue) => {
+    let expected = 0;
+    for (let i = 0; i < numVertexUniformBlocks; ++i) {
+      const blockNdx = gl.getUniformBlockIndex(program, `${prefix}${i}`);
+      gl.uniformBlockBinding(program, blockNdx, uniformBindingIndex);
+
+      const size = gl.getActiveUniformBlockParameter(program, blockNdx, gl.UNIFORM_BLOCK_DATA_SIZE);
+      const data = new Uint32Array(size / 4);
+      data[0] = (i + baseValue) * 3;
+      expected += data[0];
+      const buf = gl.createBuffer();
+      gl.bindBufferBase(gl.UNIFORM_BUFFER, uniformBindingIndex, buf);
+      gl.bufferData(gl.UNIFORM_BUFFER, data, gl.STATIC_DRAW);
+
+      --uniformBindingIndex;
+    }
+    return expected;
+  }
+
+  const vsExpected = bindUniformBufferWithData('vBlk', numVertexUniformBlocks, 1);
+  const fsExpected = bindUniformBufferWithData('fBlk', numFragmentUniformBlocks, 1000);
+
+  gl.useProgram(program);
+  gl.drawArrays(gl.POINTS, 0, 1);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No errors from draw");
+
+  const result = new Uint32Array(4);
+  gl.readPixels(0, 0, 1, 1, gl.RGBA_INTEGER, gl.UNSIGNED_INT, result);
+  assertEq(result[0], vsExpected, `expected vertex shader output to be ${vsExpected}, was ${result[0]}`);
+  assertEq(result[1], fsExpected, `expected fragment shader output to be ${fsExpected}, was ${result[1]}`);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No errors from readPixels");
+}
+
+function runTest() {
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA32UI, 1, 1);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+
+    gl.viewport(0, 0, 1, 1);
+
+    const maxVertexUniformBlocks = gl.getParameter(gl.MAX_VERTEX_UNIFORM_BLOCKS);
+    const maxFragmentUniformBlocks = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_BLOCKS);
+    const maxCombinedUniformBlocks = gl.getParameter(gl.MAX_COMBINED_UNIFORM_BLOCKS);
+    const maxUniformBufferBindings = gl.getParameter(gl.MAX_UNIFORM_BUFFER_BINDINGS);
+
+    debug('');
+    debug(`maxVertexUniformBlocks   =  ${maxVertexUniformBlocks}`);
+    debug(`maxFragmentUniformBlocks =  ${maxFragmentUniformBlocks}`);
+    debug(`maxCombinedUniformBlocks =  ${maxCombinedUniformBlocks}`);
+    debug(`maxUniformBufferBindings =  ${maxUniformBufferBindings}`);
+
+    testMaxUniformBlocks(
+        gl,
+        Math.min(maxCombinedUniformBlocks - maxFragmentUniformBlocks, maxVertexUniformBlocks),
+        maxFragmentUniformBlocks,
+        maxUniformBufferBindings);
+    testMaxUniformBlocks(
+        gl,
+        maxVertexUniformBlocks,
+        Math.min(maxCombinedUniformBlocks - maxVertexUniformBlocks, maxFragmentUniformBlocks),
+        maxUniformBufferBindings);
+}
+
+if (!gl) {
+    testFailed("WebGL context creation failed");
+} else {
+    testPassed("WebGL context creation succeeded");
+    runTest();
+}
+
+debug("");
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+
+</body>
+</html>
