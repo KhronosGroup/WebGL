@@ -24,6 +24,8 @@ function init()
 {
     description("Upload texture from animating transparent WebM");
 
+    document.addEventListener("visibilitychange", visibilityChanged, false);
+
     const canvas = document.getElementById("example");
     gl = wtu.create3DContext(canvas);
 
@@ -50,6 +52,14 @@ function init()
         return;
     };
     wtu.startPlayingAndWaitForVideo(video, runTest);
+}
+
+function visibilityChanged() {
+    if (document.hidden) {
+        console.log('*** Tab was backgrounded (if running in automated test harness, why?) ***');
+    } else {
+        console.log('Tab was foregrounded');
+    }
 }
 
 function runTest(videoElement)
