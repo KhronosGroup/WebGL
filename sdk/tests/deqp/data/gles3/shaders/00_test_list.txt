@@ -2,7 +2,15 @@ arrays.html
 conditionals.html
 constants.html
 constant_expressions.html
-conversions.html
+--min-version 2.0.1 conversions_matrix_combine.html
+--min-version 2.0.1 conversions_matrix_to_matrix.html
+--min-version 2.0.1 conversions_scalar_to_matrix.html
+--min-version 2.0.1 conversions_scalar_to_scalar.html
+--min-version 2.0.1 conversions_scalar_to_vector.html
+--min-version 2.0.1 conversions_vector_combine.html
+--min-version 2.0.1 conversions_vector_illegal.html
+--min-version 2.0.1 conversions_vector_to_scalar.html
+--min-version 2.0.1 conversions_vector_to_vector.html
 declarations.html
 fragdata.html
 functions.html
