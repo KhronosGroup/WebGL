@@ -2034,8 +2034,10 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
     <dl class="methods">
         <dt class="idl-code">void activeTexture(GLenum texture)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7">OpenGL ES 2.0 &sect;3.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glActiveTexture.xml">man page</a>)</span>
-        <dt class="idl-code">void blendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+        <dt class="idl-code">void blendColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBlendColor.xml">man page</a>)</span>
+            <dd>
+                <code>blendColor</code> clamps its arguments to the range 0 to 1 in WebGL 1.0, unless EXT_color_buffer_half_float or WEBGL_color_buffer_float are enabled.
         <dt class="idl-code">void blendEquation(GLenum mode)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBlendEquation.xml">man page</a>)</span>
         <dt class="idl-code">void blendEquationSeparate(GLenum modeRGB, GLenum modeAlpha)
