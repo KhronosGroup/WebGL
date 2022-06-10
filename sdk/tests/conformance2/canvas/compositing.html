@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2019 The Khronos Group Inc.
+Copyright (c) 2022 The Khronos Group Inc.
 Use of this source code is governed by an MIT-style license that can be
 found in the LICENSE.txt file.
 -->
@@ -7,12 +7,12 @@ found in the LICENSE.txt file.
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL required buffer clear behaviour test</title>
+<title>WebGL2 draw functions have expected behavior with compositing</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"> </script>
 <script src="../../js/tests/compositing-test.js"></script>
-<style type="text/css">
+<style>
 body {
     height: 3000px;
 }
@@ -23,29 +23,34 @@ body {
      Otherwise it just doesn't get composited in Firefox. -->
 <div id="description"></div>
 <div id="console"></div>
-<script type="application/javascript">
+<script>
 "use strict";
 
-description("This test ensures WebGL implementations correctly clear the drawing buffer " +
-            "on composite if preserveDrawingBuffer is false.");
+description(`\
+This test ensures WebGL implementations correctly clear the drawing buffer
+on composite if preserveDrawingBuffer is false and is not cleared if
+preserveDrawingBuffer is true.`);
 debug("");
 
 const wtu = WebGLTestUtils;
 
 async function runCompositingTests() {
     const compositingTestFn = createCompositingTestFn({
-      webglVersion: 1,
+      webglVersion: 2,
       shadersFn(gl) {
         const vs = `\
-        attribute vec4 position;
+        #version 300 es
+        in vec4 position;
         void main() {
           gl_Position = position;
         }
         `;
         const fs = `\
+        #version 300 es
         precision mediump float;
+        out vec4 fragColor;
         void main() {
-          gl_FragColor = vec4(1, 0, 0, 1);
+          fragColor = vec4(1, 0, 0, 1);
         }
         `;
         return [vs, fs];
@@ -60,8 +65,23 @@ async function runCompositingTests() {
       gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);
     }
 
+    function drawArraysInstanced(gl) {
+      gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, 1);
+    }
+
+    function drawElementsInstanced(gl) {
+      gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1);
+    }
+
+    function drawRangeElements(gl) {
+      gl.drawRangeElements(gl.TRIANGLES, 0, 5, 6, gl.UNSIGNED_BYTE, 0);
+    }
+
     await compositingTestFn(drawArrays);
     await compositingTestFn(drawElements);
+    await compositingTestFn(drawArraysInstanced);
+    await compositingTestFn(drawElementsInstanced);
+    await compositingTestFn(drawRangeElements);
     finishTest();
 }
 runCompositingTests();
