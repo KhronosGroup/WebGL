@@ -14,6 +14,7 @@ found in the LICENSE.txt file.
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
 <script src="../../js/tests/compositing-test.js"></script>
+<script src="../../js/tests/invalid-vertex-attrib-test.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -102,6 +103,7 @@ if (!gl) {
             runDrawArraysWithOffsetTest();
             runVAOInstancingInteractionTest();
             await runANGLECorruptionTest();
+            await runInvalidAttribTests(gl);
             await runCompositingTests();
             finishTest();
         }());
@@ -655,26 +657,7 @@ async function runANGLECorruptionTest()
     ext.vertexAttribDivisorANGLE(colorLoc, 0);
 }
 
-async function runCompositingTests() {
-    const compositingTestFn = createCompositingTestFn({
-      webglVersion: 1,
-      shadersFn(gl) {
-        const vs = `\
-        attribute vec4 position;
-        void main() {
-          gl_Position = position;
-        }
-        `;
-        const fs = `\
-        precision mediump float;
-        void main() {
-          gl_FragColor = vec4(1, 0, 0, 1);
-        }
-        `;
-        return [vs, fs];
-      },
-    });
-
+async function runDrawTests(testFn) {
     function drawArrays(gl) {
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
@@ -701,12 +684,40 @@ async function runCompositingTests() {
       ext.drawElementsInstancedANGLE(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1);
     }
 
-    await compositingTestFn(drawArrays);             // sanity check
-    await compositingTestFn(drawElements);           // sanity check
+    await testFn(drawArrays);             // sanity check
+    await testFn(drawElements);           // sanity check
 
-    await compositingTestFn(drawArraysInstancedANGLE);
-    await compositingTestFn(drawElementsInstancedANGLE);
+    await testFn(drawArraysInstancedANGLE);
+    await testFn(drawElementsInstancedANGLE);
 }
+
+async function runCompositingTests() {
+    const compositingTestFn = createCompositingTestFn({
+      webglVersion: 1,
+      shadersFn(gl) {
+        const vs = `\
+        attribute vec4 position;
+        void main() {
+          gl_Position = position;
+        }
+        `;
+        const fs = `\
+        precision mediump float;
+        void main() {
+          gl_FragColor = vec4(1, 0, 0, 1);
+        }
+        `;
+        return [vs, fs];
+      },
+    });
+    await runDrawTests(compositingTestFn);
+}
+
+async function runInvalidAttribTests(gl) {
+  const invalidAttribTestFn = createInvalidAttribTestFn(gl);
+  await runDrawTests(invalidAttribTestFn);
+}
+
 </script>
 </body>
 </html>
