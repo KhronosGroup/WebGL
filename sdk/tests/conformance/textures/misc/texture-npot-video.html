@@ -23,6 +23,8 @@ function init()
 {
     description('Verify npot video');
 
+    document.addEventListener("visibilitychange", visibilityChanged, false);
+
     var canvas = document.getElementById("example");
     gl = wtu.create3DContext(canvas);
     var program = wtu.setupTexturedQuad(gl);
@@ -37,6 +39,14 @@ function init()
 
     var video = document.getElementById("vid");
     wtu.startPlayingAndWaitForVideo(video, runTest);
+}
+
+function visibilityChanged() {
+    if (document.hidden) {
+        console.log('*** Tab was backgrounded (if running in automated test harness, why?) ***');
+    } else {
+        console.log('Tab was foregrounded');
+    }
 }
 
 function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottomColor, badMinFilter, badClamp, genMips)
