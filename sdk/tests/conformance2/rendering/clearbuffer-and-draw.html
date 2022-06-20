@@ -16,7 +16,7 @@ found in the LICENSE.txt file.
 <body onload="runTest()">
 <div id="description"></div>
 <div id="console"></div>
-<canvas id="canvas" width="64" height="64"> </canvas>
+<canvas id="canvas" width="64" height="64" style="position:fixed;left:0;top:0"> </canvas>
 <script>
 "use strict";
 description("This tests the operation of clearBuffer followed by a draw call.");
@@ -32,6 +32,7 @@ var iterations = 0;
 var maxIterations = 10;
 var prog;
 var tests;
+var stage = 0;
 var blackUint8 = [0, 0, 0, 255];
 var redFloat = [1.0, 0.0, 0.0, 0.0];
 var redUint8 = [255, 0, 0, 255];
@@ -59,15 +60,32 @@ function testClearBufferAndDraw(test) {
   // Back buffer has no alpha channel.
   let readFormat = gl.RGBA;
   let readType = gl.UNSIGNED_BYTE;
-  verifyOnePixel("Clearing", 0, 0, readFormat, readType, Uint8Array, test['bgColor']);
-  verifyOnePixel("Drawing", canvas.width / 2, canvas.height / 2,
-                 readFormat, readType, Uint8Array, test['drawColor']);
+  if (stage == 2) {
+    verifyOnePixel("Clearing outside scissor",63, 63, readFormat, readType, Uint8Array, blackUint8);
+    verifyOnePixel("Drawing outside scissor", 40, 40, readFormat, readType, Uint8Array, blackUint8);
+  }
+  verifyOnePixel("Clearing", 0,  0, readFormat, readType, Uint8Array, test['bgColor']);
+  verifyOnePixel("Drawing", 32, 32, readFormat, readType, Uint8Array, test['drawColor']);
 }
 
 function runNextTest() {
   if (testIndex >= tests.length) {
-    finishTest();
-    return;
+    // Restore after the last clearBufferiv test
+    gl.enable(gl.DEPTH_TEST);
+    if (stage == 0) {
+      debug('');
+      debug('Enabling full-canvas scissor');
+      gl.enable(gl.SCISSOR_TEST);
+    } else if (stage == 1) {
+      debug('');
+      debug('Limiting scissor rect');
+      gl.scissor(0, 0, 33, 33);
+    } else if (stage == 2) {
+      finishTest();
+      return;
+    }
+    testIndex = 0;
+    stage++;
   }
 
 
