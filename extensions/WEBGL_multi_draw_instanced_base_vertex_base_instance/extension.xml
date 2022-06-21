@@ -21,26 +21,28 @@
   </depends>
 
   <overview>
-    <addendum>
-      This extension exposes the <code>MultiDrawArraysInstancedBaseInstanceANGLE</code> and
-      <code>MultiDrawElementsInstancedBaseVertexBaseInstanceANGLE</code> entrypoints as
-      <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and
-      <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>.
-    </addendum>
-    <addendum>
-      The implementation must validate the arrays and indices referenced by
-      <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and
-      <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>, similarly to how indices
-      referenced by <code>drawArrays</code> and <code>drawElements</code> are validated according
-      to section
-      <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/index.html#6.6">
-        Enabled Vertex Attributes and Range Checking
-      </a>
-      and
-      <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#RANGE_CHECKING">
-        Range Checking
-      </a> of the WebGL specification.
-    </addendum>
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/main/extensions/ANGLE_base_vertex_base_instance.txt" name="ANGLE_base_vertex_base_instance">
+      <addendum>
+        This extension exposes the <code>MultiDrawArraysInstancedBaseInstanceANGLE</code> and
+        <code>MultiDrawElementsInstancedBaseVertexBaseInstanceANGLE</code> entrypoints as
+        <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and
+        <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>.
+      </addendum>
+      <addendum>
+        The implementation must validate the arrays and indices referenced by
+        <code>multiDrawArraysInstancedBaseInstanceWEBGL</code> and
+        <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code>, similarly to how indices
+        referenced by <code>drawArrays</code> and <code>drawElements</code> are validated according
+        to section
+        <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/index.html#6.6">
+          Enabled Vertex Attributes and Range Checking
+        </a>
+        and
+        <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#RANGE_CHECKING">
+          Range Checking
+        </a> of the WebGL specification.
+      </addendum>
+    </mirrors>
 
     <div class="nonnormative">
       <p>The baseVertex functionality could effectly help reduce CPU overhead with static batching
@@ -58,10 +60,11 @@
         They behave identically to multiple calls to <code>drawArraysInstanced</code> and
         <code>drawElementsInstanced</code> except they handle multiple lists of arguments in one
         call, plus that the first element within those instanced vertex attributes is specified in
-        <code>baseInstancesList</code>. The
-        <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code> in addition specifies the
-        value of base vertex of each draw call to be values in<code>baseVerticesList</code> instead
-        of zero.
+        <code>baseInstancesList</code>.
+      </feature>
+      <feature>The <code>multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL</code> in addition
+        specifies the value of base vertex of each draw call to be values in<code>baseVerticesList</code>
+        instead of zero.
       </feature>
 
       <feature>
@@ -84,7 +87,7 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
       ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
       ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
       ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, GLuint baseInstancesOffset,
-      GLsizei drawCount
+      GLsizei drawcount
   );
   undefined multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
       GLenum mode,
@@ -94,7 +97,7 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
       ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
       ([AllowShared] Int32Array or sequence&lt;GLint&gt;) baseVerticesList, GLuint baseVerticesOffset,
       ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, GLuint baseInstancesOffset,
-      GLsizei drawCount
+      GLsizei drawcount
   );
 };
   </idl>
@@ -106,9 +109,11 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
       <param name="firstsOffset" type="GLuint"/>
       <param name="countsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
       <param name="countsOffset" type="GLuint"/>
-      <param name="baseInstancesList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="instanceCountsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="baseInstancesList" type="([AllowShared] Uint32Array or sequence&lt;GLuint&gt;)"/>
       <param name="baseInstancesOffset" type="GLuint"/>
-      <param name="drawCount" type="GLsizei"/>
+      <param name="drawcount" type="GLsizei"/>
     </function>
     <function name="multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
@@ -123,7 +128,7 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
       <param name="baseVerticesOffset" type="GLuint"/>
       <param name="baseInstancesList" type="([AllowShared] Uint32Array or sequence&lt;GLuint&gt;)"/>
       <param name="baseInstancesOffset" type="GLuint"/>
-      <param name="drawCount" type="GLsizei"/>
+      <param name="drawcount" type="GLsizei"/>
     </function>
   </newfun>
 
