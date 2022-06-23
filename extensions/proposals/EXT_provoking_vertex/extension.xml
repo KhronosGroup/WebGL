@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<proposal href="EXT_provoking_vertex/">
+  <name>EXT_provoking_vertex</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Kelsey Gilbert (Mozilla)</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+  <number>48</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_provoking_vertex.txt" name="EXT_provoking_vertex">
+      <addendum>
+        <code>QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION_EXT</code> is removed, as <code>QUADS</code> are not present in WebGL.
+      </addendum>
+      <addendum>
+        Implementations SHOULD only expose this extension when FIRST_VERTEX_CONVENTION is more efficient than the default behavior of LAST_VERTEX_CONVENTION.
+        Applications should expect that if this extension is supported by a WebGLRenderingContext, they should try to use FIRST_VERTEX_CONVENTION if they can.
+      </addendum>
+    </mirrors>
+    <features>
+      <feature>
+        Adds support for choosing FIRST_VERTEX_CONVENTION for provoking vertex, as opposed to the default of LAST_VERTEX_CONVENTION.
+        On some implementations, FIRST_VERTEX_CONVENTION is more efficient than LAST_VERTEX_CONVENTION.
+      </feature>
+    </features>
+  </overview>
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface EXT_provoking_vertex {
+    const GLenum FIRST_VERTEX_CONVENTION_EXT = 0x8E4D;
+    const GLenum LAST_VERTEX_CONVENTION_EXT  = 0x8E4E; // default
+    const GLenum PROVOKING_VERTEX_EXT        = 0x8E4F;
+
+    undefined provokingVertexEXT(GLenum convention);
+};
+  </idl>
+  <samplecode xml:space="preserve">
+    <pre>
+    function optimizeAssumingFlatsHaveSameFirstAndLastData(gl) {
+      const epv = gl.getExtension('EXT_provoking_vertex');
+      if (epv) {
+        epv.provokingVertexEXT(epv.FIRST_VERTEX_CONVENTION_EXT);
+      }
+    }
+    </pre>
+  </samplecode>
+  <history>
+    <revision date="2022/06/23">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</proposal>
