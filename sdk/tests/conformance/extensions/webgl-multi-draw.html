@@ -1014,8 +1014,30 @@ async function runCompositingTests() {
   await compositingTestFn(multiDrawElementsInstancedWEBGL);
 }
 
+function testSideEffects() {
+  debug("")
+  debug("Testing that ANGLE_instanced_arrays is implicitly enabled")
+  const canvas = document.createElement("canvas");
+  const gl = wtu.create3DContext(canvas, undefined, 1);
+  if (!gl) {
+    testFailed('WebGL context creation failed');
+    return;
+  }
+  gl.enableVertexAttribArray(0);
+  const VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE = 0x88FE;
+  gl.getVertexAttrib(0, VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE);
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "divisor enum unknown");
+  const ext = gl.getExtension("WEBGL_multi_draw");
+  if (ext) {
+    debug("WEBGL_multi_draw enabled");
+    gl.getVertexAttrib(0, VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "divisor enum known");
+  }
+}
+
 async function main() {
   runTest();
+  testSideEffects();
   await runCompositingTests();
   finishTest();
 }
