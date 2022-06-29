@@ -56,24 +56,9 @@ function checkPixels(flipY)
     }
 }
 
-async function testImageBitmapFromBlobWithFlipY(blob, flipY)
+async function testImageBitmapWithFlipY(source, flipY)
 {
-    let bitmap;
-    // As a concession to Firefox, which doesn't yet implement
-    // createImageBitmap with creation options, skip the tests
-    // involving flipY=true if ImageBitmap creation throws an
-    // exception, and use the single-argument constructor for the
-    // flipY=false case.
-    if (flipY) {
-        try {
-            bitmap = await createImageBitmap(blob, {imageOrientation: flipY});
-        } catch (e) {
-            output("  (createImageBitmap options not supported - skipping flipY=true case)");
-            return;
-        }
-    } else {
-        bitmap = await createImageBitmap(blob);
-    }
+    const bitmap = await createImageBitmap(source, {imageOrientation: flipY ? 'flipY' : 'none'});
 
     output("  Testing texImage2D, flipY = " + flipY);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bitmap);
@@ -93,8 +78,14 @@ async function testImageBitmapFromBlob(filename)
     let blob = await response.blob();
     output("----------------------------------------------------------------");
     output("Testing " + filename + " via ImageBitmap from Blob");
-    await testImageBitmapFromBlobWithFlipY(blob, true);
-    await testImageBitmapFromBlobWithFlipY(blob, false);
+    await testImageBitmapWithFlipY(blob, true);
+    await testImageBitmapWithFlipY(blob, false);
+}
+
+async function testImageBitmapFromImage(image)
+{
+    await testImageBitmapWithFlipY(image, true);
+    await testImageBitmapWithFlipY(image, false);
 }
 
 async function testImageElementWithFlipY(image, flipY)
@@ -124,6 +115,11 @@ async function testImageElement(filename)
 
     await testImageElementWithFlipY(image, true);
     await testImageElementWithFlipY(image, false);
+
+    output("----------------------------------------------------------------");
+    output("Testing " + filename + " via ImageBitmap from HTMLImageElement");
+
+    await testImageBitmapFromImage(image);
 }
 
 async function testSingleImage(filename)
