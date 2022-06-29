@@ -18,6 +18,7 @@
   </depends>
 
   <overview>
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/main/extensions/ANGLE_base_vertex_base_instance.txt" name="ANGLE_base_vertex_base_instance">
       <addendum>
         This extension exposes the <code>DrawArraysInstancedBaseInstanceANGLE</code> and
         <code>DrawElementsInstancedBaseVertexBaseInstanceANGLE</code> entrypoints as
@@ -41,6 +42,7 @@
           Range Checking
         </a> of the WebGL specification.
       </addendum>
+    </mirrors>
 
     <div class="nonnormative">
       <p>
@@ -58,9 +60,13 @@
         The <code>drawArraysInstancedBaseInstanceWEBGL</code>
         and <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code> entry points are added.
         These provide a counterpoint to instanced rendering and are more flexible for certain
-        scenarios. <code>drawArraysInstancedBaseInstanceWEBGL</code> behaves identically to
+        scenarios.
+      </feature>
+      <feature><code>drawArraysInstancedBaseInstanceWEBGL</code> behaves identically to
         <code>drawArraysInstanced</code> except that the first element within those instanced
         vertex attributes is specified in <code>baseInstance</code>.
+      </feature>
+      <feature>
         <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code> is equivalent to
         <code>drawElementsInstanced</code> except that the value of the base vertex passed into
         driver is <code>baseVertex</code> instead of zero, and that the first element within those
