@@ -10,7 +10,7 @@
   </contributors>
   <number>48</number>
   <depends>
-    <api version="1.0"/>
+    <api version="2.0"/>
   </depends>
   <overview>
     <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_provoking_vertex.txt" name="EXT_provoking_vertex">
