@@ -58,18 +58,18 @@ function checkPixels(flipY)
 
 async function testImageBitmapWithFlipY(source, flipY)
 {
-    const bitmap = await createImageBitmap(source, {imageOrientation: flipY ? 'flipY' : 'none'});
+    const bitmap = await createImageBitmap(source, flipY ? {imageOrientation: flipY} : undefined);
 
     output("  Testing texImage2D, flipY = " + flipY);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bitmap);
     wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-    checkPixels(flipY);
+    checkPixels(flipY == "flipY");
 
     output("  Testing texSubImage2D, flipY = " + flipY);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, bitmap.width, bitmap.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, bitmap);
     wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-    checkPixels(flipY);
+    checkPixels(flipY == "flipY");
 }
 
 async function testImageBitmapFromBlob(filename)
@@ -78,14 +78,16 @@ async function testImageBitmapFromBlob(filename)
     let blob = await response.blob();
     output("----------------------------------------------------------------");
     output("Testing " + filename + " via ImageBitmap from Blob");
-    await testImageBitmapWithFlipY(blob, true);
-    await testImageBitmapWithFlipY(blob, false);
+    await testImageBitmapWithFlipY(blob, "flipY");
+    await testImageBitmapWithFlipY(blob, "none");
+    await testImageBitmapWithFlipY(blob, undefined);
 }
 
 async function testImageBitmapFromImage(image)
 {
-    await testImageBitmapWithFlipY(image, true);
-    await testImageBitmapWithFlipY(image, false);
+    await testImageBitmapWithFlipY(image, "flipY");
+    await testImageBitmapWithFlipY(image, "none");
+    await testImageBitmapWithFlipY(image, undefined);
 }
 
 async function testImageElementWithFlipY(image, flipY)
