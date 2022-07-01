@@ -27,9 +27,9 @@
         WebGL specification.
       </addendum>
       <addendum>
-        Although the extension name is named WEBGL_multi_draw, the extension must be enabled with the
+        Although the extension name is WEBGL_multi_draw, the extension must be enabled with the
         <code>#extension GL_ANGLE_multi_draw</code> directive, as shown in the sample code, to use
-        the extension in a shader.
+        the <code>gl_DrawID</code> built-in in a shader.
 
         Likewise the shading language preprocessor <code>#define GL_ANGLE_multi_draw</code>, will be defined to 1 if the extension is supported.
       </addendum>
