@@ -47,7 +47,7 @@ function init()
         return;
     }
     if (!video.canPlayType(type).replace(/no/, '')) {
-        debug(info.type + " unsupported");
+        debug(type + " unsupported");
         finishTest();
         return;
     };
