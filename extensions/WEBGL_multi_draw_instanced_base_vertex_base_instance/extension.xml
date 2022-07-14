@@ -42,6 +42,13 @@
           Range Checking
         </a> of the WebGL specification.
       </addendum>
+      <addendum>
+        Although the extension name is WEBGL_multi_draw_instanced_base_vertex_base_instance,
+        the extension must be enabled with the <code>#extension GL_ANGLE_multi_draw</code> directive,
+        as shown in the sample code, to use the <code>gl_DrawID</code> built-in in a shader.
+
+        Likewise the shading language preprocessor <code>#define GL_ANGLE_multi_draw</code>, will be defined to 1 if the extension is supported.
+      </addendum>
     </mirrors>
 
     <div class="nonnormative">
@@ -174,8 +181,9 @@ var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance"
     </pre>
     <pre>
 #version 300 es
+#extension GL_ANGLE_multi_draw : require
 void main() {
-    gl_Position = vec4(gl_VertexID, gl_InstanceID, 0, 1);
+    gl_Position = vec4(gl_VertexID, gl_InstanceID, gl_DrawID, 1);
 }
     </pre>
   </samplecode>
