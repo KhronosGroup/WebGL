@@ -919,7 +919,7 @@ async function runDrawTests(testFn) {
     function drawArraysInstancedBaseInstanceWEBGL(gl) {
       const ext = gl.getExtension('WEBGL_draw_instanced_base_vertex_base_instance');
       if (!ext) {
-        return true;
+        throw 'Should not have run this test without WEBGL_draw_instanced_base_vertex_base_instance';
       }
 
       ext.drawArraysInstancedBaseInstanceWEBGL(gl.TRIANGLES, 0, 6, 1, 0);
@@ -928,16 +928,16 @@ async function runDrawTests(testFn) {
     function drawElementsInstancedBaseVertexBaseInstanceWEBGL(gl) {
       const ext = gl.getExtension('WEBGL_draw_instanced_base_vertex_base_instance');
       if (!ext) {
-        return true;
+        throw 'Should not have run this test without WEBGL_draw_instanced_base_vertex_base_instance';
       }
 
-      ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1, 0, 1);
+      ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1, 0, 0);
     }
 
     function multiDrawArraysInstancedBaseInstanceWEBGL(gl) {
       const ext = gl.getExtension('WEBGL_multi_draw_instanced_base_vertex_base_instance');
       if (!ext) {
-        return true;
+        throw 'Should not have run this test without WEBGL_multi_draw_instanced_base_vertex_base_instance';
       }
       ext.multiDrawArraysInstancedBaseInstanceWEBGL(gl.TRIANGLES, [0], 0, [6], 0, [1], 0, [0], 0, 1);
     }
@@ -945,7 +945,7 @@ async function runDrawTests(testFn) {
     function multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(gl) {
       const ext = gl.getExtension('WEBGL_multi_draw_instanced_base_vertex_base_instance');
       if (!ext) {
-        return true;
+        throw 'Should not have run this test without WEBGL_multi_draw_instanced_base_vertex_base_instance';
       }
       ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
           gl.TRIANGLES,
@@ -964,10 +964,17 @@ async function runDrawTests(testFn) {
     await testFn(drawArraysInstanced);    // sanity check
     await testFn(drawElementsInstanced);  // sanity check
 
-    await testFn(drawArraysInstancedBaseInstanceWEBGL);
-    await testFn(drawElementsInstancedBaseVertexBaseInstanceWEBGL);
-    await testFn(multiDrawArraysInstancedBaseInstanceWEBGL);
-    await testFn(multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL);
+    // It's only legal to call testFn if the extension is supported,
+    // since the invalid vertex attrib tests, in particular, expect the
+    // draw function to have an effect.
+    if (gl.getExtension('WEBGL_draw_instanced_base_vertex_base_instance')) {
+      await testFn(drawArraysInstancedBaseInstanceWEBGL);
+      await testFn(drawElementsInstancedBaseVertexBaseInstanceWEBGL);
+    }
+    if (gl.getExtension('WEBGL_multi_draw_instanced_base_vertex_base_instance')) {
+      await testFn(multiDrawArraysInstancedBaseInstanceWEBGL);
+      await testFn(multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL);
+    }
 }
 
 async function runCompositingTests() {
@@ -1001,7 +1008,7 @@ async function runInvalidAttribTests(gl) {
 }
 
 async function main() {
-  //runTest();
+  runTest();
   await runInvalidAttribTests(gl);
   await runCompositingTests();
   finishTest();

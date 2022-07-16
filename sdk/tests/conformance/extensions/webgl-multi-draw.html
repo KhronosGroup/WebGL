@@ -931,7 +931,7 @@ async function runDrawTests(testFn) {
   function multiDrawArraysWEBGL(gl) {
     const ext = gl.getExtension('WEBGL_multi_draw');
     if (!ext) {
-      return true;
+      throw 'Should not have run this test without WEBGL_multi_draw';
     }
 
     ext.multiDrawArraysWEBGL(
@@ -945,7 +945,7 @@ async function runDrawTests(testFn) {
   function multiDrawElementsWEBGL(gl) {
     const ext = gl.getExtension('WEBGL_multi_draw');
     if (!ext) {
-      return true;
+      throw 'Should not have run this test without WEBGL_multi_draw';
     }
 
     ext.multiDrawElementsWEBGL(
@@ -960,7 +960,7 @@ async function runDrawTests(testFn) {
   function multiDrawArraysInstancedWEBGL(gl) {
     const ext = gl.getExtension('WEBGL_multi_draw');
     if (!ext) {
-      return true;
+      throw 'Should not have run this test without WEBGL_multi_draw';
     }
     ext.multiDrawArraysInstancedWEBGL(
         gl.TRIANGLES,
@@ -974,7 +974,7 @@ async function runDrawTests(testFn) {
   function multiDrawElementsInstancedWEBGL(gl) {
     const ext = gl.getExtension('WEBGL_multi_draw');
     if (!ext) {
-      return true;
+      throw 'Should not have run this test without WEBGL_multi_draw';
     }
     ext.multiDrawElementsInstancedWEBGL(
         gl.TRIANGLES,
@@ -989,10 +989,15 @@ async function runDrawTests(testFn) {
   await testFn(drawArrays);             // sanity check
   await testFn(drawElements);           // sanity check
 
-  await testFn(multiDrawArraysWEBGL);
-  await testFn(multiDrawElementsWEBGL);
-  await testFn(multiDrawArraysInstancedWEBGL);
-  await testFn(multiDrawElementsInstancedWEBGL);
+  // It's only legal to call testFn if the extension is supported,
+  // since the invalid vertex attrib tests, in particular, expect the
+  // draw function to have an effect.
+  if (gl.getExtension('WEBGL_multi_draw')) {
+    await testFn(multiDrawArraysWEBGL);
+    await testFn(multiDrawElementsWEBGL);
+    await testFn(multiDrawArraysInstancedWEBGL);
+    await testFn(multiDrawElementsInstancedWEBGL);
+  }
 }
 
 async function runCompositingTests() {
