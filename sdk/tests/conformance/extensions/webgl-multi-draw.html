@@ -8,6 +8,7 @@
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
 <script src="../../js/tests/compositing-test.js"></script>
+<script src="../../js/tests/invalid-vertex-attrib-test.js"></script>
 </head>
 <body>
 <script id="vshaderIllegalDrawID" type="x-shader/x-vertex">
@@ -910,6 +911,95 @@ async function doCompositingTests([glPreserveDrawingBufferFalse, glPreserveDrawi
   await testPreserveDrawingBufferTrue(glPreserveDrawingBufferTrue, drawFn);
 }
 
+async function runDrawTests(testFn) {
+  function drawArrays(gl) {
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  function drawElements(gl) {
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);
+  }
+
+  function drawArraysInstanced(gl) {
+    gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, 1);
+  }
+
+  function drawElementsInstanced(gl) {
+    gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1);
+  }
+
+  function multiDrawArraysWEBGL(gl) {
+    const ext = gl.getExtension('WEBGL_multi_draw');
+    if (!ext) {
+      throw 'Should not have run this test without WEBGL_multi_draw';
+    }
+
+    ext.multiDrawArraysWEBGL(
+        gl.TRIANGLES,
+        [0], 0, // firsts
+        [6], 0, // counts
+        1,      // drawCount
+    );
+  }
+
+  function multiDrawElementsWEBGL(gl) {
+    const ext = gl.getExtension('WEBGL_multi_draw');
+    if (!ext) {
+      throw 'Should not have run this test without WEBGL_multi_draw';
+    }
+
+    ext.multiDrawElementsWEBGL(
+        gl.TRIANGLES,
+        [6], 0,   // counts
+        gl.UNSIGNED_BYTE,
+        [0], 0,   // offsets
+        1,        // drawCount
+    );
+  }
+
+  function multiDrawArraysInstancedWEBGL(gl) {
+    const ext = gl.getExtension('WEBGL_multi_draw');
+    if (!ext) {
+      throw 'Should not have run this test without WEBGL_multi_draw';
+    }
+    ext.multiDrawArraysInstancedWEBGL(
+        gl.TRIANGLES,
+        [0], 0, // firsts
+        [6], 0, // counts
+        [1], 0, // instances
+        1,      // drawCount
+    );
+  }
+
+  function multiDrawElementsInstancedWEBGL(gl) {
+    const ext = gl.getExtension('WEBGL_multi_draw');
+    if (!ext) {
+      throw 'Should not have run this test without WEBGL_multi_draw';
+    }
+    ext.multiDrawElementsInstancedWEBGL(
+        gl.TRIANGLES,
+        [6], 0, // counts
+        gl.UNSIGNED_BYTE,
+        [0], 0, // offsets
+        [1], 0, // instances
+        1,      // drawCount
+    );
+  }
+
+  await testFn(drawArrays);             // sanity check
+  await testFn(drawElements);           // sanity check
+
+  // It's only legal to call testFn if the extension is supported,
+  // since the invalid vertex attrib tests, in particular, expect the
+  // draw function to have an effect.
+  if (gl.getExtension('WEBGL_multi_draw')) {
+    await testFn(multiDrawArraysWEBGL);
+    await testFn(multiDrawElementsWEBGL);
+    await testFn(multiDrawArraysInstancedWEBGL);
+    await testFn(multiDrawElementsInstancedWEBGL);
+  }
+}
+
 async function runCompositingTests() {
   const compositingTestFn = createCompositingTestFn({
     webglVersion: 1,
@@ -930,88 +1020,12 @@ async function runCompositingTests() {
       return [vs, fs];
     },
   });
+  await runDrawTests(compositingTestFn);
+}
 
-  function drawArrays(gl) {
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-  }
-
-  function drawElements(gl) {
-    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);
-  }
-
-  function drawArraysInstanced(gl) {
-    gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, 1);
-  }
-
-  function drawElementsInstanced(gl) {
-    gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, 1);
-  }
-
-  function multiDrawArraysWEBGL(gl) {
-    const ext = gl.getExtension('WEBGL_multi_draw');
-    if (!ext) {
-      return true;
-    }
-
-    ext.multiDrawArraysWEBGL(
-        gl.TRIANGLES,
-        [0], 0, // firsts
-        [6], 0, // counts
-        1,      // drawCount
-    );
-  }
-
-  function multiDrawElementsWEBGL(gl) {
-    const ext = gl.getExtension('WEBGL_multi_draw');
-    if (!ext) {
-      return true;
-    }
-
-    ext.multiDrawElementsWEBGL(
-        gl.TRIANGLES,
-        [6], 0,   // counts
-        gl.UNSIGNED_BYTE,
-        [0], 0,   // offsets
-        1,        // drawCount
-    );
-  }
-
-  function multiDrawArraysInstancedWEBGL(gl) {
-    const ext = gl.getExtension('WEBGL_multi_draw');
-    if (!ext) {
-      return true;
-    }
-    ext.multiDrawArraysInstancedWEBGL(
-        gl.TRIANGLES,
-        [0], 0, // firsts
-        [6], 0, // counts
-        [1], 0, // instances
-        1,      // drawCount
-    );
-  }
-
-  function multiDrawElementsInstancedWEBGL(gl) {
-    const ext = gl.getExtension('WEBGL_multi_draw');
-    if (!ext) {
-      return true;
-    }
-    ext.multiDrawElementsInstancedWEBGL(
-        gl.TRIANGLES,
-        [6], 0, // counts
-        gl.UNSIGNED_BYTE,
-        [0], 0, // offsets
-        [1], 0, // instances
-        1,      // drawCount
-    );
-  }
-
-  await compositingTestFn(drawArrays);             // sanity check
-  await compositingTestFn(drawElements);           // sanity check
-
-  await compositingTestFn(multiDrawArraysWEBGL);
-  await compositingTestFn(multiDrawElementsWEBGL);
-  await compositingTestFn(multiDrawArraysInstancedWEBGL);
-  await compositingTestFn(multiDrawElementsInstancedWEBGL);
+async function runInvalidAttribTests(gl) {
+  const invalidAttribTestFn = createInvalidAttribTestFn(gl);
+  await runDrawTests(invalidAttribTestFn);
 }
 
 function testSideEffects() {
@@ -1038,6 +1052,7 @@ function testSideEffects() {
 async function main() {
   runTest();
   testSideEffects();
+  await runInvalidAttribTests(gl);
   await runCompositingTests();
   finishTest();
 }
