@@ -48,7 +48,7 @@
 
       <feature>
         <p><b>In WebGL 2.0 contexts</b>, the 16-bit floating-point types
-        <code>RGBA16F,</code>, <code>RG16F</code> and <code>R16F</code> become
+        <code>RGBA16F</code>, <code>RG16F</code>, and <code>R16F</code> become
         available as color-renderable formats.  Renderbuffers can be created in
         these formats. These and textures created with <code>type =
         HALF_FLOAT</code>, which will have one of these internal formats, can be
@@ -60,11 +60,19 @@
 
       <feature>
         <p><span style="color: red">NOTE:</span> fragment shaders' outputs
-        gl_FragColor and gl_FragData[0] will only be clamped and converted when
-        the color buffer is fixed-point, and <code>blendColor()</code> and
-        <code>clearColor()</code> will no longer clamp their parameter values on
+        <code>gl_FragColor</code> and <code>gl_FragData[0]</code> will only be
+        clamped and converted when the color buffer is fixed-point, and
+        <code>clearColor()</code> will no longer clamp its parameter values on
         input. Clamping will be applied as necessary at draw time according to
         the type of color buffer in use.</p>
+      </feature>
+
+      <feature>
+        <p>If the implementation supports unclamped blend color, the
+        <code>blendColor()</code> will no longer clamp its parameter values on
+        input. Clamping will be applied as necessary at draw time according to
+        the type of color buffer in use. Applications may check the effective
+        blend color with <code>getParameter</code>.</p>
       </feature>
 
       <feature>
