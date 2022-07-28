@@ -4397,6 +4397,16 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
     </div>
 
+    <h3><a name="MAYBE_DEPTH_COMPARE_FILTERED">E.g. <code>sampler2DShadow</code> does not guarantee e.g. <code>LINEAR</code> filtering</a></h3>
+    <p>When TEXTURE_COMPARE_MODE is set to COMPARE_REF_TO_TEXTURE, a texture is always complete
+       even if it uses a LINEAR filtering without the required extensions. However, it is
+       implementation-defined whether the LINEAR filtering occurs. (Implementations may do NEAREST sampling instead)</p>
+
+    <div class="note rationale">
+        <p>This functionality is underspecified in GLES. It is common but not universal. We choose
+           to be liberal here, though implementations may warn on requests for this functionality.</p>
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
