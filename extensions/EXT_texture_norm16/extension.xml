@@ -20,8 +20,6 @@
 
     <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_norm16.txt"
              name="EXT_texture_norm16">
-        <addendum>Support for <code>UNSIGNED_SHORT</code> textures as FBO
-        attachments.</addendum>
     </mirrors>
 
     <features>
@@ -30,14 +28,11 @@
       buffer formats. The 16-bit normalized fixed point types
       <code>R16_EXT</code>, <code>RG16_EXT</code> and <code>RGBA16_EXT</code>
       become available as color-renderable formats. Renderbuffers can be
-      created in these formats. These and textures created with
-      <code>type = UNSIGNED_SHORT</code>, which will have one of these internal
-      formats, can be attached to framebuffer object color attachments for
-      rendering.
+      created in these formats.
       </feature>
 
-      <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
-      entry points taking <code>ArrayBufferView</code> are extended to accept
+      <feature> The <code>texImage</code> and <code>texSubImage</code>
+      entrypoints taking <code>ArrayBufferView</code> are extended to accept
       <code>Uint16Array</code> with the pixel type <code>UNSIGNED_SHORT</code>
       and <code>Int16Array</code> with the pixel type <code>SHORT</code>.
       </feature>
@@ -75,6 +70,9 @@ interface EXT_texture_norm16 {
     </revision>
     <revision date="2020/12/03">
       <change>Constrain the scope to only support ArrayBufferView.</change>
+    </revision>
+    <revision date="2022/06/08">
+      <change>Drop ambiguous wording regarding texImage with UNSIGNED_SHORT.</change>
     </revision>
   </history>
 </extension>
