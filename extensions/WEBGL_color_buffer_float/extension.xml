@@ -50,11 +50,19 @@
 
       <feature>
         <p><span style="color: red">NOTE:</span> fragment shaders outputs
-        gl_FragColor and gl_FragData[0] will only be clamped and converted
-        when the color buffer is fixed-point and <code>blendColor()</code> and
-        <code>clearColor()</code> will no longer clamp their parameter values
+        <code>gl_FragColor</code> and <code>gl_FragData[0]</code> will only be
+        clamped and converted when the color buffer is fixed-point and
+        <code>clearColor()</code> will no longer clamp its parameter values
         on input. Clamping will be applied as necessary at draw time according
         to the type of color buffer in use.</p>
+      </feature>
+
+      <feature>
+        <p>If the implementation supports unclamped blend color, the
+        <code>blendColor()</code> will no longer clamp its parameter values on
+        input. Clamping will be applied as necessary at draw time according to
+        the type of color buffer in use. Applications may check the effective
+        blend color with <code>getParameter</code>.</p>
       </feature>
 
       <feature>

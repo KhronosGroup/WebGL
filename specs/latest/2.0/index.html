@@ -4407,6 +4407,13 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
            to be liberal here, though implementations may warn on requests for this functionality.</p>
     </div>
 
+    <h3><a name="CLAMPED_BLEND_COLOR">Clamped Constant Blend Color</a></h3>
+    <p>
+        Implementations may clamp constant blend color on store when
+        the underlying platform does the same. Applications may query
+        <code>BLEND_COLOR</code> parameter to check the effective behavior.
+    </p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
