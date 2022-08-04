@@ -348,14 +348,15 @@
     </p>
     <p>
         WebGL presents its drawing buffer to the HTML page compositor immediately before a
-        compositing operation, but only if at least one of the following has occurred since the
+        compositing operation, but only if at least one of the following have been called since the
         previous compositing operation:
         <ul>
             <li>Context creation</li>
             <li>Canvas resize</li>
             <li>
-                <code>clear</code>, <code>drawArrays</code>, or <code>drawElements</code> has been
-                called while the drawing buffer is the currently bound framebuffer
+                Any of the
+                <a href=#DRAW_OPERATIONS>[Draw Operations]</a>,
+                called while the drawing buffer is the currently bound (draw) framebuffer.
             </li>
         </ul>
     </p>
@@ -2575,6 +2576,9 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
                         GLint border)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCopyTexImage2D.xml">man page</a>)</span>
         <dd>
+            A <a href=#READ_OPERATIONS>[Read Operation]</a>.
+            <br>
+
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
@@ -2595,6 +2599,9 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
                            GLint x, GLint y, GLsizei width, GLsizei height)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCopyTexSubImage2D.xml">man page</a>)</span>
         <dd>
+            A <a href=#READ_OPERATIONS>[Read Operation]</a>.
+            <br>
+
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
@@ -3316,19 +3323,35 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
 
 <!-- ======================================================================================================= -->
 
-    <h4><a name="WRITING_TO_THE_DRAWING_BUFFER">Writing to the drawing buffer</a></h4>
+    <h4><a id=DRAW_OPERATIONS>Draw Operations</a></h4>
 
     <p>
-        OpenGL ES 2.0 has 3 calls which can render to the drawing buffer: <code>clear</code>,
-        <code>drawArrays</code> and <code>drawElements</code>. Furthermore rendering can
+        OpenGL ES 2.0 has several calls which are allowed to
+        write to the currently bound (draw) framebuffer.
+        WebGL categorizes all such calls as <a href=#DRAW_OPERATIONS>[Draw Operations]</a>.
+    </p>
+    <p>
+        Furthermore, rendering can
         be directed to the drawing buffer or to a Framebuffer object. When rendering is
-        directed to the drawing buffer, making any of the 3 rendering calls shall
+        directed to the drawing buffer, making any of the rendering calls shall
         cause the drawing buffer to be presented to the HTML page compositor at the start
         of the next compositing operation.
     </p>
-
     <p>
-        If any one of these 3 calls attempts to draw to a missing attachment of a complete framebuffer,
+        These include, but (due to additions in extensions or in WebGL 2.0) are not limited to:
+        <ul>
+            <li><code>clear</code></li>
+            <li><code>drawArrays</code></li>
+            <li><code>drawElements</code></li>
+        </ul>
+        For instance,
+        <a href="https://registry.khronos.org/webgl/extensions/ANGLE_instanced_arrays/">ANGLE_instanced_arrays</a>
+        adds <code>drawArraysInstancedANGLE</code>, and
+        <a href="https://registry.khronos.org/webgl/specs/latest/2.0/">WebGL 2.0</a>
+        adds <code>drawArraysInstanced</code>.
+    </p>
+    <p>
+        If any one of these calls attempts to draw to a missing attachment of a complete framebuffer,
         nothing is drawn to that attachment and no error is generated
         per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.
     </p>
@@ -3336,23 +3359,30 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
     <dl class="methods">
         <dt class="idl-code">void clear(GLbitfield mask)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glClear.xml">man page</a>)</span>
+        <dd>
+            A <a href=#DRAW_OPERATIONS>[Draw Operation]</a>.
         <dt class="idl-code">void drawArrays(GLenum mode, GLint first, GLsizei count)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDrawArrays.xml">man page</a>)</span>
-            <dd>
+        <dd>
+            A <a href=#DRAW_OPERATIONS>[Draw Operation]</a>.
+            <br>
             If <em>first</em> is negative, an <code>INVALID_VALUE</code> error will be generated.
             If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
         <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDrawElements.xml">man page</a>)</span>
         <dd>
+            A <a href=#DRAW_OPERATIONS>[Draw Operation]</a>.
+            <br>
             Draw using the currently bound element array buffer.  The given offset is in bytes, and
             must be a valid multiple of the size of the given type or an <code>INVALID_OPERATION</code>
             error will be generated; in addition the offset must be non-negative or an
             <code>INVALID_VALUE</code> error will be generated; see <a href="#BUFFER_OFFSET_AND_STRIDE">
             Buffer Offset and Stride Requirements</a>. If <code>count</code> is greater than zero,
             then a non-null <code>WebGLBuffer</code> must be bound to the <code>ELEMENT_ARRAY_BUFFER</code>
-            binding point or an <code>INVALID_OPERATION</code> error will be generated.<br><br>
+            binding point or an <code>INVALID_OPERATION</code> error will be generated.<br>
+            <br>
             If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
-
+            <br>
             WebGL performs additional error checking beyond that specified in OpenGL ES 2.0 during
             calls to <code>drawArrays</code>
             and <code>drawElements</code>. See <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex
@@ -3365,10 +3395,20 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
 
 <!-- ======================================================================================================= -->
 
-    <h4><a name="readpixels">Reading back pixels</a></h4>
+    <h4><a id=READ_OPERATIONS>Read Operations</a></h4>
 
     <p>
-        Pixels in the current framebuffer can be read back into an ArrayBufferView object.
+        OpenGL ES 2.0 has several calls which which are allowed to
+        read from the currently bound (read) framebuffer.
+        WebGL categorizes all such calls as <a href=#READ_OPERATIONS>[Read Operations]</a>.
+    </p>
+    <p>
+        These include, but (due to additions in extensions or in WebGL 2.0) are not limited to:
+        <ul>
+            <li><code>copyTexImage2D</code></li>
+            <li><code>copyTexSubImage2D</code></li>
+            <li><code>readPixels</code></li>
+        </ul>
     </p>
 
     <dl class="methods">
@@ -3376,6 +3416,12 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
                            GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.3.1">OpenGL ES 2.0 &sect;4.3.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glReadPixels.xml">man page</a>)</span>
         <dd>
+            A <a href=#READ_OPERATIONS>[Read Operation]</a>.
+            <br>
+
+            Pixels in the current framebuffer are read back into an ArrayBufferView object.
+            <br>
+
             Fills <code>pixels</code> with the pixel data in the specified rectangle of the frame
             buffer. The data returned from readPixels must be up-to-date as of the most recently
             sent drawing command.
@@ -3929,17 +3975,10 @@ If any of the constraints above are violated, then:
 
 <ul>
 <li> <code>checkFramebufferStatus</code> must return <code>FRAMEBUFFER_UNSUPPORTED</code>.
-<li> The following calls, which either modify or read the framebuffer, must generate
+<li> <a href=#DRAW_OPERATIONS>[Draw Operations]</a> and <a href=#READ_OPERATIONS>[Read Operations]</a>,
+     which either draw to or read from the framebuffer, must generate
      an <code>INVALID_FRAMEBUFFER_OPERATION</code> error and return early, leaving the contents of
      the framebuffer, destination texture or destination memory untouched.
-  <ul>
-  <li> clear
-  <li> copyTexImage2D
-  <li> copyTexSubImage2D
-  <li> drawArrays
-  <li> drawElements
-  <li> readPixels
-  </ul>
 </ul>
 
 The following combinations of framebuffer object attachments, when all of the attachments are
@@ -4021,11 +4060,13 @@ create an <code>ImageBitmap</code> with the desired format.
 <h3><a name="READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a></h3>
 
 <p>
-In the WebGL API, three functions read the framebuffer: <code>copyTexImage2D</code>,
-<code>copyTexSubImage2D</code>, and <code>readPixels</code>. <code>copyTexImage2D</code> is defined to
-generate the RGBA value (0, 0, 0, 0) for any pixel outside of the bound framebuffer.
-<code>copyTexSubImage2D</code> and <code>readPixels</code> are defined not to touch the corresponding
-destination range for any pixel outside the bound framebuffer.
+For <a href=#READ_OPERATIONS>[Read Operations]</a>,
+reads from out-of-bounds pixels sub-areas do not touch their corresponding destination sub-areas.
+</p>
+<p>
+WebGL (behaves as if it) pre-initializes resources to zeros.
+Therefore for example <code>copyTexImage2D</code> will have zeros in sub-areas that correspond to
+out-of-bounds framebuffer reads.
 </p>
 
 <h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
@@ -4262,14 +4303,8 @@ extensions.
     that does not have a color attachment.
 </p>
 <p>
-    In the WebGL API, such operations that require data from an attachment that is missing will
-    generate an <code>INVALID_OPERATION</code> error. This applies to the following functions:
-
-    <ul>
-    <li> <code>copyTexImage2D</code>
-    <li> <code>copyTexSubImage2D</code>
-    <li> <code>readPixels</code>
-    </ul>
+    In the WebGL API, any <a href=#READ_OPERATIONS>[Read Operations]</a> that require data from an attachment that is missing will
+    generate an <code>INVALID_OPERATION</code> error.
 </p>
 
 <h3><a name="DRAWING_TO_MISSING_ATTACHMENT">Drawing To a Missing Attachment</a></h3>
@@ -4279,14 +4314,9 @@ extensions.
     that does not have a color attachment.
 </p>
 <p>
-    In the WebGL API, such operations that draw to an attachment that is missing will draw
-    nothing to that attachment. No error is generated. This applies to the following functions:
-
-    <ul>
-    <li> <code>clear</code>
-    <li> <code>drawArrays</code>
-    <li> <code>drawElements</code>
-    </ul>
+    In the WebGL API, any <a href=#DRAW_OPERATIONS>[Draw Operations]</a>
+    that draw to an attachment that is missing will draw
+    nothing to that attachment. No error is generated.
 </p>
 
 <h3><a name="NAN_LINE_WIDTH">NaN Line Width</a></h3>
