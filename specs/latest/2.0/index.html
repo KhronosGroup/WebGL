@@ -3637,8 +3637,9 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
     <h3>Preventing undefined behavior with Transform Feedback</h3>
 
     <p>
-        A buffer which is simultaneously bound to a TRANSFORM_FEEDBACK_BUFFER binding point in the currently
-        bound transform feedback object and any other binding point in the WebGL API cannot be used. Any
+        A buffer which is simultaneously bound to an indexed TRANSFORM_FEEDBACK_BUFFER binding point
+        in the currently bound transform feedback object and any other binding point in the WebGL API,
+        except generic TRANSFORM_FEEDBACK_BUFFER binding point, cannot be used. Any
         attempted use of such a double bound buffer fails with an <code>INVALID_OPERATION</code> error,
         regardless of whether transform feedback is enabled. For example, readPixels to a PIXEL_PACK_BUFFER
         will fail if the buffer is also bound to the current transform feedback object.
@@ -3651,7 +3652,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
     </div>
 
     <p>
-        In case the same buffer is bound to more than one binding point in the active transform feedback,
+        In case the same buffer is bound to more than one indexed binding point in the active transform feedback,
         <code>beginTransformFeedback</code> generates an <code>INVALID_OPERATION</code> error.
     </p>
 
@@ -4413,6 +4414,17 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         the underlying platform does the same. Applications may query
         <code>BLEND_COLOR</code> parameter to check the effective behavior.
     </p>
+
+    <h3><a name="GENERIC_TRANSFORM_FEEDBACK_BUFFER">Generic TRANSFORM_FEEDBACK_BUFFER state location</a></h3>
+
+    <p>
+      The TRANSFORM_FEEDBACK_BUFFER generic buffer binding point has been moved to
+      context state, rather than per-object state.
+    </p>
+
+    <div class="note rationale">
+      A similar change was made in OpenGL ES 3.2.
+    </div>
 
 <!-- ======================================================================================================= -->
 
