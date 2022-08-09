@@ -1422,6 +1422,12 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
       </dt>
       <dd>
+        Both a
+        <a href="../1.0/#READ_OPERATIONS">[Read Operation]</a>
+        and a
+        <a href="../1.0/#DRAW_OPERATIONS">[Draw Operation]</a>.
+        <br>
+
         Transfer a rectangle of pixel values from one region of the read framebuffer to another in the draw
         framebuffer. If the value of SAMPLE_BUFFERS for the read framebuffer is one and the value of
         SAMPLE_BUFFERS for the draw framebuffer is zero, the samples corresponding to each pixel location in
@@ -1463,6 +1469,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
       </dt>
       <dd>
+        A <a href="../1.0/#DRAW_OPERATIONS">[Draw Operation]</a>.
+        <br>
         Equivalent to calling <code>invalidateSubFramebuffer</code> with <code>x</code> and <code>y</code>
         set to 0 and <code>width</code> and <code>height</code> set to the largest framebuffer object's
         attachments' width and height.
@@ -1476,6 +1484,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
       </dt>
       <dd>
+        A <a href="../1.0/#DRAW_OPERATIONS">[Draw Operation]</a>.
+        <br>
         Signal the GL that it need not preserve all contents of a bound framebuffer object.
       </dd>
       <dt>
@@ -2055,6 +2065,9 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
       </dt>
       <dd>
+        A <a href="../1.0/#READ_OPERATIONS">[Read Operation]</a>.
+        <br>
+
         If an attempt is made to call this function with no WebGLTexture bound (see above), an
         <code>INVALID_OPERATION</code> error is generated. <br><br>
 
@@ -2421,6 +2434,9 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
           </span>
         </p>
       </dt>
+      <dd>
+        A <a href="../1.0/#DRAW_OPERATIONS">[Draw Operation]</a>.
+      </dd>
       <dt>
         <p class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset)
           <span class="gl-spec">
@@ -2429,6 +2445,9 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
           </span>
         </p>
       </dt>
+      <dd>
+        A <a href="../1.0/#DRAW_OPERATIONS">[Draw Operation]</a>.
+      </dd>
       <dt>
         <p class="idl-code">void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
           <span class="gl-spec">
@@ -2438,6 +2457,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
       </dt>
       <dd>
+        A <a href="../1.0/#DRAW_OPERATIONS">[Draw Operation]</a>.
+        <br>
         Draw <code>instanceCount</code> instances of geometry using the currently enabled vertex attributes.
         Vertex attributes which have a non-zero divisor advance once every divisor instances.<br><br>
       </dd>
@@ -2450,6 +2471,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
       </dt>
       <dd>
+        A <a href="../1.0/#DRAW_OPERATIONS">[Draw Operation]</a>.
+        <br>
         Draw <code>instanceCount</code> instances of geometry using the currently bound element array buffer.
         Vertex attributes which have a non-zero divisor advance once every divisor instances.<br><br>
       </dd>
@@ -2462,6 +2485,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
       </dt>
       <dd>
+        A <a href="../1.0/#DRAW_OPERATIONS">[Draw Operation]</a>.
+        <br>
         Draw using the currently bound element array buffer. All error conditions specified for
         <code>drawElements</code> in the section <a href="../1.0/index.html#WRITING_TO_THE_DRAWING_BUFFER">Writing
         to the drawing buffer</a> of the WebGL 1.0 specification apply.<br><br>
@@ -2501,6 +2526,9 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
           </span>
         </dt>
         <dd>
+          A <a href="../1.0/#READ_OPERATIONS">[Read Operation]</a>.
+          <br>
+
           <p>If a WebGLBuffer is bound to the <code>PIXEL_PACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
           <p>
               If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
@@ -2559,6 +2587,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
       </dt>
       <dd>
         Define the draw buffers to which all fragment colors are written.
+        <br>
+        This does not draw, this only sets up state for subsequent calls.
       </dd>
       <dt>
         <div class="idl-code">
@@ -2573,6 +2603,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
               (<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/es_spec_3.0.pdf#nameddest=subsection.4.2.3">OpenGL ES 3.0.6 &sect;4.2.3</a>,
               <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClearBuffer.xhtml" class="nonnormative">man page</a>)
             </span>
+            These are <a href="../1.0/#DRAW_OPERATIONS">[Draw Operations]</a>.
           </p>
         </div>
       </dt>
