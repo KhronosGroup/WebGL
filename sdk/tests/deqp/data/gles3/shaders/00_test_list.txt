@@ -22,4 +22,12 @@ preprocessor.html
 qualification_order.html
 scoping.html
 switch.html
-swizzles.html
+--min-version 2.0.1 swizzles_bvec2.html
+--min-version 2.0.1 swizzles_bvec3.html
+--min-version 2.0.1 swizzles_bvec4.html
+--min-version 2.0.1 swizzles_ivec2.html
+--min-version 2.0.1 swizzles_ivec3.html
+--min-version 2.0.1 swizzles_ivec4.html
+--min-version 2.0.1 swizzles_vec2.html
+--min-version 2.0.1 swizzles_vec3.html
+--min-version 2.0.1 swizzles_vec4.html
