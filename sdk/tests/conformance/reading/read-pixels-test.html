@@ -39,6 +39,18 @@ function runTest(canvas, antialias) {
   gl = wtu.create3DContext(canvas, {antialias: antialias});
   var contextVersion = wtu.getDefault3DContextVersion();
 
+  debug("");
+  debug("Test null receiver");
+  gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  debug("");
+  debug("Test combined depth-stencil type");
+  // The combined type is undefined in WebGL 1.0 and never allowed as a read type in WebGL 2.0
+  gl.readPixels(0, 0, 1, 1, gl.RGBA, 0x8DAD /* FLOAT_32_UNSIGNED_INT_24_8_REV */, new Uint8Array(32));
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
   var width = 2;
   var height = 2;
   var continueTestFunc = continueTestPart1;
