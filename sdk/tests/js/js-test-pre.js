@@ -268,9 +268,9 @@ function getCurrentTestName()
  */
 function testPassedOptions(msg, addSpan)
 {
+    reportTestResultsToHarness(true, _currentTestName + ": " + msg);
     if (addSpan && !quietMode())
     {
-        reportTestResultsToHarness(true, _currentTestName + ": " + msg);
         _addSpan('<span><span class="pass">PASS</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');
     }
     if (_jsTestPreVerboseLogging) {
@@ -285,9 +285,9 @@ function testPassedOptions(msg, addSpan)
  */
 function testSkippedOptions(msg, addSpan)
 {
+    reportSkippedTestResultsToHarness(true, _currentTestName + ": " + msg);
     if (addSpan && !quietMode())
     {
-        reportSkippedTestResultsToHarness(true, _currentTestName + ": " + msg);
         _addSpan('<span><span class="warn">SKIP</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');
     }
     if (_jsTestPreVerboseLogging) {
