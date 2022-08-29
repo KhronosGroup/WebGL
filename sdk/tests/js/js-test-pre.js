@@ -93,20 +93,25 @@ const RESULTS = {
   fail: 0,
 };
 
+// We cache these values since they will potentially be accessed many (100k+)
+// times and accessing window can be significantly slower than a local variable.
+const locationPathname = window.location.pathname;
+const webglTestHarness = window.parent.webglTestHarness;
+
 function reportTestResultsToHarness(success, msg) {
   if (success) {
     RESULTS.pass += 1;
   } else {
     RESULTS.fail += 1;
   }
-  if (window.parent.webglTestHarness) {
-    window.parent.webglTestHarness.reportResults(window.location.pathname, success, msg);
+  if (webglTestHarness) {
+    webglTestHarness.reportResults(locationPathname, success, msg);
   }
 }
 
 function reportSkippedTestResultsToHarness(success, msg) {
-  if (window.parent.webglTestHarness) {
-    window.parent.webglTestHarness.reportResults(window.location.pathname, success, msg, true);
+  if (webglTestHarness) {
+    webglTestHarness.reportResults(locationPathname, success, msg, true);
   }
 }
 
@@ -116,8 +121,8 @@ function notifyFinishedToHarness() {
   }
   window._didNotifyFinishedToHarness = true;
 
-  if (window.parent.webglTestHarness) {
-    window.parent.webglTestHarness.notifyFinished(window.location.pathname);
+  if (webglTestHarness) {
+    webglTestHarness.notifyFinished(locationPathname);
   }
   if (window.nonKhronosFrameworkNotifyDone) {
     window.nonKhronosFrameworkNotifyDone();
