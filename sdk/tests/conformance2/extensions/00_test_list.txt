@@ -1,6 +1,7 @@
 ext-color-buffer-float.html
 --min-version 2.0.1 ext-color-buffer-half-float.html
 ext-disjoint-timer-query-webgl2.html
+--min-version 2.0.1 ext-provoking-vertex.html
 --min-version 2.0.1 ext-texture-filter-anisotropic.html
 --min-version 2.0.1 ext-texture-norm16.html
 promoted-extensions.html
