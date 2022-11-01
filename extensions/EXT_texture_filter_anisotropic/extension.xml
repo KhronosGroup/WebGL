@@ -14,7 +14,7 @@
     <api version="1.0" />
   </depends>
   <overview>
-    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/texture_filter_anisotropic.txt" name="EXT_texture_filter_anisotropic"/>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_texture_filter_anisotropic.txt" name="EXT_texture_filter_anisotropic"/>
     <features>
       <feature>
         The <code>getTexParameter</code>, <code>texParameterf</code> and <code>texParameteri</code> entry points'
