@@ -13,10 +13,7 @@
     <api version="2.0"/>
   </depends>
   <overview>
-    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_provoking_vertex.txt" name="EXT_provoking_vertex">
-      <addendum>
-        <code>QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION</code> is removed, as <code>QUADS</code> are not present in WebGL.
-      </addendum>
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/main/extensions/ANGLE_provoking_vertex.txt" name="ANGLE_provoking_vertex">
       <addendum>
         Implementations SHOULD only expose this extension when <code>FIRST_VERTEX_CONVENTION</code> is more efficient than the default behavior of <code>LAST_VERTEX_CONVENTION</code>.
         Applications should expect that if this extension is supported by a WebGL context, they should try to use <code>FIRST_VERTEX_CONVENTION</code> if they can.
@@ -36,7 +33,7 @@ interface WEBGL_provoking_vertex {
     const GLenum LAST_VERTEX_CONVENTION_WEBGL  = 0x8E4E; // default
     const GLenum PROVOKING_VERTEX_WEBGL        = 0x8E4F;
 
-    undefined provokingVertexWEBGL(GLenum convention);
+    undefined provokingVertexWEBGL(GLenum provokeMode);
 };
   </idl>
   <samplecode xml:space="preserve">
@@ -58,6 +55,9 @@ interface WEBGL_provoking_vertex {
     </revision>
     <revision date="2022/11/01">
       <change>Renamed to WEBGL_provoking_vertex.</change>
+    </revision>
+    <revision date="2022/11/23">
+      <change>Updated to mirror ANGLE_provoking_vertex.</change>
     </revision>
   </history>
 </draft>
