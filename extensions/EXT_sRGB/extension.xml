@@ -22,6 +22,9 @@
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_sRGB.txt"
              name="EXT_sRGB">
+      <addendum>
+        Support for <code>OES_rgb8_rgba8</code> or equivalent functionality is not required.
+      </addendum>
     </mirrors>
 
     <features>
@@ -82,6 +85,9 @@
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2022/12/01">
+      <change>Clarified WebGL-specific behavioral changes.</change>
     </revision>
   </history>
 </extension>
