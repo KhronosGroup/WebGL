@@ -100,6 +100,32 @@ interface EXT_color_buffer_half_float {
 }; // interface EXT_color_buffer_half_float
   </idl>
 
+  <newtok>
+    <function name="renderbufferStorage" type="undefined">
+      <param name="target" type="GLenum"/>
+      <param name="internalformat" type="GLenum"/>
+      <param name="width" type="GLsizei"/>
+      <param name="height" type="GLsizei"/>
+      <p>In WebGL 1.0 contexts, <code>RGB16F_EXT</code> and
+      <code>RGBA16F_EXT</code> are accepted as the
+      <code>internalformat</code> parameter.</p>
+      <p>In WebGL 2.0 contexts, <code>RGBA16F</code>,
+      <code>RG16F</code>, and <code>R16F</code> are accepted as the
+      <code>internalformat</code> parameter.</p>
+    </function>
+    <function name="getFramebufferAttachmentParameter" type="any">
+      <param name="target" type="GLenum"/>
+      <param name="attachment" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <p>In WebGL 1.0 contexts,
+      <code>FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT</code>
+      is accepted as the <code>pname</code> parameter.</p>
+      <p>An <code>INVALID_OPERATION</code> error is generated if
+      <code>attachment</code> is <code>DEPTH_STENCIL_ATTACHMENT</code>
+      and <code>pname</code> is <code>FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT</code>.</p>
+    </function>
+  </newtok>
+
   <additions>
     <p>In section 5.13.12 <cite>Reading back pixels</cite>, change the allowed
     format and types table to:</p>
@@ -175,6 +201,10 @@ interface EXT_color_buffer_half_float {
       <change>Expose to WebGL 2.0 contexts to support devices which can render
       only to 16-bit floating point targets, and therefore can not support
       EXT_color_buffer_float.</change>
+    </revision>
+
+    <revision date="2022/12/02">
+      <change>Clarified framebuffer object attachment component type queries.</change>
     </revision>
   </history>
 </extension>
