@@ -38,7 +38,7 @@ interface OES_fbo_render_mipmap {
   <samplecode xml:space="preserve">
     <pre>
         var extension = gl.getExtension('OES_fbo_render_mipmap');
-        if(extension !=== null){
+        if(extension !== null){
             var texture = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, texture);
             var fbos = [];
