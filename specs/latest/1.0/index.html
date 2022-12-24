@@ -3773,6 +3773,81 @@ if(!gl) {
         errorInfo);
 }</pre>
     </div>
+    
+    <h4><a name="CONTEXT_RECREATION_READY">The Context Recreation Ready Event</a></h4>
+
+    <p>
+        When the user agent is to <b><a name="fire-a-webgl-context-recreation-ready">fire a WebGL
+        context recreation ready</a></b> at a <em>canvas</em>, it must perform the following steps:
+
+        <ol class="nestedlist">
+
+        <li> <a href="#fire-a-webgl-context-event">Fire a WebGL context event</a> named
+        "webglcontextrecreationready" at <em>canvas</em>, if the initial context creation failed caused by temporary hardware issues. 
+        You might see such issues at a certain rate by extremely high trafficing WebGL only websites. </li>
+
+        </ol>
+
+    </p>
+    
+    <div class="note">
+        This event is designed under the background of surging online visits to more 
+        and more extremely high traffic WebGL only websites. Nowadays daily visits at 
+        the level of 10 million to a single WebGL dependent webpage are not rare. 
+        (Theorically at least a visit per 8.6 milliseconds)
+        User client GPUs are often shared between applications. If another GPU dependent 
+        application causes temporary hardware issues, like running long shaders. 
+        A certain percentage of website users can run into such situations, hence fail to 
+        create WebGL context. We lack such an context independent event to inform users 
+        when is the most applicable timepoint to recreate context.
+    </div>
+
+    <div class="example">
+
+        The following code illustrates how an application can recreate context if the initial creation failed:
+
+<pre>var gl = null;
+var errorInfo = "";
+function createContext() {
+
+    var gl = canvas.getContext("webgl");
+    if(!gl) {
+      alert("A WebGL context could not be created at the moment.\nReason: " +
+            errorInfo + 
+            "A event will be fired if hardware is ready again. Possibly in less than 30 seconds depending on specific hardwares.");
+    }
+    
+    return gl;
+}
+
+function onContextCreationError(event) {
+
+  canvas.removeEventListener(
+     "webglcontextcreationerror",
+     onContextCreationError, false);
+
+  errorInfo = e.statusMessage || "Unknown";
+}
+
+canvas.addEventListener(
+    "webglcontextcreationerror",
+    onContextCreationError, false);
+
+function onContextRecreationReady(event) {
+
+  canvas.removeEventListener(
+     "webglcontextrecreationready",
+     onContextRecreationReady, false);
+
+  gl = createContext();
+}
+
+canvas.addEventListener(
+    "webglcontextrecreationready",
+    onContextRecreationReady, false);
+
+gl = createContext();</pre>
+    </div>
 
 <!-- ======================================================================================================= -->
 
