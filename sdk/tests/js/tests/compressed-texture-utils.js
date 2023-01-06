@@ -69,7 +69,7 @@ let testCompressedFormatsUnavailableWhenExtensionDisabled = function(gl, compres
             wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Trying to use format " + name + " with extension disabled.");
             if (gl.texStorage2D) {
                 gl.texStorage2D(gl.TEXTURE_2D, 1, compressedFormats[name], testSize, testSize);
-                wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Trying to use format " + name + " with extension disabled.");
+                wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Trying to use format " + name + " with texStorage2D with extension disabled.");
             }
         }
     }
