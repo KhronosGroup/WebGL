@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<draft href="WEBGL_clip_cull_distance/">
+  <name>WEBGL_clip_cull_distance</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+    <contributor>Kevin Rogovin (kevinrogovin 'at' invisionapp.com)</contributor>
+  </contributors>
+
+  <number>43</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_clip_cull_distance.txt"
+             name="EXT_clip_cull_distance">
+      <addendum>
+        Cull distance support is optional.
+        This extension may be implemented on top of
+        <a href="https://chromium.googlesource.com/angle/angle/+/HEAD/extensions/ANGLE_clip_cull_distance.txt">ANGLE_clip_cull_distance</a>.
+      </addendum>
+      <addendum>
+        Although the extension name is WEBGL_clip_cull_distance, the extension
+        must be enabled with the <code>#extension GL_ANGLE_clip_cull_distance</code>
+        directive, as shown in the sample code, to use the built-ins in shaders.
+
+        Likewise the shading language preprocessor <code>#define GL_ANGLE_clip_cull_distance</code>,
+        will be defined to 1 if the extension is supported.
+      </addendum>
+    </mirrors>
+
+    <features>
+      <feature>
+        <p>Clip and cull distance built-ins are supported in ESSL 3.00 shaders.</p>
+        <p>If the platform does not support cull distances:
+          <ul>
+            <li>
+              Querying <code>MAX_CULL_DISTANCES_WEBGL</code> and
+              <code>MAX_COMBINED_CLIP_AND_CULL_DISTANCES_WEBGL</code>
+              must return zero.
+            </li>
+            <li>
+              The built-in shader constants <code>gl_MaxCullDistances</code> and
+              <code>gl_MaxCombinedClipAndCullDistances</code> are defined as zero.
+            </li>
+            <li>
+              The <code>gl_CullDistance</code> built-in must not be redeclared and
+              may only be used conditionally, see the sample code below.
+            </li>
+          </ul>
+        </p>
+      </feature>
+      <glsl extname="GL_ANGLE_clip_cull_distance">
+        <stage type="vertex"/>
+        <output name="gl_ClipDistance[]" type="highp float"/>
+        <output name="gl_CullDistance[]" type="highp float"/>
+        <stage type="fragment"/>
+        <input name="gl_ClipDistance[]" type="highp float"/>
+        <input name="gl_CullDistance[]" type="highp float"/>
+      </glsl>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
+    interface WEBGL_clip_cull_distance {
+      const GLenum MAX_CLIP_DISTANCES_WEBGL                   = 0x0D32;
+      const GLenum MAX_CULL_DISTANCES_WEBGL                   = 0x82F9;
+      const GLenum MAX_COMBINED_CLIP_AND_CULL_DISTANCES_WEBGL = 0x82FA;
+
+      const GLenum CLIP_DISTANCE0_WEBGL                       = 0x3000;
+      const GLenum CLIP_DISTANCE1_WEBGL                       = 0x3001;
+      const GLenum CLIP_DISTANCE2_WEBGL                       = 0x3002;
+      const GLenum CLIP_DISTANCE3_WEBGL                       = 0x3003;
+      const GLenum CLIP_DISTANCE4_WEBGL                       = 0x3004;
+      const GLenum CLIP_DISTANCE5_WEBGL                       = 0x3005;
+      const GLenum CLIP_DISTANCE6_WEBGL                       = 0x3006;
+      const GLenum CLIP_DISTANCE7_WEBGL                       = 0x3007;
+    };
+  </idl>
+
+  <samplecode xml:space="preserve">
+    <pre>
+    #extension GL_ANGLE_clip_cull_distance : enable
+
+    void main() {
+        // Compute the clip distances for the current vertex
+        gl_ClipDistance[0] = ...;
+        gl_ClipDistance[1] = ...;
+
+        // For better portability, check if cull distances are supported.
+        // This should compile even when the platform does not support cull distances.
+        if (gl_MaxCullDistances > 0) {
+            gl_CullDistance[0] = ...;
+            gl_CullDistance[1] = ...;
+        }
+    }
+    </pre>
+  </samplecode>
+
+  <history>
+    <revision date="2016/08/22">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2019/09/25">
+      <change>Promoted to Draft.</change>
+    </revision>
+    <revision date="2020/07/01">
+      <change>Added addendum that allows for the number of cull distances to be 0.</change>
+    </revision>
+    <revision date="2022/12/01">
+      <change>Renamed to WEBGL_clip_cull_distance.</change>
+    </revision>
+  </history>
+</draft>
