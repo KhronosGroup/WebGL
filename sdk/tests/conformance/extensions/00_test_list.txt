@@ -7,6 +7,7 @@
 --min-version 1.0.4 ext-texture-compression-rgtc.html
 --min-version 1.0.4 ext-disjoint-timer-query.html
 --min-version 1.0.3 --max-version 1.9.9 ext-frag-depth.html
+--min-version 1.0.4 ext-polygon-offset-clamp.html
 --min-version 1.0.3 --max-version 1.9.9 ext-shader-texture-lod.html
 --min-version 1.0.3 --max-version 1.9.9 ext-sRGB.html
 --min-version 1.0.2 ext-texture-filter-anisotropic.html
