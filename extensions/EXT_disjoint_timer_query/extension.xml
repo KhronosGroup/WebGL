@@ -92,7 +92,7 @@ interface EXT_disjoint_timer_query {
   <newfun>
     <function name="isQueryEXT" type="boolean">
       <param name="query" type="WebGLTimerQueryEXT?"/>
-      Returns true if the passed WebGLTimerQueryEXT is valid and false otherwise. Returns false if
+      Returns true if the passed <code>WebGLTimerQueryEXT</code> is valid and false otherwise. Returns false if
       the query's <a
       href="http://www.khronos.org/registry/webgl/specs/1.0.1/#webgl-object-invalidated-flag">invalidated
       flag</a> is set.
@@ -102,7 +102,7 @@ interface EXT_disjoint_timer_query {
   <newfun>
     <function name="beginQueryEXT" type="undefined">
       <param name="target" type="GLenum"/>
-      <param name="query" type="WebGLTimerQueryEXT?"/>
+      <param name="query" type="WebGLTimerQueryEXT"/>
       <code>target</code> accepts <code>TIME_ELAPSED_EXT</code>.
     </function>
   </newfun>
@@ -116,7 +116,7 @@ interface EXT_disjoint_timer_query {
 
   <newfun>
     <function name="queryCounterEXT" type="undefined">
-      <param name="query" type="WebGLTimerQueryEXT?"/>
+      <param name="query" type="WebGLTimerQueryEXT"/>
       <param name="target" type="GLenum"/>
       <code>target</code> accepts <code>TIMESTAMP_EXT</code>.
     </function>
@@ -131,8 +131,8 @@ interface EXT_disjoint_timer_query {
       <br/>
       <table width="30%">
       <tr><th>target</th><th>pname</th><th>returned type</th></tr>
-      <tr><td>TIME_ELAPSED_EXT</td><td>CURRENT_QUERY</td><td>WebGLQuery?</td></tr>
-      <tr><td>TIMESTAMP_EXT</td><td>CURRENT_QUERY</td><td>null</td></tr>
+      <tr><td>TIME_ELAPSED_EXT</td><td>CURRENT_QUERY_EXT</td><td>WebGLTimerQueryEXT?</td></tr>
+      <tr><td>TIMESTAMP_EXT</td><td>CURRENT_QUERY_EXT</td><td>null</td></tr>
       <tr><td>TIME_ELAPSED_EXT</td><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
       <tr><td>TIMESTAMP_EXT</td><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
       </table>
@@ -141,7 +141,7 @@ interface EXT_disjoint_timer_query {
 
   <newfun>
     <function name="getQueryObjectEXT" type="any">
-      <param name="query" type="WebGLTimerQueryEXT?"/>
+      <param name="query" type="WebGLTimerQueryEXT"/>
       <param name="pname" type="GLenum"/>
       <code>pname</code> accepts <code>QUERY_RESULT_EXT</code> or <code>QUERY_RESULT_AVAILABLE_EXT</code>.
       <br/>
@@ -159,14 +159,14 @@ interface EXT_disjoint_timer_query {
       <ul>
         <li> A query's result must not be made available until control has returned to the user
              agent's main loop. </li>
-        <li> Repeatedly fetching a query's QUERY_RESULT_AVAILABLE_EXT parameter in a loop, without
+        <li> Repeatedly fetching a query's <code>QUERY_RESULT_AVAILABLE_EXT</code> parameter in a loop, without
              returning control to the user agent, must always return the same value. </li>
       </ul>
 
       <div class="note">
         A query's result may or may not be made available when control returns to the user
         agent's event loop. It is not guaranteed that using a single setTimeout callback with a
-        delay of 0, or a single requestAnimationFrame callback, will allow sufficient time for
+        delay of 0, or a single <code>requestAnimationFrame</code> callback, will allow sufficient time for
         the WebGL implementation to supply the query's results.
       </div>
 
@@ -401,6 +401,9 @@ interface EXT_disjoint_timer_query {
     </revision>
     <revision date="2021/04/01">
       <change>Clean up query objects via deleteQueryEXT. Modernize examples' JavaScript code.</change>
+    </revision>
+    <revision date="2023/02/14">
+      <change>Aligned function definitions with the IDL, adjusted formatting.</change>
     </revision>
   </history>
 </extension>
