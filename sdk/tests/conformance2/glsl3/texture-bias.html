@@ -25,7 +25,7 @@ function runTest(gl) {
   // no if idea any drivers have a giant limit like 2^32 so just in case.
   const kMaxMaxTextureSize = 256 * 1024 * 1024;
   const maxTextureSize = Math.min(kMaxMaxTextureSize, gl.getParameter(gl.MAX_TEXTURE_SIZE));
-  const maxLODs = Math.log2(maxTextureSize) | 0 + 1;
+  const maxLODs = (Math.log2(maxTextureSize) | 0) + 1;
   const maxTextureLODBias = gl.getParameter(gl.MAX_TEXTURE_LOD_BIAS);
 
   debug(`maxTextureSize: ${maxTextureSize}`);
