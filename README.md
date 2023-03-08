@@ -20,6 +20,10 @@ https://www.khronos.org/registry/webgl/conformance-suites/
 The WebGL Wiki can be found here
 https://www.khronos.org/webgl/wiki/
 
+This repository is licensed under the MIT license and all
+contributions are covered under the [MIT
+CLA](https://gist.github.com/KhronosWebservices/8f6da941cd2bb316e1f32e40a7f94429).
+
 ## Cloning this repository
 
 When cloning this repository please pass the --recursive flag to git:
