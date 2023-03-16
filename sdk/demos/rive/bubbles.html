@@ -1,0 +1,387 @@
+<!--
+Copyright (c) 2023 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+
+Copyright 2023 Rive
+
+Implements the blend equations defined in the KHR_blend_equation_advanced specification:
+https://registry.khronos.org/OpenGL/extensions/KHR/KHR_blend_equation_advanced.txt
+-->
+<style>
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+}
+</style>
+<div style="width:100%">
+  <div style="float:left">
+    <select id="blend_mode" onchange="setProgram(this.value)">
+      <option value="multiply">multiply</option>
+      <option value="screen">screen</option>
+      <option value="overlay">overlay</option>
+      <option value="darken">darken</option>
+      <option value="lighten">lighten</option>
+      <option value="colordodge">colordodge</option>
+      <option value="colorburn" selected>colorburn</option>
+      <option value="hardlight">hardlight</option>
+      <option value="softlight">softlight</option>
+      <option value="difference">difference</option>
+      <option value="exclusion">exclusion</option>
+      <option value="hue">hue</option>
+      <option value="saturation">saturation</option>
+      <option value="color">color</option>
+      <option value="luminosity">luminosity</option>
+    </select>
+  </div>
+  <div style="float:right" id="fps_label">0.0&nbsp;fps</div>
+  <div style="margin:0 auto; text-align: center; width:100%" id="renderer_name" />
+</div>
+<canvas id="canvas"></canvas>
+<script>
+  const canvas = document.getElementById("canvas");
+  const gl = canvas.getContext("webgl2", {
+    antialias: false,
+    powerPreference: "high-performance",
+  });
+
+  const dri = gl.getExtension('WEBGL_debug_renderer_info');
+  const vendor = gl.getParameter(dri ? dri.UNMASKED_VENDOR_WEBGL : gl.VENDOR);
+  const renderer = gl.getParameter(dri ? dri.UNMASKED_RENDERER_WEBGL : gl.RENDERER);
+  console.log("GL_VENDOR: " + vendor);
+  console.log("GL_RENDERER: " + renderer);
+  console.log("GL_VERSION: " + gl.getParameter(gl.VERSION));
+  document.getElementById("renderer_name").innerHTML = renderer;
+
+  const pls = gl.getExtension("WEBGL_shader_pixel_local_storage");
+  if (!pls || !pls.isCoherent())
+    throw "Coherent PLS not supported."
+
+  const vs = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vs, `#version 300 es
+  precision highp float;
+  uniform vec2 window;
+  uniform float T;
+  layout(location=0) in vec3 bubble;
+  layout(location=1) in vec2 speed;
+  layout(location=2) in vec4 incolor;
+  out vec2 coord;
+  out vec4 bubble_color;
+  void main() {
+      vec2 offset = vec2((gl_VertexID & 1) == 0 ? -1.0 : 1.0, (gl_VertexID & 2) == 0 ? -1.0 : 1.0);
+      coord = offset;
+      bubble_color = incolor;
+      float r = bubble.z;
+      vec2 center = bubble.xy + speed * T;
+      vec2 span = window - 2.0 * r;
+      center = span - abs(span - mod(center - r, span * 2.0)) + r;
+      gl_Position.xy = (center + offset * r) * 2.0 / window - 1.0;
+      gl_Position.zw = vec2(0, 1);
+  }`);
+  gl.compileShader(vs);
+  if (!gl.getShaderParameter(vs, gl.COMPILE_STATUS)) {
+    throw gl.getShaderInfoLog(vs);
+  }
+
+  let program, uniformWindow, uniformT;
+  function setProgram(blendfunc) {
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, `#version 300 es
+    #extension GL_ANGLE_shader_pixel_local_storage : require
+
+    precision mediump float;
+
+    in vec2 coord;
+    in vec4 bubble_color;
+
+    layout(binding=0, rgba8) uniform mediump pixelLocalANGLE framebuffer;
+
+    // Implements the blend equations defined in the KHR_blend_equation_advanced specification:
+    // https://registry.khronos.org/OpenGL/extensions/KHR/KHR_blend_equation_advanced.txt
+
+    vec3 multiply(vec4 src, vec4 dst) {
+      return src.rgb * dst.rgb;
+    }
+
+    vec3 screen(vec4 src, vec4 dst) {
+      return src.rgb + dst.rgb - src.rgb * dst.rgb;
+    }
+
+    vec3 overlay(vec4 src, vec4 dst) {
+      vec3 f;
+      for (lowp uint i = 0u; i < 3u; ++i)
+      {
+          if (dst[i] <= .5)
+              f[i] = 2. * src[i] * dst[i];
+          else
+              f[i] = 1. - 2. * (1. - src[i]) * (1. - dst[i]);
+      }
+      return f;
+    }
+
+    vec3 darken(vec4 src, vec4 dst) {
+      return min(src.rgb, dst.rgb);
+    }
+
+    vec3 lighten(vec4 src, vec4 dst) {
+      return max(src.rgb, dst.rgb);
+    }
+
+    vec3 colordodge(vec4 src, vec4 dst) {
+      vec3 f;
+      for (lowp uint i = 0u; i < 3u; ++i)
+      {
+          if (dst[i] <= .0)
+              f[i] = .0;
+          else if (src[i] < 1.)
+              f[i] = min(1., dst[i] / (1. - src[i]));
+          else
+              f[i] = 1.;
+      }
+      return f;
+    }
+
+    vec3 colorburn(vec4 src, vec4 dst) {
+      vec3 f;
+      for (lowp uint i = 0u; i < 3u; ++i)
+      {
+          if (dst[i] >= 1.)
+              f[i] = 1.;
+          else if (src[i] > .0)
+              f[i] = 1. - min(1., (1. - dst[i]) / src[i]);
+          else
+              f[i] = .0;
+      }
+      return f;
+    }
+
+    vec3 hardlight(vec4 src, vec4 dst) {
+      vec3 f;
+      for (lowp uint i = 0u; i < 3u; ++i)
+      {
+          if (src[i] <= .5)
+              f[i] = 2. * src[i] * dst[i];
+          else
+              f[i] = 1. - 2. * (1. - src[i]) * (1. - dst[i]);
+      }
+      return f;
+    }
+
+    vec3 softlight(vec4 src, vec4 dst) {
+      vec3 f;
+      for (lowp uint i = 0u; i < 3u; ++i) {
+          if (src[i] <= 0.5)
+              f[i] = dst[i] - (1. - 2. * src[i]) * dst[i] * (1. - dst[i]);
+          else if (dst[i] <= .25)
+              f[i] = dst[i] + (2. * src[i] - 1.) * dst[i] *
+                     ((16. * dst[i] - 12.) * dst[i] + 3.);
+          else
+              f[i] = dst[i] + (2. * src[i] - 1.) * (sqrt(dst[i]) - dst[i]);
+      }
+      return f;
+    }
+
+    vec3 difference(vec4 src, vec4 dst) {
+      return abs(dst.rgb - src.rgb);
+    }
+
+    vec3 exclusion(vec4 src, vec4 dst) {
+      return src.rgb + dst.rgb - 2. * src.rgb * dst.rgb;
+    }
+
+    float minv3(vec3 c) { return min(min(c.r, c.g), c.b); }
+    float maxv3(vec3 c) { return max(max(c.r, c.g), c.b); }
+    float lumv3(vec3 c) { return dot(c, vec3(.30, .59, .11)); }
+    float satv3(vec3 c) { return maxv3(c) - minv3(c); }
+
+    vec3 ClipColor(vec3 color) {
+      float lum = lumv3(color);
+      float mincol = minv3(color);
+      float maxcol = maxv3(color);
+      if (mincol < .0)
+        color = lum + ((color - lum) * lum) / (lum - mincol);
+      if (maxcol > 1.)
+        color = lum + ((color - lum) * (1. - lum)) / (maxcol - lum);
+      return color;
+    }
+
+    vec3 SetLum(vec3 cbase, vec3 clum) {
+      float lbase = lumv3(cbase);
+      float llum = lumv3(clum);
+      float ldiff = llum - lbase;
+      vec3 color = cbase + vec3(ldiff);
+      return ClipColor(color);
+    }
+
+    vec3 SetLumSat(vec3 cbase, vec3 csat, vec3 clum) {
+      float minbase = minv3(cbase);
+      float sbase = satv3(cbase);
+      float ssat = satv3(csat);
+      vec3 color;
+      if (sbase > .0)
+        color = (cbase - minbase) * ssat / sbase;
+      else
+        color = vec3(0);
+      return SetLum(color, clum);
+    }
+
+    vec3 hue(vec4 src, vec4 dst) {
+      src.rgb = clamp(src.rgb, vec3(0), vec3(1));
+      return SetLumSat(src.rgb, dst.rgb, dst.rgb);
+    }
+
+    vec3 saturation(vec4 src, vec4 dst) {
+      src.rgb = clamp(src.rgb, vec3(0), vec3(1));
+      return SetLumSat(dst.rgb, src.rgb, dst.rgb);
+    }
+
+    vec3 color(vec4 src, vec4 dst) {
+      src.rgb = clamp(src.rgb, vec3(0), vec3(1));
+      return SetLum(src.rgb, dst.rgb);
+    }
+
+    vec3 luminosity(vec4 src, vec4 dst) {
+      src.rgb = clamp(src.rgb, vec3(0), vec3(1));
+      return SetLum(dst.rgb, src.rgb);
+    }
+
+    vec4 advanced_blend(vec4 src, vec4 dst) {
+      vec3 p = vec3(src.a * dst.a, src.a * (1. - dst.a), (1. - src.a) * dst.a);
+      return mat3x4(` + blendfunc + `(src, dst), 1, src.rgb, 1, dst.rgb, 1) * p;
+    }
+
+    void main() {
+        float f = coord.x * coord.x + coord.y * coord.y - 1.;
+        float coverage = clamp(.5 - f/fwidth(f), .0, 1.);
+        vec4 src = vec4(bubble_color.rgb,
+                        bubble_color.a * mix(.25, 1., dot(coord, coord)) * coverage);
+        vec4 dst = pixelLocalLoadANGLE(framebuffer);
+        dst.rgb /= dst.a; // Advanced blend equations expect unmultiplied rgb.
+        pixelLocalStoreANGLE(framebuffer, advanced_blend(src, dst));
+    }`);
+    gl.compileShader(fs);
+    if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+      throw gl.getShaderInfoLog(fs);
+    }
+
+    program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      throw gl.getProgramInfoLog(program);
+    }
+
+    gl.useProgram(program);
+    uniformWindow = gl.getUniformLocation(program, "window");
+    gl.uniform2f(uniformWindow, canvas.width, canvas.height);
+    uniformT = gl.getUniformLocation(program, "T");
+  }
+  setProgram(document.getElementById("blend_mode").value);
+
+  // Generate bubbles.
+  const n = 500;
+  const bubbles = new Float32Array(n * 9);
+  function mix(a, b, t) { return a + (b - a) * t; }
+  function rand(lo, hi) { return mix(lo, hi, Math.random()); }
+  for (let i = 0; i < n * 9; i += 9)
+  {
+    const r = mix(.1, .3, Math.pow(Math.random(), 4));
+    bubbles[i + 0 /*x*/] = (rand(-1 + r, 1 - r) + 1) * 1024;
+    bubbles[i + 1 /*y*/] = (rand(-1 + r, 1 - r) + 1) * 1024;
+    bubbles[i + 2 /*radius*/] = r * 1024;
+    bubbles[i + 3 /*dx*/] = (Math.random() - .5) * .02 * 1024;
+    bubbles[i + 4 /*dy*/] = (Math.random() - .5) * .02 * 1024;
+    bubbles[i + 5 /*r*/] = rand(.5, 1);
+    bubbles[i + 6 /*g*/] = rand(.5, 1);
+    bubbles[i + 7 /*b*/] = rand(.5, 1);
+    bubbles[i + 8 /*a*/] = rand(.75, 1);
+  }
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, bubbles, gl.STATIC_DRAW);
+
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 9 * 4, 0);
+  gl.vertexAttribDivisor(0, 1);
+
+  gl.enableVertexAttribArray(1);
+  gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 9 * 4, 3 * 4);
+  gl.vertexAttribDivisor(1, 1);
+
+  gl.enableVertexAttribArray(2);
+  gl.vertexAttribPointer(2, 4, gl.FLOAT, true, 9 * 4, 5 * 4);
+  gl.vertexAttribDivisor(2, 1);
+
+  const blitFBO = gl.createFramebuffer();
+  const renderFBO = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, renderFBO);
+  pls.framebufferPixelLocalClearValuefvWEBGL(0, [0, 0, 0, .1]);
+  gl.drawBuffers([]);
+  gl.disable(gl.DITHER);
+
+  let lastWidth = 0;
+  let lastHeight = 0;
+  let tex = null;
+  let totalFrames = 0;
+  let frames = 0;
+  let start = performance.now() * 1e-3;
+  (function() {
+    const w = window.innerWidth;
+    const h = window.innerHeight - canvas.getBoundingClientRect().top;
+    if (lastWidth != w || lastHeight != h)
+    {
+      canvas.width = Math.round(w * window.devicePixelRatio);
+      canvas.height = Math.round(h * window.devicePixelRatio);
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+
+      console.log("rendering " + n + " bubbles at " + canvas.width + " x " + canvas.height);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(uniformWindow, canvas.width, canvas.height);
+
+      tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, canvas.width, canvas.height);
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, blitFBO);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, renderFBO);
+      pls.framebufferTexturePixelLocalStorageWEBGL(0, tex, 0, 0);
+
+      lastWidth = w;
+      lastHeight = h;
+    }
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, renderFBO);
+    gl.uniform1f(uniformT, totalFrames++);
+    pls.beginPixelLocalStorageWEBGL([pls.LOAD_OP_CLEAR_WEBGL]);
+    gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, n);
+    pls.endPixelLocalStorageWEBGL([pls.STORE_OP_STORE_WEBGL]);
+
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, blitFBO);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+    gl.blitFramebuffer(0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height,
+                       gl.COLOR_BUFFER_BIT, gl.NEAREST);
+
+    ++frames;
+    const end = performance.now() * 1e-3;
+    const seconds = end - start;
+    if (seconds >= 2)
+    {
+      const fps_str = (frames / seconds).toFixed(1);
+      console.log(fps_str + " fps");
+      document.getElementById("fps_label").innerHTML = fps_str + "&nbsp;fps";
+      frames = 0;
+      start = end;
+    }
+
+    window.requestAnimationFrame(arguments.callee);
+  })();
+</script>
