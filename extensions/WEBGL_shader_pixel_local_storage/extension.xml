@@ -80,19 +80,13 @@ interface WEBGL_shader_pixel_local_storage {
                                                      GLint level,
                                                      GLint layer);
   undefined framebufferPixelLocalClearValuefvWEBGL(GLint plane,
-                                                   sequence&lt;GLfloat&gt; value);
-  undefined framebufferPixelLocalClearValueivWEBGL(GLint plane,
-                                                   sequence&lt;GLint&gt; value);
-  undefined framebufferPixelLocalClearValueuivWEBGL(GLint plane,
-                                                    sequence&lt;GLuint&gt; value);
-  undefined framebufferPixelLocalClearValuefvWEBGL(GLint plane,
-                                                   Float32Array value,
+                                                   Float32List value,
                                                    optional GLuint srcOffset = 0);
   undefined framebufferPixelLocalClearValueivWEBGL(GLint plane,
-                                                   Int32Array value,
+                                                   Int32List value,
                                                    optional GLuint srcOffset = 0);
   undefined framebufferPixelLocalClearValueuivWEBGL(GLint plane,
-                                                    Uint32Array value,
+                                                    Uint32List value,
                                                     optional GLuint srcOffset = 0);
   undefined beginPixelLocalStorageWEBGL(sequence&lt;GLenum&gt; loadops);
   undefined endPixelLocalStorageWEBGL(sequence&lt;GLenum&gt; storeops);
@@ -135,44 +129,8 @@ interface WEBGL_shader_pixel_local_storage {
   <newfun>
     <function name="framebufferPixelLocalClearValuefvWEBGL" type="undefined">
       <param name="plane" type="GLint"/>
-      <param name="value" type="sequence&lt;GLfloat&gt;"/>
-      Sets the floating point clear value for the given plane.
-      <div class="note">
-        If <code>value</code> has less than <code>4</code> elements, generates an
-        <code>INVALID_OPERATION</code> error.
-      </div>
-    </function>
-  </newfun>
-
-  <newfun>
-    <function name="framebufferPixelLocalClearValueivWEBGL" type="undefined">
-      <param name="plane" type="GLint"/>
-      <param name="value" type="sequence&lt;GLint&gt;"/>
-      Sets the integer clear value for the given plane.
-      <div class="note">
-        If <code>value</code> has less than <code>4</code> elements, generates an
-        <code>INVALID_OPERATION</code> error.
-      </div>
-    </function>
-  </newfun>
-
-  <newfun>
-    <function name="framebufferPixelLocalClearValueuivWEBGL" type="undefined">
-      <param name="plane" type="GLint"/>
-      <param name="value" type="sequence&lt;GLuint&gt;"/>
-      Sets the unsigned integer clear value for the given plane.
-      <div class="note">
-        If <code>value</code> has less than <code>4</code> elements, generates an
-        <code>INVALID_OPERATION</code> error.
-      </div>
-    </function>
-  </newfun>
-
-  <newfun>
-    <function name="framebufferPixelLocalClearValuefvWEBGL" type="undefined">
-      <param name="plane" type="GLint"/>
-      <param name="value" type="Float32Array"/>
-      <param name="src_offset" type="GLuint"/>
+      <param name="value" type="Float32List"/>
+      <param name="src_offset" type="GLuint" default="0"/>
       Sets the floating point clear value for the given plane.
       <div class="note">
         If <code>value</code> has less than <code>src_offset + 4</code> elements, generates an
@@ -184,8 +142,8 @@ interface WEBGL_shader_pixel_local_storage {
   <newfun>
     <function name="framebufferPixelLocalClearValueivWEBGL" type="undefined">
       <param name="plane" type="GLint"/>
-      <param name="value" type="Int32Array"/>
-      <param name="src_offset" type="GLuint"/>
+      <param name="value" type="Int32List"/>
+      <param name="src_offset" type="GLuint" default="0"/>
       Sets the integer clear value for the given plane.
       <div class="note">
         If <code>value</code> has less than <code>src_offset + 4</code> elements, generates an
@@ -197,8 +155,8 @@ interface WEBGL_shader_pixel_local_storage {
   <newfun>
     <function name="framebufferPixelLocalClearValueuivWEBGL" type="undefined">
       <param name="plane" type="GLint"/>
-      <param name="value" type="Uint32Array"/>
-      <param name="src_offset" type="GLuint"/>
+      <param name="value" type="Uint32List"/>
+      <param name="src_offset" type="GLuint" default="0"/>
       Sets the unsigned integer clear value for the given plane.
       <div class="note">
         If <code>value</code> has less than <code>src_offset + 4</code> elements, generates an
