@@ -451,10 +451,15 @@
   <xsl:value-of select="@type"/><xsl:text> </xsl:text>
   <xsl:value-of select="@name"/><xsl:text>(</xsl:text>
   <xsl:for-each select="param">
+    <xsl:if test="@default">optional </xsl:if>
     <xsl:value-of select="@type"/>
     <xsl:if test="@name">
       <xsl:text> </xsl:text>
       <xsl:value-of select="@name"/>
+    </xsl:if>
+    <xsl:if test="@default">
+      <xsl:text> = </xsl:text>
+      <xsl:value-of select="@default"/>
     </xsl:if>
     <xsl:if test="not(position()=last())">, </xsl:if>
   </xsl:for-each>
