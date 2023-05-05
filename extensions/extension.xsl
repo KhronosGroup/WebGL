@@ -71,7 +71,7 @@
       <xsl:call-template name="logo" />
 
       <h1><xsl:value-of select="$title" /></h1>
-      
+
       <xsl:if test="$spec_status='proposal'">
       <p><strong>DO NOT IMPLEMENT!!!</strong></p>
       </xsl:if>
@@ -188,7 +188,7 @@
     </body>
   </html>
 </xsl:template>
-  
+
 <xsl:template name="logo">
   <xsl:comment>begin-logo</xsl:comment>
   <div class="left">
@@ -231,18 +231,18 @@
 
 <xsl:template match="ext" mode="depends">
   <xsl:choose>
-	<xsl:when test="@require='true'">
-	  <p> Implementations must also support the <xsl:apply-templates select="."/> extension. </p>
-	</xsl:when>
-	<xsl:when test="@require='webgl1'">
-	  <p> In WebGL 1.0 contexts, implementations must also support the <xsl:apply-templates select="."/> extension. </p>
-	</xsl:when>
-	<xsl:when test="@require='webgl2'">
-	  <p> In WebGL 2.0 contexts, implementations must also support the <xsl:apply-templates select="."/> extension. </p>
-	</xsl:when>
-	<xsl:otherwise>
-	  <p> Written against the <xsl:apply-templates select="."/> specification. </p>
-	</xsl:otherwise>
+    <xsl:when test="@require='true'">
+      <p> Implementations must also support the <xsl:apply-templates select="."/> extension. </p>
+    </xsl:when>
+    <xsl:when test="@require='webgl1'">
+      <p> In WebGL 1.0 contexts, implementations must also support the <xsl:apply-templates select="."/> extension. </p>
+    </xsl:when>
+    <xsl:when test="@require='webgl2'">
+      <p> In WebGL 2.0 contexts, implementations must also support the <xsl:apply-templates select="."/> extension. </p>
+    </xsl:when>
+    <xsl:otherwise>
+      <p> Written against the <xsl:apply-templates select="."/> specification. </p>
+    </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
@@ -351,19 +351,34 @@
           </xsl:for-each>
           <xsl:for-each select="input">
             <li>
-                <code><xsl:call-template name="shader_variable"/></code> is a built-in input.
+              <code><xsl:call-template name="shader_variable"/></code> is a built-in input.
             </li>
           </xsl:for-each>
           <xsl:for-each select="output">
             <li>
-                <code><xsl:call-template name="shader_variable"/></code> is a built-in output.
+              <code><xsl:call-template name="shader_variable"/></code> is a built-in output.
+            </li>
+          </xsl:for-each>
+          <xsl:for-each select="constant">
+            <li>
+              <code><xsl:call-template name="shader_variable"/></code> is a built-in constant.
+            </li>
+          </xsl:for-each>
+          <xsl:for-each select="uniform">
+            <li>
+              <code><xsl:call-template name="shader_variable"/></code> is a built-in uniform.
+            </li>
+          </xsl:for-each>
+          <xsl:for-each select="feature">
+            <li>
+              <xsl:copy-of select="node()" />
             </li>
           </xsl:for-each>
         </ul>
       </li>
       <li>
-		The GLSL macro <code><xsl:value-of select="@extname"/></code>
-		<xsl:if test="alias">
+        The GLSL macro <code><xsl:value-of select="@extname"/></code>
+        <xsl:if test="alias">
           <xsl:for-each select="alias">
             <xsl:choose>
               <xsl:when test="position()=1">
@@ -416,9 +431,9 @@
 </xsl:template>
 <xsl:template match="interface" mode="newfun">
   <dt class="idl-code">
-	<xsl:if test="@noobject = 'true'">
-	  <xsl:text>[Exposed=(Window,Worker), LegacyNoInterfaceObject]</xsl:text><br/>
-	</xsl:if>
+    <xsl:if test="@noobject = 'true'">
+      <xsl:text>[Exposed=(Window,Worker), LegacyNoInterfaceObject]</xsl:text><br/>
+    </xsl:if>
     <xsl:text>interface </xsl:text>
     <em><xsl:value-of select="@name" /></em>
     <xsl:text> {</xsl:text><br/>

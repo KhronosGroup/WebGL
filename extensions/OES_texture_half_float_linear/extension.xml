@@ -22,9 +22,12 @@
     </mirrors>
 
     <features>
-      Expands upon the OES_texture_half_float extension by allowing support for
-      LINEAR magnification filter and LINEAR, NEAREST_MIPMAP_LINEAR,
-      LINEAR_MIPMAP_NEAREST and LINEAR_MIPMAP_NEAREST minification filters.
+      <feature>
+        Expands upon the <a href="../OES_texture_half_float/">OES_texture_half_float</a>
+        extension by allowing support for <code>LINEAR</code> magnification filter and
+        <code>LINEAR</code>, <code>NEAREST_MIPMAP_LINEAR</code>, <code>LINEAR_MIPMAP_NEAREST</code>,
+        and <code>LINEAR_MIPMAP_LINEAR</code> minification filters.
+      </feature>
     </features>
   </overview>
 
