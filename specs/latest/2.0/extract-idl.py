@@ -40,7 +40,7 @@ def elementHasClass(el, classArg):
     """
     Return true if and only if classArg is one of the classes of el
     """
-    classes = [ c for c in el.getAttribute("class").split(" ") if c is not "" ]
+    classes = [ c for c in el.getAttribute("class").split(" ") if c != "" ]
     return classArg in classes
 
 def elementTextContent(el):

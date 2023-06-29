@@ -3,7 +3,7 @@
 // WebGL IDL definitions scraped from the Khronos specification:
 // https://www.khronos.org/registry/webgl/specs/latest/
 
-// Copyright (c) 2021 The Khronos Group Inc.
+// Copyright (c) 2023 The Khronos Group Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and/or associated documentation files (the
@@ -505,8 +505,8 @@ interface mixin WebGL2RenderingContextOverloads
 {
   // WebGL1:
   undefined bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-  undefined bufferData(GLenum target, [AllowShared] BufferSource? srcData, GLenum usage);
-  undefined bufferSubData(GLenum target, GLintptr dstByteOffset, [AllowShared] BufferSource srcData);
+  undefined bufferData(GLenum target, AllowSharedBufferSource? srcData, GLenum usage);
+  undefined bufferSubData(GLenum target, GLintptr dstByteOffset, AllowSharedBufferSource srcData);
   // WebGL2:
   undefined bufferData(GLenum target, [AllowShared] ArrayBufferView srcData, GLenum usage, GLuint srcOffset,
                        optional GLuint length = 0);
