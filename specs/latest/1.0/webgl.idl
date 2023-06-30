@@ -3,7 +3,7 @@
 // WebGL IDL definitions scraped from the Khronos specification:
 // https://www.khronos.org/registry/webgl/specs/latest/
 
-// Copyright (c) 2021 The Khronos Group Inc.
+// Copyright (c) 2023 The Khronos Group Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and/or associated documentation files (the
@@ -535,10 +535,11 @@ interface mixin WebGLRenderingContextBase
     const GLenum UNPACK_COLORSPACE_CONVERSION_WEBGL = 0x9243;
     const GLenum BROWSER_DEFAULT_WEBGL          = 0x9244;
 
-    [Exposed=Window] readonly attribute (HTMLCanvasElement or OffscreenCanvas) canvas;
-    [Exposed=Worker] readonly attribute OffscreenCanvas canvas;
+    readonly attribute (HTMLCanvasElement or OffscreenCanvas) canvas;
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
+    attribute PredefinedColorSpace drawingBufferColorSpace = "srgb";
+    attribute PredefinedColorSpace unpackColorSpace = "srgb";
 
     [WebGLHandlesContextLoss] WebGLContextAttributes? getContextAttributes();
     [WebGLHandlesContextLoss] boolean isContextLost();
@@ -706,8 +707,8 @@ interface mixin WebGLRenderingContextBase
 interface mixin WebGLRenderingContextOverloads
 {
     undefined bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-    undefined bufferData(GLenum target, [AllowShared] BufferSource? data, GLenum usage);
-    undefined bufferSubData(GLenum target, GLintptr offset, [AllowShared] BufferSource data);
+    undefined bufferData(GLenum target, AllowSharedBufferSource? data, GLenum usage);
+    undefined bufferSubData(GLenum target, GLintptr offset, AllowSharedBufferSource data);
 
     undefined compressedTexImage2D(GLenum target, GLint level, GLenum internalformat,
                                    GLsizei width, GLsizei height, GLint border,
