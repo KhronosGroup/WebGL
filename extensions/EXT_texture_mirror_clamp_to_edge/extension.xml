@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/EXT_texture_mirror_clamp_to_edge/">
+<draft href="EXT_texture_mirror_clamp_to_edge/">
   <name>EXT_texture_mirror_clamp_to_edge</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -9,7 +9,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>62</number>
 
   <depends>
     <api version="1.0"/>
@@ -71,4 +71,4 @@ interface EXT_texture_mirror_clamp_to_edge {
       <change>Initial Draft.</change>
     </revision>
   </history>
-</proposal>
+</draft>
