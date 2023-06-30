@@ -1,3 +1,4 @@
+--min-version 2.0.1 ext-blend-func-extended.html
 ext-color-buffer-float.html
 --min-version 2.0.1 ext-color-buffer-half-float.html
 --min-version 2.0.1 ext-conservative-depth.html
