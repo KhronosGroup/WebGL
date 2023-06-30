@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/EXT_render_snorm/">
+<draft href="EXT_render_snorm/">
   <name>EXT_render_snorm</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -9,7 +9,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>59</number>
 
   <depends>
     <api version="2.0"/>
@@ -30,7 +30,7 @@
         </ul>
       </feature>
       <feature>
-        When <a href="../../EXT_texture_norm16/">EXT_texture_norm16</a> is enabled, the
+        When <a href="../EXT_texture_norm16/">EXT_texture_norm16</a> is enabled, the
         following signed normalized internal formats also become <em>color-renderable</em>:
         <ul>
           <li><code>R16_SNORM_EXT</code></li>
@@ -52,4 +52,4 @@ interface EXT_render_snorm {
       <change>Initial Draft.</change>
     </revision>
   </history>
-</proposal>
+</draft>
