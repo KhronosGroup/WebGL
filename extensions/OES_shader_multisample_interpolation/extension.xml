@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/OES_shader_multisample_interpolation/">
+<draft href="OES_shader_multisample_interpolation/">
   <name>OES_shader_multisample_interpolation</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -9,7 +9,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>57</number>
 
   <depends>
     <api version="2.0"/>
@@ -70,4 +70,4 @@ interface OES_shader_multisample_interpolation {
       <change>Initial Draft.</change>
     </revision>
   </history>
-</proposal>
+</draft>
