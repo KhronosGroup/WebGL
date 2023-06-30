@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/NV_shader_noperspective_interpolation/">
+<draft href="NV_shader_noperspective_interpolation/">
   <name>NV_shader_noperspective_interpolation</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -9,7 +9,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>55</number>
 
   <depends>
     <api version="2.0"/>
@@ -40,4 +40,4 @@ interface NV_shader_noperspective_interpolation {
       <change>Initial Draft.</change>
     </revision>
   </history>
-</proposal>
+</draft>
