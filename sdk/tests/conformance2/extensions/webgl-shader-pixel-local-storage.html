@@ -50,6 +50,7 @@ async function runTest() {
   if (!gl) {
     testFailed("WebGL2 context does not exist");
     finishTest();
+    return;
   }
 
   debug("\nCheck the behavior surrounding WEBGL_shader_pixel_local_storage being enabled.");
