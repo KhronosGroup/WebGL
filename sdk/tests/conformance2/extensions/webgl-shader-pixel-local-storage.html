@@ -46,7 +46,7 @@ function arraysEqual(a, b) {
   return true;
 }
 
-function runTest() {
+async function runTest() {
   if (!gl) {
     return function() {
       testFailed("WebGL2 context does not exist");
@@ -67,8 +67,10 @@ function runTest() {
   checkInitialValues();
   checkWebGLNonNormativeBehavior();
 
-  checkRendering(gl);
-  checkRendering(gl_no_alpha);
+  await checkRendering(gl);
+  await checkRendering(gl_no_alpha);
+
+  finishTest();
 }
 
 function checkExtensionNotSupportedWhenDisabled() {
@@ -437,6 +439,5 @@ async function checkRendering(localGL) {
 runTest();
 var successfullyParsed = true;
 </script>
-<script src="../../js/js-test-post.js"></script>
 </body>
 </html>
