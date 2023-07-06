@@ -48,10 +48,8 @@ function arraysEqual(a, b) {
 
 async function runTest() {
   if (!gl) {
-    return function() {
-      testFailed("WebGL2 context does not exist");
-      finishTest();
-    }
+    testFailed("WebGL2 context does not exist");
+    finishTest();
   }
 
   debug("\nCheck the behavior surrounding WEBGL_shader_pixel_local_storage being enabled.");
