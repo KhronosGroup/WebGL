@@ -50,6 +50,7 @@ async function runTest() {
   if (!gl) {
     return function() {
       testFailed("WebGL2 context does not exist");
+      finishTest();
     }
   }
 
@@ -59,8 +60,10 @@ async function runTest() {
   debug("Enable WEBGL_shader_pixel_local_storage.");
   pls = gl.getExtension("WEBGL_shader_pixel_local_storage");
   wtu.runExtensionSupportedTest(gl, "WEBGL_shader_pixel_local_storage", pls != null);
-  if (!pls)
+  if (!pls) {
+    finishTest();
     return;
+  }
   checkDependencyExtensionsEnabled(true);
 
   checkImplementationDependentLimits();
