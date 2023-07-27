@@ -24,7 +24,7 @@ description("This test verifies the functionality of the OES_sample_variables ex
 debug("");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("c", null, 2);
+var gl = wtu.create3DContext("c", { antialias: false }, 2);
 var ext;
 
 function runShaderTests(extensionEnabled) {
