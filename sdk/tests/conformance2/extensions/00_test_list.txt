@@ -8,6 +8,8 @@ promoted-extensions.html
 promoted-extensions-in-shaders.html
 --min-version 2.0.1 nv-shader-noperspective-interpolation.html
 --min-version 2.0.1 oes-draw-buffers-indexed.html
+--min-version 2.0.1 oes-sample-variables.html
+--min-version 2.0.1 oes-shader-multisample-interpolation.html
 --min-version 2.0.1 ovr_multiview2.html
 --min-version 2.0.1 ovr_multiview2_depth.html
 --min-version 2.0.1 ovr_multiview2_draw_buffers.html
