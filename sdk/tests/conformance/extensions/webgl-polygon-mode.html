@@ -97,11 +97,12 @@ function checkDiagonal(r, g, b) {
     gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
     for (let i = 0; i < w; i++)
     {
-        const p = (i * w + i) * 4;
-        const c = pixels.slice(p, p + 4);
-        if (c[0] != r || c[1] != g || c[2] != b) {
-            testFailed("Unexpected pixel value");
-            break;
+        const baseOffset = (i * w + i) * 4;
+        if (pixels[baseOffset + 0] != r ||
+            pixels[baseOffset + 1] != g ||
+            pixels[baseOffset + 2] != b) {
+            testFailed(`Unexpected diagonal color at (${i}, ${i})`);
+            return;
         }
     }
     testPassed("Expected diagonal color");

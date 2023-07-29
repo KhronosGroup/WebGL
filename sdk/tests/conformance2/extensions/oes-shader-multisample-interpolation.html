@@ -24,7 +24,7 @@ description("This test verifies the functionality of the OES_shader_multisample_
 debug("");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("c", null, 2);
+var gl = wtu.create3DContext("c", { antialias: false }, 2);
 var ext;
 
 function runShaderTests(extensionEnabled) {
@@ -162,6 +162,29 @@ function checkEnums() {
     shouldBe("ext.FRAGMENT_INTERPOLATION_OFFSET_BITS_OES", "0x8E5D");
 }
 
+/*
+ * This test renders a triangle using MSAAx4 and 1x1 viewport
+ * with the following vertex colors.
+ *
+ * | Position |   Color   |
+ * |==========|===========|
+ * | (-1, -1) | (0, 0, 0) |
+ * | (-1, +1) | (0, 1, 0) |
+ * | (+1, -1) | (1, 0, 0) |
+ *
+ * This triangle cannot cover all four samples.
+ *
+ * When default interpolation is used, the vertex color is interpolated
+ * once, most likely in the pixel center.
+ *
+ * When per-sample interpolation is used, the vertex color is interpolated
+ * several times, producing a distinct value for each covered sample.
+ * Due to the asymmetry of sample positions, the resolved pixel color must
+ * not match the color produced by default interpolation.
+ *
+ * OpenGL specs do not guarantee specific sample positions, so the test
+ * checks only that the resolved colors are different.
+ */
 function runInterpolationTest() {
     debug("");
     debug("Testing multisample interpolation");
