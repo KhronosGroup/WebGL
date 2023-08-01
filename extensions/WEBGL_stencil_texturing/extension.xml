@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/WEBGL_stencil_texturing/">
+<draft href="WEBGL_stencil_texturing/">
   <name>WEBGL_stencil_texturing</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -9,7 +9,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>61</number>
 
   <depends>
     <api version="2.0"/>
@@ -25,6 +25,7 @@
 [Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_stencil_texturing {
     const GLenum DEPTH_STENCIL_TEXTURE_MODE_WEBGL = 0x90EA;
+    const GLenum STENCIL_INDEX_WEBGL              = 0x1901;
 };
   </idl>
 
@@ -34,7 +35,7 @@ interface WEBGL_stencil_texturing {
       <param name="pname" type="GLenum"/>
       <param name="param" type="GLfloat"/>
       A new enum <code>DEPTH_STENCIL_TEXTURE_MODE_WEBGL</code> is accepted as the <code>pname</code> parameter;
-      <code>param</code> must be <code>DEPTH_COMPONENT</code> (default) or <code>STENCIL_INDEX</code>.
+      <code>param</code> must be <code>DEPTH_COMPONENT</code> (default) or <code>STENCIL_INDEX_WEBGL</code>.
     </function>
 
     <function name="texParameteri" type="undefined">
@@ -42,7 +43,7 @@ interface WEBGL_stencil_texturing {
       <param name="pname" type="GLenum"/>
       <param name="param" type="GLint"/>
       A new enum <code>DEPTH_STENCIL_TEXTURE_MODE_WEBGL</code> is accepted as the <code>pname</code> parameter;
-      <code>param</code> must be <code>DEPTH_COMPONENT</code> (default) or <code>STENCIL_INDEX</code>.
+      <code>param</code> must be <code>DEPTH_COMPONENT</code> (default) or <code>STENCIL_INDEX_WEBGL</code>.
     </function>
 
     <function name="getTexParameter" type="any">
@@ -66,4 +67,4 @@ interface WEBGL_stencil_texturing {
       <change>Initial Draft.</change>
     </revision>
   </history>
-</proposal>
+</draft>
