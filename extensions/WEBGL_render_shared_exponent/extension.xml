@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/WEBGL_render_shared_exponent/">
+<draft href="WEBGL_render_shared_exponent/">
   <name>WEBGL_render_shared_exponent</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -9,7 +9,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>60</number>
 
   <depends>
     <api version="2.0"/>
@@ -18,6 +18,10 @@
   <overview>
     <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/QCOM/QCOM_render_shared_exponent.txt"
              name="QCOM_render_shared_exponent">
+      <addendum>
+        Clearing or drawing to a shared exponent color buffer will generate <code>INVALID_OPERATION</code>
+        if the associated color write mask has different values for red, green, and blue channels.
+      </addendum>
     </mirrors>
 
     <features>
@@ -38,4 +42,4 @@ interface WEBGL_render_shared_exponent {
       <change>Initial Draft.</change>
     </revision>
   </history>
-</proposal>
+</draft>
