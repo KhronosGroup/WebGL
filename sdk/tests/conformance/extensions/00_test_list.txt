@@ -1,5 +1,6 @@
 --min-version 1.0.3 --max-version 1.9.9 angle-instanced-arrays.html
 --min-version 1.0.3 --max-version 1.9.9 angle-instanced-arrays-out-of-bounds.html
+--min-version 1.0.4 --max-version 1.9.9 ext-blend-func-extended.html
 --min-version 1.0.3 --max-version 1.9.9 ext-blend-minmax.html
 --min-version 1.0.4 ext-clip-control.html
 --min-version 1.0.4 ext-color-buffer-half-float.html
