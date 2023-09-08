@@ -90,20 +90,20 @@
 interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
   undefined multiDrawArraysInstancedBaseInstanceWEBGL(
       GLenum mode,
-      ([AllowShared] Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
-      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
-      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
-      ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, GLuint baseInstancesOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLint&gt;) firstsList, unsigned long long firstsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, unsigned long long countsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, unsigned long long instanceCountsOffset,
+      ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, unsigned long long baseInstancesOffset,
       GLsizei drawcount
   );
   undefined multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
       GLenum mode,
-      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, unsigned long long countsOffset,
       GLenum type,
-      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) offsetsList, GLuint offsetsOffset,
-      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
-      ([AllowShared] Int32Array or sequence&lt;GLint&gt;) baseVerticesList, GLuint baseVerticesOffset,
-      ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, GLuint baseInstancesOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) offsetsList, unsigned long long offsetsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, unsigned long long instanceCountsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLint&gt;) baseVerticesList, unsigned long long baseVerticesOffset,
+      ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) baseInstancesList, unsigned long long baseInstancesOffset,
       GLsizei drawcount
   );
 };
@@ -113,28 +113,28 @@ interface WEBGL_multi_draw_instanced_base_vertex_base_instance {
     <function name="multiDrawArraysInstancedBaseInstanceWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="firstsList" type="([AllowShared] Int32Array or sequence&lt;GLint&gt;)"/>
-      <param name="firstsOffset" type="GLuint"/>
+      <param name="firstsOffset" type="unsigned long long"/>
       <param name="countsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="countsOffset" type="GLuint"/>
+      <param name="countsOffset" type="unsigned long long"/>
       <param name="instanceCountsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="instanceCountsOffset" type="unsigned long long"/>
       <param name="baseInstancesList" type="([AllowShared] Uint32Array or sequence&lt;GLuint&gt;)"/>
-      <param name="baseInstancesOffset" type="GLuint"/>
+      <param name="baseInstancesOffset" type="unsigned long long"/>
       <param name="drawcount" type="GLsizei"/>
     </function>
     <function name="multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="countsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="countsOffset" type="GLuint"/>
+      <param name="countsOffset" type="unsigned long long"/>
       <param name="type" type="GLenum"/>
       <param name="offsetsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="offsetsOffset" type="GLuint"/>
+      <param name="offsetsOffset" type="unsigned long long"/>
       <param name="instanceCountsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="instanceCountsOffset" type="GLuint"/>
+      <param name="instanceCountsOffset" type="unsigned long long"/>
       <param name="baseVerticesList" type="([AllowShared] Int32Array or sequence&lt;GLint&gt;)"/>
-      <param name="baseVerticesOffset" type="GLuint"/>
+      <param name="baseVerticesOffset" type="unsigned long long"/>
       <param name="baseInstancesList" type="([AllowShared] Uint32Array or sequence&lt;GLuint&gt;)"/>
-      <param name="baseInstancesOffset" type="GLuint"/>
+      <param name="baseInstancesOffset" type="unsigned long long"/>
       <param name="drawcount" type="GLsizei"/>
     </function>
   </newfun>
@@ -215,6 +215,9 @@ void main() {
     </revision>
     <revision date="2021/05/26">
       <change>Removed GLSL extension and builtins.</change>
+    </revision>
+    <revision date="2023/09/08">
+      <change>Changed offset arguments to "unsigned long long" for Wasm.</change>
     </revision>
   </history>
 </draft>

@@ -89,13 +89,13 @@ interface WEBGL_shader_pixel_local_storage {
                                                      GLint layer);
   undefined framebufferPixelLocalClearValuefvWEBGL(GLint plane,
                                                    Float32List value,
-                                                   optional GLuint srcOffset = 0);
+                                                   optional unsigned long long srcOffset = 0);
   undefined framebufferPixelLocalClearValueivWEBGL(GLint plane,
                                                    Int32List value,
-                                                   optional GLuint srcOffset = 0);
+                                                   optional unsigned long long srcOffset = 0);
   undefined framebufferPixelLocalClearValueuivWEBGL(GLint plane,
                                                     Uint32List value,
-                                                    optional GLuint srcOffset = 0);
+                                                    optional unsigned long long srcOffset = 0);
   undefined beginPixelLocalStorageWEBGL(sequence&lt;GLenum&gt; loadops);
   undefined endPixelLocalStorageWEBGL(sequence&lt;GLenum&gt; storeops);
   undefined pixelLocalStorageBarrierWEBGL();
@@ -139,7 +139,7 @@ interface WEBGL_shader_pixel_local_storage {
     <function name="framebufferPixelLocalClearValuefvWEBGL" type="undefined">
       <param name="plane" type="GLint"/>
       <param name="value" type="Float32List"/>
-      <param name="srcOffset" type="GLuint" default="0"/>
+      <param name="srcOffset" type="unsigned long long" default="0"/>
       <p>
         Sets the floating point clear value for the given plane.
       </p>
@@ -154,7 +154,7 @@ interface WEBGL_shader_pixel_local_storage {
     <function name="framebufferPixelLocalClearValueivWEBGL" type="undefined">
       <param name="plane" type="GLint"/>
       <param name="value" type="Int32List"/>
-      <param name="srcOffset" type="GLuint" default="0"/>
+      <param name="srcOffset" type="unsigned long long" default="0"/>
       <p>
         Sets the signed integer clear value for the given plane.
       </p>
@@ -169,7 +169,7 @@ interface WEBGL_shader_pixel_local_storage {
     <function name="framebufferPixelLocalClearValueuivWEBGL" type="undefined">
       <param name="plane" type="GLint"/>
       <param name="value" type="Uint32List"/>
-      <param name="srcOffset" type="GLuint" default="0"/>
+      <param name="srcOffset" type="unsigned long long" default="0"/>
       <p>
         Sets the unsigned integer clear value for the given plane.
       </p>
@@ -278,6 +278,9 @@ interface WEBGL_shader_pixel_local_storage {
   <history>
     <revision date="2022/12/06">
       <change>Initial Draft.</change>
+    </revision>
+    <revision date="2023/09/08">
+      <change>Changed srcOffset arguments to "unsigned long long" for Wasm.</change>
     </revision>
   </history>
 </draft>
