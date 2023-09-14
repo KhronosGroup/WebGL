@@ -215,9 +215,11 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
         uniforms.push("    uniform " + info.type + " u_uniform" + uu + ";");
         sumTerms.push(wtu.replaceParams(info.uniToF, {id: uu, index: ""}));
       }
+      var code = info.fType + " sum = " + sumTerms.shift() + ";\n    sum += ";
+      code += sumTerms.join(";\n    sum += ") + ";"
       return {
         uniforms: uniforms.join("\n"),
-        code: info.fType + " sum = " + sumTerms.join(" + \n            ") + ";",
+        code: code,
         result: wtu.replaceParams(info.fToVec4, {f: 'sum'})
       };
     };

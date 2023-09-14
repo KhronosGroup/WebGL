@@ -58,7 +58,9 @@ varying vec4 v_varying;
 $(uniforms)
 void main()
 {
-    v_varying = $(code);
+    vec4 t = [0, 0, 0, 0];
+    t += $(code);
+    v_varying = t;
     gl_Position = a_position;
 }
 </script>
@@ -67,7 +69,9 @@ precision mediump float;
 $(uniforms)
 void main()
 {
-    gl_FragColor = $(code);
+    vec4 t = [0, 0, 0, 0];
+    t += $(code);
+    gl_FragColor = t;
 }
 </script>
 <script>
@@ -168,7 +172,7 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
       }
       return {
         uniforms: uniforms.join("\n"),
-        code: codes.join(" + \n            "),
+        code: codes.join(";\n    t += "),
       };
     };
 
