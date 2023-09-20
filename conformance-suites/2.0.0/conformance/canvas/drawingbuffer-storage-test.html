@@ -163,6 +163,7 @@ function testNoAlpha() {
     testFailed("context does not exist");
     return;
   }
+  debug('Testing alpha:false');
 
   // Report RGB8 for the format.
   shouldBe('gl.drawingBufferFormat', 'gl.RGB8');
@@ -176,7 +177,7 @@ function testMissingExtension() {
   var canvas = document.createElement("canvas");
   canvas.width = 16;
   canvas.height = 16;
-  gl = wtu.create3DContext(canvas, {alpha:false});
+  gl = wtu.create3DContext(canvas);
   if (!gl) {
     testFailed("context does not exist");
     return;
@@ -191,7 +192,7 @@ function testMaxSize() {
   var canvas = document.createElement("canvas");
   canvas.width = 16;
   canvas.height = 16;
-  gl = wtu.create3DContext(canvas, {alpha:false});
+  gl = wtu.create3DContext(canvas);
   if (!gl) {
     testFailed("context does not exist");
     return;
@@ -200,16 +201,16 @@ function testMaxSize() {
   debug('Testing maximum size');
   gl.drawingBufferStorage(gl.RGBA8, maxRenderbufferSize, maxRenderbufferSize);
   shouldBe('gl.getError()', 'gl.NONE');
-
-  debug('Testing over-maximum width');
-  gl.drawingBufferStorage(gl.RGBA8, maxRenderbufferSize+1, 16);
-  shouldBe('gl.getError()', 'gl.INVALID_VALUE');
-
-  debug('Testing over-maximum height');
-  gl.drawingBufferStorage(gl.RGBA8, 16, maxRenderbufferSize+1);
-  shouldBe('gl.getError()', 'gl.INVALID_VALUE');
   shouldBe('gl.drawingBufferWidth', 'maxRenderbufferSize');
   shouldBe('gl.drawingBufferHeight', 'maxRenderbufferSize');
+
+ debug('Testing over-maximum width and ehgith');
+ gl.drawingBufferStorage(gl.RGBA8, maxRenderbufferSize+1, 16);
+ shouldBe('gl.getError()', 'gl.INVALID_VALUE');
+ gl.drawingBufferStorage(gl.RGBA8, 16, maxRenderbufferSize+1);
+ shouldBe('gl.getError()', 'gl.INVALID_VALUE');
+ shouldBe('gl.drawingBufferWidth', 'maxRenderbufferSize');
+ shouldBe('gl.drawingBufferHeight', 'maxRenderbufferSize');
 }
 
 var wtu = WebGLTestUtils;
