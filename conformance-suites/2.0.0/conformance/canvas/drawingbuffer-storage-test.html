@@ -1,0 +1,229 @@
+<!--
+
+/*
+** Copyright (c) 2012 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL drawingBufferStorage Conformance Tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description();
+debug("");
+
+var gl;
+var oldViewport;
+var width;
+var height;
+var format;
+var hasDrawingBufferStorage;
+var maxRenderbufferSize;
+
+function initialize() {
+  var canvas = document.createElement("canvas");
+  gl = wtu.create3DContext(canvas, {antialias: false});
+  if (!gl) {
+    testFailed("context does not exist");
+    return [0, 0];
+  }
+
+  hasDrawingBufferStorage = `drawingBufferStorage` in gl;
+  if (!hasDrawingBufferStorage) {
+    testPassed("drawingBufferStorage not present -- skipping test");
+    return;
+  }
+
+  maxRenderbufferSize = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
+}
+
+function testPixel(expected, actual, tol) {
+  let str = 'approx equal: expected: ' + expected + ', actual: ' + actual + ', tolerance: ' + tol;
+  for (let i = 0; i < 4; ++i) {
+    if (Math.abs(expected[i] - actual[i]) > tol) {
+      testFailed(str);
+      return;
+    }
+  }
+  testPassed(str);
+}
+
+function srgbToLinear(x) {
+  if (x < 0.0)
+    return 0.0;
+  if (x < 0.04045)
+    return x / 12.92;
+  if (x < 1.0) {
+    return Math.pow((x + 0.055)/1.044, 2.4);
+  }
+  return 1.0;
+}
+
+function testClear(f, size, clearColor, expectedPixel, tolerance) {
+  format = f;
+  width = size[0];
+  height = size[1];
+
+  gl.drawingBufferStorage(format, width, height);
+  shouldBe('gl.getError()', 'gl.NO_ERROR');
+
+  shouldBe('gl.drawingBufferFormat', 'format');
+  shouldBe('gl.drawingBufferWidth', 'width');
+  shouldBe('gl.drawingBufferHeight', 'height');
+
+  gl.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  var buf;
+  if (format == gl.RGBA16F) {
+    buf = new Float32Array(4);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, buf);
+  } else {
+    buf = new Uint8Array(4);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  }
+  testPixel(expectedPixel, buf, tolerance);
+}
+
+function testClearColor() {
+  // Make a fresh canvas.
+  var canvas = document.createElement("canvas");
+  canvas.width = 16;
+  canvas.height = 16;
+
+  gl = wtu.create3DContext(canvas, {antialias: false});
+  if (!gl) {
+    testFailed("context does not exist");
+    return;
+  }
+  testPassed("context exists");
+  shouldBe('gl.drawingBufferFormat', 'gl.RGBA8');
+
+  if (!(`drawingBufferStorage` in gl)) {
+    testPassed("drawingBufferStorage not present -- skipping test");
+    return;
+  }
+  testPassed("context has drawingBufferStorage");
+
+  debug('Testing RGBA8');
+  testClear(gl.RGBA8, [16, 32], [16 / 255, 32 / 255, 64 / 255, 128 / 255], [16, 32, 64, 128], 0);
+
+  debug('Testing SRGB8_ALPHA8');
+  testClear(gl.SRGB8_ALPHA8, [16, 32],
+      [srgbToLinear(64/255), srgbToLinear(16/255), srgbToLinear(32/255), 128 / 255],
+      [64, 16, 32, 128],
+      1);
+
+  if (gl.getExtension('EXT_color_buffer_float')) {
+    debug('Testing RGBA16F');
+    testClear(gl.RGBA16F,     [18, 28], [0.25, 0.5, 0.75, 0.125], [0.25, 0.5, 0.75, 0.125], 0.00001);
+  } else {
+    debug('Skipping RGBA16F');
+  }
+
+  shouldBe('gl.getError()', 'gl.NO_ERROR');
+}
+
+function testNoAlpha() {
+  var canvas = document.createElement("canvas");
+  canvas.width = 16;
+  canvas.height = 16;
+  gl = wtu.create3DContext(canvas, {alpha:false});
+  if (!gl) {
+    testFailed("context does not exist");
+    return;
+  }
+
+  // Report RGB8 for the format.
+  shouldBe('gl.drawingBufferFormat', 'gl.RGB8');
+
+  // If WebGLContextAttributes.alpha is false, generate INVALID_OPERATION.
+  gl.drawingBufferStorage(gl.RGBA8, 16, 16);
+  shouldBe('gl.getError()', 'gl.INVALID_OPERATION');
+}
+
+function testMissingExtension() {
+  var canvas = document.createElement("canvas");
+  canvas.width = 16;
+  canvas.height = 16;
+  gl = wtu.create3DContext(canvas, {alpha:false});
+  if (!gl) {
+    testFailed("context does not exist");
+    return;
+  }
+
+  debug('Testing use of RGBA16F without enabling EXT_color_buffer_float');
+  gl.drawingBufferStorage(gl.RGBA16F, 16, 16);
+  shouldBe('gl.getError()', 'gl.INVALID_ENUM');
+}
+
+function testMaxSize() {
+  var canvas = document.createElement("canvas");
+  canvas.width = 16;
+  canvas.height = 16;
+  gl = wtu.create3DContext(canvas, {alpha:false});
+  if (!gl) {
+    testFailed("context does not exist");
+    return;
+  }
+
+  debug('Testing maximum size');
+  gl.drawingBufferStorage(gl.RGBA8, maxRenderbufferSize, maxRenderbufferSize);
+  shouldBe('gl.getError()', 'gl.NONE');
+
+  debug('Testing over-maximum width');
+  gl.drawingBufferStorage(gl.RGBA8, maxRenderbufferSize+1, 16);
+  shouldBe('gl.getError()', 'gl.INVALID_VALUE');
+
+  debug('Testing over-maximum height');
+  gl.drawingBufferStorage(gl.RGBA8, 16, maxRenderbufferSize+1);
+  shouldBe('gl.getError()', 'gl.INVALID_VALUE');
+  shouldBe('gl.drawingBufferWidth', 'maxRenderbufferSize');
+  shouldBe('gl.drawingBufferHeight', 'maxRenderbufferSize');
+}
+
+var wtu = WebGLTestUtils;
+initialize();
+if (hasDrawingBufferStorage) {
+  testClearColor();
+  testNoAlpha();
+  testMissingExtension();
+  testMaxSize();
+}
+
+debug("")
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+</body>
+</html>
