@@ -234,17 +234,17 @@ function testDrawToCanvas() {
     gl.drawingBufferStorage(f, 16, 16);
     gl.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     gl.clear(gl.COLOR_BUFFER_BIT);
-  
+
     ctx.putImageData(imageData, 0, 0);
     ctx.drawImage(canvasGL, 0, 0);
     testPixel(canvasColor, ctx.getImageData(8, 8, 1, 1).data, tolerance);
   }
- 
+
   debug('Drawing RGBA to canvas');
   testCase(gl.RGBA8, [16/255, 32/255, 64/255, 64/255], [64, 128, 255, 64], 0);
 
   debug('Drawing opaque SRGB8_ALPHA8 to canvas');
-  testCase(gl.SRGB8_ALPHA8, 
+  testCase(gl.SRGB8_ALPHA8,
            [srgbToLinear(64/255), srgbToLinear(32/255), srgbToLinear(16/255), 1.0],
            [64, 32, 16, 255],
            1);
