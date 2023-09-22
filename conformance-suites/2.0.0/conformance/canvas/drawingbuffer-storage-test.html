@@ -119,7 +119,7 @@ function testClearColor() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     var buf;
-    if (format == gl.RGBA16F) {
+    if (format == 0x881A /*RGBA16F*/) {
       buf = new Float32Array(4);
       gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, buf);
     } else {
@@ -129,22 +129,40 @@ function testClearColor() {
     testPixel(expectedPixel, buf, tolerance);
   }
 
-
   debug('Testing RGBA8');
   testCase(gl.RGBA8, [16, 32],
             [16 / 255, 32 / 255, 64 / 255, 128 / 255],
             [16, 32, 64, 128],
             0);
 
-  debug('Testing SRGB8_ALPHA8');
-  testCase(gl.SRGB8_ALPHA8, [16, 32],
-      [srgbToLinear(64/255), srgbToLinear(16/255), srgbToLinear(32/255), 128 / 255],
-      [64, 16, 32, 128],
-      1);
+  // WebGL 1 must use EXT_sRGB for SRGB8_ALPHA8.
+  let srgb8_alpha8 = gl.SRGB8_ALPHA8;
+  if (!srgb8_alpha8) {
+    let ext = gl.getExtension('EXT_sRGB');
+    if (ext) {
+      srgb8_alpha8 = ext.SRGB8_ALPHA8_EXT;
+    }
+  }
+  if (srgb8_alpha8) {
+    debug('Testing SRGB8_ALPHA8');
+    testCase(srgb8_alpha8, [16, 32],
+        [srgbToLinear(64/255), srgbToLinear(16/255), srgbToLinear(32/255), 128 / 255],
+        [64, 16, 32, 128],
+        1);
+  }
 
   if (gl.getExtension('EXT_color_buffer_float')) {
+    // WebGL 1 must use EXT_color_buffer_half_float for RGBA16F.
+    let rgba16f = gl.RGBA16F;
+    if (!rgba16f) {
+      let ext = gl.getExtension('EXT_color_buffer_half_float');
+      if (ext) {
+        rgba16f = ext.RGBA16F_EXT;
+      }
+    }
+
     debug('Testing RGBA16F');
-    testCase(gl.RGBA16F, [18, 28],
+    testCase(rgba16f, [18, 28],
               [0.25, 0.5, 0.75, 0.125],
               [0.25, 0.5, 0.75, 0.125],
               0.00001);
@@ -243,20 +261,30 @@ function testDrawToCanvas() {
   debug('Drawing RGBA to canvas');
   testCase(gl.RGBA8, [16/255, 32/255, 64/255, 64/255], [64, 128, 255, 64], 0);
 
-  debug('Drawing opaque SRGB8_ALPHA8 to canvas');
-  testCase(gl.SRGB8_ALPHA8,
-           [srgbToLinear(64/255), srgbToLinear(32/255), srgbToLinear(16/255), 1.0],
-           [64, 32, 16, 255],
-           1);
+  // WebGL 1 must use EXT_sRGB for SRGB8_ALPHA8.
+  let srgb8_alpha8 = gl.SRGB8_ALPHA8;
+  if (!srgb8_alpha8) {
+    let ext = gl.getExtension('EXT_sRGB');
+    if (ext) {
+      srgb8_alpha8 = ext.SRGB8_ALPHA8_EXT;
+    }
+  }
+  if (srgb8_alpha8) {
+    debug('Drawing opaque SRGB8_ALPHA8 to canvas');
+    testCase(srgb8_alpha8,
+             [srgbToLinear(64/255), srgbToLinear(32/255), srgbToLinear(16/255), 1.0],
+             [64, 32, 16, 255],
+             1);
 
-  debug('Drawing transparent SRGB8_ALPHA8 to canvas');
-  // We set the tolerance to 5 because of compounding error. The backbuffer
-  // may be off by 1, and then un-premultiplying alpha of 64/55 will multiply
-  // that error by 4. Then add one to be safe.
-  testCase(gl.SRGB8_ALPHA8,
-           [srgbToLinear(32/255), srgbToLinear(64/255), srgbToLinear(16/255), 64/255],
-           [128, 255, 64, 64],
-           5);
+    debug('Drawing transparent SRGB8_ALPHA8 to canvas');
+    // We set the tolerance to 5 because of compounding error. The backbuffer
+    // may be off by 1, and then un-premultiplying alpha of 64/55 will multiply
+    // that error by 4. Then add one to be safe.
+    testCase(srgb8_alpha8,
+             [srgbToLinear(32/255), srgbToLinear(64/255), srgbToLinear(16/255), 64/255],
+             [128, 255, 64, 64],
+             5);
+  }
 
   if (gl.getExtension('EXT_color_buffer_float')) {
     debug('Drawing transparent RGBA16F to canvas');
