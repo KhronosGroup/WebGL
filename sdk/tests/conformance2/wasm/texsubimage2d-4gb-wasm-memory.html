@@ -22,7 +22,7 @@ description(document.title);
 debug("Tests that gl.texSubImage2D() can be called on WebAssembly Memory 4GB in size.");
 debug("");
 let wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("canvas");
+let gl = wtu.create3DContext("canvas", undefined, 2);
 
 const PAGE = 65536;
 const SIZE = 4*1024*1024*1024 - PAGE; // when uint32_t size is max, we can only reach one page short of full 4GB
