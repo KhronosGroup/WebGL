@@ -22,7 +22,7 @@ description(document.title);
 debug("Tests that gl.texImage2D() can be called on WebAssembly Memory 16GB in size.");
 debug("");
 let wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("canvas");
+let gl = wtu.create3DContext("canvas", undefined, 2);
 
 const PAGE = 65536;
 const SIZE = 16*1024*1024*1024;
