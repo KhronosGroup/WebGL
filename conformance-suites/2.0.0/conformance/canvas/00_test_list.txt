@@ -2,7 +2,6 @@ buffer-offscreen-test.html
 buffer-preserve-test.html
 canvas-test.html
 canvas-zero-size.html
-drawingbuffer-storage-test.html
 drawingbuffer-static-canvas-test.html
 --min-version 1.0.2 drawingbuffer-hd-dpi-test.html
 drawingbuffer-test.html
