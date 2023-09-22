@@ -26,7 +26,7 @@ let wtu = WebGLTestUtils;
 let gl = wtu.create3DContext("canvas");
 
 const PAGE = 65536;
-const SIZE = 16*1024*1024*1024; 
+const SIZE = 16*1024*1024*1024;
 let view = new Uint8Array(new WebAssembly.Memory({ index: 'i64', initial: SIZE/PAGE }).buffer);
 
 // Clear the canvas to a specific color
