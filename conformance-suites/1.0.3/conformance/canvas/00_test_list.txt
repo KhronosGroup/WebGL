@@ -3,7 +3,6 @@ buffer-preserve-test.html
 canvas-test.html
 canvas-zero-size.html
 drawingbuffer-static-canvas-test.html
-drawingbuffer-storage-test.html
 --min-version 1.0.2 drawingbuffer-hd-dpi-test.html
 drawingbuffer-test.html
 --min-version 1.0.3 draw-webgl-to-canvas-test.html
