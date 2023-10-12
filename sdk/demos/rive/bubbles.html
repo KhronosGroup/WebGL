@@ -8,6 +8,8 @@ Copyright 2023 Rive
 Implements the blend equations defined in the KHR_blend_equation_advanced specification:
 https://registry.khronos.org/OpenGL/extensions/KHR/KHR_blend_equation_advanced.txt
 -->
+<!DOCTYPE html>
+<html lang="en">
 <style>
 html, body {
   width: 100%;
@@ -19,6 +21,8 @@ html, body {
   font-family: sans-serif;
 }
 </style>
+<meta name="viewport" content="width=device-width">
+<title>Advanced Blending Demo</title>
 <div style="width:100%">
   <div style="float:left">
     <select id="blend_mode" onchange="setProgram(this.value)">
@@ -40,7 +44,7 @@ html, body {
     </select>
   </div>
   <div style="float:right" id="fps_label">0.0&nbsp;fps</div>
-  <div style="margin:0 auto; text-align: center; width:100%" id="renderer_name" />
+  <div style="margin:0 auto; text-align: center; width:100%" id="renderer_name"></div>
 </div>
 <canvas id="canvas"></canvas>
 <script>
@@ -385,3 +389,4 @@ html, body {
     window.requestAnimationFrame(arguments.callee);
   })();
 </script>
+</html>
