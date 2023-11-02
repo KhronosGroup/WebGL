@@ -185,6 +185,8 @@
         <xsl:sort select="@date" />
       </xsl:apply-templates>
 
+      <xsl:comment>Help the community by recording statistics on availability of 3D APIs</xsl:comment>
+      <script defer="true" src="https://web3dsurvey.com/collector.js" />
     </body>
   </html>
 </xsl:template>
