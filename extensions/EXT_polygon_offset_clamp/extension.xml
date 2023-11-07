@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="EXT_polygon_offset_clamp/">
+<extension href="EXT_polygon_offset_clamp/">
   <name>EXT_polygon_offset_clamp</name>
 
   <contact>
@@ -64,5 +64,8 @@ interface EXT_polygon_offset_clamp {
     <revision date="2023/02/09">
       <change>Promoted to Draft.</change>
     </revision>
+    <revision date="2023/11/06">
+      <change>WebGL WG promoted to Community Approved on 2023-11-02.</change>
+    </revision>
   </history>
-</draft>
+</extension>

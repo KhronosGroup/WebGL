@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="WEBGL_polygon_mode/">
+<extension href="WEBGL_polygon_mode/">
   <name>WEBGL_polygon_mode</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -19,6 +19,13 @@
     <mirrors href="https://chromium.googlesource.com/angle/angle/+/HEAD/extensions/ANGLE_polygon_mode.txt"
              name="ANGLE_polygon_mode">
     </mirrors>
+
+    <p>
+      <b>Note:</b> Browsers should should discourage use of this extension in non-debug desktop
+      applications due to its non-portability (it is generally only supported on desktop platforms,
+      not on mobile), such as by warning about the use of this extension, and/or disabling it in
+      non-early-access release channel versions of browsers.
+    </p>
   </overview>
 
   <idl xml:space="preserve">
@@ -84,5 +91,8 @@ interface WEBGL_polygon_mode {
     <revision date="2023/06/01">
       <change>Initial Draft.</change>
     </revision>
+    <revision date="2023/11/06">
+      <change>WebGL WG promoted to Community Approved on 2023-11-02, with warning about non-portability.</change>
+    </revision>
   </history>
-</draft>
+</extension>
