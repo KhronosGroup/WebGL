@@ -21,10 +21,9 @@
     </mirrors>
 
     <p>
-      <b>Note:</b> Browsers should should discourage use of this extension in non-debug desktop
-      applications due to its non-portability (it is generally only supported on desktop platforms,
-      not on mobile), such as by warning about the use of this extension, and/or disabling it in
-      non-early-access release channel versions of browsers.
+      <b>Note:</b> Browsers should should discourage use of this extension in non-debug applications
+      because it is non-portable. For example, browsers should warn about the use of this extension,
+      and/or disable it in non-early-access release channel versions of browsers.
     </p>
   </overview>
 
