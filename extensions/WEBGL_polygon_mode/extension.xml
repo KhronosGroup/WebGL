@@ -22,8 +22,8 @@
 
     <div class="note">
       Applications should not use this extension to achieve rendering effects, and browsers should
-      should discourage use of this extension in non-debug applications, because it is non-portable.
-      For example, browsers should warn about the use of this extension, and/or disable it in
+      discourage use of this extension in non-debug applications, because it is non-portable. For
+      example, browsers should warn about the use of this extension, and/or disable it in
       non-early-access release channel versions of browsers.
     </div>
   </overview>
