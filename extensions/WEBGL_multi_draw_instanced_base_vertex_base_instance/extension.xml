@@ -174,7 +174,7 @@ var ext = gl.getExtension("WEBGL_multi_draw_instanced_base_vertex_base_instance"
   let baseVertices = new Int32Array(...);
   let baseInstances = new Uint32Array(...);
   ext.multiDrawElementsInstancedBaseVertexBaseInstanceWEBGL(
-      gl.TRIANGLES, counts, 0, gl.UNSIGHNED_SHORT,
+      gl.TRIANGLES, counts, 0, gl.UNSIGNED_SHORT,
       offsets, 0, instanceCounts, 0, baseVertices, 0, baseInstances, 0,
       counts.length);
 }
