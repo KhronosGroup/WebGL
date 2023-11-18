@@ -141,7 +141,7 @@ var ext = gl.getExtension("WEBGL_draw_instanced_base_vertex_base_instance");
   gl.uniform1i(u_BaseVertex_location, baseVertex);
   gl.uniform1i(u_BaseInstance_location, baseInstance);
   ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL(
-      gl.TRIANGLES, count, gl.UNSIGHNED_SHORT, offset, instanceCount, baseVertex, baseInstance);
+      gl.TRIANGLES, count, gl.UNSIGNED_SHORT, offset, instanceCount, baseVertex, baseInstance);
 }
     </pre>
     <pre>
