@@ -539,6 +539,7 @@ interface mixin WebGLRenderingContextBase
     readonly attribute (HTMLCanvasElement or OffscreenCanvas) canvas;
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
+    readonly attribute GLenum drawingBufferFormat;
     attribute PredefinedColorSpace drawingBufferColorSpace = "srgb";
     attribute PredefinedColorSpace unpackColorSpace = "srgb";
 
@@ -548,7 +549,7 @@ interface mixin WebGLRenderingContextBase
     sequence<DOMString>? getSupportedExtensions();
     object? getExtension(DOMString name);
 
-    undefined backbufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
+    undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
 
     undefined activeTexture(GLenum texture);
     undefined attachShader(WebGLProgram program, WebGLShader shader);

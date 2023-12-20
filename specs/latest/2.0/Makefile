@@ -7,4 +7,4 @@ webgl2.idl: index.html extract-idl.py Makefile
 	echo "//" >> webgl2.idl
 	echo "// WebGL IDL definitions scraped from the Khronos specification:" >> webgl2.idl
 	echo "// https://www.khronos.org/registry/webgl/specs/latest/" >> webgl2.idl
-	PYTHONPATH=../../../resources/html5lib/src python extract-idl.py index.html >> webgl2.idl
+	PYTHONPATH=../../../resources/html5lib-1.1/src:../../../resources/webencodings-0.5.1/src python3 extract-idl.py index.html >> webgl2.idl
