@@ -396,6 +396,55 @@
         </p>
     </div>
 
+    <dl class="methods">
+        <dt class="idl-code">undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
+        <dd>
+            Respecify the format and size of the drawing buffer,
+            similar to <code>renderbufferStorage</code> as used on Renderbuffers.
+
+            Clearing behavior is equivalent to setting <code>HTMLCanvasElement.width</code> and <code>HTMLCanvasElement.height</code>, followed by changing the drawing buffer format.
+            This method respects <code>WebGLContextAttributes.antialias</code>.
+
+            <div class="note">
+                <code>drawingBufferStorage</code> allows for efficiently respecifying width and height together simultaneously.
+                With <code>HTMLCanvasElement.width</code> and <code>HTMLCanvasElement.height</code>,
+                setting one and then the other can incur intermediate reallocations, though User Agents do try to optimize these out.
+            </div>
+
+            If <code>drawingBufferStorage</code> is successful, the <code>drawingBufferFormat</code> becomes <code>sizedFormat</code>.
+            <code>drawingBufferWidth</code> and <code>drawingBufferHeight</code> become <code>width</code> and <code>height</code> respectively.
+            Operations on the default framebuffer therefore behave as if operating on a non-default framebuffer with an attachment of <code>sizedFormat</code>.
+            E.g. after <code>drawingBufferStorage(gl.RGBA16F, 1, 1)</code>, because the framebuffer is "floatish",
+            readPixels's main format/type pair is <code>RGBA</code>/<code>FLOAT</code> instead of <code>RGBA</code>/<code>UNSIGNED_BYTE</code>.
+
+            If <code>WebGLContextAttributes.alpha</code> is <code>false</code>, generate <code>INVALID_OPERATION</code>.
+
+            <code>RGBA8</code> is always supported for <code>sizedFormat</code>.
+            Additionally, the following enums are supported if they are currently valid for <code>renderbufferStorage</code>:
+            <ul>
+                <li><code>RGBA8</code>
+                <li><code>SRGB8_ALPHA8</code> (<code>0x8C43</code>) (E.g. from EXT_sRGB)
+                <li><code>RGBA16F</code> (<code>0x881A</code>) (E.g. from EXT_color_buffer_half_float)
+            </ul>
+            If <code>sizedFormat</code> is not currently supported, generate <code>INVALID_ENUM</code>.
+
+            <div class="note">
+                <p>
+                    In WebGL 1.0, <code>SRGB8_ALPHA8</code> requires the extension <code>EXT_sRGB<code>.
+                    In WebGL 2.0, <code>SRGB8_ALPHA8</code> does not require an extension.
+                </p>
+                <p>
+                    In WebGL 1.0, <code>RGBA16F</code> requires the extension <code>EXT_color_buffer_half_float<code>.
+                    In WebGL 2.0, <code>RGBA16F</code> requires the extension <code>EXT_color_buffer_float<code>.
+                </p>
+            </div>
+
+            If <code>width</code> or <code>height</code> are greater than the limit <code>MAX_RENDERBUFFER_SIZE</code>,
+            generate <code>INVALID_VALUE</code>.
+
+            If allocation fails, generate <code>OUT_OF_MEMORY</code>.
+    </dl>
+
 <!-- ======================================================================================================= -->
 
     <h3><a name="WEBGL_VIEWPORT">The WebGL Viewport</a></h3>
@@ -1673,6 +1722,7 @@ interface mixin <dfn data-dfn-type="interface" id="WebGLRenderingContextBase">We
 
     const GLenum RGBA4                          = 0x8056;
     const GLenum RGB5_A1                        = 0x8057;
+    const GLenum RGBA8                          = 0x8058;
     const GLenum RGB565                         = 0x8D62;
     const GLenum DEPTH_COMPONENT16              = 0x81A5;
     const GLenum STENCIL_INDEX8                 = 0x8D48;
@@ -1722,6 +1772,7 @@ interface mixin <dfn data-dfn-type="interface" id="WebGLRenderingContextBase">We
     readonly attribute (HTMLCanvasElement or OffscreenCanvas) canvas;
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
+    readonly attribute GLenum drawingBufferFormat;
     attribute PredefinedColorSpace drawingBufferColorSpace = "srgb";
     attribute PredefinedColorSpace unpackColorSpace = "srgb";
 
@@ -1730,6 +1781,8 @@ interface mixin <dfn data-dfn-type="interface" id="WebGLRenderingContextBase">We
 
     sequence&lt;DOMString&gt;? getSupportedExtensions();
     object? getExtension(DOMString name);
+
+    undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
 
     undefined activeTexture(GLenum texture);
     undefined attachShader(WebGLProgram program, WebGLShader shader);
@@ -1982,6 +2035,18 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             The actual height of the drawing buffer. May be different from the
             <code>height</code> attribute of the <code>HTMLCanvasElement</code> if
             the implementation is unable to satisfy the requested width or height.
+
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLRenderingContext-drawingBufferFormat">
+                    drawingBufferFormat
+                </a>
+            </code>
+            of type <code>GLenum</code>
+        <dd>
+            The current effective format of the drawing buffer.
+            Initially <code>RGBA8</code> or <code>RGB8</code> for <code>alpha:true</code> and <code>alpha:false</code> respectively.
+
         <dt>
             <code class=attribute-name>
                 <a id="DOM-WebGLRenderingContext-drawingBufferColorSpace">
