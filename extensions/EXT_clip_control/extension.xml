@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension href="EXT_clip_control/">
+  <name>EXT_clip_control</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>51</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_clip_control.txt"
+             name="EXT_clip_control">
+    </mirrors>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface EXT_clip_control {
+    const GLenum LOWER_LEFT_EXT = 0x8CA1;
+    const GLenum UPPER_LEFT_EXT = 0x8CA2;
+
+    const GLenum NEGATIVE_ONE_TO_ONE_EXT = 0x935E;
+    const GLenum ZERO_TO_ONE_EXT         = 0x935F;
+
+    const GLenum CLIP_ORIGIN_EXT     = 0x935C;
+    const GLenum CLIP_DEPTH_MODE_EXT = 0x935D;
+
+    undefined clipControlEXT(GLenum origin, GLenum depth);
+};
+  </idl>
+
+  <newfun>
+    <function name="clipControlEXT" type="undefined">
+      <param name="origin" type="GLenum"/>
+      <param name="depth" type="GLenum"/>
+      <p>
+        <code>origin</code> must be <code>LOWER_LEFT_EXT</code> (default) or <code>UPPER_LEFT_EXT</code>.
+      </p>
+      <p>
+        <code>depth</code> must be <code>NEGATIVE_ONE_TO_ONE_EXT</code> (default) or <code>ZERO_TO_ONE_EXT</code>.
+      </p>
+    </function>
+  </newfun>
+
+  <newtok>
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      <p>
+        New enums <code>CLIP_ORIGIN_EXT</code> and <code>CLIP_DEPTH_MODE_EXT</code> are accepted as the <code>pname</code> parameter.
+      </p>
+      <p>
+        The return type of this method depends on the parameter queried:
+      </p>
+      <table class="foo">
+        <tr><th>pname</th><th>returned type</th></tr>
+        <tr><td>CLIP_ORIGIN_EXT</td><td>GLenum</td></tr>
+        <tr><td>CLIP_DEPTH_MODE_EXT</td><td>GLenum</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <history>
+    <revision date="2023/06/01">
+      <change>Initial Draft.</change>
+    </revision>
+    <revision date="2023/11/06">
+      <change>WebGL WG promoted to Community Approved on 2023-11-02.</change>
+    </revision>
+  </history>
+</extension>

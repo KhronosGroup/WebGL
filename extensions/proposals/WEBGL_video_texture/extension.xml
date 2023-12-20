@@ -55,21 +55,21 @@
   </overview>
 
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WebGLVideoFrameInfo {
   readonly attribute double currentTime;
   readonly attribute unsigned long textureWidth;
   readonly attribute unsigned long textureHeight;
 };
 
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_video_texture {
     const GLenum TEXTURE_VIDEO_IMAGE_WEBGL             = 0x9248;
     const GLenum SAMPLER_VIDEO_IMAGE_WEBGL             = 0x9249;
 
     [RaisesException] WebGLVideoFrameInfo shareVideoImageWEBGL(
       GLenum target, HTMLVideoElement video);
-    [RaiseException] void releaseVideoImageWEBGL(GLenum target);
+    [RaiseException] undefined releaseVideoImageWEBGL(GLenum target);
 };
   </idl>
 

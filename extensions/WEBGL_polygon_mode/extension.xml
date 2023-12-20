@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension href="WEBGL_polygon_mode/">
+  <name>WEBGL_polygon_mode</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>53</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/HEAD/extensions/ANGLE_polygon_mode.txt"
+             name="ANGLE_polygon_mode">
+    </mirrors>
+
+    <div class="note">
+      Applications should not use this extension to achieve rendering effects, and browsers should
+      discourage use of this extension in non-debug applications, because it is non-portable. For
+      example, browsers should warn about the use of this extension, and/or disable it in
+      non-early-access release channel versions of browsers.
+    </div>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface WEBGL_polygon_mode {
+    const GLenum POLYGON_MODE_WEBGL = 0x0B40;
+
+    const GLenum POLYGON_OFFSET_LINE_WEBGL = 0x2A02;
+
+    const GLenum LINE_WEBGL = 0x1B01;
+    const GLenum FILL_WEBGL = 0x1B02;
+
+    undefined polygonModeWEBGL(GLenum face, GLenum mode);
+};
+  </idl>
+
+  <newfun>
+    <function name="polygonModeWEBGL" type="undefined">
+      <param name="face" type="GLenum"/>
+      <param name="mode" type="GLenum"/>
+      <p>
+        <code>face</code> must be <code>FRONT_AND_BACK</code>.
+      </p>
+      <p>
+        <code>mode</code> must be <code>LINE_WEBGL</code> or <code>FILL_WEBGL</code> (default).
+      </p>
+    </function>
+  </newfun>
+
+  <newtok>
+    <function name="enable" type="undefined">
+      <param name="cap" type="GLenum"/>
+      New enum <code>POLYGON_OFFSET_LINE_WEBGL</code> is accepted as the <code>cap</code> parameter.
+    </function>
+
+    <function name="disable" type="undefined">
+      <param name="cap" type="GLenum"/>
+      New enum <code>POLYGON_OFFSET_LINE_WEBGL</code> is accepted as the <code>cap</code> parameter.
+    </function>
+
+    <function name="isEnabled" type="GLboolean">
+      <param name="cap" type="GLenum"/>
+      New enum <code>POLYGON_OFFSET_LINE_WEBGL</code> is accepted as the <code>cap</code> parameter.
+    </function>
+
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      <p>
+        New enums <code>POLYGON_MODE_WEBGL</code> and <code>POLYGON_OFFSET_LINE_WEBGL</code> are accepted as the <code>pname</code> parameter.
+      </p>
+      <p>
+        The return type of this method depends on the parameter queried:
+      </p>
+      <table class="foo">
+        <tr><th>pname</th><th>returned type</th></tr>
+        <tr><td>POLYGON_MODE_WEBGL</td><td>GLenum</td></tr>
+        <tr><td>POLYGON_OFFSET_LINE_WEBGL</td><td>GLboolean</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <history>
+    <revision date="2023/06/01">
+      <change>Initial Draft.</change>
+    </revision>
+    <revision date="2023/11/06">
+      <change>WebGL WG promoted to Community Approved on 2023-11-02, with warning about non-portability.</change>
+    </revision>
+  </history>
+</extension>

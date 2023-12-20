@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rejected href="rejected/EXT_shader_framebuffer_fetch/">
+  <name>EXT_shader_framebuffer_fetch</name>
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>PlayCanvas, Snap Inc</contributor>
+  </contributors>
+
+  <number>XYZ</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_shader_framebuffer_fetch.txt"
+             name="EXT_shader_framebuffer_fetch">
+    </mirrors>
+
+    <features>
+      <feature>
+            It provides a mechanism whereby a fragment shader may read existing framebuffer data as input.
+      </feature>
+      <feature>
+            Prior to fragment shading, if <code>GL_EXT_shader_framebuffer_fetch</code> is enabled, <code>gl_LastFragData[]</code> is populated with the value last written to the framebuffer at the same (x,y,sample) position.
+      </feature>
+      <feature>
+            If <code>EXT_shader_framebuffer_fetch_non_coherent</code> is supported, a call to <code>FramebufferFetchBarrierEXT(void)</code> can be made to ensure <code>gl_LastFragData[]</code> is populated with fragment data drawn before the barrier.
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
+    interface EXT_shader_framebuffer_fetch {
+    };
+
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
+    interface EXT_shader_framebuffer_fetch_non_coherent {
+      undefined FramebufferFetchBarrierEXT(void);
+    };
+  </idl>
+
+  <samplecode xml:space="preserve">
+    <pre>
+    void main(){
+        gl_FragColor = gl_LastFragData[0];
+    }
+    </pre>
+  </samplecode>
+
+  <history>
+    <revision date="2020/05/22">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2022/02/01">
+      <change>Moved to "Rejected". Recommend pursuing this functionality in WebGPU instead.</change>
+    </revision>
+  </history>
+</rejected>

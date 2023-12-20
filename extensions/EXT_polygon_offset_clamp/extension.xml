@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension href="EXT_polygon_offset_clamp/">
+  <name>EXT_polygon_offset_clamp</name>
+
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>50</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_polygon_offset_clamp.txt"
+             name="EXT_polygon_offset_clamp">
+    </mirrors>
+
+    <features>
+      <feature>
+        A new parameter is added to the polygon offset function that clamps
+        the calculated offset to a minimum or maximum value.
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface EXT_polygon_offset_clamp {
+    const GLenum POLYGON_OFFSET_CLAMP_EXT = 0x8E1B;
+
+    undefined polygonOffsetClampEXT(GLfloat factor, GLfloat units, GLfloat clamp);
+};
+  </idl>
+
+  <newfun>
+    <function name="polygonOffsetClampEXT" type="undefined">
+      <param name="factor" type="GLfloat"/>
+      <param name="units" type="GLfloat"/>
+      <param name="clamp" type="GLfloat"/>
+    </function>
+  </newfun>
+
+  <newtok>
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      A new enum <code>POLYGON_OFFSET_CLAMP_EXT</code> is accepted as the <code>pname</code> parameter.
+      <table class="foo">
+        <tr><th>pname</th><th>returned type</th></tr>
+        <tr><td>POLYGON_OFFSET_CLAMP_EXT</td><td>GLfloat</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <history>
+    <revision date="2023/01/26">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2023/02/09">
+      <change>Promoted to Draft.</change>
+    </revision>
+    <revision date="2023/11/06">
+      <change>WebGL WG promoted to Community Approved on 2023-11-02.</change>
+    </revision>
+  </history>
+</extension>

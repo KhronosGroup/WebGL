@@ -37,7 +37,7 @@
       <p>For an example of security sensitive content, consider the rendering of an HTML link. The color of the link can indicate its visited or unvisited state. Third parties must not be able to access or infer this information.</p>
       <p>Specifically, third parties must not be able read the pixel data of security sensitive content through WebGL or other APIs. Additionally, third parties must not be able to divulge or approximate the pixel data of security sensitive content by timing WebGL operations.</p>
       <p>Prior to this extension, WebGL restricted the upload of security sensitive content as a texture for graphical processing. This extension enables the uploading and processing of security sensitive content, with some restrictions. Note that this extension imposes no restrictions on the processing of regular, non-security sensitive content.</p>
-      <p>To secure a user’s privacy, a WebGL implementation must not leak information about the contents of security sensitive textures through the execution time of its commands. To achieve this, no part of the underlying graphics pipeline may vary in execution time based on the contents of a security sensitive texture. For example, primitive assembly and depth testing must not vary based on the contents of a security sensitive texture.</p>
+      <p>To secure a user's privacy, a WebGL implementation must not leak information about the contents of security sensitive textures through the execution time of its commands. To achieve this, no part of the underlying graphics pipeline may vary in execution time based on the contents of a security sensitive texture. For example, primitive assembly and depth testing must not vary based on the contents of a security sensitive texture.</p>
       <p>The vertex shading and fragment shading stages of the graphics pipeline require particular restrictions to keep their execution time independent of the contents of security sensitive textures. Specifically, the contents of a security sensitive texture must only appear in constant-time GLSL operations. A constant-time GLSL operation is an operation whose execution time does not vary based on the values of its operands. This extension will describe how a WebGL implementation can enforce this requirement.</p>
       <p>Additionally, this extension attempts to identify non-constant-time GLSL operations. All other GLSL operations are assumed to be constant time in both the WebGL implementation and the underlying GPU implementation. If this assumption is false on a particular implementation, then this extension must be disabled for that implementation. In the future, GPU vendors may be able to provide a mechanism to guarantee that the assumed GLSL operations are in fact constant-time.</p>
     </div>
@@ -92,7 +92,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_security_sensitive_resources {
   WebGLFramebuffer? createSecuritySensitiveFramebuffer();
   WebGLTexture? createSecuritySensitiveTexture();

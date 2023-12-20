@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<draft href="OES_sample_variables/">
+  <name>OES_sample_variables</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>56</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/OES/OES_sample_variables.txt"
+             name="OES_sample_variables">
+      <addendum>
+        When a fragment shader writes to <code>gl_SampleMask</code>, implementations
+        may implicitly disable <code>SAMPLE_ALPHA_TO_COVERAGE</code> state.
+      </addendum>
+    </mirrors>
+    <features>
+      <glsl extname="GL_OES_sample_variables">
+        <stage type="fragment"/>
+        <input name="gl_SampleMaskIn[]" type="int"/>
+        <input name="gl_SampleID" type="int"/>
+        <input name="gl_SamplePosition" type="vec2"/>
+        <output name="gl_SampleMask[]" type="int"/>
+        <uniform name="gl_NumSamples" type="int"/>
+        <constant name="gl_MaxSamples" type="int"/>
+      </glsl>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface OES_sample_variables {
+};
+  </idl>
+
+  <history>
+    <revision date="2023/06/01">
+      <change>Initial Draft.</change>
+    </revision>
+  </history>
+</draft>

@@ -71,7 +71,7 @@
       </addendum>
 
       <addendum>
-        As per the usual WebGL binding rules, functions don’t keep the KHR
+        As per the usual WebGL binding rules, functions don't keep the KHR
         suffix they have in the GLES version, but tokens do.
       </addendum>
     </mirrors>
@@ -112,7 +112,7 @@
   </overview>
 
   <idl xml:space="preserve"><![CDATA[
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_debug : EventTarget {
   const GLenum MAX_DEBUG_MESSAGE_LENGTH_KHR = 0x9143;
   const GLenum MAX_DEBUG_GROUP_STACK_DEPTH_KHR = 0x826C;
@@ -145,17 +145,17 @@ interface WEBGL_debug : EventTarget {
   const GLenum STACK_UNDERFLOW_KHR = 0x0504;
   const GLenum STACK_OVERFLOW_KHR = 0x0503;
 
-  void debugMessageControlKHR(GLenum source, GLenum type, GLenum severity, sequence<GLuint> ids, boolean enabled);
-  void debugMessageInsertKHR(GLenum source, GLenum type, GLuint id, GLenum severity, DOMString buf);
+  undefined debugMessageControlKHR(GLenum source, GLenum type, GLenum severity, sequence<GLuint> ids, boolean enabled);
+  undefined debugMessageInsertKHR(GLenum source, GLenum type, GLuint id, GLenum severity, DOMString buf);
 
-  void pushDebugGroupKHR(GLenum source, GLuint id, DOMString message);
-  void popDebugGroupKHR();
+  undefined pushDebugGroupKHR(GLenum source, GLuint id, DOMString message);
+  undefined popDebugGroupKHR();
 
-  void objectLabelKHR(WebGLObject? object, DOMString label);
+  undefined objectLabelKHR(WebGLObject? object, DOMString label);
   DOMString getObjectLabelKHR(WebGLObject? object);
 }; // interface WEBGL_debug
 
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WebGLDebugMessage : Event {
   readonly attribute GLenum source;
   readonly attribute GLenum type;
@@ -168,7 +168,7 @@ interface WebGLDebugMessage : Event {
   <newfun>
     <p>On <code>WEBGL_debug</code>:</p>
 
-    <function name="debugMessageControlKHR" type="void">
+    <function name="debugMessageControlKHR" type="undefined">
       <param name="source" type="GLenum"/>
       <param name="type" type="GLenum"/>
       <param name="severity" type="GLenum"/>
@@ -178,7 +178,7 @@ interface WebGLDebugMessage : Event {
       events for the specified messages.
     </function>
 
-    <function name="debugMessageInsertKHR" type="void">
+    <function name="debugMessageInsertKHR" type="undefined">
       <param name="source" type="GLenum"/>
       <param name="type" type="GLenum"/>
       <param name="id" type="GLuint"/>
@@ -187,18 +187,18 @@ interface WebGLDebugMessage : Event {
       Inserts a custom message into the debug log.
     </function>
 
-    <function name="pushDebugGroupKHR" type="void">
+    <function name="pushDebugGroupKHR" type="undefined">
       <param name="source" type="GLenum"/>
       <param name="id" type="GLuint"/>
       <param name="message" type="DOMString"/>
       Pushes a debug group on the stack.
     </function>
 
-    <function name="popDebugGroupKHR" type="void">
+    <function name="popDebugGroupKHR" type="undefined">
       Closes a group opened with <code>pushDebugGroupKHR</code>.
     </function>
 
-    <function name="objectLabelKHR" type="void">
+    <function name="objectLabelKHR" type="undefined">
       <param name="object" type="WebGLObject?"/>
       <param name="label" type="DOMString"/>
       Assigns a label to a <code>WebGLObject</code>.
@@ -209,13 +209,13 @@ interface WebGLDebugMessage : Event {
       Retrieves the label associated with a <code>WebGLObject</code>.
     </function>
 
-    <function name="addEventListener" type="void">
+    <function name="addEventListener" type="undefined">
       <param name="type" type="DOMString"/>
       <param name="listener" type="EventListener"/>
       Register an event handler of a specific event type on the EventTarget.
     </function>
 
-    <function name="removeEventListener" type="void">
+    <function name="removeEventListener" type="undefined">
       <param name="type" type="DOMString"/>
       <param name="listener" type="EventListener"/>
       Removes an event listener from the EventTarget.
@@ -245,7 +245,7 @@ function init(gl) {
 
   <samplecode><div class="example">
     Skip a section of the code.
-    
+
     <pre xml:space="preserve"><![CDATA[
 function draw(gl, ext) {
   ...
@@ -298,7 +298,7 @@ function draw(gl, ext) {
   <samplecode><div class="example">
     Only output a subsection of the code and disable some messages for the
     entire application.
-  
+
     <pre xml:space="preserve"><![CDATA[
 function draw(gl, ext) {
   ...

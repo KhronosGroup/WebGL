@@ -67,6 +67,10 @@ let testCompressedFormatsUnavailableWhenExtensionDisabled = function(gl, compres
         if (compressedFormats.hasOwnProperty(name)) {
             gl.compressedTexImage2D(gl.TEXTURE_2D, 0, compressedFormats[name], testSize, testSize, 0, new Uint8Array(expectedByteLength(testSize, testSize, compressedFormats[name])));
             wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Trying to use format " + name + " with extension disabled.");
+            if (gl.texStorage2D) {
+                gl.texStorage2D(gl.TEXTURE_2D, 1, compressedFormats[name], testSize, testSize);
+                wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Trying to use format " + name + " with texStorage2D with extension disabled.");
+            }
         }
     }
     gl.bindTexture(gl.TEXTURE_2D, null);
@@ -165,7 +169,7 @@ let testFormatRestrictionsOnBufferSize = function(gl, validFormats, expectedByte
  * @param {number} height Height of the image in pixels.
  * @param {Object} subImageConfigs configs for compressedTexSubImage calls
  */
-let testTexSubImageDimensions = function(gl, validFormats, expectedByteLength, getBlockDimensions, width, height, subImageConfigs) {
+let testTexSubImageDimensions = function(gl, ext, validFormats, expectedByteLength, getBlockDimensions, width, height, subImageConfigs) {
     let tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
 
@@ -173,6 +177,7 @@ let testTexSubImageDimensions = function(gl, validFormats, expectedByteLength, g
         if (validFormats.hasOwnProperty(formatId)) {
             let format = validFormats[formatId];
             let blockSize = getBlockDimensions(format);
+            debug("testing " + ctu.formatToString(ext, format));
             let expectedSize = expectedByteLength(width, height, format);
             let data = new Uint8Array(expectedSize);
 
@@ -192,7 +197,7 @@ let testTexSubImageDimensions = function(gl, validFormats, expectedByteLength, g
     gl.deleteTexture(tex);
 };
 
-let testTexImageLevelDimensions = function(gl, validFormats, expectedByteLength, getBlockDimensions, imageConfigs) {
+let testTexImageLevelDimensions = function(gl, ext, validFormats, expectedByteLength, getBlockDimensions, imageConfigs) {
     let tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
 
@@ -200,6 +205,7 @@ let testTexImageLevelDimensions = function(gl, validFormats, expectedByteLength,
         if (validFormats.hasOwnProperty(formatId)) {
             let format = validFormats[formatId];
             let blockSize = getBlockDimensions(format);
+            debug("testing " + ctu.formatToString(ext, format));
 
             for (let i = 0, len = imageConfigs.length; i < len; ++i) {
                 let c = imageConfigs[i];
@@ -214,6 +220,32 @@ let testTexImageLevelDimensions = function(gl, validFormats, expectedByteLength,
     gl.deleteTexture(tex);
 }
 
+let testTexStorageLevelDimensions = function(gl, ext, validFormats, expectedByteLength, getBlockDimensions, imageConfigs) {
+    for (let formatId in validFormats) {
+        let tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+
+        if (validFormats.hasOwnProperty(formatId)) {
+            let format = validFormats[formatId];
+            let blockSize = getBlockDimensions(format);
+            debug("testing " + ctu.formatToString(ext, format));
+
+            for (let i = 0, len = imageConfigs.length; i < len; ++i) {
+                let c = imageConfigs[i];
+                let data = new Uint8Array(expectedByteLength(c.width, c.height, format));
+                if (i == 0) {
+                    gl.texStorage2D(gl.TEXTURE_2D, imageConfigs.length, format, c.width, c.height);
+                    wtu.glErrorShouldBe(gl, c.expectation, c.message);
+                }
+                gl.compressedTexSubImage2D(gl.TEXTURE_2D, i, 0, 0, c.width, c.height, format, data);
+                wtu.glErrorShouldBe(gl, c.expectation, c.message);
+            }
+        }
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.deleteTexture(tex);
+    }
+}
+
 return {
     formatToString: formatToString,
     insertCaptionedImg: insertCaptionedImg,
@@ -224,6 +256,7 @@ return {
     testFormatRestrictionsOnBufferSize: testFormatRestrictionsOnBufferSize,
     testTexSubImageDimensions: testTexSubImageDimensions,
     testTexImageLevelDimensions: testTexImageLevelDimensions,
+    testTexStorageLevelDimensions: testTexStorageLevelDimensions,
 };
 
 })();

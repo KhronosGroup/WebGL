@@ -22,6 +22,9 @@
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_sRGB.txt"
              name="EXT_sRGB">
+      <addendum>
+        Support for <code>OES_rgb8_rgba8</code> or equivalent functionality is not required.
+      </addendum>
     </mirrors>
 
     <features>
@@ -32,7 +35,7 @@
   </overview>
 
   <idl xml:space="preserve">
-    [LegacyNoInterfaceObject]
+    [Exposed=(Window,Worker), LegacyNoInterfaceObject]
     interface EXT_sRGB {
       const GLenum SRGB_EXT                                     = 0x8C40;
       const GLenum SRGB_ALPHA_EXT                               = 0x8C42;
@@ -53,7 +56,7 @@
     </function>
     <function name="renderbufferStorage">
       <param name="internalformat" type="GLenum"/>
-      Accepted by the <code>internalformat</code> parameter: <code>SRGB_ALPHA8_EXT</code>
+      Accepted by the <code>internalformat</code> parameter: <code>SRGB8_ALPHA8_EXT</code>
     </function>
     <function name="getFramebufferAttachmentParameter">
       <param name="pname" type="GLenum"/>
@@ -82,6 +85,9 @@
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2022/12/01">
+      <change>Clarified WebGL-specific behavioral changes.</change>
     </revision>
   </history>
 </extension>

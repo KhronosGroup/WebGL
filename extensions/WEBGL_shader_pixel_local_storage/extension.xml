@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<draft href="WEBGL_shader_pixel_local_storage/">
+  <name>WEBGL_shader_pixel_local_storage</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Chris Dalton, Rive</contributor>
+    <contributor>Kenneth Russell, Google Inc.</contributor>
+    <contributor>Shahbaz Youssefi, Google Inc.</contributor>
+    <contributor>Kelsey Gilbert, Mozilla Corp.</contributor>
+    <contributor>Geoff Lang, Google Inc.</contributor>
+    <contributor>Kimmo Kinnunen, Apple Inc.</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>49</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/refs/heads/main/extensions/ANGLE_shader_pixel_local_storage.txt"
+             name="ANGLE_shader_pixel_local_storage">
+      <addendum>
+        <div>
+          Coherency is indicated by the function <code>isCoherent()</code>, rather than the
+          existence of a similar extension string.
+        </div>
+        <div class="note rationale">
+          Exposing two distinct, yet almost identical interfaces would be much less convenient.
+        </div>
+      </addendum>
+      <addendum>
+        <div>
+          <code>FramebufferMemorylessPixelLocalStorageANGLE</code> is not supported.
+        </div>
+        <div class="note rationale">
+          Browsers must be able to interrupt a WebGL rendering context at any moment, and if
+          memoryless pixel local storage planes could be active during such a time, their contents
+          would become invalidated.
+        </div>
+      </addendum>
+      <addendum>
+        <div>
+          <code>FramebufferPixelLocalStorageInterruptANGLE</code> and
+          <code>FramebufferPixelLocalStorageRestoreANGLE</code> are not supported.
+        </div>
+        <div class="note rationale">
+          These commands are only intended for internal use by the browser implementation.
+        </div>
+      </addendum>
+      <addendum>
+        <div>
+          When this extension is enabled, the following WebGL extensions are enabled implicitly:
+          <ul>
+            <li><a href="../OES_draw_buffers_indexed/">OES_draw_buffers_indexed</a></li>
+            <li><a href="../EXT_color_buffer_float/">EXT_color_buffer_float</a></li>
+            <li><a href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a></li>
+          </ul>
+        </div>
+      </addendum>
+    </mirrors>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface WEBGL_shader_pixel_local_storage {
+  const GLenum MAX_PIXEL_LOCAL_STORAGE_PLANES_WEBGL = 0x96E0;
+  const GLenum MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE_WEBGL = 0x96E1;
+  const GLenum MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES_WEBGL = 0x96E2;
+  const GLenum PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL = 0x96E3;
+  const GLenum LOAD_OP_ZERO_WEBGL = 0x96E4;
+  const GLenum LOAD_OP_CLEAR_WEBGL = 0x96E5;
+  const GLenum LOAD_OP_LOAD_WEBGL = 0x96E6;
+  const GLenum STORE_OP_STORE_WEBGL = 0x96E7;
+  const GLenum PIXEL_LOCAL_FORMAT_WEBGL = 0x96E8;
+  const GLenum PIXEL_LOCAL_TEXTURE_NAME_WEBGL = 0x96E9;
+  const GLenum PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL = 0x96EA;
+  const GLenum PIXEL_LOCAL_TEXTURE_LAYER_WEBGL = 0x96EB;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_FLOAT_WEBGL = 0x96EC;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_INT_WEBGL = 0x96ED;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL = 0x96EE;
+  GLboolean isCoherent();
+  undefined framebufferTexturePixelLocalStorageWEBGL(GLint plane,
+                                                     WebGLTexture? texture,
+                                                     GLint level,
+                                                     GLint layer);
+  undefined framebufferPixelLocalClearValuefvWEBGL(GLint plane,
+                                                   Float32List value,
+                                                   optional unsigned long long srcOffset = 0);
+  undefined framebufferPixelLocalClearValueivWEBGL(GLint plane,
+                                                   Int32List value,
+                                                   optional unsigned long long srcOffset = 0);
+  undefined framebufferPixelLocalClearValueuivWEBGL(GLint plane,
+                                                    Uint32List value,
+                                                    optional unsigned long long srcOffset = 0);
+  undefined beginPixelLocalStorageWEBGL(sequence&lt;GLenum&gt; loadops);
+  undefined endPixelLocalStorageWEBGL(sequence&lt;GLenum&gt; storeops);
+  undefined pixelLocalStorageBarrierWEBGL();
+  any getFramebufferPixelLocalStorageParameterWEBGL(GLint plane, GLenum pname);
+};
+  </idl>
+
+  <newfun>
+    <function name="isCoherent" type="GLboolean">
+      Indicates whether pixel local storage operations touching the same pixel are invoked
+      synchronously and in API primitive order. If <code>false</code>, the application must call
+      <code>pixelLocalStorageBarrierWEBGL()</code>between rendering passes that touch the same
+      pixel.
+      <div class="note">
+        Use this function to determine if pixel local storage is coherent, rather than checking for
+        another extension string.
+      </div>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="framebufferTexturePixelLocalStorageWEBGL" type="undefined">
+      <param name="plane" type="GLint"/>
+      <param name="texture" type="WebGLTexture?"/>
+      <param name="level" type="GLint"/>
+      <param name="layer" type="GLint"/>
+      <p>
+        Establishes the backing texture for the given plane.
+      </p>
+      <p>
+        If <code>texture</code> has been deleted, generates an <code>INVALID_OPERATION</code> error.
+      </p>
+      <p>
+        If <code>texture</code> was generated by a different <code>WebGL2RenderingContext</code> than
+        this one, generates an <code>INVALID_OPERATION</code> error.
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="framebufferPixelLocalClearValuefvWEBGL" type="undefined">
+      <param name="plane" type="GLint"/>
+      <param name="value" type="Float32List"/>
+      <param name="srcOffset" type="unsigned long long" default="0"/>
+      <p>
+        Sets the floating point clear value for the given plane.
+      </p>
+      <p>
+        If <code>value</code> has fewer than <code>srcOffset + 4</code> elements,
+        generates an <code>INVALID_VALUE</code> error.
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="framebufferPixelLocalClearValueivWEBGL" type="undefined">
+      <param name="plane" type="GLint"/>
+      <param name="value" type="Int32List"/>
+      <param name="srcOffset" type="unsigned long long" default="0"/>
+      <p>
+        Sets the signed integer clear value for the given plane.
+      </p>
+      <p>
+        If <code>value</code> has fewer than <code>srcOffset + 4</code> elements,
+        generates an <code>INVALID_VALUE</code> error.
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="framebufferPixelLocalClearValueuivWEBGL" type="undefined">
+      <param name="plane" type="GLint"/>
+      <param name="value" type="Uint32List"/>
+      <param name="srcOffset" type="unsigned long long" default="0"/>
+      <p>
+        Sets the unsigned integer clear value for the given plane.
+      </p>
+      <p>
+        If <code>value</code> has fewer than <code>srcOffset + 4</code> elements,
+        generates an <code>INVALID_VALUE</code> error.
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="beginPixelLocalStorageWEBGL" type="undefined">
+      <param name="loadops" type="sequence&lt;GLenum&gt;"/>
+      Activates pixel local storage.
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="endPixelLocalStorageWEBGL" type="undefined">
+      <param name="storeops" type="sequence&lt;GLenum&gt;"/>
+      Deactivates pixel local storage.
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="pixelLocalStorageBarrierWEBGL" type="undefined">
+      Delimits a boundary between distinct, non-self-overlapping rendering passes.
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="getFramebufferPixelLocalStorageParameterWEBGL" type="any">
+      <param name="plane" type="GLint"/>
+      <param name="pname" type="GLenum"/>
+      Returns a specific parameter for the given pixel local storage plane. The return type of
+      this method depends on the parameter queried. See the below section on "New Tokens".
+    </function>
+  </newfun>
+
+  <newtok>
+    <function name="getParameter" type="undefined">
+      <param name="pname" type="GLenum"/>
+      <p>
+        <code>pname</code> accepts the following new tokens.
+      </p>
+      <p>
+        The return type is <code>GLint</code> for all additional parameters.
+      </p>
+      <table>
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>MAX_PIXEL_LOCAL_STORAGE_PLANES_WEBGL</td><td>GLint</td></tr>
+      <tr><td>MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE_WEBGL</td><td>GLint</td></tr>
+      <tr><td>MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES_WEBGL</td><td>GLint</td></tr>
+      <tr><td>PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL</td><td>GLint</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <newtok>
+    <function name="beginPixelLocalStorageWEBGL" type="undefined">
+      <param name="loadops" type="sequence&lt;GLenum&gt;"/>
+      <code>loadops</code> accepts the following new tokens:
+      <table>
+      <tr><th>loadops</th></tr>
+      <tr><td>LOAD_OP_ZERO_WEBGL</td></tr>
+      <tr><td>LOAD_OP_CLEAR_WEBGL</td></tr>
+      <tr><td>LOAD_OP_LOAD_WEBGL</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <newtok>
+    <function name="endPixelLocalStorageWEBGL" type="undefined">
+      <param name="storeops" type="sequence&lt;GLenum&gt;"/>
+      <code>storeops</code> accepts the following new tokens:
+      <table>
+      <tr><th>storeops</th></tr>
+      <tr><td>STORE_OP_STORE_WEBGL</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <newtok>
+    <function name="getFramebufferPixelLocalStorageParameterWEBGL" type="any">
+      <param name="plane" type="GLint"/>
+      <param name="pname" type="GLenum"/>
+      <p>
+        <code>pname</code> accepts the following new tokens.
+      </p>
+      <p>
+        The return type depends on the parameter queried.
+      </p>
+      <table>
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>PIXEL_LOCAL_FORMAT_WEBGL</td><td>GLenum</td></tr>
+      <tr><td>PIXEL_LOCAL_TEXTURE_NAME_WEBGL</td><td>WebGLTexture?</td></tr>
+      <tr><td>PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL</td><td>GLint</td></tr>
+      <tr><td>PIXEL_LOCAL_TEXTURE_LAYER_WEBGL</td><td>GLint</td></tr>
+      <tr><td>PIXEL_LOCAL_CLEAR_VALUE_FLOAT_WEBGL</td><td>Float32Array</td></tr>
+      <tr><td>PIXEL_LOCAL_CLEAR_VALUE_INT_WEBGL</td><td>Int32Array</td></tr>
+      <tr><td>PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL</td><td>Uint32Array</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <history>
+    <revision date="2022/12/06">
+      <change>Initial Draft.</change>
+    </revision>
+    <revision date="2023/09/08">
+      <change>Changed srcOffset arguments to "unsigned long long" for Wasm.</change>
+    </revision>
+  </history>
+</draft>

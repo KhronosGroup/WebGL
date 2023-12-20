@@ -18,12 +18,16 @@
   </depends>
 
   <overview>
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/main/extensions/ANGLE_base_vertex_base_instance.txt" name="ANGLE_base_vertex_base_instance">
       <addendum>
         This extension exposes the <code>DrawArraysInstancedBaseInstanceANGLE</code> and
         <code>DrawElementsInstancedBaseVertexBaseInstanceANGLE</code> entrypoints as
         <code>drawArraysInstancedBaseInstanceWEBGL</code> and
-        <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code>. In addition the vertex
-        shader builtin <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> are added.
+        <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code>.
+      </addendum>
+      <addendum>
+        The vertex shader extension GL_ANGLE_base_vertex_base_instance is not added.
+        The vertex shader builtins <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> are not added.
       </addendum>
       <addendum>
         The implementation must validate the arrays and indices referenced by
@@ -38,16 +42,7 @@
           Range Checking
         </a> of the WebGL specification.
       </addendum>
-      <addendum>
-        Although the extension name is named WEBGL_draw_instanced_base_vertex_base_instance, the
-        extension must be enabled with the
-        <code>#extension GL_ANGLE_base_vertex_base_instance</code> directive, as shown in the
-        sample code, to use the extension in a shader.
-
-        Likewise the shading language preprocessor
-        <code>#define GL_ANGLE_base_vertex_base_instance</code> will be defined to 1 if the
-        extension is supported.
-      </addendum>
+    </mirrors>
 
     <div class="nonnormative">
       <p>
@@ -65,61 +60,43 @@
         The <code>drawArraysInstancedBaseInstanceWEBGL</code>
         and <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code> entry points are added.
         These provide a counterpoint to instanced rendering and are more flexible for certain
-        scenarios. <code>drawArraysInstancedBaseInstanceWEBGL</code> behaves identically to
+        scenarios.
+      </feature>
+      <feature><code>drawArraysInstancedBaseInstanceWEBGL</code> behaves identically to
         <code>drawArraysInstanced</code> except that the first element within those instanced
         vertex attributes is specified in <code>baseInstance</code>.
+      </feature>
+      <feature>
         <code>drawElementsInstancedBaseVertexBaseInstanceWEBGL</code> is equivalent to
         <code>drawElementsInstanced</code> except that the value of the base vertex passed into
         driver is <code>baseVertex</code> instead of zero, and that the first element within those
         instanced vertex attributes is specified in <code>baseInstance</code>.
       </feature>
-
-      <feature>
-        The <code>gl_BaseVertex</code> and <code>gl_BaseInstance</code> builtins are added to the
-        shading language. For any *BaseVertex* draw call variant, the <code>baseVertex</code> of
-        the draw may be read by the vertex shader as <code>gl_BaseVertex</code>. For non
-        *BaseVertex* calls, the value of <code>gl_BaseVertex</code> is 0. For any *BaseInstance
-        draw call variant, the <code>baseInstance</code> of the draw may be read by the vertex
-        shader as <code>gl_BaseInstance</code>. For non *BaseInstance calls, the value of
-        <code>gl_BaseInstance</code> is 0.
-      </feature>
-
-      <feature>
-        Notice that the value of <code>gl_BaseVertex</code> is added into <code>gl_VertexID</code>,
-        while the value of <code>gl_BaseInstance</code> is not added into
-        <code>gl_InstanceID</code>.
-      </feature>
-
-      <glsl extname="GL_ANGLE_base_vertex_base_instance">
-        <stage type="vertex"/>
-        <input name="gl_BaseVertex" type="int" />
-        <input name="gl_BaseInstance" type="int" />
-      </glsl>
     </features>
   </overview>
 
   <idl xml:space="preserve">
 
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_draw_instanced_base_vertex_base_instance {
-  void drawArraysInstancedBaseInstanceWEBGL(
+  undefined drawArraysInstancedBaseInstanceWEBGL(
       GLenum mode, GLint first, GLsizei count,
       GLsizei instanceCount, GLuint baseInstance);
-  void drawElementsInstancedBaseVertexBaseInstanceWEBGL(
+  undefined drawElementsInstancedBaseVertexBaseInstanceWEBGL(
       GLenum mode, GLsizei count, GLenum type, GLintptr offset,
       GLsizei instanceCount, GLint baseVertex, GLuint baseInstance);
 };
   </idl>
 
   <newfun>
-    <function name="drawArraysInstancedBaseInstanceWEBGL" type="void">
+    <function name="drawArraysInstancedBaseInstanceWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="first" type="GLint"/>
       <param name="count" type="GLsizei"/>
       <param name="instanceCount" type="GLsizei"/>
       <param name="baseInstance" type="GLuint"/>
     </function>
-    <function name="drawElementsInstancedBaseVertexBaseInstanceWEBGL" type="void">
+    <function name="drawElementsInstancedBaseVertexBaseInstanceWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
       <param name="count" type="GLsizei"/>
       <param name="type" type="GLenum"/>
@@ -146,6 +123,8 @@ var ext = gl.getExtension("WEBGL_draw_instanced_base_vertex_base_instance");
   let count = 3;
   let instanceCount = 2;
   let baseInstance = 1;
+  gl.uniform1i(u_BaseVertex_location, 0);
+  gl.uniform1i(u_BaseInstance_location, baseInstance);
   ext.drawArraysInstancedBaseInstanceWEBGL(
       gl.TRIANGLES, first, count, instanceCount, baseInstance);
 }
@@ -157,17 +136,20 @@ var ext = gl.getExtension("WEBGL_draw_instanced_base_vertex_base_instance");
   let count = 3;
   let offset = 0;
   let instanceCount = 2;
-  let baseVertice = 3;
+  let baseVertex = 3;
   let baseInstance = 1;
+  gl.uniform1i(u_BaseVertex_location, baseVertex);
+  gl.uniform1i(u_BaseInstance_location, baseInstance);
   ext.drawElementsInstancedBaseVertexBaseInstanceWEBGL(
-      gl.TRIANGLES, count, gl.UNSIGHNED_SHORT, offset, instanceCount, baseVertex, baseInstance);
+      gl.TRIANGLES, count, gl.UNSIGNED_SHORT, offset, instanceCount, baseVertex, baseInstance);
 }
     </pre>
     <pre>
 #version 300 es
-#extension GL_ANGLE_base_vertex_base_instance : require
+uniform int u_BaseVertex;
+uniform int u_BaseInstance;
 void main() {
-    gl_Position = vec4(gl_BaseVertex, gl_InstanceID + gl_BaseInstance, 0, 1);
+    gl_Position = vec4(u_BaseVertex, gl_InstanceID + u_BaseInstance, 0, 1);
 }
     </pre>
   </samplecode>
@@ -182,6 +164,9 @@ void main() {
     </revision>
     <revision date="2019/09/25">
       <change>Move to draft.</change>
+    </revision>
+    <revision date="2021/05/26">
+      <change>Removed GLSL extension and builtins.</change>
     </revision>
   </history>
 </draft>

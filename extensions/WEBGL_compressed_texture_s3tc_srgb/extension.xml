@@ -15,8 +15,8 @@
   <overview>
     <p>
       This extension exposes the sRGB compressed texture formats defined in the 
-      <a href="https://www.opengl.org/registry/specs/EXT/texture_sRGB.txt">
-      EXT_texture_sRGB</a> OpenGL extension to WebGL.
+      <a href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_compression_s3tc_srgb.txt">
+      EXT_texture_compression_s3tc_srgb</a> OpenGL extension to WebGL.
     </p>
     <features>
       <feature>
@@ -100,7 +100,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_compressed_texture_s3tc_srgb {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_SRGB_S3TC_DXT1_EXT        = 0x8C4C;

@@ -54,7 +54,7 @@
             ceil(width / 4) * ceil(height / 4) * 8
           </code></blockquote>
           <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
-          <p>When <code>level</code> equals zero <code>width</code> and <code>height</code>
+          <p><code>width &lt;&lt; level</code> and <code>height &lt;&lt; level</code>
           must be a multiple of 4.</p>
           <p>
           If they are not an <code>INVALID_OPERATION</code> error is generated.
@@ -68,7 +68,7 @@
             ceil(width / 4) * ceil(height / 4) * 16
           </code></blockquote>
           <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
-          <p>When <code>level</code> equals zero <code>width</code> and <code>height</code>
+          <p><code>width &lt;&lt; level</code> and <code>height &lt;&lt; level</code>
           must be a multiple of 4.</p>
           <p>
           If they are not an <code>INVALID_OPERATION</code> error is generated.
@@ -79,7 +79,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface EXT_texture_compression_rgtc {
     const GLenum COMPRESSED_RED_RGTC1_EXT = 0x8DBB;
     const GLenum COMPRESSED_SIGNED_RED_RGTC1_EXT = 0x8DBC;

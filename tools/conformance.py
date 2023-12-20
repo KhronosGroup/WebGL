@@ -15,6 +15,11 @@ import sys
 import time
 
 try:
+    import lsb_release
+except ImportError:
+    pass
+
+try:
     # For Python 3.0 and later
     from urllib.request import urlopen
 except ImportError:
@@ -30,6 +35,7 @@ try:
     from selenium.webdriver.support.select import Select
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+    from selenium.webdriver.common.by import By
 except ImportError:
     print('Please install package selenium')
     exit(1)
@@ -396,24 +402,24 @@ class GPUs(object):
         elif os.is_cros():
             driver.get('chrome://gpu')
             try:
-                WebDriverWait(driver, 60).until(lambda driver: driver.find_element_by_id('basic-info'))
+                WebDriverWait(driver, 60).until(lambda driver: driver.find_element(By.ID, 'basic-info'))
             except TimeoutException:
                 Util.error('Could not get GPU info')
 
-            trs = driver.find_element_by_id('basic-info').find_elements_by_xpath('./div/table/tbody/tr')
+            trs = driver.find_element(By.ID, 'basic-info').find_elements(By.XPATH, './div/table/tbody/tr')
             for tr in trs:
-                tds = tr.find_elements_by_xpath('./td')
-                key = tds[0].find_element_by_xpath('./span').text
+                tds = tr.find_elements(By.XPATH, './td')
+                key = tds[0].find_element(By.XPATH, './span').text
                 if key == 'GPU0':
-                    value = tds[1].find_element_by_xpath('./span').text
+                    value = tds[1].find_element(By.XPATH, './span').text
                     match = re.search(r'VENDOR = 0x(\S{4}), DEVICE.*= 0x(\S{4})', value)
                     vendor_id.append(match.group(1))
                     vendor_name.append('')
                     product_id.append(match.group(2))
                 if key == 'Driver version':
-                    driver_version.append(tds[1].find_element_by_xpath('./span').text)
+                    driver_version.append(tds[1].find_element(By.XPATH, './span').text)
                 if key == 'GL_RENDERER':
-                    product_name.append(tds[1].find_element_by_xpath('./span').text)
+                    product_name.append(tds[1].find_element(By.XPATH, './span').text)
                     break
 
         elif os.is_linux():
@@ -554,7 +560,10 @@ class HostOS(OS):
         if self.is_cros():
             version = platform.platform()
         elif self.is_linux():
-            version = platform.dist()[1]
+            try:
+                version = platform.dist()[1]
+            except AttributeError:
+                version = lsb_release.get_distro_information()['RELEASE']
         elif self.is_mac():
             version = platform.mac_ver()[0]
         elif self.is_ios():
@@ -605,6 +614,8 @@ class Browser(object):
         elif self.os.is_linux():
             if self.name == 'chrome':
                 self.path = '/opt/google/chrome/google-chrome'
+            elif self.name == 'firefox':
+                self.path = '/usr/bin/firefox'
         elif self.os.is_mac():
             if self.name == 'chrome' or self.name == 'chrome_stable':
                 self.path = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
@@ -612,11 +623,11 @@ class Browser(object):
                 self.path = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
         elif self.os.is_win():
             if self.name == 'chrome' or self.name == 'chrome_stable':
-                self.path = '%s/Google/Chrome/Application/chrome.exe' % self.os.programfilesx86
+                self.path = '%s/Google/Chrome/Application/chrome.exe' % self.os.programfiles
             elif self.name == 'chrome_canary':
                 self.path = '%s/../Local/Google/Chrome SxS/Application/chrome.exe' % self.os.appdata
             elif self.name == 'firefox' or self.name == 'firefox_stable':
-                self.path = '%s/Mozilla Firefox/firefox.exe' % self.os.programfilesx86
+                self.path = '%s/Mozilla Firefox/firefox.exe' % self.os.programfiles
             elif self.name == 'firefox_nightly':
                 self.path = '%s/Nightly/firefox.exe' % self.os.programfiles
             elif self.name == 'edge':
@@ -780,15 +791,16 @@ class Webdriver(object):
         # other OS
         else:
             if browser.is_chrome():
-                chrome_options = selenium.webdriver.ChromeOptions()
+                options = selenium.webdriver.ChromeOptions()
+                options.binary_location = browser.path
                 for option in browser.options:
-                    chrome_options.add_argument(option)
-                    chrome_options.binary_location = browser.path
+                    options.add_argument(option)
                 if debug:
                     service_args = ['--verbose', '--log-path=log/chromedriver.log']
                 else:
                     service_args = []
-                self.driver = selenium.webdriver.Chrome(executable_path=self.path, chrome_options=chrome_options, service_args=service_args)
+                service = webdriver.chrome.service.Service(executable_path=self.path, service_args=service_args)
+                self.driver = webdriver.Chrome(service=service, options=options)
             elif browser.is_safari():
                 capabilities = DesiredCapabilities.SAFARI.copy()
                 if tools:
@@ -800,10 +812,10 @@ class Webdriver(object):
             elif browser.is_edge():
                 self.driver = selenium.webdriver.Edge(self.path)
             elif browser.is_firefox():
-                capabilities = DesiredCapabilities.FIREFOX.copy()
-                capabilities['marionette'] = True
-                capabilities['binary'] = browser.path
-                self.driver = selenium.webdriver.Firefox(capabilities=capabilities, executable_path=self.path)
+                options = selenium.webdriver.FirefoxOptions()
+                options.binary_location = browser.path
+                service = webdriver.firefox.service.Service(executable_path=self.path)
+                self.driver = webdriver.Firefox(service=service)
 
         # check
         if not browser.is_safari():
@@ -1387,15 +1399,15 @@ class Conformance(object):
             folder_name = suite
             case_name = ''
 
-        folder_name_elements = self.driver.find_elements_by_class_name('folderName')
+        folder_name_elements = self.driver.find_elements(By.CLASS_NAME, 'folderName')
         for folder_name_element in folder_name_elements:
             if folder_name_element.text == folder_name:
-                tmp_case_elements = folder_name_element.find_elements_by_xpath('../../..//*[@class="testpage"]')
+                tmp_case_elements = folder_name_element.find_elements(By.XPATH, '../../..//*[@class="testpage"]')
                 if not case_name:
                     case_elements = tmp_case_elements
                     break
                 for case_element in tmp_case_elements:
-                    if '%s/%s' % ('all', case_element.find_element_by_xpath('./div/a').text) == suite:
+                    if '%s/%s' % ('all', case_element.find_element(By.XPATH, './div/a').text) == suite:
                         case_elements = [case_element]
                         break
                 if case_elements:
@@ -1519,7 +1531,7 @@ class Conformance(object):
 
             # resume
             if resume_count > 0:
-                if resume_count > len(self.case_elements) or resume_lines[-1].split(',')[0] != self.case_elements[resume_count - 1].find_element_by_xpath('./div/a').text:
+                if resume_count > len(self.case_elements) or resume_lines[-1].split(',')[0] != self.case_elements[resume_count - 1].find_element(By.XPATH, './div/a').text:
                     Util.error('The suite currently tested is different from the resumed one')
 
                 for resume_line in resume_lines:
@@ -1539,7 +1551,7 @@ class Conformance(object):
                 case_index = self.cur_suite.retry_index[index]
                 case_element = self.case_elements[case_index]
                 case = self.cur_suite.get_case(case_index)
-            case_path = case_element.find_element_by_xpath('./div/a').text
+            case_path = case_element.find_element(By.XPATH, './div/a').text
 
             # filter
             if mode == 'firstrun' and case_path in self.exp_suite.filter_path:
@@ -1554,7 +1566,7 @@ class Conformance(object):
             # run test
             self._log_resume(index, total_count, 'Run', case_path)
             try:
-                button = case_element.find_element_by_xpath('./div/input[@type="button"]')
+                button = case_element.find_element(By.XPATH, './div/input[@type="button"]')
                 button.click()
             except NoSuchElementException:
                 self._crash(mode, index)
@@ -1562,7 +1574,7 @@ class Conformance(object):
 
             # handle result
             try:
-                WebDriverWait(self.driver, self.timeout).until(lambda driver: re.search('(passed|skipped|failed|timeout)', case_element.find_element_by_xpath('./div').text, re.I))
+                WebDriverWait(self.driver, self.timeout).until(lambda driver: re.search('(passed|skipped|failed|timeout)', case_element.find_element(By.XPATH, './div').text, re.I))
             except TimeoutException:
                 if mode == 'firstrun':
                     case = Case(case_path, Status.PYTIMEOUT)
@@ -1571,7 +1583,7 @@ class Conformance(object):
                 self._start()
                 index += 1
             else:
-                (case_status, case_total_count, case_pass_count, case_time) = self._get_result(case_element.find_element_by_xpath('./div').text)
+                (case_status, case_total_count, case_pass_count, case_time) = self._get_result(case_element.find_element(By.XPATH, './div').text)
                 if mode == 'firstrun':
                     case = Case(case_path, case_status, case_total_count, case_pass_count, case_time)
                     self.cur_suite.add_case(case)
@@ -1585,7 +1597,7 @@ class Conformance(object):
                 if case.is_pass():
                     if mode == 'retry':
                         self.cur_suite.remove_issue(case_index)
-                elif case_element.find_element_by_xpath('./ul').find_elements_by_tag_name('li') and re.search('Unable to fetch WebGL rendering context for Canvas', case_element.find_element_by_xpath('./ul/li').text):
+                elif case_element.find_element(By.XPATH, './ul').find_elements(By.TAG_NAME, 'li') and re.search('Unable to fetch WebGL rendering context for Canvas', case_element.find_element(By.XPATH, './ul/li').text):
                     self._crash(mode, index)
                     continue
 
@@ -1616,12 +1628,12 @@ class Conformance(object):
 
         self.driver.get(self.url)
         try:
-            WebDriverWait(self.driver, 60).until(lambda driver: self.driver.find_element_by_id('page0'))
+            WebDriverWait(self.driver, 60).until(lambda driver: self.driver.find_element(By.ID, 'page0'))
         except TimeoutException:
             Util.error('Could not open %s correctly' % self.url)
 
         if is_firstrun:
-            option_element = Select(self.driver.find_element_by_id("testVersion")).first_selected_option
+            option_element = Select(self.driver.find_element(By.ID, 'testVersion')).first_selected_option
             real_version = option_element.text
             type = self.VERSION_TYPE[self.version]
             if type == 'beta':

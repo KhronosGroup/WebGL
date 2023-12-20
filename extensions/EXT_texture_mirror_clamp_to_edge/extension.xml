@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<draft href="EXT_texture_mirror_clamp_to_edge/">
+  <name>EXT_texture_mirror_clamp_to_edge</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>62</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_mirror_clamp_to_edge.txt"
+             name="EXT_texture_mirror_clamp_to_edge">
+    </mirrors>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface EXT_texture_mirror_clamp_to_edge {
+    const GLenum MIRROR_CLAMP_TO_EDGE_EXT = 0x8743;
+};
+  </idl>
+
+  <newtok>
+    <function name="texParameterf" type="undefined">
+      <param name="target" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <param name="param" type="GLfloat"/>
+      A new enum <code>MIRROR_CLAMP_TO_EDGE_EXT</code> is accepted as the <code>param</code> parameter
+      when <code>pname</code> is <code>TEXTURE_WRAP_S</code>, <code>TEXTURE_WRAP_T</code>, or
+      <code>TEXTURE_WRAP_R</code>.
+    </function>
+
+    <function name="texParameteri" type="undefined">
+      <param name="target" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <param name="param" type="GLint"/>
+      A new enum <code>MIRROR_CLAMP_TO_EDGE_EXT</code> is accepted as the <code>param</code> parameter
+      when <code>pname</code> is <code>TEXTURE_WRAP_S</code>, <code>TEXTURE_WRAP_T</code>, or
+      <code>TEXTURE_WRAP_R</code>.
+    </function>
+
+    <function name="samplerParameterf" type="undefined">
+      <param name="sampler" type="WebGLSampler"/>
+      <param name="pname" type="GLenum"/>
+      <param name="param" type="GLfloat"/>
+      A new enum <code>MIRROR_CLAMP_TO_EDGE_EXT</code> is accepted as the
+      <code>param</code> parameter when <code>pname</code> is <code>TEXTURE_WRAP_S</code>,
+      <code>TEXTURE_WRAP_T</code>, or <code>TEXTURE_WRAP_R</code>.
+    </function>
+
+    <function name="samplerParameteri" type="undefined">
+      <param name="sampler" type="WebGLSampler"/>
+      <param name="pname" type="GLenum"/>
+      <param name="param" type="GLint"/>
+      A new enum <code>MIRROR_CLAMP_TO_EDGE_EXT</code> is accepted as the
+      <code>param</code> parameter when <code>pname</code> is <code>TEXTURE_WRAP_S</code>,
+      <code>TEXTURE_WRAP_T</code>, or <code>TEXTURE_WRAP_R</code>.
+    </function>
+  </newtok>
+
+  <history>
+    <revision date="2023/06/01">
+      <change>Initial Draft.</change>
+    </revision>
+  </history>
+</draft>

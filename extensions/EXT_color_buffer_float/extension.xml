@@ -53,10 +53,6 @@
         <li>Fragment shader outputs to buffers with these internal formats are
         not clamped.</li>
 
-        <li>Colors specified with <code>clearColor</code> and
-        <code>blendColor</code> are not clamped when applied to buffers with
-        these internal formats.</li>
-
         <li>The format and type combination <code>RGBA</code> and
         <code>UNSIGNED_BYTE</code> cannot be used for reading from a
         floating-point color buffer.</li>
@@ -72,7 +68,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface EXT_color_buffer_float {
 }; // interface EXT_color_buffer_float
 </idl>

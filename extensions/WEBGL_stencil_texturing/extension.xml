@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<draft href="WEBGL_stencil_texturing/">
+  <name>WEBGL_stencil_texturing</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>61</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/HEAD/extensions/ANGLE_stencil_texturing.txt"
+             name="ANGLE_stencil_texturing">
+    </mirrors>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface WEBGL_stencil_texturing {
+    const GLenum DEPTH_STENCIL_TEXTURE_MODE_WEBGL = 0x90EA;
+    const GLenum STENCIL_INDEX_WEBGL              = 0x1901;
+};
+  </idl>
+
+  <newtok>
+    <function name="texParameterf" type="undefined">
+      <param name="target" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <param name="param" type="GLfloat"/>
+      A new enum <code>DEPTH_STENCIL_TEXTURE_MODE_WEBGL</code> is accepted as the <code>pname</code> parameter;
+      <code>param</code> must be <code>DEPTH_COMPONENT</code> (default) or <code>STENCIL_INDEX_WEBGL</code>.
+    </function>
+
+    <function name="texParameteri" type="undefined">
+      <param name="target" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <param name="param" type="GLint"/>
+      A new enum <code>DEPTH_STENCIL_TEXTURE_MODE_WEBGL</code> is accepted as the <code>pname</code> parameter;
+      <code>param</code> must be <code>DEPTH_COMPONENT</code> (default) or <code>STENCIL_INDEX_WEBGL</code>.
+    </function>
+
+    <function name="getTexParameter" type="any">
+      <param name="target" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <p>
+        A new enum <code>DEPTH_STENCIL_TEXTURE_MODE_WEBGL</code> is accepted as the <code>pname</code> parameter.
+      </p>
+      <p>
+        The return type of this method depends on the parameter queried:
+      </p>
+      <table class="foo">
+        <tr><th>pname</th><th>returned type</th></tr>
+        <tr><td>DEPTH_STENCIL_TEXTURE_MODE_WEBGL</td><td>GLenum</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <history>
+    <revision date="2023/06/01">
+      <change>Initial Draft.</change>
+    </revision>
+  </history>
+</draft>

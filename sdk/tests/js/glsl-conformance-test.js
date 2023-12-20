@@ -162,8 +162,10 @@ function runOneTest(gl, info) {
       }
     }
     // Save the shaders so we test shared shader.
-    if (vShader) {
-      vShaderDB[vSource] = vShader;
+    if (compiledVShader) {
+      vShaderDB[vSource] = compiledVShader;
+    } else {
+      vShader = null;
     }
   }
 
@@ -209,8 +211,10 @@ function runOneTest(gl, info) {
     }
 
     // Safe the shaders so we test shared shader.
-    if (fShader) {
-      fShaderDB[fSource] = fShader;
+    if (compiledFShader) {
+      fShaderDB[fSource] = compiledFShader;
+    } else {
+      fShader = null;
     }
   }
 
@@ -273,12 +277,17 @@ function runOneTest(gl, info) {
 
   if (info.uniforms !== undefined) {
     for (var i = 0; i < info.uniforms.length; ++i) {
-      var uniformLocation = gl.getUniformLocation(program, info.uniforms[i].name);
+      var uniform = info.uniforms[i];
+      var uniformLocation = gl.getUniformLocation(program, uniform.name);
       if (uniformLocation !== null) {
-        gl[info.uniforms[i].functionName](uniformLocation, info.uniforms[i].value);
-        debug(info.uniforms[i].name + ' set to ' + info.uniforms[i].value);
+        if (uniform.functionName.includes("Matrix")) {
+          gl[uniform.functionName](uniformLocation, false, uniform.value);
+        } else {
+          gl[uniform.functionName](uniformLocation, uniform.value);
+        }
+        debug(uniform.name + ' set to ' + uniform.value);
       } else {
-        debug('uniform ' + info.uniforms[i].name + ' had null location and was not set');
+        debug('uniform ' + uniform.name + ' had null location and was not set');
       }
     }
   }

@@ -46,8 +46,7 @@ function generateTOC(toc)
     if (id.length > 0) {
         var target = document.getElementById(id);
         if (target) {
-            var rect = target.getBoundingClientRect();
-            setTimeout(function() { window.scrollTo(0, rect.top) }, 0);
+            target.scrollIntoView();
         }
     }
 }

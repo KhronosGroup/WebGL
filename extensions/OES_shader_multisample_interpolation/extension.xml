@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<draft href="OES_shader_multisample_interpolation/">
+  <name>OES_shader_multisample_interpolation</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>57</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/OES/OES_shader_multisample_interpolation.txt"
+             name="OES_shader_multisample_interpolation"/>
+    <features>
+      <glsl extname="OES_shader_multisample_interpolation">
+        <feature>
+          Vertex outputs and fragment inputs may be declared with a <code>sample</code> interpolation qualifier.
+        </feature>
+        <function name="interpolateAtCentroid" type="genType">
+          <param type="genType" name="interpolant"/>
+        </function>
+        <function name="interpolateAtSample" type="genType">
+          <param type="genType" name="interpolant"/>
+          <param type="int" name="id"/>
+        </function>
+        <function name="interpolateAtOffset" type="genType">
+          <param type="genType" name="interpolant"/>
+          <param type="vec2" name="offset"/>
+        </function>
+      </glsl>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface OES_shader_multisample_interpolation {
+    const GLenum MIN_FRAGMENT_INTERPOLATION_OFFSET_OES  = 0x8E5B;
+    const GLenum MAX_FRAGMENT_INTERPOLATION_OFFSET_OES  = 0x8E5C;
+    const GLenum FRAGMENT_INTERPOLATION_OFFSET_BITS_OES = 0x8E5D;
+};
+  </idl>
+
+  <newtok>
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      <p>
+        New enums are accepted as the <code>pname</code> parameter.
+      </p>
+      <p>
+        The return type of this method depends on the parameter queried:
+      </p>
+      <table class="foo">
+        <tr><th>pname</th><th>returned type</th></tr>
+        <tr><td>MIN_FRAGMENT_INTERPOLATION_OFFSET_OES</td><td>GLfloat</td></tr>
+        <tr><td>MAX_FRAGMENT_INTERPOLATION_OFFSET_OES</td><td>GLfloat</td></tr>
+        <tr><td>FRAGMENT_INTERPOLATION_OFFSET_BITS_OES</td><td>GLint</td></tr>
+      </table>
+    </function>
+  </newtok>
+
+  <history>
+    <revision date="2023/06/01">
+      <change>Initial Draft.</change>
+    </revision>
+  </history>
+</draft>

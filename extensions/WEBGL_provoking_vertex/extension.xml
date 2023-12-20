@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<extension href="WEBGL_provoking_vertex/">
+  <name>WEBGL_provoking_vertex</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Kelsey Gilbert (Mozilla)</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+  <number>48</number>
+  <depends>
+    <api version="2.0"/>
+  </depends>
+  <overview>
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/main/extensions/ANGLE_provoking_vertex.txt" name="ANGLE_provoking_vertex">
+      <addendum>
+        Implementations SHOULD only expose this extension when <code>FIRST_VERTEX_CONVENTION</code> is more efficient than the default behavior of <code>LAST_VERTEX_CONVENTION</code>.
+        Applications should expect that if this extension is supported by a WebGL context, they should try to use <code>FIRST_VERTEX_CONVENTION</code> if they can.
+      </addendum>
+    </mirrors>
+    <features>
+      <feature>
+        Adds support for choosing <code>FIRST_VERTEX_CONVENTION</code> for provoking vertex, as opposed to the default of <code>LAST_VERTEX_CONVENTION</code>.
+        On some implementations, <code>FIRST_VERTEX_CONVENTION</code> is more efficient than <code>LAST_VERTEX_CONVENTION</code>.
+      </feature>
+    </features>
+  </overview>
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface WEBGL_provoking_vertex {
+    const GLenum FIRST_VERTEX_CONVENTION_WEBGL = 0x8E4D;
+    const GLenum LAST_VERTEX_CONVENTION_WEBGL  = 0x8E4E; // default
+    const GLenum PROVOKING_VERTEX_WEBGL        = 0x8E4F;
+
+    undefined provokingVertexWEBGL(GLenum provokeMode);
+};
+  </idl>
+  <samplecode xml:space="preserve">
+    <pre>
+    function optimizeAssumingFlatsHaveSameFirstAndLastData(gl) {
+      const epv = gl.getExtension('WEBGL_provoking_vertex');
+      if (epv) {
+        epv.provokingVertexWEBGL(epv.FIRST_VERTEX_CONVENTION_WEBGL);
+      }
+    }
+    </pre>
+  </samplecode>
+  <history>
+    <revision date="2022/06/23">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2022/07/01">
+      <change>Moved to draft.</change>
+    </revision>
+    <revision date="2022/11/01">
+      <change>Renamed to WEBGL_provoking_vertex.</change>
+    </revision>
+    <revision date="2022/11/23">
+      <change>Updated to mirror ANGLE_provoking_vertex.</change>
+    </revision>
+    <revision date="2023/01/26">
+      <change>Moved to community approved.</change>
+    </revision>
+  </history>
+</extension>

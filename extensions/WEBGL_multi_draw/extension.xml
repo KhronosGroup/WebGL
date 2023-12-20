@@ -17,7 +17,7 @@
   </depends>
 
   <overview>
-    <mirrors href="https://chromium.googlesource.com/angle/angle/+/master/extensions/ANGLE_multi_draw.txt" name="ANGLE_multi_draw">
+    <mirrors href="https://chromium.googlesource.com/angle/angle/+/main/extensions/ANGLE_multi_draw.txt" name="ANGLE_multi_draw">
       <addendum>
         This extension only exposes the <code>MultiDrawArraysANGLE</code>, <code>MultiDrawElementsANGLE</code>, <code>MultiDrawArraysInstancedANGLE</code>, and <code>MultiDrawElementsInstancedANGLE</code> entrypoints as <code>multiDrawArraysWEBGL</code>, <code>multiDrawElementsWEBGL</code>, <code>multiDrawArraysInstancedWEBGL</code>, and <code>multiDrawElementsInstancedWEBGL</code>.
       </addendum>
@@ -27,9 +27,9 @@
         WebGL specification.
       </addendum>
       <addendum>
-        Although the extension name is named WEBGL_multi_draw, the extension must be enabled with the
+        Although the extension name is WEBGL_multi_draw, the extension must be enabled with the
         <code>#extension GL_ANGLE_multi_draw</code> directive, as shown in the sample code, to use
-        the extension in a shader.
+        the <code>gl_DrawID</code> built-in in a shader.
 
         Likewise the shading language preprocessor <code>#define GL_ANGLE_multi_draw</code>, will be defined to 1 if the extension is supported.
       </addendum>
@@ -64,74 +64,74 @@
 
   <idl xml:space="preserve">
 
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_multi_draw {
-  void multiDrawArraysWEBGL(
+  undefined multiDrawArraysWEBGL(
       GLenum mode,
-      (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
-      (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLint&gt;) firstsList, unsigned long long firstsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, unsigned long long countsOffset,
       GLsizei drawcount);
-  void multiDrawElementsWEBGL(
+  undefined multiDrawElementsWEBGL(
       GLenum mode,
-      (Int32Array or sequence&lt;GLint&gt;) countsList, GLuint countsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, unsigned long long countsOffset,
       GLenum type,
-      (Int32Array or sequence&lt;GLsizei&gt;) offsetsList, GLuint offsetsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) offsetsList, unsigned long long offsetsOffset,
       GLsizei drawcount);
-  void multiDrawArraysInstancedWEBGL(
+  undefined multiDrawArraysInstancedWEBGL(
       GLenum mode,
-      (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
-      (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
-      (Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLint&gt;) firstsList, unsigned long long firstsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, unsigned long long countsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, unsigned long long instanceCountsOffset,
       GLsizei drawcount);
-  void multiDrawElementsInstancedWEBGL(
+  undefined multiDrawElementsInstancedWEBGL(
       GLenum mode,
-      (Int32Array or sequence&lt;GLint&gt;) countsList, GLuint countsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) countsList, unsigned long long countsOffset,
       GLenum type,
-      (Int32Array or sequence&lt;GLsizei&gt;) offsetsList, GLuint offsetsOffset,
-      (Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, GLuint instanceCountsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) offsetsList, unsigned long long offsetsOffset,
+      ([AllowShared] Int32Array or sequence&lt;GLsizei&gt;) instanceCountsList, unsigned long long instanceCountsOffset,
       GLsizei drawcount);
 };
 
   </idl>
 
   <newfun>
-    <function name="multiDrawArraysWEBGL" type="void">
+    <function name="multiDrawArraysWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
-      <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
-      <param name="firstsOffset" type="GLuint"/>
-      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="countsOffset" type="GLuint"/>
-      <param name="drawCount" type="GLsizei"/>
+      <param name="firstsList" type="([AllowShared] Int32Array or sequence&lt;GLint&gt;)"/>
+      <param name="firstsOffset" type="unsigned long long"/>
+      <param name="countsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="unsigned long long"/>
+      <param name="drawcount" type="GLsizei"/>
     </function>
-    <function name="multiDrawElementsWEBGL" type="void">
+    <function name="multiDrawElementsWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
-      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="countsOffset" type="GLuint"/>
+      <param name="countsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="unsigned long long"/>
       <param name="type" type="GLenum"/>
-      <param name="offsetsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="offsetsOffset" type="GLuint"/>
-      <param name="drawCount" type="GLsizei"/>
+      <param name="offsetsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="offsetsOffset" type="unsigned long long"/>
+      <param name="drawcount" type="GLsizei"/>
     </function>
-    <function name="multiDrawArraysInstancedWEBGL" type="void">
+    <function name="multiDrawArraysInstancedWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
-      <param name="firstsList" type="(Int32Array or sequence&lt;GLint&gt;)"/>
-      <param name="firstsOffset" type="GLuint"/>
-      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="countsOffset" type="GLuint"/>
-      <param name="instanceCountsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="instanceCountsOffset" type="GLuint"/>
-      <param name="drawCount" type="GLsizei"/>
+      <param name="firstsList" type="([AllowShared] Int32Array or sequence&lt;GLint&gt;)"/>
+      <param name="firstsOffset" type="unsigned long long"/>
+      <param name="countsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="unsigned long long"/>
+      <param name="instanceCountsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="instanceCountsOffset" type="unsigned long long"/>
+      <param name="drawcount" type="GLsizei"/>
     </function>
-    <function name="multiDrawElementsInstancedWEBGL" type="void">
+    <function name="multiDrawElementsInstancedWEBGL" type="undefined">
       <param name="mode" type="GLenum"/>
-      <param name="countsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="countsOffset" type="GLuint"/>
+      <param name="countsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="countsOffset" type="unsigned long long"/>
       <param name="type" type="GLenum"/>
-      <param name="offsetsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="offsetsOffset" type="GLuint"/>
-      <param name="instanceCountsList" type="(Int32Array or sequence&lt;GLsizei&gt;)"/>
-      <param name="instanceCountsOffset" type="GLuint"/>
-      <param name="drawCount" type="GLsizei"/>
+      <param name="offsetsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="offsetsOffset" type="unsigned long long"/>
+      <param name="instanceCountsList" type="([AllowShared] Int32Array or sequence&lt;GLsizei&gt;)"/>
+      <param name="instanceCountsOffset" type="unsigned long long"/>
+      <param name="drawcount" type="GLsizei"/>
     </function>
   </newfun>
 
@@ -209,6 +209,12 @@ void main() {
     </revision>
     <revision date="2020/07/31">
       <change>Moved to Community Approved.</change>
+    </revision>
+    <revision date="2021/05/18">
+      <change>Add [AllowShared] to all typed array arguments for compatibility with multi-threaded WebAssembly.</change>
+    </revision>
+    <revision date="2023/09/08">
+      <change>Changed offset arguments to "unsigned long long" for Wasm.</change>
     </revision>
   </history>
 </extension>

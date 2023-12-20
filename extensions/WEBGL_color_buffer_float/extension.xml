@@ -50,11 +50,19 @@
 
       <feature>
         <p><span style="color: red">NOTE:</span> fragment shaders outputs
-        gl_FragColor and gl_FragData[0] will only be clamped and converted
-        when the color buffer is fixed-point and <code>blendColor()</code> and
-        <code>clearColor()</code> will no longer clamp their parameter values
+        <code>gl_FragColor</code> and <code>gl_FragData[0]</code> will only be
+        clamped and converted when the color buffer is fixed-point and
+        <code>clearColor()</code> will no longer clamp its parameter values
         on input. Clamping will be applied as necessary at draw time according
         to the type of color buffer in use.</p>
+      </feature>
+
+      <feature>
+        <p>If the implementation supports unclamped blend color, the
+        <code>blendColor()</code> will no longer clamp its parameter values on
+        input. Clamping will be applied as necessary at draw time according to
+        the type of color buffer in use. Applications may check the effective
+        blend color with <code>getParameter</code>.</p>
       </feature>
 
       <feature>
@@ -73,7 +81,7 @@
   </overview>
 
   <idl xml:space="preserve">
-[LegacyNoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_color_buffer_float {
   const GLenum RGBA32F_EXT = 0x8814;
   const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
@@ -82,12 +90,24 @@ interface WEBGL_color_buffer_float {
   </idl>
 
   <newtok>
-    <function name="renderbufferStorage" type="void"><param name="target"
-    type="GLenum"/><param name="internalformat" type="GLenum"/><param
-    name="width" type="GLsizei"/><param name="height"
-    type="GLsizei"/><code>RGBA32F_EXT</code> is accepted as the
-    <code>internalformat</code> parameter of
-    <code>renderbufferStorage()</code>.</function>
+    <function name="renderbufferStorage" type="undefined">
+      <param name="target" type="GLenum"/>
+      <param name="internalformat" type="GLenum"/>
+      <param name="width" type="GLsizei"/>
+      <param name="height" type="GLsizei"/>
+      <code>RGBA32F_EXT</code> is accepted as the <code>internalformat</code>
+      parameter.
+    </function>
+    <function name="getFramebufferAttachmentParameter" type="any">
+      <param name="target" type="GLenum"/>
+      <param name="attachment" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <p><code>FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT</code>
+      is accepted as the <code>pname</code> parameter.</p>
+      <p>An <code>INVALID_OPERATION</code> error is generated if
+      <code>attachment</code> is <code>DEPTH_STENCIL_ATTACHMENT</code>
+      and <code>pname</code> is <code>FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT</code>.</p>
+      </function>
   </newtok>
 
   <additions>
@@ -140,6 +160,10 @@ interface WEBGL_color_buffer_float {
 
     <revision date="2017/09/14">
       <change>Add optional RGB renderability.</change>
+    </revision>
+
+    <revision date="2022/12/02">
+      <change>Clarified framebuffer object attachment component type queries.</change>
     </revision>
   </history>
 </extension>

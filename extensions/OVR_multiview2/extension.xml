@@ -71,18 +71,18 @@
     </features>
   </overview>
   <idl xml:space="preserve">
-[NoInterfaceObject]
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface OVR_multiview2 {
     const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR = 0x9630;
     const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR = 0x9632;
     const GLenum MAX_VIEWS_OVR = 0x9631;
     const GLenum FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR = 0x9633;
 
-    void framebufferTextureMultiviewOVR(GLenum target, GLenum attachment, WebGLTexture? texture, GLint level, GLint baseViewIndex, GLsizei numViews);
+    undefined framebufferTextureMultiviewOVR(GLenum target, GLenum attachment, WebGLTexture? texture, GLint level, GLint baseViewIndex, GLsizei numViews);
 };
   </idl>
   <newfun>
-    <function name="framebufferTextureMultiviewOVR" type="void">
+    <function name="framebufferTextureMultiviewOVR" type="undefined">
       <param name="target" type="GLenum"/>
       <param name="attachment" type="GLenum"/>
       <param name="texture" type="GLuint"/>
@@ -188,7 +188,7 @@ interface OVR_multiview2 {
     <revision date="2016/11/25">
       <change>Specified what happens when the number of views doesn't match or if the number of views is one.</change>
     </revision>
-    ´
+
     <revision date="2016/12/21">
       <change>Specified what happens on invalid num_views declarations and if assignment to gl_Position.x is inside a larger expression.</change>
     </revision>

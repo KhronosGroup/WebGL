@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<draft href="EXT_render_snorm/">
+  <name>EXT_render_snorm</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>59</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_render_snorm.txt"
+             name="EXT_render_snorm">
+    </mirrors>
+
+    <features>
+      <feature>
+        The following signed normalized internal formats become <em>color-renderable</em>:
+        <ul>
+          <li><code>R8_SNORM</code></li>
+          <li><code>RG8_SNORM</code></li>
+          <li><code>RGBA8_SNORM</code></li>
+        </ul>
+      </feature>
+      <feature>
+        When <a href="../EXT_texture_norm16/">EXT_texture_norm16</a> is enabled, the
+        following signed normalized internal formats also become <em>color-renderable</em>:
+        <ul>
+          <li><code>R16_SNORM_EXT</code></li>
+          <li><code>RG16_SNORM_EXT</code></li>
+          <li><code>RGBA16_SNORM_EXT</code></li>
+        </ul>
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface EXT_render_snorm {
+};
+  </idl>
+
+  <history>
+    <revision date="2023/06/01">
+      <change>Initial Draft.</change>
+    </revision>
+  </history>
+</draft>
