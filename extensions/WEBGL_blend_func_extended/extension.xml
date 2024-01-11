@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="EXT_blend_func_extended/">
-  <name>EXT_blend_func_extended</name>
+<extension href="WEBGL_blend_func_extended/">
+  <name>WEBGL_blend_func_extended</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
   working group</a> (public_webgl 'at' khronos.org) </contact>
@@ -19,7 +19,15 @@
     <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_blend_func_extended.txt"
              name="EXT_blend_func_extended">
       <addendum>
-        None of the new functions are supported.
+        Although the extension name is WEBGL_blend_func_extended, the extension
+        must be enabled with the <code>#extension GL_EXT_blend_func_extended</code>
+        directive to use its functionality in shaders.
+
+        Likewise the shading language preprocessor <code>#define GL_EXT_blend_func_extended</code>,
+        will be defined to 1 if the extension is supported.
+      </addendum>
+      <addendum>
+        None of the new API functions are supported.
       </addendum>
       <addendum>
         Automatic location assignment of fragment outputs is not supported.
@@ -60,12 +68,12 @@
 
   <idl xml:space="preserve">
 [Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface EXT_blend_func_extended {
-    const GLenum SRC1_COLOR_EXT                   = 0x88F9;
-    const GLenum SRC1_ALPHA_EXT                   = 0x8589;
-    const GLenum ONE_MINUS_SRC1_COLOR_EXT         = 0x88FA;
-    const GLenum ONE_MINUS_SRC1_ALPHA_EXT         = 0x88FB;
-    const GLenum MAX_DUAL_SOURCE_DRAW_BUFFERS_EXT = 0x88FC;
+interface WEBGL_blend_func_extended {
+    const GLenum SRC1_COLOR_WEBGL                   = 0x88F9;
+    const GLenum SRC1_ALPHA_WEBGL                   = 0x8589;
+    const GLenum ONE_MINUS_SRC1_COLOR_WEBGL         = 0x88FA;
+    const GLenum ONE_MINUS_SRC1_ALPHA_WEBGL         = 0x88FB;
+    const GLenum MAX_DUAL_SOURCE_DRAW_BUFFERS_WEBGL = 0x88FC;
 };
   </idl>
 
@@ -74,8 +82,8 @@ interface EXT_blend_func_extended {
       <param name="src" type="GLenum"/>
       <param name="dst" type="GLenum"/>
       <p>
-        New enums <code>SRC1_COLOR_EXT</code>, <code>SRC1_ALPHA_EXT</code>,
-        <code>ONE_MINUS_SRC1_COLOR_EXT</code>, and <code>ONE_MINUS_SRC1_ALPHA_EXT</code> are accepted
+        New enums <code>SRC1_COLOR_WEBGL</code>, <code>SRC1_ALPHA_WEBGL</code>,
+        <code>ONE_MINUS_SRC1_COLOR_WEBGL</code>, and <code>ONE_MINUS_SRC1_ALPHA_WEBGL</code> are accepted
         as the <code>src</code> and <code>dst</code> parameters.
       </p>
       <p>
@@ -90,8 +98,8 @@ interface EXT_blend_func_extended {
       <param name="srcAlpha" type="GLenum"/>
       <param name="dstAlpha" type="GLenum"/>
       <p>
-        New enums <code>SRC1_COLOR_EXT</code>, <code>SRC1_ALPHA_EXT</code>,
-        <code>ONE_MINUS_SRC1_COLOR_EXT</code>, and <code>ONE_MINUS_SRC1_ALPHA_EXT</code>
+        New enums <code>SRC1_COLOR_WEBGL</code>, <code>SRC1_ALPHA_WEBGL</code>,
+        <code>ONE_MINUS_SRC1_COLOR_WEBGL</code>, and <code>ONE_MINUS_SRC1_ALPHA_WEBGL</code>
         are accepted as the <code>srcRGB</code>, <code>dstRGB</code>, <code>srcAlpha</code>,
         and <code>dstAlpha</code> parameters.
       </p>
@@ -106,9 +114,9 @@ interface EXT_blend_func_extended {
       <param name="src" type="GLenum"/>
       <param name="dst" type="GLenum"/>
       When <a href="../../OES_draw_buffers_indexed/">OES_draw_buffers_indexed</a> is enabled,
-      new enums <code>SRC1_COLOR_EXT</code>,
-      <code>SRC1_ALPHA_EXT</code>, <code>ONE_MINUS_SRC1_COLOR_EXT</code>, and
-      <code>ONE_MINUS_SRC1_ALPHA_EXT</code> are accepted as the <code>src</code> and <code>dst</code>
+      new enums <code>SRC1_COLOR_WEBGL</code>,
+      <code>SRC1_ALPHA_WEBGL</code>, <code>ONE_MINUS_SRC1_COLOR_WEBGL</code>, and
+      <code>ONE_MINUS_SRC1_ALPHA_WEBGL</code> are accepted as the <code>src</code> and <code>dst</code>
       parameters.
     </function>
 
@@ -119,23 +127,23 @@ interface EXT_blend_func_extended {
       <param name="srcAlpha" type="GLenum"/>
       <param name="dstAlpha" type="GLenum"/>
       When <a href="../../OES_draw_buffers_indexed/">OES_draw_buffers_indexed</a> is enabled,
-      new enums <code>SRC1_COLOR_EXT</code>,
-      <code>SRC1_ALPHA_EXT</code>, <code>ONE_MINUS_SRC1_COLOR_EXT</code>, and
-      <code>ONE_MINUS_SRC1_ALPHA_EXT</code> are accepted as the <code>srcRGB</code>,
+      new enums <code>SRC1_COLOR_WEBGL</code>,
+      <code>SRC1_ALPHA_WEBGL</code>, <code>ONE_MINUS_SRC1_COLOR_WEBGL</code>, and
+      <code>ONE_MINUS_SRC1_ALPHA_WEBGL</code> are accepted as the <code>srcRGB</code>,
       <code>dstRGB</code>, <code>srcAlpha</code>, and <code>dstAlpha</code> parameters.
     </function>
 
     <function name="getParameter" type="any">
       <param name="pname" type="GLenum"/>
       <p>
-        New <code>MAX_DUAL_SOURCE_DRAW_BUFFERS_EXT</code> enum is accepted as the <code>pname</code> parameter.
+        New <code>MAX_DUAL_SOURCE_DRAW_BUFFERS_WEBGL</code> enum is accepted as the <code>pname</code> parameter.
       </p>
       <p>
         The return type of this method depends on the parameter queried:
       </p>
       <table class="foo">
         <tr><th>pname</th><th>returned type</th></tr>
-        <tr><td>MAX_DUAL_SOURCE_DRAW_BUFFERS_EXT</td><td>GLint</td></tr>
+        <tr><td>MAX_DUAL_SOURCE_DRAW_BUFFERS_WEBGL</td><td>GLint</td></tr>
       </table>
     </function>
   </newtok>
@@ -144,5 +152,8 @@ interface EXT_blend_func_extended {
     <revision date="2023/06/01">
       <change>Initial Draft.</change>
     </revision>
+    <revision date="2024/01/11">
+      <change>Changed prefix to WEBGL and promoted to Community Approved.</change>
+    </revision>
   </history>
-</draft>
+</extension>

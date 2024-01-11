@@ -1,5 +1,5 @@
 "use strict";
-description("This test verifies the functionality of the EXT_blend_func_extended extension, if it is available.");
+description("This test verifies the functionality of the WEBGL_blend_func_extended extension, if it is available.");
 
 debug("");
 
@@ -10,7 +10,7 @@ var ext;
 function runTestNoExtension() {
     debug("");
     debug("Testing getParameter without the extension");
-    shouldBeNull("gl.getParameter(0x88FC /* MAX_DUAL_SOURCE_DRAW_BUFFERS_EXT */)");
+    shouldBeNull("gl.getParameter(0x88FC /* MAX_DUAL_SOURCE_DRAW_BUFFERS_WEBGL */)");
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "parameter unknown");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
@@ -31,10 +31,10 @@ function runTestNoExtension() {
     debug("Testing SRC1 blend funcs without the extension");
 
     const extFuncs = {
-        SRC1_COLOR_EXT: 0x88F9,
-        SRC1_ALPHA_EXT: 0x8589,
-        ONE_MINUS_SRC1_COLOR_EXT: 0x88FA,
-        ONE_MINUS_SRC1_ALPHA_EXT: 0x88FB
+        SRC1_COLOR_WEBGL: 0x88F9,
+        SRC1_ALPHA_WEBGL: 0x8589,
+        ONE_MINUS_SRC1_COLOR_WEBGL: 0x88FA,
+        ONE_MINUS_SRC1_ALPHA_WEBGL: 0x88FB
     };
 
     for (const func in extFuncs) {
@@ -78,17 +78,17 @@ function runTestNoExtension() {
 function runEnumTests() {
     debug("");
     debug("Testing enums");
-    shouldBe("ext.SRC1_COLOR_EXT", "0x88F9");
-    shouldBe("ext.SRC1_ALPHA_EXT", "0x8589");
-    shouldBe("ext.ONE_MINUS_SRC1_COLOR_EXT", "0x88FA");
-    shouldBe("ext.ONE_MINUS_SRC1_ALPHA_EXT", "0x88FB");
-    shouldBe("ext.MAX_DUAL_SOURCE_DRAW_BUFFERS_EXT", "0x88FC");
+    shouldBe("ext.SRC1_COLOR_WEBGL", "0x88F9");
+    shouldBe("ext.SRC1_ALPHA_WEBGL", "0x8589");
+    shouldBe("ext.ONE_MINUS_SRC1_COLOR_WEBGL", "0x88FA");
+    shouldBe("ext.ONE_MINUS_SRC1_ALPHA_WEBGL", "0x88FB");
+    shouldBe("ext.MAX_DUAL_SOURCE_DRAW_BUFFERS_WEBGL", "0x88FC");
 }
 
 function runQueryTests() {
     debug("");
     debug("Testing getParameter");
-    shouldBeGreaterThanOrEqual("gl.getParameter(ext.MAX_DUAL_SOURCE_DRAW_BUFFERS_EXT)", "1");
+    shouldBeGreaterThanOrEqual("gl.getParameter(ext.MAX_DUAL_SOURCE_DRAW_BUFFERS_WEBGL)", "1");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
     if (contextVersion == 1) {
@@ -109,10 +109,10 @@ function runQueryTests() {
     }
 
     const extFuncs = [
-        "SRC1_COLOR_EXT",
-        "SRC1_ALPHA_EXT",
-        "ONE_MINUS_SRC1_COLOR_EXT",
-        "ONE_MINUS_SRC1_ALPHA_EXT"
+        "SRC1_COLOR_WEBGL",
+        "SRC1_ALPHA_WEBGL",
+        "ONE_MINUS_SRC1_COLOR_WEBGL",
+        "ONE_MINUS_SRC1_ALPHA_WEBGL"
     ];
 
     debug("");
@@ -306,7 +306,7 @@ function runMissingOutputsTests() {
     debug("Test draw calls with missing fragment outputs");
 
     wtu.setupUnitQuad(gl);
-    gl.blendFunc(gl.ONE, ext.SRC1_COLOR_EXT);
+    gl.blendFunc(gl.ONE, ext.SRC1_COLOR_WEBGL);
 
     for (const enabled of [false, true]) {
         if (enabled) {
@@ -437,10 +437,10 @@ function runDrawBuffersLimitTests() {
     dbi.colorMaskiOES(1, false, false, false, false);
 
     const extFuncs = [
-        "SRC1_COLOR_EXT",
-        "SRC1_ALPHA_EXT",
-        "ONE_MINUS_SRC1_COLOR_EXT",
-        "ONE_MINUS_SRC1_ALPHA_EXT"
+        "SRC1_COLOR_WEBGL",
+        "SRC1_ALPHA_WEBGL",
+        "ONE_MINUS_SRC1_COLOR_WEBGL",
+        "ONE_MINUS_SRC1_ALPHA_WEBGL"
     ];
 
     for (const func of extFuncs) {
@@ -504,14 +504,14 @@ function runBlendingTests() {
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.blendFunc(gl.ONE, ext.SRC1_COLOR_EXT);
+    gl.blendFunc(gl.ONE, ext.SRC1_COLOR_WEBGL);
     gl.uniform4f(uSrc0, 0.250, 0.375, 0.500, 0.625);
     gl.uniform4f(uSrc1, 0.125, 0.125, 0.125, 0.125);
     wtu.drawUnitQuad(gl);
     wtu.checkCanvas(gl, [96, 128, 159, 191], "Multiply destination by SRC1 and add SRC0", 2);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.blendFunc(ext.SRC1_COLOR_EXT, ext.ONE_MINUS_SRC1_COLOR_EXT);
+    gl.blendFunc(ext.SRC1_COLOR_WEBGL, ext.ONE_MINUS_SRC1_COLOR_WEBGL);
     gl.uniform4f(uSrc0, 0.125, 0.125, 0.125, 0.125);
     gl.uniform4f(uSrc1, 0.500, 0.375, 0.250, 0.125);
     wtu.drawUnitQuad(gl);
@@ -528,8 +528,8 @@ function runTest() {
     runTestNoExtension();
     runShaderTests(false);
 
-    ext = gl.getExtension("EXT_blend_func_extended");
-    wtu.runExtensionSupportedTest(gl, "EXT_blend_func_extended", ext !== null);
+    ext = gl.getExtension("WEBGL_blend_func_extended");
+    wtu.runExtensionSupportedTest(gl, "WEBGL_blend_func_extended", ext !== null);
 
     if (ext !== null) {
         runEnumTests();
@@ -539,7 +539,7 @@ function runTest() {
         runDrawBuffersLimitTests();
         runBlendingTests();
     } else {
-        testPassed("No EXT_blend_func_extended support -- this is legal");
+        testPassed("No WEBGL_blend_func_extended support -- this is legal");
     }
 }
 
