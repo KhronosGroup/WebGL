@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="NV_shader_noperspective_interpolation/">
+<extension href="NV_shader_noperspective_interpolation/">
   <name>NV_shader_noperspective_interpolation</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -39,5 +39,8 @@ interface NV_shader_noperspective_interpolation {
     <revision date="2023/06/01">
       <change>Initial Draft.</change>
     </revision>
+    <revision date="2024/01/11">
+      <change>Promoted to Community Approved.</change>
+    </revision>
   </history>
-</draft>
+</extension>
