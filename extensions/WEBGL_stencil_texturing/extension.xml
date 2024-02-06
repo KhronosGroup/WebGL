@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="WEBGL_stencil_texturing/">
+<extension href="WEBGL_stencil_texturing/">
   <name>WEBGL_stencil_texturing</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -66,5 +66,8 @@ interface WEBGL_stencil_texturing {
     <revision date="2023/06/01">
       <change>Initial Draft.</change>
     </revision>
+    <revision date="2024/01/25">
+      <change>Promoted to Community Approved.</change>
+    </revision>
   </history>
-</draft>
+</extension>
