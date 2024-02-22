@@ -517,18 +517,19 @@ gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     <p>
         OpenGL manages several types of resources as part of its state. These are identified
-        by integer object names and are obtained from OpenGL by various creation calls.
-        In contrast WebGL represents these resources as DOM objects. Each object is derived
-        from the WebGLObject interface. Currently supported resources are:
-        textures, buffers (i.e., VBOs), framebuffers, renderbuffers, shaders and
-        programs. The WebGLRenderingContext interface has a method to create a
-        WebGLObject subclass for each type. Data from the underlying graphics library are
-        stored in these objects and are fully managed by them.
-        The DOM object will stay alive not only as long as the author retains an explicit reference
-        to it, but also as long as it is in use by the underlying graphics library.
-        When the DOM object is destroyed, it marks its resources for deletion.
-        If authors wish to mark an object for deletion prior to the DOM object being destroyed,
-        they may explicitly call the respective delete function. (e.g. deleteTexture)
+        by integer object names and are obtained from OpenGL by various creation calls.  In
+        contrast, WebGL represents these resources as opaque, typed objects. Each resource
+        type has an associated Web IDL interface type.  Currently supported resources are:
+        textures, buffers (i.e., vertex buffer objects, or VBOs), framebuffers,
+        renderbuffers, shaders and programs.  The WebGLRenderingContext interface contains
+        methods to create objects of each type.  Data from the underlying graphics library
+        are stored in these objects and are fully managed by them.  The object will stay
+        alive not only as long as the author retains an explicit reference to it, but also as
+        long as it is in use by the underlying graphics library.  When the ECMAScript object
+        is destroyed, it marks its resources for deletion.  If authors wish to mark a
+        resource for deletion prior to the ECMAScript object being destroyed, they may
+        explicitly call the respective delete function: for
+        example, <code>deleteTexture</code>.
     </p>
 
 <!-- ======================================================================================================= -->
@@ -985,21 +986,6 @@ var context = canvas.getContext('webgl',
 
 <!-- ======================================================================================================= -->
 
-    <h3>WebGLObject</h3>
-
-    <p>
-        The <code>WebGLObject</code> interface is the parent interface for all GL objects.
-    </p>
-    <p>
-        Each <code>WebGLObject</code> has
-        an <b><a name="webgl-object-invalidated-flag">invalidated</a></b> flag, which is initially unset.
-    </p>
-    <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn data-dfn-type="interface" id="WebGLObject">WebGLObject</dfn> {
-};</pre>
-
-<!-- ======================================================================================================= -->
-
     <h3>WebGLBuffer</h3>
 
     <p>
@@ -1012,8 +998,13 @@ interface <dfn data-dfn-type="interface" id="WebGLObject">WebGLObject</dfn> {
         <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteBuffers.xml">man page</a>)</span>
         .
     </p>
+    <p>
+        Each <code>WebGLBuffer</code> has
+        an <b><a name="webgl-buffer-invalidated-flag">invalidated</a></b> flag, which is
+        initially unset.
+    </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn data-dfn-type="interface" id="WebGLBuffer">WebGLBuffer</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLBuffer">WebGLBuffer</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1030,8 +1021,13 @@ interface <dfn data-dfn-type="interface" id="WebGLBuffer">WebGLBuffer</dfn> : We
         <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteFramebuffers.xml">man page</a>)</span>
         .
     </p>
+    <p>
+        Each <code>WebGLFramebuffer</code> has
+        an <b><a name="webgl-framebuffer-invalidated-flag">invalidated</a></b> flag, which is
+        initially unset.
+    </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn data-dfn-type="interface" id="WebGLFramebuffer">WebGLFramebuffer</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLFramebuffer">WebGLFramebuffer</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1048,8 +1044,13 @@ interface <dfn data-dfn-type="interface" id="WebGLFramebuffer">WebGLFramebuffer<
         <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteProgram.xml">man page</a>)</span>
         .
     </p>
+    <p>
+        Each <code>WebGLProgram</code> has
+        an <b><a name="webgl-program-invalidated-flag">invalidated</a></b> flag, which is
+        initially unset.
+    </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn data-dfn-type="interface" id="WebGLProgram">WebGLProgram</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLProgram">WebGLProgram</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1066,8 +1067,13 @@ interface <dfn data-dfn-type="interface" id="WebGLProgram">WebGLProgram</dfn> : 
         <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteRenderbuffers.xml">man page</a>)</span>
         .
     </p>
+    <p>
+        Each <code>WebGLRenderbuffer</code> has
+        an <b><a name="webgl-renderbuffer-invalidated-flag">invalidated</a></b> flag, which
+        is initially unset.
+    </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn data-dfn-type="interface" id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1084,8 +1090,13 @@ interface <dfn data-dfn-type="interface" id="WebGLRenderbuffer">WebGLRenderbuffe
         <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteShader.xml">man page</a>)</span>
         .
     </p>
+    <p>
+        Each <code>WebGLShader</code> has
+        an <b><a name="webgl-shader-invalidated-flag">invalidated</a></b> flag, which is
+        initially unset.
+    </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn data-dfn-type="interface" id="WebGLShader">WebGLShader</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLShader">WebGLShader</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1102,8 +1113,13 @@ interface <dfn data-dfn-type="interface" id="WebGLShader">WebGLShader</dfn> : We
         <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteTextures.xml">man page</a>)</span>
         .
     </p>
+    <p>
+        Each <code>WebGLTexture</code> has
+        an <b><a name="webgl-texture-invalidated-flag">invalidated</a></b> flag, which is
+        initially unset.
+    </p>
     <pre class="idl">[Exposed=(Window,Worker)]
-interface <dfn data-dfn-type="interface" id="WebGLTexture">WebGLTexture</dfn> : WebGLObject {
+interface <dfn data-dfn-type="interface" id="WebGLTexture">WebGLTexture</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1306,10 +1322,10 @@ for (var i = 0; i < numVertices; i++) {
 
             <ol class="nestedlist">
 
-            <li> Otherwise, if any argument to the method is a <code>WebGLObject</code> with
-            its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set, generate
-            an <code>INVALID_OPERATION</code> error and let <em>use default return value</em> be
-            true. </li>
+            <li> Otherwise, if any argument to the method is a WebGL resource object
+            (<code>WebGLBuffer</code>, <code>WebGLFramebuffer</code>, etc.) with
+            its <b>invalidated flag</b> set, generate an <code>INVALID_OPERATION</code> error
+            and let <em>use default return value</em> be true. </li>
 
             </ol>
 
@@ -2433,7 +2449,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             Returns false if the buffer was generated by a
             different <code>WebGLRenderingContext</code> than this one. <br><br>
 
-            Returns false if the buffer's <a href="#webgl-object-invalidated-flag">invalidated
+            Returns false if the buffer's <a href="#webgl-buffer-invalidated-flag">invalidated
             flag</a> is set.
     </dl>
 
@@ -2523,7 +2539,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             Returns false if the framebuffer was generated by a
             different <code>WebGLRenderingContext</code> than this one. <br><br>
 
-            Returns false if the framebuffer's <a href="#webgl-object-invalidated-flag">invalidated
+            Returns false if the framebuffer's <a href="#webgl-framebuffer-invalidated-flag">invalidated
             flag</a> is set.
     </dl>
 
@@ -2595,7 +2611,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             Returns false if the renderbuffer was generated by a
             different <code>WebGLRenderingContext</code> than this one. <br><br>
 
-            Returns false if the renderbuffer's <a href="#webgl-object-invalidated-flag">invalidated
+            Returns false if the renderbuffer's <a href="#webgl-renderbuffer-invalidated-flag">invalidated
             flag</a> is set.
         <dt class="idl-code">void renderbufferStorage(GLenum target, GLenum internalformat,
                              GLsizei width, GLsizei height)
@@ -2722,7 +2738,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             Returns false if the texture was generated by a
             different <code>WebGLRenderingContext</code> than this one. <br><br>
 
-            Returns false if the texture's <a href="#webgl-object-invalidated-flag">invalidated
+            Returns false if the texture's <a href="#webgl-texture-invalidated-flag">invalidated
             flag</a> is set.
         <dt class="idl-code"><a name="TEXIMAGE2D">void texImage2D</a>(GLenum target, GLint level, GLint internalformat,
                     GLsizei width, GLsizei height, GLint border, GLenum format,
@@ -3128,7 +3144,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
 
             Returns false if the program was generated by a
             different <code>WebGLRenderingContext</code> than this one. <br><br>
-            Returns false if the program's <a href="#webgl-object-invalidated-flag">invalidated
+            Returns false if the program's <a href="#webgl-program-invalidated-flag">invalidated
             flag</a> is set.
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isShader(WebGLShader? shader)
             <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsShader.xml">man page</a>)</span>
@@ -3138,7 +3154,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             Returns false if the shader was generated by a
             different <code>WebGLRenderingContext</code> than this one. <br><br>
 
-            Returns false if the shader's <a href="#webgl-object-invalidated-flag">invalidated
+            Returns false if the shader's <a href="#webgl-shader-invalidated-flag">invalidated
             flag</a> is set.
         <dt class="idl-code">void linkProgram(WebGLProgram program)
             <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLinkProgram.xml">man page</a>)</span>
@@ -3255,7 +3271,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             Returns -1 if the context's <a href="#webgl-context-lost-flag">webgl context lost
             flag</a> is set. <br><br>
 
-            If the <a href="#webgl-object-invalidated-flag">invalidated flag</a> of the passed
+            If the <a href="#webgl-program-invalidated-flag">invalidated flag</a> of the passed
             program is set, generates an <code>INVALID_OPERATION</code> error and returns
             -1. <br><br>
 
@@ -3564,13 +3580,13 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
     </p>
     <p>
         Once an extension is enabled, it is only disabled if the WebGL rendering context is lost (see
-        below), with the exception of the "WEBGL_lose_context" extension which remains active through
-        any loss of context. Any objects referenced by a disabled extension, such as the object returned
+        below), with the exception of the "WEBGL_lose_context" extension which remains active through any
+        loss of context. Any objects referenced by a disabled extension, such as the object returned
         by <code>getExtension</code>, are no longer associated with the WebGL rendering context. Any
-        extension objects that derive from <code>WebGLObject</code> have their
-        <a href="#webgl-object-invalidated-flag">invalidated</a> flag set to true. Behavior of
-        extensions' methods after context loss is defined by the steps in the
-        section <a href="#WEBGLRENDERINGCONTEXT">"The WebGL context"</a>.
+        extension objects representing graphics resources have their
+        <b>invalidated</b> flag set to true. Behavior of extensions' methods after context
+        loss is defined by the steps in the section <a href="#WEBGLRENDERINGCONTEXT">"The
+        WebGL context"</a>.
     <p>
         There are no other mechanisms to disable an extension.
     </p>
@@ -3677,8 +3693,8 @@ dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventi
         <li> Set <em>context's</em> <a href="#webgl-context-lost-flag">webgl context lost</a>
         flag. </li>
 
-        <li> Set the <a href="#webgl-object-invalidated-flag">invalidated flag</a> of
-        each <code>WebGLObject</code> instance created by this context. </li>
+        <li> Set the <b>invalidated flag</b> of each WebGL resource object instance created by this
+        context. </li>
 
         <li> Disable all extensions except "WEBGL_lose_context". </li>
 

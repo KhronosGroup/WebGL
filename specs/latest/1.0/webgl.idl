@@ -3,7 +3,7 @@
 // WebGL IDL definitions scraped from the Khronos specification:
 // https://www.khronos.org/registry/webgl/specs/latest/
 
-// Copyright (c) 2023 The Khronos Group Inc.
+// Copyright (c) 2024 The Khronos Group Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and/or associated documentation files (the
@@ -58,31 +58,27 @@ dictionary WebGLContextAttributes {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLObject {
+interface WebGLBuffer {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLBuffer : WebGLObject {
+interface WebGLFramebuffer {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLFramebuffer : WebGLObject {
+interface WebGLProgram {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLProgram : WebGLObject {
+interface WebGLRenderbuffer {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLRenderbuffer : WebGLObject {
+interface WebGLShader {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLShader : WebGLObject {
-};
-
-[Exposed=(Window,Worker)]
-interface WebGLTexture : WebGLObject {
+interface WebGLTexture {
 };
 
 [Exposed=(Window,Worker)]
