@@ -1,0 +1,63 @@
+<!--
+Copyright (c) 2022 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Comma operator should be disallowed in constant-expression context</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+<script src="../../js/glsl-conformance-test.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script id="vshader" type="x-shader/x-vertex">#version 300 es
+in vec3 position;
+
+void main() {
+    gl_Position = vec4(position, 1.0);
+}
+</script>
+<script id="fshader" type="x-shader/x-fragment">#version 300 es
+precision highp float;
+
+uniform float time;
+uniform vec2 resolution;
+out vec4 out_color;
+
+void main() {
+    int array[(2, 3)];  // <-- no error
+
+    vec2 position = -1.0 + 2.0 * gl_FragCoord.xy / resolution.xy;
+    float red = abs(sin(position.x * position.y + time / 5.0));
+    float green = abs(sin(position.x * position.y + time / 4.0));
+    float blue = abs(sin(position.x * position.y + time / 3.0));
+    out_color = vec4(red, green, blue, 1.0);
+}
+</script>
+<script type="application/javascript">
+"use strict";
+description();
+const wtu = WebGLTestUtils;
+const tests = [
+    {
+        vShaderSource: wtu.getScript('vshader'),
+        fShaderSource: wtu.getScript('fshader'),
+        vShaderSuccess: true,
+        fShaderSuccess: false,
+        linkSuccess: false,
+        passMsg: 'Comma operator should be disallowed in constant-expression context, and fail to compile and link'
+    }
+];
+
+GLSLConformanceTester.runTests(tests, 2);
+</script>
+</body>
+</html>
