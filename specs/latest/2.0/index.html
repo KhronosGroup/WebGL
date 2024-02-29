@@ -3720,16 +3720,26 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
     </div>
 
     <p>
-        If the values written by the fragment shader do not match the format(s) of the corresponding
-        color buffer(s) (for example, the output variable is an integer, but the corresponding color
-        buffer has a floating-point format, or vice versa), and the color buffer states are not set to
-        <code>NONE</code> by <code>DrawBuffers</code>, draws generate an <code>INVALID_OPERATION</code> error;
-        if the color buffer states are set to <code>NONE</code> by <code>DrawBuffers</code>, they remain untouched.
+        A draw buffer is "shader-output-incompatible" with a fragment shader if:
+        <ul>
+          <li>the values written to it by the shader do not match the format of the corresponding color buffer
+            (For example, the output variable is an integer, but the corresponding color buffer has a floating-point format, or vice versa)
+          </li>
+          <li>OR there is no defined fragment shader output for its location.</li>
+        </ul>
     </p>
 
     <p>
-        If any draw buffer with an attachment does not have a defined fragment shader output, draws
-        generate <code>INVALID_OPERATION</code>, unless all 4 channels of <code>colorMask</code> are set to false.
+        If any draw buffers are "shader-output-incompatible", generate <code>INVALID_OPERATION</code> if:
+        <ul>
+          <li>Any channel of <code>colorMask</code> is set to true</li>
+          <li>AND, for each <code>DRAW_BUFFERi</code> of <code>DRAW_FRAMEBUFFER</code> that is "shader-output-incompatible":
+            <ul>
+              <li><code>DRAW_BUFFERi</code> is not <code>NONE</code></li>
+              <li>AND, any channel <code>colorMaski</code> (from e.g. OES_draw_buffers_indexed) is set to true.</li>
+            </ul>
+          </li>
+        </ul>
     </p>
 
     <h3>No Program Binaries</h3>
