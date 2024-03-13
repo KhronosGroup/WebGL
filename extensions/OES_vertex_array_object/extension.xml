@@ -15,10 +15,18 @@
   </depends>
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt" name="OES_vertex_array_object" />
+    <features>
+      <feature>
+        <code>WebGLVertexArrayObjectOES</code> is a WebGL resource object.
+        Each <code>WebGLVertexArrayObjectOES</code> has an <b><a
+        name="webgl-vertexarrayobjectoes-invalidated-flag">invalidated</a></b>
+        flag, which is initially unset.
+      </feature>
+    </features>
   </overview>
   <idl xml:space="preserve">
 [Exposed=(Window,Worker), LegacyNoInterfaceObject]
-interface WebGLVertexArrayObjectOES : WebGLObject {
+interface WebGLVertexArrayObjectOES {
 };
 
 [Exposed=(Window,Worker), LegacyNoInterfaceObject]
@@ -68,7 +76,7 @@ interface OES_vertex_array_object {
         <code>WebGLRenderingContext</code> than this one.</p>
 
         <p>Returns false if the vertex array's
-        <a href="../../specs/1.0/#webgl-object-invalidated-flag">invalidated
+        <a href="#webgl-vertexarrayobjectoes-invalidated-flag">invalidated
         flag</a> is set.</p>
     </function>
   </newfun>

@@ -58,31 +58,27 @@ dictionary WebGLContextAttributes {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLObject {
+interface WebGLBuffer {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLBuffer : WebGLObject {
+interface WebGLFramebuffer {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLFramebuffer : WebGLObject {
+interface WebGLProgram {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLProgram : WebGLObject {
+interface WebGLRenderbuffer {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLRenderbuffer : WebGLObject {
+interface WebGLShader {
 };
 
 [Exposed=(Window,Worker)]
-interface WebGLShader : WebGLObject {
-};
-
-[Exposed=(Window,Worker)]
-interface WebGLTexture : WebGLObject {
+interface WebGLTexture {
 };
 
 [Exposed=(Window,Worker)]

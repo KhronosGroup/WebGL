@@ -55,7 +55,8 @@
       <addendum>
         The <code>identifier</code> and <code>name</code> arguments of
         <code>ObjectLabel</code> and <code>GetObjectLabel</code> are replaced
-        with a <code>WebGLObject object</code> argument.
+        with a union type argument representing all possible WebGL resource
+        types.
       </addendum>
 
       <addendum>
@@ -92,7 +93,7 @@
 
       <feature>
         <code>objectLabelKHR</code> and <code>getObjectLabelKHR</code> are
-        exposed, to assign a label to a <code>WebGLObject</code> and retrieve
+        exposed, to assign a label to a WebGL resource object and retrieve
         it.
       </feature>
 
@@ -112,6 +113,25 @@
   </overview>
 
   <idl xml:space="preserve"><![CDATA[
+typedef (/* WebGL 1.0 resource types */
+         WebGLBuffer or
+         WebGLFramebuffer or
+         WebGLProgram or
+         WebGLRenderbuffer or
+         WebGLShader or
+         WebGLTexture or
+
+         /* WebGL 2.0 resource types */
+         WebGLQuery or
+         WebGLSampler or
+         WebGLSync or
+         WebGLTransformFeedback or
+         WebGLVertexArrayObject or
+
+         /* WebGL extension resource types */
+         WebGLTimerQueryEXT or
+         WebGLVertexArrayObjectOES) WebGLResourceType;
+
 [Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_debug : EventTarget {
   const GLenum MAX_DEBUG_MESSAGE_LENGTH_KHR = 0x9143;
@@ -151,8 +171,8 @@ interface WEBGL_debug : EventTarget {
   undefined pushDebugGroupKHR(GLenum source, GLuint id, DOMString message);
   undefined popDebugGroupKHR();
 
-  undefined objectLabelKHR(WebGLObject? object, DOMString label);
-  DOMString getObjectLabelKHR(WebGLObject? object);
+  undefined objectLabelKHR(WebGLResourceType? object, DOMString label);
+  DOMString getObjectLabelKHR(WebGLResourceType? object);
 }; // interface WEBGL_debug
 
 [Exposed=(Window,Worker), LegacyNoInterfaceObject]
