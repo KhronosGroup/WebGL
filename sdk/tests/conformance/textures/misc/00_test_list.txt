@@ -13,6 +13,7 @@ copy-tex-image-and-sub-image-2d.html
 --min-version 1.0.2 --max-version 1.9.9 gl-get-tex-parameter.html
 gl-pixelstorei.html
 gl-teximage.html
+--min-version 1.0.4 image-decoder-to-texture.html
 --min-version 1.0.2 mipmap-fbo.html
 origin-clean-conformance.html
 --min-version 1.0.4 origin-clean-conformance-offscreencanvas.html
