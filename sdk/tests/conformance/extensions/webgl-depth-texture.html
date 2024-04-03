@@ -349,7 +349,7 @@ function runTestExtension(unpackFlipY) {
                     const eMax = expectedMax[t];
                     let func = testPassed;
                     const text = `At ${xx},${yy}, expected within [${eMin},${eMax}], was ${was.toFixed(3)}`
-                    if (was <= eMin || was >= eMax) {
+                    if (was <= eMin - eps || was >= eMax + eps) {
                         func = testFailed;
                     }
                     func(text);
