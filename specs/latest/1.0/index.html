@@ -1815,12 +1815,12 @@ interface mixin <dfn data-dfn-type="interface" id="WebGLRenderingContextBase">We
     undefined copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                 GLint x, GLint y, GLsizei width, GLsizei height);
 
-    WebGLBuffer? createBuffer();
-    WebGLFramebuffer? createFramebuffer();
-    WebGLProgram? createProgram();
-    WebGLRenderbuffer? createRenderbuffer();
+    WebGLBuffer createBuffer();
+    WebGLFramebuffer createFramebuffer();
+    WebGLProgram createProgram();
+    WebGLRenderbuffer createRenderbuffer();
     WebGLShader? createShader(GLenum type);
-    WebGLTexture? createTexture();
+    WebGLTexture createTexture();
 
     undefined cullFace(GLenum mode);
 
@@ -2399,7 +2399,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             an <code>INVALID_VALUE</code> error is generated. If <code>data</code> is null then
             an <code>INVALID_VALUE</code> error is generated.
 
-        <dt class="idl-code">WebGLBuffer? createBuffer()
+        <dt class="idl-code">WebGLBuffer createBuffer()
             <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenBuffers.xml">glGenBuffers</a>)</span>
         <dd>
             Create a WebGLBuffer object and initialize it with a buffer object name as if by
@@ -2472,7 +2472,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             Returns <code class="enum">FRAMEBUFFER_UNSUPPORTED</code> if the
             context's <a href="#webgl-context-lost-flag">webgl context lost flag</a> is set.
 
-        <dt class="idl-code">WebGLFramebuffer? createFramebuffer()
+        <dt class="idl-code">WebGLFramebuffer createFramebuffer()
             <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenFramebuffers.xml">glGenFramebuffers</a>)</span>
         <dd>
             Create a WebGLFramebuffer object and initialize it with a framebuffer object name as if by
@@ -2554,7 +2554,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             An attempt to bind an object marked for deletion will generate an
             <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
 
-        <dt class="idl-code">WebGLRenderbuffer? createRenderbuffer()
+        <dt class="idl-code">WebGLRenderbuffer createRenderbuffer()
             <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenRenderbuffers.xml">glGenRenderbuffers</a>)</span>
         <dd>
             Create a WebGLRenderbuffer object and initialize it with a renderbuffer object name as if by
@@ -2679,7 +2679,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             If this function attempts to read from a complete framebuffer with a missing attachment,
             an <code>INVALID_OPERATION</code> error is generated
             per <a href="#READING_FROM_MISSING_ATTACHMENT">Reading from a Missing Attachment</a>.
-        <dt class="idl-code">WebGLTexture? createTexture()
+        <dt class="idl-code">WebGLTexture createTexture()
             <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenTextures.xml">man page</a>)</span>
         <dd>
             Create a WebGLTexture object and initialize it with a texture object name as if by
@@ -3001,7 +3001,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
             Shaders</a>, and <a href="#PACKING_RESTRICTIONS">Packing Restrictions for Uniforms and
             Varyings</a> for additional constraints enforced in, additional constructs supported by,
             and additional validation performed by WebGL implementations.
-        <dt class="idl-code">WebGLProgram? createProgram()
+        <dt class="idl-code">WebGLProgram createProgram()
             <span class="gl-spec">(<a href="http://registry.khronos.org/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCreateProgram.xml">man page</a>)</span>
         <dd>
             Create a WebGLProgram object and initialize it with a program object name as if by
@@ -3710,6 +3710,11 @@ dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventi
         </li>
         </ol>
     </p>
+    <p>
+        A <code>WebGLObject</code> created while the context is lost
+        (e.g. a <code>WebGLBuffer</code> via <code>createBuffer()</code>)
+        begins life with its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set.
+    </p>
     <div class="example">
         The following code prevents the default behavior of the <code>webglcontextlost</code>
         event and enables the <code>webglcontextrestored</code> event to be delivered:
@@ -3751,7 +3756,7 @@ dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventi
 
     <div class="note">
         Once the context is restored, WebGL resources such as textures and buffers that were created
-        before the context was lost are no longer valid.
+        before the context was restored are no longer valid.
         Previously enabled extensions are not restored.
         The application will want to restore all modified state and destroyed extensions and resources.
     </div>
