@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="OES_sample_variables/">
+<extension href="OES_sample_variables/">
   <name>OES_sample_variables</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -46,5 +46,8 @@ interface OES_sample_variables {
     <revision date="2023/06/01">
       <change>Initial Draft.</change>
     </revision>
+    <revision date="2024/04/18">
+      <change>Promoted to Community Approved.</change>
+    </revision>
   </history>
-</draft>
+</extension>
