@@ -239,13 +239,13 @@ function testOESTextureFloat() {
 function testOESVertexArrayObject() {
   if (OES_vertex_array_object) {
     // Extension must still be lost.
-    shouldBeNull("OES_vertex_array_object.createVertexArrayOES()");
+    shouldBeNonNull("OES_vertex_array_object.createVertexArrayOES()");
     // Try re-enabling extension
 
     old_OES_vertex_array_object = OES_vertex_array_object;
     OES_vertex_array_object = reGetExtensionAndTestForProperty(gl, "OES_vertex_array_object", false);
-    shouldBeTrue("OES_vertex_array_object.createVertexArrayOES() != null");
-    shouldBeTrue("old_OES_vertex_array_object.createVertexArrayOES() == null");
+    shouldBeNonNull("OES_vertex_array_object.createVertexArrayOES()");
+    shouldBeNonNull("old_OES_vertex_array_object.createVertexArrayOES()");
   }
 }
 

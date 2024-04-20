@@ -308,12 +308,6 @@ function testLostContext()
 
     // Functions return nullable values should all return null.
     var nullTests = [
-        "gl.createBuffer()",
-        "gl.createFramebuffer()",
-        "gl.createProgram()",
-        "gl.createRenderbuffer()",
-        "gl.createShader(gl.GL_VERTEX_SHADER)",
-        "gl.createTexture()",
         "gl.getActiveAttrib(program, 0)",
         "gl.getActiveUniform(program, 0)",
         "gl.getAttachedShaders(program)",
@@ -336,6 +330,17 @@ function testLostContext()
     ];
     testFunctionsThatReturnNULL(nullTests);
 
+    [
+      "gl.createBuffer()",
+      "gl.createFramebuffer()",
+      "gl.createProgram()",
+      "gl.createRenderbuffer()",
+      "gl.createShader(gl.VERTEX_SHADER)",
+      "gl.createTexture()",
+    ].forEach(x => {
+      shouldBeNonNull(x);
+    });
+
     // "Is" queries should all return false.
     shouldBeFalse("gl.isBuffer(buffer)");
     shouldBeFalse("gl.isEnabled(gl.BLEND)");
@@ -355,10 +360,12 @@ function testLostContext()
           "OES_vertex_array_object.isVertexArrayOES(vertexArrayObject)",
           "OES_vertex_array_object.deleteVertexArrayOES(vertexArrayObject)",
         ]);
-      testFunctionsThatReturnNULL(
-        [
-          "OES_vertex_array_object.createVertexArrayOES()",
-        ]);
+
+      [
+        "OES_vertex_array_object.createVertexArrayOES()",
+      ].forEach(x => {
+        shouldBeNonNull(x);
+      });
     }
 
     testUploadingLostContextToTexture();
