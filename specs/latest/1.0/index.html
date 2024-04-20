@@ -992,10 +992,18 @@ var context = canvas.getContext('webgl',
     </p>
     <p>
         Each <code>WebGLObject</code> has
-        an <b><a name="webgl-object-invalidated-flag">invalidated</a></b> flag, which is initially unset.
+        an internal <b><a name="webgl-object-invalidated-flag">invalidated</a></b> flag, which is initially unset.
+    </p>
+    <p>
+        Each <code>WebGLObject</code> has a <code>.label</code> attribute, which defaults to <code>""</code>.
+        Implementations should use this application-provided label string to improve debugging,
+        e.g. in error messages,
+        and/or providing the label to any underlying driver where possible to assist in native-level debugging tools.
+        Implementations must not change behavior due to a label.
     </p>
     <pre class="idl">[Exposed=(Window,Worker)]
 interface <dfn data-dfn-type="interface" id="WebGLObject">WebGLObject</dfn> {
+    attribute USVString label;
 };</pre>
 
 <!-- ======================================================================================================= -->
