@@ -59,7 +59,7 @@ async function testImage(filename, type)
     }
     let frame = decodeResult.image;
     if (window.WebGL2RenderingContext && gl instanceof window.WebGL2RenderingContext) {
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, frame.width, frame.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, frame);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, frame.codedWidth, frame.codedHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, frame);
     } else {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, frame);
     }
