@@ -24,7 +24,7 @@ function init()
   var worker = new Worker('context-lost-worker.js');
   worker.postMessage("Start worker");
   worker.onmessage = function(e) {
-    const fn = e.data.OffscreenCanvas ? testFailed : testPassed;
+    const fn = e.data.fail ? testFailed : testPassed;
     fn(e.data.msg);
     if (e.data.finishTest) {
       finishTest();

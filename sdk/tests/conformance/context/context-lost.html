@@ -331,24 +331,20 @@ function testLostContext()
     testFunctionsThatReturnNULL(nullTests);
 
     [
-      "gl.createBuffer()",
-      "gl.createFramebuffer()",
-      "gl.createProgram()",
-      "gl.createRenderbuffer()",
-      "gl.createShader(gl.VERTEX_SHADER)",
-      "gl.createTexture()",
+      [() => gl.createBuffer(), x => gl.isBuffer(x)]
+      [() => gl.createFramebuffer(), x => gl.isFramebuffer(x)]
+      [() => gl.createProgram(), x => gl.isProgram(x)]
+      [() => gl.createRenderbuffer(), x => gl.isRenderbuffer(x)]
+      [() => gl.createShader(gl.VERTEX_SHADER), x => gl.isShader(x)]
+      [() => gl.createTexture(), x => gl.isTexture(x)]
     ].forEach(x => {
-      shouldBeNonNull(x);
+      const x = fn_create();
+      assertMsg(x, `${fn_create.toString()} -> non-null`);
+      assertMsg(fn_is(x) === false, `${fn_is.toString()} -> false`);
     });
 
     // "Is" queries should all return false.
-    shouldBeFalse("gl.isBuffer(buffer)");
     shouldBeFalse("gl.isEnabled(gl.BLEND)");
-    shouldBeFalse("gl.isFramebuffer(framebuffer)");
-    shouldBeFalse("gl.isProgram(program)");
-    shouldBeFalse("gl.isRenderbuffer(renderbuffer)");
-    shouldBeFalse("gl.isShader(shader)");
-    shouldBeFalse("gl.isTexture(texture)");
 
     shouldBe("gl.getError()", "gl.NO_ERROR");
 
@@ -362,9 +358,11 @@ function testLostContext()
         ]);
 
       [
-        "OES_vertex_array_object.createVertexArrayOES()",
-      ].forEach(x => {
-        shouldBeNonNull(x);
+        [() => OES_vertex_array_object.createVertexArrayOES(), x => OES_vertex_array_object.isVertexArrayOES(x)]
+      ].forEach((fn_create, fn_is) => {
+        const x = fn_create();
+        assertMsg(x, `${fn_create.toString()} -> non-null`);
+        assertMsg(fn_is(x) === false, `${fn_is.toString()} -> false`);
       });
     }
 
