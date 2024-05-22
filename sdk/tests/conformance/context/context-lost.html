@@ -331,16 +331,19 @@ function testLostContext()
     testFunctionsThatReturnNULL(nullTests);
 
     [
-      [() => gl.createBuffer(), x => gl.isBuffer(x)]
-      [() => gl.createFramebuffer(), x => gl.isFramebuffer(x)]
-      [() => gl.createProgram(), x => gl.isProgram(x)]
-      [() => gl.createRenderbuffer(), x => gl.isRenderbuffer(x)]
-      [() => gl.createShader(gl.VERTEX_SHADER), x => gl.isShader(x)]
-      [() => gl.createTexture(), x => gl.isTexture(x)]
-    ].forEach(x => {
+      [() => gl.createBuffer(), x => gl.bindBuffer(gl.ARRAY_BUFFER, x), x => gl.isBuffer(x)],
+      [() => gl.createFramebuffer(), x => gl.bindFramebuffer(gl.FRAMEBUFFER, x), x => gl.isFramebuffer(x)],
+      [() => gl.createProgram(), x => undefined, x => gl.isProgram(x)],
+      [() => gl.createRenderbuffer(), x => gl.bindRenderbuffer(gl.RENDERBUFFER, x), x => gl.isRenderbuffer(x)],
+      [() => gl.createShader(gl.VERTEX_SHADER), x => undefined, x => gl.isShader(x)],
+      [() => gl.createTexture(), x => gl.bindTexture(gl.TEXTURE_2D, x), x => gl.isTexture(x)],
+    ].forEach(([fn_create, fn_bind, fn_is]) => {
       const x = fn_create();
       assertMsg(x, `${fn_create.toString()} -> non-null`);
-      assertMsg(fn_is(x) === false, `${fn_is.toString()} -> false`);
+      assertMsg(fn_is(x) === false, `[before bind] ${fn_is.toString()} -> false`);
+      fn_bind(x);
+      fn_bind(null);
+      assertMsg(fn_is(x) === false, `[after bind] ${fn_is.toString()} -> false`);
     });
 
     // "Is" queries should all return false.
@@ -358,11 +361,14 @@ function testLostContext()
         ]);
 
       [
-        [() => OES_vertex_array_object.createVertexArrayOES(), x => OES_vertex_array_object.isVertexArrayOES(x)]
-      ].forEach((fn_create, fn_is) => {
+        [() => OES_vertex_array_object.createVertexArrayOES(), x => OES_vertex_array_object.isVertexArrayOES(x), x => OES_vertex_array_object.isVertexArrayOES(x)],
+      ].forEach(([fn_create, fn_bind, fn_is]) => {
         const x = fn_create();
         assertMsg(x, `${fn_create.toString()} -> non-null`);
-        assertMsg(fn_is(x) === false, `${fn_is.toString()} -> false`);
+        assertMsg(fn_is(x) === false, `[before bind] ${fn_is.toString()} -> false`);
+        fn_bind(x);
+        fn_bind(null);
+        assertMsg(fn_is(x) === false, `[after bind] ${fn_is.toString()} -> false`);
       });
     }
 

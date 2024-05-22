@@ -249,7 +249,10 @@ function testOESVertexArrayObject() {
 
     vao = OES_vertex_array_object.createVertexArrayOES();
     assertMsg(vao, "[with new non-lost extension] createVertexArrayOES() -> non-null");
-    assertMsg(OES_vertex_array_object.isVertexArrayOES(vao), "[with new non-lost extension] isVertexArrayOES(createVertexArrayOES()) -> true");
+    assertMsg(!OES_vertex_array_object.isVertexArrayOES(vao), "[with new non-lost extension, before bindVAO] isVertexArrayOES(createVertexArrayOES()) -> false");
+    OES_vertex_array_object.bindVertexArrayOES(vao);
+    OES_vertex_array_object.bindVertexArrayOES(null);
+    assertMsg(OES_vertex_array_object.isVertexArrayOES(vao), "[with new non-lost extension, after bindVAO] isVertexArrayOES(createVertexArrayOES()) -> true");
 
     vao = old_OES_vertex_array_object.createVertexArrayOES();
     assertMsg(vao, "[with old lost extension] createVertexArrayOES() -> non-null");
