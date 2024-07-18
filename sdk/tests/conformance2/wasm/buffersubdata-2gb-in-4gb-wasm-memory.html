@@ -7,7 +7,7 @@ found in the LICENSE.txt file.
 <html>
 <head>
 <meta charset="utf-8">
-<title>getBufferSubData test to Wasm Memory 16GB in size.</title>
+<title>bufferSubData test to Wasm Memory 4GB in size.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"> </script>
@@ -19,38 +19,42 @@ found in the LICENSE.txt file.
 <script>
 "use strict";
 description(document.title);
-debug("Tests that getBufferSubData can be called on WebAssembly Memory of 16GB in size.");
+debug("Tests that bufferSubData can be called on WebAssembly Memory of 4GB in size.");
 debug("");
 let wtu = WebGLTestUtils;
 let gl = wtu.create3DContext("canvas", undefined, 2);
 
 const PAGE = 65536;
-const SIZE = 16 * 1024 * 1024 * 1024;
+const HEAP_SIZE = 4 * 1024 * 1024 * 1024 - PAGE;
+const VIEW_SIZE = 2 * 1024 * 1024 * 1024 - PAGE;
 (() => {
   let view;
   try {
-    view = new Uint8Array(new WebAssembly.Memory({ index: 'i64', initial: SIZE / PAGE }).buffer);
+    view = new Uint8Array(new WebAssembly.Memory({ initial: HEAP_SIZE / PAGE }).buffer, 0, VIEW_SIZE);
   } catch (e) {
-    testPassed(`Allocating ${SIZE} threw: ${e}`);
+    testPassed(`Allocating ${HEAP_SIZE} threw: ${e}`);
     return;
   }
 
-  let expectedData = new Uint8Array([1, 2, 3, 4]);
+  let expectedData = new Uint8Array([1, 2]);
+  const length = expectedData.length;
+  let srcOffset = view.length - length;
+  view.set(expectedData, srcOffset);
+  const dstByteOffset = 4;
 
   let buf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, expectedData, gl.STATIC_DRAW);
-
-  const length = expectedData.length;
-  const offset = SIZE - length;
+  gl.bufferData(gl.ARRAY_BUFFER, 8, gl.STATIC_DRAW);
   try {
-    gl.getBufferSubData(gl.ARRAY_BUFFER, 0, view, offset, length);
+    gl.bufferSubData(gl.ARRAY_BUFFER, dstByteOffset, view, srcOffset, length);
   } catch (e) {
-    testFailed(`getBufferSubData from ${view.length} byte view threw: ${e}`);
+    testFailed(`bufferSubData from ${view.length} byte view threw: ${e}`);
     return;
   }
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
-  let actualData = view.subarray(offset, offset+4);
+
+  let actualData = new Uint8Array(length);
+  gl.getBufferSubData(gl.ARRAY_BUFFER, dstByteOffset, actualData);
   expectArray(actualData, expectedData);
 })();
 

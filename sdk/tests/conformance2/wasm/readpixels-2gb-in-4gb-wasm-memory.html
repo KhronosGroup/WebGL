@@ -25,13 +25,14 @@ let wtu = WebGLTestUtils;
 let gl = wtu.create3DContext("canvas", undefined, 2);
 
 const PAGE = 65536;
-const SIZE = 4*1024*1024*1024 - PAGE; // when uint32_t size is max, we can only reach one page short of full 4GB
+const HEAP_SIZE = 4 * 1024 * 1024 * 1024 - PAGE;
+const VIEW_SIZE = 2 * 1024 * 1024 * 1024 - PAGE;
 (() => {
   let view;
   try {
-    view = new Uint8Array(new WebAssembly.Memory({ initial: SIZE / PAGE }).buffer);
+    view = new Uint8Array(new WebAssembly.Memory({ initial: HEAP_SIZE / PAGE }).buffer, 0, VIEW_SIZE);
   } catch (e) {
-    testPassed(`Allocating ${SIZE} threw: ${e}`);
+    testPassed(`Allocating ${HEAP_SIZE} threw: ${e}`);
     return;
   }
 
@@ -41,7 +42,7 @@ const SIZE = 4*1024*1024*1024 - PAGE; // when uint32_t size is max, we can only 
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   // Test that gl.readPixels() can be called with a high offset to Memory
-  const offset = SIZE - 4;
+  const offset = view.length - expectedColor.length;
   view.set([0,0,0,0], offset); // For good measure, clear data at offset before reading
   try {
     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, view, offset);

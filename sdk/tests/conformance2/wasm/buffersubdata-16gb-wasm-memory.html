@@ -26,24 +26,36 @@ let gl = wtu.create3DContext("canvas", undefined, 2);
 
 const PAGE = 65536;
 const SIZE = 16 * 1024 * 1024 * 1024;
-let view = new Uint8Array(new WebAssembly.Memory({ index: 'i64', initial: SIZE / PAGE }).buffer);
-let expectedData = new Uint8Array([1, 2]);
-const length = expectedData.length;
-let srcOffset = SIZE - length;
-view.set(expectedData, srcOffset);
-const dstByteOffset = 4;
+(() => {
+  let view;
+  try {
+    view = new Uint8Array(new WebAssembly.Memory({ index: 'i64', initial: SIZE / PAGE }).buffer);
+  } catch (e) {
+    testPassed(`Allocating ${SIZE} threw: ${e}`);
+    return;
+  }
 
-let buf = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-gl.bufferData(gl.ARRAY_BUFFER, 8, gl.STATIC_DRAW);
-gl.bufferSubData(gl.ARRAY_BUFFER, dstByteOffset, view, srcOffset, length);
-wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+  let expectedData = new Uint8Array([1, 2]);
+  const length = expectedData.length;
+  let srcOffset = SIZE - length;
+  view.set(expectedData, srcOffset);
+  const dstByteOffset = 4;
 
-let actualData = new Uint8Array(length);
-gl.getBufferSubData(gl.ARRAY_BUFFER, dstByteOffset, actualData);
-for (let i = 0; i < length; i++) {
-  shouldBe(`actualData[${i}]`, `expectedData[${i}]`);
-}
+  let buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, 8, gl.STATIC_DRAW);
+  try {
+    gl.bufferSubData(gl.ARRAY_BUFFER, dstByteOffset, view, srcOffset, length);
+  } catch (e) {
+    testFailed(`bufferSubData from ${view.length} byte view threw: ${e}`);
+    return;
+  }
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+  let actualData = new Uint8Array(length);
+  gl.getBufferSubData(gl.ARRAY_BUFFER, dstByteOffset, actualData);
+  expectArray(actualData, expectedData);
+})();
 
 var successfullyParsed = true;
 </script>

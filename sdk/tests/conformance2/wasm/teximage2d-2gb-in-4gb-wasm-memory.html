@@ -25,13 +25,14 @@ let wtu = WebGLTestUtils;
 let gl = wtu.create3DContext("canvas", undefined, 2);
 
 const PAGE = 65536;
-const SIZE = 4*1024*1024*1024 - PAGE; // when uint32_t size is max, we can only reach one page short of full 4GB
+const HEAP_SIZE = 4 * 1024 * 1024 * 1024 - PAGE;
+const VIEW_SIZE = 2 * 1024 * 1024 * 1024 - PAGE;
 (() => {
   let view;
   try {
-    view = new Uint8Array(new WebAssembly.Memory({ initial: SIZE / PAGE }).buffer);
+    view = new Uint8Array(new WebAssembly.Memory({ initial: HEAP_SIZE / PAGE }).buffer, 0, VIEW_SIZE);
   } catch (e) {
-    testPassed(`Allocating ${SIZE} threw: ${e}`);
+    testPassed(`Allocating ${HEAP_SIZE} threw: ${e}`);
     return;
   }
 
@@ -76,7 +77,7 @@ const SIZE = 4*1024*1024*1024 - PAGE; // when uint32_t size is max, we can only 
 
   // Test uploading an image
   const expectedColor = [42, 84, 128, 255];
-  const offset = SIZE - 4;
+  const offset = view.length - expectedColor.length;
   view.set(expectedColor, offset);
   try {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, view, offset);
