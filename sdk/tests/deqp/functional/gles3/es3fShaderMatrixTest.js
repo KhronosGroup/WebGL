@@ -1506,6 +1506,9 @@ goog.scope(function() {
     	}
 
         glsShaderRenderCase.ShaderRenderCase.prototype.init.call(this);
+
+    	// reassign grid size prevent matrix inverse inf value.
+    	this.m_gridSize = 64;
     };
 
 
