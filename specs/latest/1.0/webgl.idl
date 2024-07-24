@@ -44,6 +44,14 @@ typedef unrestricted float GLclampf;
 // section of the specification.
 enum WebGLPowerPreference { "default", "low-power", "high-performance" };
 
+enum WebGLToneMappingMode {
+  "standard",
+  "extended",
+};
+
+dictionary WebGLToneMapping {
+  WebGLToneMappingMode mode = "standard";
+};
 
 dictionary WebGLContextAttributes {
     boolean alpha = true;
@@ -553,6 +561,7 @@ interface mixin WebGLRenderingContextBase
     object? getExtension(DOMString name);
 
     undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
+    undefined drawingBufferToneMapping(WebGLToneMapping toneMapping);
 
     undefined activeTexture(GLenum texture);
     undefined attachShader(WebGLProgram program, WebGLShader shader);

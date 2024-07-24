@@ -378,6 +378,11 @@
         an <a href="https://html.spec.whatwg.org/multipage/webappapis.html#imagebitmap">ImageBitmap</a> <a href="#refsHTML">[HTML]</a>
         from this context's canvas.
     </p>
+    <p>
+        When presenting the drawing buffer, the pixel values in the drawing buffer shall be
+        converted from the color space of the drawing buffer to the color space of the screen, and
+        then shall be tone mapped as specified by <code>drawingBufferToneMapping</code>.
+    </p>
     <div class="note">
         <p>
             While it is sometimes desirable to preserve the drawing buffer, it can cause significant
@@ -443,6 +448,46 @@
             generate <code>INVALID_VALUE</code>.
 
             If allocation fails, generate <code>OUT_OF_MEMORY</code>.
+        </dd>
+
+        <dt class="idl-code">undefined drawingBufferToneMapping(WebGLToneMapping toneMapping);
+        <dd>
+            <p>
+              The value of <code>toneMapping.mode</code> indicates how the drawing buffer shall be
+              tone mapped by the HTML page compositor when presented.
+            </p>
+
+            <p>
+              The allowed values are:
+            </p>
+            <dl><dd>
+                <p>
+                  <em>standard</em>
+                </p>
+                <p>
+                  All colors that are inside of the standard dynamic range of the screen shall not
+                  be changed, and all colors that outside of the standard dynamic range of the
+                  screen shall be projected to the standard dynamic range of the screen.
+                </p>
+                <div class="note">
+                  This projection is often accomplished by clamping color values in the color
+                  space of the screen to the [0, 1] interval.
+                </div>
+                <p>
+                  <em>extended</em>
+                </p>
+                <p>
+                  All colors that are inside of the extended dynamic range of the screen shall not
+                  be changed, and all colors that outside of the extended dynamic range of the
+                  screen shall be projected to the extended dynamic range of the screen.
+                </p>
+                <div class="note">
+                  This projection is often accomplished by clamping color values in the color
+                  space of the screen to the interval of values that the screen is capable of
+                  displaying, which may include values greater than 1.
+                </div>
+            </dd></dl>
+        </dd>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -780,6 +825,15 @@ typedef unrestricted float GLclampf;
 // The power preference settings are documented in the WebGLContextAttributes
 // section of the specification.
 enum WebGLPowerPreference { "default", "low-power", "high-performance" };
+
+enum WebGLToneMappingMode {
+  "standard",
+  "extended",
+};
+
+dictionary WebGLToneMapping {
+  WebGLToneMappingMode mode = "standard";
+};
 </pre>
 
 <!-- ======================================================================================================= -->
@@ -1794,6 +1848,7 @@ interface mixin <dfn data-dfn-type="interface" id="WebGLRenderingContextBase">We
     object? getExtension(DOMString name);
 
     undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
+    undefined drawingBufferToneMapping(WebGLToneMapping toneMapping);
 
     undefined activeTexture(GLenum texture);
     undefined attachShader(WebGLProgram program, WebGLShader shader);
