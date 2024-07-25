@@ -4076,7 +4076,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
     <p>
         In OpenGL ES 3.0, after calling <code>invalidateFramebuffer</code> or <code>invalidateSubFramebuffer</code>,
         the affected region's contents become effectively undefined. In WebGL 2.0, it is required for the contents
-        to either stay unchanged or become all 0.
+        to either stay unchanged or become cleared to their default values.
+        (e.g. 0 for colors and stencil, and 1.0 for depth)
     </p>
 
     <div class="note">
