@@ -8,4 +8,4 @@ THIS_DIR = pathlib.Path(__file__).parent
 BASE_DIR = THIS_DIR.parent.parent.parent
 assert (BASE_DIR / '.git').exists(), BASE_DIR / '.git'
 
-subprocess.run([sys.executable, BASE_DIR / 'specs/build-idl.py', THIS_DIR / 'webgl2.idl'], check=True)
+subprocess.run([sys.executable, BASE_DIR / 'specs/build-idl.py', THIS_DIR / 'webgl.idl'], check=True)
