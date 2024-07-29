@@ -25,7 +25,7 @@ interface WebGLVertexArrayObjectOES : WebGLObject {
 interface OES_vertex_array_object {
     const GLenum VERTEX_ARRAY_BINDING_OES = 0x85B5;
 
-    WebGLVertexArrayObjectOES? createVertexArrayOES();
+    WebGLVertexArrayObjectOES createVertexArrayOES();
     undefined deleteVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
     [WebGLHandlesContextLoss] GLboolean isVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
     undefined bindVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
@@ -166,6 +166,9 @@ interface OES_vertex_array_object {
     </revision>
     <revision date="2022/07/09">
       <change>Added error codes for invalid API usage.</change>
+    </revision>
+    <revision date="2024/04/19">
+      <change><code>createVertexArrayOES</code> made infallible.</change>
     </revision>
   </history>
 </ratified>
