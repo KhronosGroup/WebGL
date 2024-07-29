@@ -37,5 +37,6 @@ if __name__ == '__main__':
     handler_class = partial(NoCacheRequestHandler, directory=args.directory)
 
     server = http.server.ThreadingHTTPServer((args.bind, args.port), handler_class)
-    print('Serving ThreadingHTTPServer for', args, '...')
+    print('Serving ThreadingHTTPServer for', args, 'at:')
+    print(f'\thttp://{args.bind}:{args.port}/')
     server.serve_forever()
