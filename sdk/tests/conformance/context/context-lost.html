@@ -330,14 +330,25 @@ function testLostContext()
     ];
     testFunctionsThatReturnNULL(nullTests);
 
-    [
+
+    const nonNullTests = [
       [() => gl.createBuffer(), x => gl.bindBuffer(gl.ARRAY_BUFFER, x), x => gl.isBuffer(x)],
       [() => gl.createFramebuffer(), x => gl.bindFramebuffer(gl.FRAMEBUFFER, x), x => gl.isFramebuffer(x)],
       [() => gl.createProgram(), x => undefined, x => gl.isProgram(x)],
       [() => gl.createRenderbuffer(), x => gl.bindRenderbuffer(gl.RENDERBUFFER, x), x => gl.isRenderbuffer(x)],
       [() => gl.createShader(gl.VERTEX_SHADER), x => undefined, x => gl.isShader(x)],
       [() => gl.createTexture(), x => gl.bindTexture(gl.TEXTURE_2D, x), x => gl.isTexture(x)],
-    ].forEach(([fn_create, fn_bind, fn_is]) => {
+    ];
+    if (gl.createVertexArray) { // webgl2
+      nonNullTests.push(
+        // Translate bind(T?) to T ? begin(T) : end(T) for Queries:
+        [() => gl.createQuery(), x => x ? gl.beginQuery(gl.ANY_SAMPLES_PASSED, x) : gl.endQuery(gl.ANY_SAMPLES_PASSED), x => gl.isQuery(x)],
+        [() => gl.createSampler(), x => gl.bindSampler(0, x), x => gl.isSampler(x)],
+        [() => gl.createTransformFeedback(), x => gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, x), x => gl.isTransformFeedback(x)],
+        [() => gl.createVertexArray(), x => gl.bindVertexArray(x), x => gl.isVertexArray(x)],
+      );
+    }
+    nonNullTests.forEach(([fn_create, fn_bind, fn_is]) => {
       const x = fn_create();
       assertMsg(x, `${fn_create.toString()} -> non-null`);
       assertMsg(fn_is(x) === false, `[before bind] ${fn_is.toString()} -> false`);
