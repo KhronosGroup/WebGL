@@ -48,7 +48,7 @@
                 "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist",
                 "--ignore-gpu-blocklist",
-                "--use-gl=desktop"
+                "--use-gl=angle"
             ]
         },
 
@@ -88,7 +88,7 @@
                 "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist",
                 "--ignore-gpu-blocklist",
-                "--use-gl=desktop"
+                "--use-gl=angle"
             ]
         },
 
@@ -131,7 +131,7 @@
                 "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist",
                 "--ignore-gpu-blocklist",
-                "--use-gl=desktop"
+                "--use-gl=angle"
             ]
         },
 
