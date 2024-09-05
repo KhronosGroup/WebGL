@@ -4467,6 +4467,21 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
       A similar change was made in OpenGL ES 3.2.
     </div>
 
+    <h3><a name="UNINITIALIZED_COMPRESSED_TEXTURES">Uninitialized Compressed Textures</a></h3>
+
+    <p>
+      In OpenGL ES 2.0 the specification omitted declaring whether it should be possible to create a
+      compressed 2D texture with uninitialized data. In WebGL 1.0, this is explicitly disallowed.
+    </p>
+    <p>
+      In OpenGL ES 3.0 it is explicitly allowed to create a compressed 2D texture with uninitialized
+      data by passing <code>null</code> to <code>glCompressedTexImage2D</code>. In WebGL 2.0,
+      however, this is still explicitly disallowed. Users can use <code>texStorage2D</code> with a
+      compressed internal format to allocate zero-initialized compressed textures; these textures
+      are however immutable, and not completely compatible with textures allocated
+      via <code>compressedTexImage2D</code>.
+    </p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
