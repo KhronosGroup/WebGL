@@ -4125,8 +4125,10 @@ value is interpreted as <code>true</code>.
 
 <dt><code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> of type <code>unsigned long</code>
 <dd>If set to <code>BROWSER_DEFAULT_WEBGL</code>, then the browser's default colorspace conversion
-is applied during subsequent <code>texImage2D</code> and <code>texSubImage2D</code> calls.
-(For example, converting a display-p3 image to srgb)
+(e.g. converting a display-p3 image to srgb)
+is applied during subsequent texture data upload calls
+(e.g. <code>texImage2D</code> and <code>texSubImage2D</code>) that take an argument of TexImageSource.
+
 The precise conversions may be specific to both the browser and file type.
 If set to <code>NONE</code>, no colorspace conversion is applied, other than conversion to RGBA.
 (For example, a rec709 YUV video is still converted to rec709 RGB data, but not then converted to e.g. srgb RGB data)
