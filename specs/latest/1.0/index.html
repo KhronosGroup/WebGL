@@ -2769,7 +2769,7 @@ WebGLRenderingContext includes WebGLRenderingContextOverloads;
 
             First, the source image data is conceptually converted to the color space specified by
             the <a href="#DOM-WebGLRenderingContext-unpackColorSpace">unpackColorSpace</a>
-            attribute, except if the source image data is an <code>HTMLImageElement</code>, and
+            attribute, except if the
             the <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> pixel storage parameter is set
             to <code>NONE</code>. <br><br>
 
@@ -4125,10 +4125,14 @@ value is interpreted as <code>true</code>.
 
 <dt><code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> of type <code>unsigned long</code>
 <dd>If set to <code>BROWSER_DEFAULT_WEBGL</code>, then the browser's default colorspace conversion
-is applied during subsequent <code>texImage2D</code> and <code>texSubImage2D</code> calls
-taking <code>HTMLImageElement</code>. The precise conversions may be specific to both the browser
-and file type. If set to <code>NONE</code>, no colorspace conversion is applied. The initial value
-is <code>BROWSER_DEFAULT_WEBGL</code>.
+(e.g. converting a display-p3 image to srgb)
+is applied during subsequent texture data upload calls
+(e.g. <code>texImage2D</code> and <code>texSubImage2D</code>) that take an argument of TexImageSource.
+
+The precise conversions may be specific to both the browser and file type.
+If set to <code>NONE</code>, no colorspace conversion is applied, other than conversion to RGBA.
+(For example, a rec709 YUV video is still converted to rec709 RGB data, but not then converted to e.g. srgb RGB data)
+The initial value is <code>BROWSER_DEFAULT_WEBGL</code>.
 
 </dl>
 
