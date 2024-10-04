@@ -30,7 +30,7 @@ const SIZE = 16*1024*1024*1024;
 (() => {
   let view;
   try {
-    view = new Uint8Array(new WebAssembly.Memory({ index: 'i64', initial: SIZE / PAGE }).buffer);
+    view = new Uint8Array(new WebAssembly.Memory({ index: 'i64', initial: BigInt(SIZE / PAGE) }).buffer);
   } catch (e) {
     testPassed(`Allocating ${SIZE} threw: ${e}`);
     return;
