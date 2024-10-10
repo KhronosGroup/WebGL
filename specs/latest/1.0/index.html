@@ -839,12 +839,29 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
             </dd>
         <dt> <span class=prop-value>premultipliedAlpha</span>
             <dd>
+            <p>
                 If the value is true the page compositor will assume the drawing buffer contains
                 colors with premultiplied alpha. If the value is false the page compositor will
                 assume that colors in the drawing buffer are not premultiplied. This flag is ignored
-                if the <strong>alpha</strong> flag is
-                false. See <a href="#PREMULTIPLIED_ALPHA">Premultiplied Alpha</a> for more
+                if the <strong>alpha</strong> flag is false.
+            </p>
+            <p>
+                With <code>premultipliedAlpha:true</code>, any pixels sent to the page
+                compositor shall have color values less-than-or-equal-to their alpha value,
+                otherwise the colors resulting from compositing such out-of-range pixel values
+                are undefined.
+                <div class="note">
+                    For example, with <code>premultipliedAlpha:true</code>
+                    <code>vec4(1.0, 0.0, 0.0, 0.5)</code> might display as green
+                    instead of red, possibly due to optimized packed compositing math overflows.
+                    This is left undefined due to the intractible performance impact of requiring
+                    consistent behavior.
+                </div>
+            </p>
+            <p>
+                See <a href="#PREMULTIPLIED_ALPHA">Premultiplied Alpha</a> for more
                 information on the effects of the <code>premultipliedAlpha</code> flag.
+            </p>
             </dd>
         <dt> <span class=prop-value>preserveDrawingBuffer</span>
             <dd>
