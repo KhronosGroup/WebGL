@@ -11,6 +11,7 @@ found in the LICENSE.txt file.
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
+
 <script id="vshader" type="x-shader/x-vertex">
 attribute vec3 pos;
 attribute vec4 colorIn;
@@ -24,7 +25,6 @@ void main()
     gl_Position = vec4(pos, 1.0);
 }
 </script>
-
 <script id="fshader" type="x-shader/x-fragment">
 precision mediump float;
 varying vec4 color;
@@ -34,6 +34,20 @@ void main()
     gl_FragColor = color;
 }
 </script>
+
+<script id="trivial-vs" type="x-shader/x-vertex">
+void main()
+{
+    gl_Position = vec4(0,0,0,1);
+}
+</script>
+<script id="trivial-fs" type="x-shader/x-fragment">
+void main()
+{
+    gl_FragColor = vec4(0,1,0,1);
+}
+</script>
+
 </head>
 <body>
 <canvas id="testbed" width="2" height="2"></canvas>
@@ -120,6 +134,54 @@ debug('Pass 2');
 var program2 = wtu.setupProgram(gl, ['vshader', 'fshader'], ['pos', 'colorIn']);
 shouldBe('gl.getError()', 'gl.NO_ERROR');
 test(program2);
+
+const trivialProg = wtu.setupProgram(gl, ['trivial-vs', 'trivial-fs']);
+gl.useProgram(trivialProg);
+wtu.glErrorShouldBe(gl, 0, 'Use trivial program.');
+
+// We don't write to gl_PointSize, but since it's supposed to be clamped within the valid range,
+// and the valid range must be positive, we should be guaranteed to get at least one pixel drawn.
+// So, just use a 1x1 FB for testing.
+gl.canvas.width = 1;
+gl.canvas.height = 1;
+gl.viewport(0, 0, 1, 1);
+
+gl.clearColor(1, 0, 0, 1);
+gl.clear(gl.COLOR_BUFFER_BIT);
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 0, 0, 255]);
+
+gl.disableVertexAttribArray(0);
+gl.disableVertexAttribArray(1);
+gl.drawArrays(gl.POINTS, 0, 1);
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 255, 0, 255]);
+wtu.glErrorShouldBe(gl, 0, 'After trivial program draw.');
+
+if (gl.transformFeedbackVaryings) {
+    gl.transformFeedbackVaryings(trivialProg, ['gl_Position'], gl.INTERLEAVED_ATTRIBS);
+    gl.linkProgram(trivialProg);
+    gl.useProgram(trivialProg);
+    wtu.glErrorShouldBe(gl, 0, 'Relinking trivial program with TF-varyings.');
+
+    const buffer = gl.createBuffer();
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer);
+    gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 16, gl.STREAM_READ);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 0, 0, 255]);
+
+    gl.beginTransformFeedback(gl.POINTS);
+
+    gl.drawArrays(gl.POINTS, 0, 1);
+    wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 255, 0, 255]);
+
+    gl.endTransformFeedback();
+
+    gl.finish(); // Prevent 'please wait on a fence' warning.
+    window.tfResults = new Float32Array(4);
+    gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, window.tfResults);
+
+    shouldBeString('window.tfResults', new Float32Array([0, 0, 0, 1]).toString());
+}
 
 var successfullyParsed = true;
 </script>
