@@ -2486,10 +2486,10 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         <code>drawElements</code> in the section <a href="../1.0/index.html#WRITING_TO_THE_DRAWING_BUFFER">Writing
         to the drawing buffer</a> of the WebGL 1.0 specification apply.<br><br>
 
-        In addition, if indices used to draw are outside the range of [<em>start</em>, <em>end</em>], an imeplementation
-        can either guarantee the behaviors defined in <a href="../1.0/index.html#OUT_OF_RANGE_ARRAY_ACCESSES">Out-of-Range
-        Array Accesses</a>, or simply discard the arguments <em>start</em> and <em>end</em> and call <code>drawElements</code>
-        instead. In either situation, no GL errors should be generated for this cause.
+        In addition, if indices used to draw are outside the range of [<em>start</em>, <em>end</em>], an implementation
+        can either guarantee the behaviors defined in <a href="../1.0/index.html#ATTRIBS_AND_RANGE_CHECKING">Enabled
+        Vertex Attributes and Range Checking</a>, or simply discard the arguments <em>start</em> and <em>end</em> and
+        call <code>drawElements</code> instead. In either situation, no GL errors should be generated for this cause.
       </dd>
     </dl>
 
