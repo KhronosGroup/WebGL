@@ -7,6 +7,7 @@
 --min-version 2.0.1 getbuffersubdata-2gb-in-4gb-wasm-memory.html
 --min-version 2.0.1 getbuffersubdata-4gb-wasm-memory.html
 --min-version 2.0.1 getbuffersubdata-16gb-wasm-memory.html
+--min-version 2.0.1 multi-draw-2gb-in-4gb-wasm-memory.html
 --min-version 2.0.1 readpixels-2gb-in-4gb-wasm-memory.html
 --min-version 2.0.1 readpixels-4gb-wasm-memory.html
 --min-version 2.0.1 readpixels-16gb-wasm-memory.html
