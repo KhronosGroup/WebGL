@@ -9,6 +9,7 @@ array-in-complex-expression.html
 --min-version 2.0.1 array-length-side-effects.html
 attrib-location-length-limits.html
 bool-type-cast-bug-uint-ivec-uvec.html
+--min-version 2.0.1 comma-operator-not-constant-expression.html
 compare-structs-containing-arrays.html
 compound-assignment-type-combination.html
 const-array-init.html
