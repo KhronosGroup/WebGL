@@ -3167,24 +3167,86 @@ async function startPlayingAndWaitForVideo(video, callback) {
     return;
   }
 
+  try {
+    await waitVideoUploadable(video);
+  } catch (e) {
+    testFailed('waitVideoUploadable/video.play failed: ' + e);
+    return;
+  }
+
+  callback(video);
+}
+
+/**
+ *
+ * @returns {Map<string,{name:string,version:string}>}
+ */
+function userAgentEngineClaims() {
+  const RE_NAME_SLASH_VERSION = /([^ ]+)[/]([^ ]+)/g;
+  const claimsByName = new Map();
+  for (const m of navigator.userAgent.matchAll(RE_NAME_SLASH_VERSION)) {
+    if (m[0] == 'Mozilla/5.0') continue; // Deprecated and frozen.
+    if (m[0] == 'Gecko/20100101') continue; // Deprecated and frozen.
+    const claim = {name: m[1], version: m[2]};
+    console.log(m[0], claim)
+    claimsByName.set(claim.name, claim);
+  }
+  return claimsByName;
+}
+
+const CACHED = {};
+
+/**
+ *
+ * @returns {{name:string,version:string}}
+ */
+function userAgentEngine() {
+  return CACHED.USER_AGENT_ENGINE = CACHED.USER_AGENT_ENGINE || call(() => {
+    const claimsByName = userAgentEngineClaims();
+
+    // Chrome on desktop claims 'Chrome' and 'Safari'.
+    // Firefox on iOS claims 'FxiOS' and 'Safari'. (and not 'Firefox')
+    // (Amusingly, FxiOS also claims 'Mobile/15E148', which wins for highest version!)
+    // Chrome on iOS claims 'CriOS' and 'Safari'. (and not 'Chrome')
+    // Firefox on desktop and Android and Safari on desktop claim only themselves.
+    const CLAIM_CHECK_ORDER = [
+      'Chrome',
+      'Firefox', // Not FxiOS!
+      'Safari', // Safari, Chrome desktop, and FxiOS/CriOS.
+    ];
+    for (const check of CLAIM_CHECK_ORDER) {
+      const ret = claimsByName.get(check);
+      if (ret) return ret;
+    }
+    return {name: '', version: '0.0'};
+  });
+}
+
+/**
+ * Awaits a video that is playing and reliably uploadable through webgl.
+ * @param {!HTMLVideoElement} video An HTML5 Video element.
+ * @throws `video.play()`
+ */
+async function waitVideoUploadable(video) {
   video.loop = true;
   video.muted = true;
   // See whether setting the preload flag de-flakes video-related tests.
   video.preload = 'auto';
 
-  try {
-    await video.play();
-  } catch (e) {
-    testFailed('video.play failed: ' + e);
-    return;
-  }
+  await video.play();
 
-  if (video.requestVideoFrameCallback) {
+  // Chrome says they need to wait for requestVideoFrameCallback.
+  // But Firefox doesn't, and also can get awaiting here. (Occlusion testing?)
+  let useRvfc = video.requestVideoFrameCallback;
+  if (userAgentEngine().name == 'Firefox') {
+    useRvfc = false;
+  }
+  if (useRvfc) {
     await new Promise(go => video.requestVideoFrameCallback(go));
   }
-
-  callback(video);
 }
+
+// -
 
 var getHost = function(url) {
   url = url.replace("\\", "/");
@@ -3632,7 +3694,10 @@ var API = {
   replaceParams: replaceParams,
   requestAnimFrame: requestAnimFrame,
   runSteps: runSteps,
+  userAgentEngine,
+  userAgentEngineClaims,
   waitForComposite: waitForComposite,
+  waitVideoUploadable,
 
   // fullscreen api
   setupFullscreen: setupFullscreen,
