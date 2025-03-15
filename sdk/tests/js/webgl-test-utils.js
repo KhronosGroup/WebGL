@@ -34,40 +34,87 @@ var loggingOff = function() {
 };
 
 const ENUM_NAME_REGEX = RegExp('[A-Z][A-Z0-9_]*');
-const ENUM_NAME_BY_VALUE = {};
-const ENUM_NAME_PROTOTYPES = new Map();
+const ENUM_SOURCES_CACHED = {};
+const ENUM_LIST_BY_VALUE = new Map();
+
+/**
+ * @param {Map} dest
+ * @param {object} src
+ * @param {?(s: string) => bool} fn_filter_key The enum value.
+ */
+function accumKeysByValue(dest, src, fn_filter_key) {
+  for (const [key,val] of Object.entries(src)) {
+    if (fn_filter_key && !fn_filter_key(key)) continue;
+
+    let keys = dest.get(val);
+    if (!keys) {
+      keys = [];
+      dest.set(val, keys);
+    }
+    if (!keys.includes(key)) {
+      keys.push(key);
+    }
+  }
+}
+
+function accumGlEnumsByValue(src) {
+  console.assert(src, 'bad src');
+  if (!src.name) {
+    src = src.constructor;
+  }
+  if (ENUM_SOURCES_CACHED[src.name]) return;
+  ENUM_SOURCES_CACHED[src.name] = true;
+  accumKeysByValue(ENUM_LIST_BY_VALUE, src, k => ENUM_NAME_REGEX.test(k));
+}
 
 /**
  * Converts a WebGL enum to a string.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {object?} glOrExt What object is this from, needed if not in WebGL2RenderingContext.
  * @param {number} value The enum value.
- * @return {string} The enum as a string.
+ * @return {string} If found, enum name(s) as a string, else value hex string e.g. `0x1234`.
  */
-var glEnumToString = function(glOrExt, value) {
-  if (value === undefined)
+function glEnumToString(glOrExt, value) {
+  if (value === undefined) {
     throw new Error('glEnumToString: `value` must not be undefined');
+  }
 
-  const proto = glOrExt.__proto__;
-  if (!ENUM_NAME_PROTOTYPES.has(proto)) {
-    ENUM_NAME_PROTOTYPES.set(proto, true);
+  let found = ENUM_LIST_BY_VALUE.get(value);
 
-    for (const k in proto) {
-      if (!ENUM_NAME_REGEX.test(k)) continue;
+  if (!found && !ENUM_LIST_BY_VALUE.size) {
+    ENUM_LIST_BY_VALUE.set(0, ['NONE']); // List NONE before POINTS.
+    accumGlEnumsByValue(globalThis.WebGL2RenderingContext || WebGLRenderingContext);
+    found = ENUM_LIST_BY_VALUE.get(value);
+  }
 
-      const v = glOrExt[k];
-      if (ENUM_NAME_BY_VALUE[v] === undefined) {
-        ENUM_NAME_BY_VALUE[v] = k;
-      } else {
-        ENUM_NAME_BY_VALUE[v] += '/' + k;
+  if (!found && glOrExt) {
+    const CACHE_UNUSUAL_CLASSES = false;
+    if (!CACHE_UNUSUAL_CLASSES) {
+      for (const [k,v] of Object.entries(glOrExt)) {
+        if (v == value) {
+          found = [k];
+          break;
+        }
       }
+    } else {
+      accumGlEnumsByValue(glOrExt);
+      found = ENUM_LIST_BY_VALUE.get(value);
     }
   }
 
-  const key = ENUM_NAME_BY_VALUE[value];
-  if (key !== undefined) return key;
+  if (!found) {
+    found = ["0x" + Number(value).toString(16)];
+  }
+  found = found.toSorted();
+  return found.join('/');
+}
+{
+  let was, expect;
+  console.assert((was = glEnumToString(null, WebGLRenderingContext.RGBA), expect = 'RGBA', was == expect), {was,expect});
+  console.assert((was = glEnumToString(null, 0x123456), expect = '0x123456', was == expect), {was,expect});
+  console.assert((was = glEnumToString({name: 'FakeRenderingContext', UNUSUAL: 0x123456}, 0x123456), expect = 'UNUSUAL', was == expect), {was,expect});
+}
 
-  return "0x" + Number(value).toString(16);
-};
+// -
 
 var lastError = "";
 
@@ -3675,3 +3722,27 @@ Object.defineProperties(API, {
 return API;
 
 }());
+
+// -
+// Useful shortcuts:
+
+/**
+ * @typedef {number} GLenum
+ */
+/**
+ * * `glEnumStr(GL.RGBA) => 'RGBA'`
+ * * `glEnumStr(GL.POINTS) => 'NONE/NO_ERROR/POINTS/ZERO'`
+ * * `glEnumStr(0x123456) => '0x123456'`
+ * @param {GLenum} val
+ * @returns {string}
+ */
+function glEnumStr(val) {
+  return WebGLTestUtils.glEnumToString(null, val);
+}
+{
+  const GL = WebGLRenderingContext;
+  let was;
+  console.assert((was = glEnumStr(GL.RGBA)) == 'RGBA', was);
+  console.assert((was = glEnumStr(GL.POINTS)) == 'NONE/NO_ERROR/POINTS/ZERO', was);
+  console.assert((was = glEnumStr(0x123456)) == '0x123456', was);
+}
