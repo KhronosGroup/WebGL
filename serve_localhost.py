@@ -6,6 +6,7 @@
 
 import http.server
 import os
+from pathlib import *
 
 from functools import partial
 
@@ -25,7 +26,10 @@ if __name__ == '__main__':
     parser.add_argument('--bind', '-b', default='localhost', metavar='ADDRESS',
                         help='Specify alternate bind address '
                              '[default: localhost - pass \'\' if you want to serve remote clients]')
-    parser.add_argument('--directory', '-d', default=os.getcwd(),
+    parser.add_argument('--port', action='store',
+                        default=8000, type=int,
+                        help='Specify alternate port [default: 8000]')
+    parser.add_argument('--directory', '-d',
                         help='Specify alternative directory '
                         '[default:current directory]')
     parser.add_argument('port', action='store',
@@ -34,9 +38,18 @@ if __name__ == '__main__':
                         help='Specify alternate port [default: 8000]')
     args = parser.parse_args()
 
-    handler_class = partial(NoCacheRequestHandler, directory=args.directory)
+    serve_dir = Path(os.getcwd())
+    if args.directory:
+        serve_dir = Path(args.directory)
 
+    handler_class = partial(NoCacheRequestHandler, directory=serve_dir)
+
+    checkout_dir = Path(__file__).parent
+    url = f'http://{args.bind}:{args.port}'
     server = http.server.ThreadingHTTPServer((args.bind, args.port), handler_class)
-    print('Serving ThreadingHTTPServer for', args, 'at:')
-    print(f'\thttp://{args.bind}:{args.port}/')
+    print(f'Serving {serve_dir}:')
+    print(f'\t{url}/')
+    if serve_dir == checkout_dir:
+        print(f'CTS Test Runner:')
+        print(f'\t{url}/sdk/tests/webgl-conformance-tests.html')
     server.serve_forever()
