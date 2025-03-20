@@ -21,6 +21,10 @@
         parameter <code>pname</code> accepts the value <code>TEXTURE_MAX_ANISOTROPY_EXT</code>
       </feature>
       <feature>
+        In WebGL 2, additionally the <code>getSamplerParameter</code>, <code>samplerParameterf</code> and <code>samplerParameteri</code> entry points'
+        parameter <code>pname</code> accepts the value <code>TEXTURE_MAX_ANISOTROPY_EXT</code>
+      </feature>
+      <feature>
         The <code>getParameter</code> entry point parameter <code>pname</code> accepts the value <code>MAX_TEXTURE_MAX_ANISOTROPY_EXT</code>, returning a value of type <code>float</code>.
       </feature>
     </features>
@@ -47,6 +51,9 @@ interface EXT_texture_filter_anisotropic {
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2025/03/20">
+      <change>Note that WebGL 2 supports this extension's pnames in sampler entrypoints.</change>
     </revision>
   </history>
 </ratified>
