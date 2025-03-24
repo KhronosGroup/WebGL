@@ -1581,7 +1581,7 @@ var getUrlOptions = (function() {
   }
 })();
 
-var default3DContextVersion = 1;
+var default3DContextVersion = null;
 
 /**
  * Set the default context version for create3DContext.
@@ -1598,7 +1598,26 @@ var setDefault3DContextVersion = function(version) {
  * then look at the global default3DContextVersion variable.
  */
 var getDefault3DContextVersion = function() {
-    return parseInt(getUrlOptions().webglVersion, 10) || default3DContextVersion;
+    const urlVersion = parseInt(getUrlOptions().webglVersion, 10);
+    if (urlVersion) return urlVersion;
+
+    if (!default3DContextVersion) {
+        const pathname = location.pathname;
+        const path_parts = pathname.split('/');
+        let in_conformance2_path = false;
+        while (path_parts.length) {
+            const part = path_parts.pop();
+            if (part.startsWith('conformance')) {
+                in_conformance2_path = (part == 'conformance2');
+                break;
+            }
+        }
+        // Found this first, so this must be a webgl2 test!
+
+        default3DContextVersion = in_conformance2_path ? 2 : 1;
+        console.warn(`getDefault3DContextVersion(): Implying webgl${default3DContextVersion} based on path.`);
+    }
+    return default3DContextVersion;
 };
 
 /**
@@ -1643,9 +1662,7 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
     }
   }
 
-  if (!opt_version) {
-    opt_version = getDefault3DContextVersion();
-  }
+  opt_version = opt_version || getDefault3DContextVersion();
   opt_canvas = opt_canvas || document.createElement("canvas");
   if (typeof opt_canvas == 'string') {
     opt_canvas = document.getElementById(opt_canvas);
