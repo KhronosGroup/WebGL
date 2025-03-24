@@ -120,8 +120,6 @@ function checkImplementationDependentLimits() {
   debug("\nVerify conformant implementation-dependent PLS limits.");
   window.MAX_PIXEL_LOCAL_STORAGE_PLANES =
     gl.getParameter(pls.MAX_PIXEL_LOCAL_STORAGE_PLANES_WEBGL);
-  window.MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE =
-    gl.getParameter(pls.MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE_WEBGL);
   window.MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES =
     gl.getParameter(pls.MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES_WEBGL);
   wtu.glErrorShouldBe(gl, gl.NONE, "Pixel local storage queries should be supported.");
@@ -131,14 +129,11 @@ function checkImplementationDependentLimits() {
 
   // Table 6.X: Impementation Dependent Pixel Local Storage Limits.
   shouldBeTrue("MAX_PIXEL_LOCAL_STORAGE_PLANES >= 4");
-  shouldBeTrue("MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE >= 0");
   shouldBeTrue("MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES >= 4");
 
   // Logical deductions based on 6.X.
   shouldBeTrue(`MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES >=
                MAX_PIXEL_LOCAL_STORAGE_PLANES`);
-  shouldBeTrue(`MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES >=
-               MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE`);
   shouldBeTrue(`MAX_COLOR_ATTACHMENTS + MAX_PIXEL_LOCAL_STORAGE_PLANES >=
                MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES`);
   shouldBeTrue(`MAX_DRAW_BUFFERS + MAX_PIXEL_LOCAL_STORAGE_PLANES >=

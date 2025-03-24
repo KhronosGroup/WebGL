@@ -68,20 +68,19 @@
 [Exposed=(Window,Worker), LegacyNoInterfaceObject]
 interface WEBGL_shader_pixel_local_storage {
   const GLenum MAX_PIXEL_LOCAL_STORAGE_PLANES_WEBGL = 0x96E0;
-  const GLenum MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE_WEBGL = 0x96E1;
-  const GLenum MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES_WEBGL = 0x96E2;
-  const GLenum PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL = 0x96E3;
-  const GLenum LOAD_OP_ZERO_WEBGL = 0x96E4;
-  const GLenum LOAD_OP_CLEAR_WEBGL = 0x96E5;
-  const GLenum LOAD_OP_LOAD_WEBGL = 0x96E6;
-  const GLenum STORE_OP_STORE_WEBGL = 0x96E7;
-  const GLenum PIXEL_LOCAL_FORMAT_WEBGL = 0x96E8;
-  const GLenum PIXEL_LOCAL_TEXTURE_NAME_WEBGL = 0x96E9;
-  const GLenum PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL = 0x96EA;
-  const GLenum PIXEL_LOCAL_TEXTURE_LAYER_WEBGL = 0x96EB;
-  const GLenum PIXEL_LOCAL_CLEAR_VALUE_FLOAT_WEBGL = 0x96EC;
-  const GLenum PIXEL_LOCAL_CLEAR_VALUE_INT_WEBGL = 0x96ED;
-  const GLenum PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL = 0x96EE;
+  const GLenum MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES_WEBGL = 0x96E1;
+  const GLenum PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL = 0x96E2;
+  const GLenum LOAD_OP_ZERO_WEBGL = 0x96E3;
+  const GLenum LOAD_OP_CLEAR_WEBGL = 0x96E4;
+  const GLenum LOAD_OP_LOAD_WEBGL = 0x96E5;
+  const GLenum STORE_OP_STORE_WEBGL = 0x96E6;
+  const GLenum PIXEL_LOCAL_FORMAT_WEBGL = 0x96E7;
+  const GLenum PIXEL_LOCAL_TEXTURE_NAME_WEBGL = 0x96E8;
+  const GLenum PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL = 0x96E9;
+  const GLenum PIXEL_LOCAL_TEXTURE_LAYER_WEBGL = 0x96EA;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_FLOAT_WEBGL = 0x96EB;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_INT_WEBGL = 0x96EC;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL = 0x96ED;
   GLboolean isCoherent();
   undefined framebufferTexturePixelLocalStorageWEBGL(GLint plane,
                                                      WebGLTexture? texture,
@@ -221,7 +220,6 @@ interface WEBGL_shader_pixel_local_storage {
       <table>
       <tr><th>pname</th><th>returned type</th></tr>
       <tr><td>MAX_PIXEL_LOCAL_STORAGE_PLANES_WEBGL</td><td>GLint</td></tr>
-      <tr><td>MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE_WEBGL</td><td>GLint</td></tr>
       <tr><td>MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES_WEBGL</td><td>GLint</td></tr>
       <tr><td>PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL</td><td>GLint</td></tr>
       </table>
@@ -281,6 +279,9 @@ interface WEBGL_shader_pixel_local_storage {
     </revision>
     <revision date="2023/09/08">
       <change>Changed srcOffset arguments to "unsigned long long" for Wasm.</change>
+    </revision>
+    <revision date="2025/03/24">
+      <change>Removed MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE_WEBGL enum, which was removed from the underlying ANGLE extension.</change>
     </revision>
   </history>
 </draft>
