@@ -65,6 +65,7 @@ async function runTest() {
   }
   checkDependencyExtensionsEnabled(true);
 
+  checkEnums();
   checkImplementationDependentLimits();
   checkInitialValues();
   checkWebGLNonNormativeBehavior();
@@ -114,6 +115,24 @@ function checkDependencyExtensionsEnabled(enabled) {
                         "EXT_color_buffer_half_float not enabled or disabled as expected");
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
   }
+}
+
+function checkEnums() {
+  debug("\nVerify the extension's enum values, since they changed during the extension's development.");
+  shouldBe("pls.MAX_PIXEL_LOCAL_STORAGE_PLANES_WEBGL", "0x96E0");
+  shouldBe("pls.MAX_COMBINED_DRAW_BUFFERS_AND_PIXEL_LOCAL_STORAGE_PLANES_WEBGL", "0x96E1");
+  shouldBe("pls.PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL", "0x96E2");
+  shouldBe("pls.LOAD_OP_ZERO_WEBGL", "0x96E3");
+  shouldBe("pls.LOAD_OP_CLEAR_WEBGL", "0x96E4");
+  shouldBe("pls.LOAD_OP_LOAD_WEBGL", "0x96E5");
+  shouldBe("pls.STORE_OP_STORE_WEBGL", "0x96E6");
+  shouldBe("pls.PIXEL_LOCAL_FORMAT_WEBGL", "0x96E7");
+  shouldBe("pls.PIXEL_LOCAL_TEXTURE_NAME_WEBGL", "0x96E8");
+  shouldBe("pls.PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL", "0x96E9");
+  shouldBe("pls.PIXEL_LOCAL_TEXTURE_LAYER_WEBGL", "0x96EA");
+  shouldBe("pls.PIXEL_LOCAL_CLEAR_VALUE_FLOAT_WEBGL", "0x96EB");
+  shouldBe("pls.PIXEL_LOCAL_CLEAR_VALUE_INT_WEBGL", "0x96EC");
+  shouldBe("pls.PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL", "0x96ED");
 }
 
 function checkImplementationDependentLimits() {
