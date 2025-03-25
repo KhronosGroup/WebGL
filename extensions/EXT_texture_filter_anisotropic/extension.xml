@@ -53,7 +53,7 @@ interface EXT_texture_filter_anisotropic {
       <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
     <revision date="2025/03/20">
-      <change>Note that WebGL 2 supports this extension's pnames in sampler entrypoints.</change>
+      <change>Note that WebGL 2 supports this extension's pname in sampler entrypoints.</change>
     </revision>
   </history>
 </ratified>
