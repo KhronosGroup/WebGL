@@ -58,8 +58,10 @@ wtu.loadImageAsync(`data:image/svg+xml,${SVG_IMAGE}`, image => {
 
   test(image, "texImage2D");
   test(image, "texSubImage2D");
+
+  debug('');
+  finishTest();
 });
 
 var successfullyParsed = true;
 </script>
-<script src="../../../js/js-test-post.js"></script>
