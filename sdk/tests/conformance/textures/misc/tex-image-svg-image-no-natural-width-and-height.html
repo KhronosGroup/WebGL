@@ -36,6 +36,7 @@ function test(image, variant) {
   } else {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
   }
+  wtu.checkTextureSize(gl, 100, 100);
 
   wtu.clearAndDrawUnitQuad(gl);
 
