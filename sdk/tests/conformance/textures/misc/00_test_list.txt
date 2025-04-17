@@ -20,6 +20,7 @@ origin-clean-conformance.html
 tex-image-and-sub-image-2d-with-array-buffer-view.html
 tex-image-and-uniform-binding-bugs.html
 --min-version 1.0.3 tex-image-canvas-corruption.html
+--min-version 1.0.4 tex-image-svg-image-no-natural-width-and-height.html
 --min-version 1.0.2 tex-image-webgl.html
 tex-image-with-format-and-type.html
 tex-image-with-invalid-data.html
