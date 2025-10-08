@@ -223,6 +223,9 @@ function testRenderPrecisionInt(gl, precisionEnum, precision) {
     testRenderPrecision(gl, shaderType, 'int', precision, expected, msg);
   }
 
+  // Only use highp in the fragment shader if caller has determined it's supported.
+  const uniformPrecision = (precision == 'highp' ? 'highp' : 'mediump');
+
   {
     const vs = `
     attribute vec4 position;
@@ -261,7 +264,7 @@ function testRenderPrecisionInt(gl, precisionEnum, precision) {
     const fs = `
     precision ${precision} float;
     uniform ${precision} int v;
-    uniform mediump float f;
+    uniform ${uniformPrecision} float f;
 
     void main() {
       mediump float diff = abs(float(v) - f);
