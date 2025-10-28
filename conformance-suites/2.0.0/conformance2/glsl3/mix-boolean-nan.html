@@ -1,0 +1,130 @@
+<!--
+/*
+** Copyright (c) 2015 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>mix with boolean should work and be unaffected by NaN</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+
+<body>
+<canvas id="canvas" style="border: none;" width="128" height="128"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+
+<script id="shader-vs" type="x-shader/x-vertex">#version 300 es
+in highp vec4 pos;
+
+in highp float valid_float;
+in highp float nan_float;
+in highp uint choice;
+
+out highp vec4 v_color;
+
+const highp vec4 valid_color = vec4(0., 1., 0., 1.);
+const highp vec4 invalid_color = vec4(1., 0., 0., 1.);
+
+void main() {
+  highp float result = mix(nan_float, valid_float, bool(choice));
+  v_color = mix(valid_color, invalid_color, bvec4(isnan(result)));
+  gl_Position = pos;
+}
+</script>
+
+<script id="shader-fs" type="x-shader/x-fragment">#version 300 es
+in highp vec4 v_color;
+out highp vec4 o_color;
+
+void main() {
+  o_color = v_color;
+}
+</script>
+
+<script>
+"use strict";
+
+function test() {
+  description();
+  debug("This test exposes an incorrect boolean mix implementation.");
+  debug("");
+
+  var wtu = WebGLTestUtils;
+  var gl = wtu.create3DContext("canvas", undefined, 2);
+  if (!gl) {
+    testFailed("WebGL 2 context does not exist");
+    return;
+  }
+
+  var squareSize = 128;
+  var expectedColor = [0, 255, 0, 255]; // green
+
+  if (!gl) {
+    testFailed("context does not exist");
+  } else {
+    wtu.setupProgram(gl, ["shader-vs", "shader-fs"], ["pos", "valid_float", "nan_float", "choice"], [0, 1, 2, 3], true);
+
+    wtu.setupUnitQuad(gl, { positionLocation: 0 });
+
+
+    var validFloats = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, validFloats);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0., 1., 2., 3., 4., 5., 6.]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 1, gl.FLOAT, false, 0, 0);
+
+    var nanFloats = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, nanFloats);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([NaN, NaN, NaN, NaN, NaN, NaN]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(2);
+    gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 0, 0);
+
+    var choicesFloats = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, choicesFloats);
+    gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array([1, 1, 1, 1, 1, 1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(3);
+    gl.vertexAttribIPointer(3, 1, gl.UNSIGNED_BYTE, 0, 0);
+
+    debug("Test mix between nan and non-nan float");
+
+    wtu.drawUnitQuad(gl);
+
+    wtu.checkCanvasRect(
+      gl, 0, 0, squareSize, squareSize,
+      expectedColor, "square should be green", 1);
+    debug("");
+  }
+}
+
+test();
+var successfullyParsed = true;
+finishTest();
+</script>
+</body>
+</html>
