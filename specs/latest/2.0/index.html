@@ -851,7 +851,7 @@ interface mixin <dfn data-dfn-type="interface" id="WebGL2RenderingContextBase">W
   WebGLTransformFeedback createTransformFeedback();
   undefined deleteTransformFeedback(WebGLTransformFeedback? tf);
   [WebGLHandlesContextLoss] GLboolean isTransformFeedback(WebGLTransformFeedback? tf);
-  undefined bindTransformFeedback (GLenum target, WebGLTransformFeedback? tf);
+  undefined bindTransformFeedback(GLenum target, WebGLTransformFeedback? tf);
   undefined beginTransformFeedback(GLenum primitiveMode);
   undefined endTransformFeedback();
   undefined transformFeedbackVaryings(WebGLProgram program, sequence&lt;DOMString&gt; varyings, GLenum bufferMode);
@@ -3147,7 +3147,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
             Returns false if the transform feedback's <a href="../1.0/index.html#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
 
-        <dt class="idl-code">void bindTransformFeedback (GLenum target, WebGLTransformFeedback? transformFeedback)
+        <dt class="idl-code">void bindTransformFeedback(GLenum target, WebGLTransformFeedback? transformFeedback)
             <span class="gl-spec">
               (<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/es_spec_3.0.pdf#nameddest=subsection.2.15.1">OpenGL ES 3.0.6 &sect;2.15.1</a>,
               <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindTransformFeedback.xhtml">man page</a>)
