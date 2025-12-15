@@ -2210,7 +2210,30 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
         <p>The ETC2 and EAC texture formats defined in OpenGL ES 3.0 are <a href="#NO_ETC2_EAC">not available in WebGL 2.0</a>.
       </dd>
+
+      <dt class="idl-code">
+        [throws] undefined texElementImage2D(GLenum target, GLint level, GLint internalformat, GLenum format, GLenum type,
+                              Element element);
+      </dt>
+      <dd>
+        <p>Renders the given element to the currently bound WebGLTexture.</p>
+        <p>The width and height of the texture are derived from the CSS width and height of the element at the time of rendering. Add links to whatwg.</p>
+        <p>TBD: define state of rendering + security. These will be more links to whatwg</p><p></p>
+        <p>If no WebGLBuffer is bound to the <code>PIXEL_PACK_BUFFER</code> target, generates an
+             <code>INVALID_OPERATION</code> error.</p>
+        <p>The combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in the following table:</p>
+        <table id="TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE_2">
+        <tr><th>Internal Format</th><th>Format</th><th>Type</th></tr>
+        <tr><td>RGB</td><td>RGB</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>RGBA</td><td>RGBA</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>RGB16F</td><td>RGB</td><td>HALF_FLOAT<br>FLOAT</td></tr>
+        <tr><td>RGB32F</td><td>RGB</td><td>FLOAT</td></tr>
+        <tr><td>RGBA16F</td><td>RGBA</td><td>HALF_FLOAT<br>FLOAT</td></tr>
+        <tr><td>RGBA32F</td><td>RGBA</td><td>FLOAT</td></tr>
+        </table>
+      </dd>
     </dl>
+
 
 <!-- ======================================================================================================= -->
 
