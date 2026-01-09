@@ -4,6 +4,7 @@ functions/00_test_list.txt
 implicit/00_test_list.txt
 --min-version 1.0.2 literals/00_test_list.txt
 --min-version 1.0.2 matrices/00_test_list.txt
+--min-version 1.0.4 matrix-operator-division-equal.html
 misc/00_test_list.txt
 --min-version 1.0.4 preprocessor/00_test_list.txt
 reserved/00_test_list.txt
