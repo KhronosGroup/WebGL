@@ -2191,8 +2191,15 @@ function testASTCTexture(test, useES3) {
         gl.compressedTexSubImage2D(target, 0, x, y, blitWidth, blitHeight, format, data, offset);
         checkResult(target, [gl.NO_ERROR, gl.INVALID_ENUM, gl.INVALID_ENUM ], "2D", true);
 
+        const srcLengthOverride = data.length - offset;
+        gl.compressedTexSubImage2D(target, 0, x, y, blitWidth, blitHeight, format, data, 0, srcLengthOverride);
+        checkResult(target, [gl.NO_ERROR, gl.INVALID_ENUM, gl.INVALID_ENUM ], "2D", true);
+
         if (useES3) {
             gl.compressedTexSubImage3D(target, 0, x, y, 0, blitWidth, blitHeight, 1, format, data, offset);
+            checkResult(target, [gl.INVALID_ENUM, gl.NO_ERROR, gl.NO_ERROR], "3D", true);
+
+            gl.compressedTexSubImage3D(target, 0, x, y, 0, blitWidth, blitHeight, 1, format, data, 0, srcLengthOverride);
             checkResult(target, [gl.INVALID_ENUM, gl.NO_ERROR, gl.NO_ERROR], "3D", true);
         }
     }
@@ -2290,7 +2297,7 @@ function testASTCTexture(test, useES3) {
 
             // Upload with offsets
             tex = setupEmptyTexture(gl.TEXTURE_2D, false);
-            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "allocating empty compressed texture array via compressedTexImage3D");
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "allocating empty compressed texture via compressedTexImage2D");
             uploadSubDataOffset(gl.TEXTURE_2D);
             gl.deleteTexture(tex);
 
