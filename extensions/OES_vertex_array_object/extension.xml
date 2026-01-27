@@ -33,7 +33,7 @@ interface OES_vertex_array_object {
   </idl>
 
   <newfun>
-    <function name="createVertexArrayOES" type="WebGLVertexArrayObjectOES?">
+    <function name="createVertexArrayOES" type="WebGLVertexArrayObjectOES">
       Create a <code>WebGLVertexArrayObjectOES</code> object
       and initialize it with a vertex array object name as if by
       calling <code>glGenVertexArraysOES</code>.
