@@ -1062,10 +1062,10 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
             the pname/type values from WebGL 1.0, the following parameters are supported:
             <table>
                 <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>COPY_READ_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
-                <tr><td>COPY_WRITE_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>COPY_READ_BUFFER_BINDING</td><td>WebGLBuffer?</td></tr>
+                <tr><td>COPY_WRITE_BUFFER_BINDING</td><td>WebGLBuffer?</td></tr>
                 <tr><td>DRAW_BUFFER<em>i</em></td><td>GLenum</td></tr>
-                <tr><td>DRAW_FRAMEBUFFER_BINDING</td><td>WebGLFramebuffer</td></tr>
+                <tr><td>DRAW_FRAMEBUFFER_BINDING</td><td>WebGLFramebuffer?</td></tr>
                 <tr><td>FRAGMENT_SHADER_DERIVATIVE_HINT</td><td>GLenum</td></tr>
                 <tr><td>MAX_3D_TEXTURE_SIZE</td><td>GLint</td></tr>
                 <tr><td>MAX_ARRAY_TEXTURE_LAYERS</td><td>GLint</td></tr>
@@ -1098,26 +1098,26 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
                 <tr><td>PACK_ROW_LENGTH</td><td>GLint</td></tr>
                 <tr><td>PACK_SKIP_PIXELS</td><td>GLint</td></tr>
                 <tr><td>PACK_SKIP_ROWS</td><td>GLint</td></tr>
-                <tr><td>PIXEL_PACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
-                <tr><td>PIXEL_UNPACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>PIXEL_PACK_BUFFER_BINDING</td><td>WebGLBuffer?</td></tr>
+                <tr><td>PIXEL_UNPACK_BUFFER_BINDING</td><td>WebGLBuffer?</td></tr>
                 <tr><td>RASTERIZER_DISCARD</td><td>GLboolean</td></tr>
                 <tr><td>READ_BUFFER</td><td>GLenum</td></tr>
-                <tr><td>READ_FRAMEBUFFER_BINDING</td><td>WebGLFramebuffer</td></tr>
-                <tr><td>SAMPLER_BINDING</td><td>WebGLSampler</td></tr>
-                <tr><td>TEXTURE_BINDING_2D_ARRAY</td><td>WebGLTexture</td></tr>
-                <tr><td>TEXTURE_BINDING_3D</td><td>WebGLTexture</td></tr>
+                <tr><td>READ_FRAMEBUFFER_BINDING</td><td>WebGLFramebuffer?</td></tr>
+                <tr><td>SAMPLER_BINDING</td><td>WebGLSampler?</td></tr>
+                <tr><td>TEXTURE_BINDING_2D_ARRAY</td><td>WebGLTexture?</td></tr>
+                <tr><td>TEXTURE_BINDING_3D</td><td>WebGLTexture?</td></tr>
                 <tr><td>TRANSFORM_FEEDBACK_ACTIVE</td><td>GLboolean</td></tr>
-                <tr><td>TRANSFORM_FEEDBACK_BINDING</td><td>WebGLTransformFeedback</td></tr>
-                <tr><td>TRANSFORM_FEEDBACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>TRANSFORM_FEEDBACK_BINDING</td><td>WebGLTransformFeedback?</td></tr>
+                <tr><td>TRANSFORM_FEEDBACK_BUFFER_BINDING</td><td>WebGLBuffer?</td></tr>
                 <tr><td>TRANSFORM_FEEDBACK_PAUSED</td><td>GLboolean</td></tr>
-                <tr><td>UNIFORM_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>UNIFORM_BUFFER_BINDING</td><td>WebGLBuffer?</td></tr>
                 <tr><td>UNIFORM_BUFFER_OFFSET_ALIGNMENT</td><td>GLint</td></tr>
                 <tr><td>UNPACK_IMAGE_HEIGHT</td><td>GLint</td></tr>
                 <tr><td>UNPACK_ROW_LENGTH</td><td>GLint</td></tr>
                 <tr><td>UNPACK_SKIP_IMAGES</td><td>GLint</td></tr>
                 <tr><td>UNPACK_SKIP_PIXELS</td><td>GLint</td></tr>
                 <tr><td>UNPACK_SKIP_ROWS</td><td>GLint</td></tr>
-                <tr><td>VERTEX_ARRAY_BINDING</td><td>WebGLVertexArrayObject</td></tr>
+                <tr><td>VERTEX_ARRAY_BINDING</td><td>WebGLVertexArrayObject?</td></tr>
             </table><br>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
             <p>If <em>pname</em> is not in the table above and is not one of parameter names supported by WebGL 1.0, generates an <code>INVALID_ENUM</code> error and returns null.</p>
@@ -1140,10 +1140,10 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
             as given in the following table:
             <table class="foo">
                 <tr><th>target</th><th>returned type</th></tr>
-                <tr><td>TRANSFORM_FEEDBACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>TRANSFORM_FEEDBACK_BUFFER_BINDING</td><td>WebGLBuffer?</td></tr>
                 <tr><td>TRANSFORM_FEEDBACK_BUFFER_SIZE</td><td>GLsizeiptr</td></tr>
                 <tr><td>TRANSFORM_FEEDBACK_BUFFER_START</td><td>GLintptr</td></tr>
-                <tr><td>UNIFORM_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>UNIFORM_BUFFER_BINDING</td><td>WebGLBuffer?</td></tr>
                 <tr><td>UNIFORM_BUFFER_SIZE</td><td>GLsizeiptr</td></tr>
                 <tr><td>UNIFORM_BUFFER_START</td><td>GLintptr</td></tr>
             </table><br>
@@ -3102,6 +3102,12 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
     </p>
 
     <p>
+        There is a default Transform Feedback object, represented by the <code>null</code> <code>WebGLTransformFeedback</code> handle.
+        In the initial state of the context, the default object is bound.
+        When bound, <code>getParameter(TRANSFORM_FEEDBACK_BINDING)</code> returns <code>null</code>.
+    </p>
+
+    <p>
         If any output variable is specified to be streamed to a transform feedback buffer object but not actually
         written by a vertex shader, the value is set to 0. See <a href="#TRANSFORM_FEEDBACK_NOT_WRITTEN">
         Transform feedback primitive capture</a>.
@@ -3353,6 +3359,12 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
     <p>
         Vertex Array objects (sometimes referred to as VAOs) encapsulate all state related to the
         definition of data used by the vertex processor.
+    </p>
+
+    <p>
+        There is a default Vertex Array object, represented by the <code>null</code> <code>WebGLVertexArrayObject</code> handle.
+        In the initial state of the context, the default object is bound.
+        When bound, <code>getParameter(VERTEX_ARRAY_BINDING)</code> returns <code>null</code>.
     </p>
 
     <dl class="methods">
