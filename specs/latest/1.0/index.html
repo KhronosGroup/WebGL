@@ -4668,6 +4668,16 @@ extensions.
     </p>
 </div>
 
+
+<h3><a name="DOUBLE_UNDERSCORE_IN_SHADER_IDENTIFIERS">Double-Underscore in Shader Identifiers</a></h3>
+<p>
+    Identifiers in shaders may contain double-underscores, for example as in <code>"g__Foo"</code>.
+</p>
+<div class="note rationale">
+    To ensure robust portablility, implementations shall support this even if the underlying driver does not support this. (via e.g. mangling)
+</div>
+
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>

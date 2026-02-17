@@ -41,6 +41,7 @@ shader-with-default-precision.vert.html
 shader-with-dfdx-no-ext.frag.html
 shader-with-dfdx.frag.html
 --min-version 1.0.2 shader-with-do-loop.html
+--min-version 1.0.4 shader-with-double-underscore.html
 shader-with-error-directive.html
 shader-with-explicit-int-cast.vert.html
 shader-with-float-return-value.frag.html
