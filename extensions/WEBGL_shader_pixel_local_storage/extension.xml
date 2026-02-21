@@ -78,14 +78,17 @@ interface WEBGL_shader_pixel_local_storage {
   const GLenum PIXEL_LOCAL_TEXTURE_NAME_WEBGL = 0x96E8;
   const GLenum PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL = 0x96E9;
   const GLenum PIXEL_LOCAL_TEXTURE_LAYER_WEBGL = 0x96EA;
-  const GLenum PIXEL_LOCAL_CLEAR_VALUE_FLOAT_WEBGL = 0x96EB;
-  const GLenum PIXEL_LOCAL_CLEAR_VALUE_INT_WEBGL = 0x96EC;
-  const GLenum PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL = 0x96ED;
+  const GLenum PIXEL_LOCAL_USAGE_WEBGL = 0x96EB;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_FLOAT_WEBGL = 0x96EC;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_INT_WEBGL = 0x96ED;
+  const GLenum PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL = 0x96EE;
+  const GLenum PIXEL_LOCAL_USAGE_ALWAYS_NONCOHERENT_BIT_WEBGL = 0x1;
   GLboolean isCoherent();
   undefined framebufferTexturePixelLocalStorageWEBGL(GLint plane,
                                                      WebGLTexture? texture,
                                                      GLint level,
-                                                     GLint layer);
+                                                     GLint layer,
+                                                     GLbitfield usage);
   undefined framebufferPixelLocalClearValuefvWEBGL(GLint plane,
                                                    Float32List value,
                                                    optional unsigned long long srcOffset = 0);
@@ -121,6 +124,7 @@ interface WEBGL_shader_pixel_local_storage {
       <param name="texture" type="WebGLTexture?"/>
       <param name="level" type="GLint"/>
       <param name="layer" type="GLint"/>
+      <param name="usage" type="GLbitfield"/>
       <p>
         Establishes the backing texture for the given plane.
       </p>
@@ -282,6 +286,9 @@ interface WEBGL_shader_pixel_local_storage {
     </revision>
     <revision date="2025/03/24">
       <change>Removed MAX_COLOR_ATTACHMENTS_WITH_ACTIVE_PIXEL_LOCAL_STORAGE_WEBGL enum, which was removed from the underlying ANGLE extension.</change>
+    </revision>
+    <revision date="2026/02/20">
+      <change>Added non-coherent "usage" flag and revised enum values, tracking ANGLE extension.</change>
     </revision>
   </history>
 </draft>
