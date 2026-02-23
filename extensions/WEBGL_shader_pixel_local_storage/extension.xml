@@ -270,6 +270,7 @@ interface WEBGL_shader_pixel_local_storage {
       <tr><td>PIXEL_LOCAL_TEXTURE_NAME_WEBGL</td><td>WebGLTexture?</td></tr>
       <tr><td>PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL</td><td>GLint</td></tr>
       <tr><td>PIXEL_LOCAL_TEXTURE_LAYER_WEBGL</td><td>GLint</td></tr>
+      <tr><td>PIXEL_LOCAL_USAGE_WEBGL</td><td>GLbitfield</td></tr>
       <tr><td>PIXEL_LOCAL_CLEAR_VALUE_FLOAT_WEBGL</td><td>Float32Array</td></tr>
       <tr><td>PIXEL_LOCAL_CLEAR_VALUE_INT_WEBGL</td><td>Int32Array</td></tr>
       <tr><td>PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL</td><td>Uint32Array</td></tr>
