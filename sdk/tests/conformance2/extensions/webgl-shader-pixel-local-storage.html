@@ -126,7 +126,7 @@ function checkEnums() {
   shouldBe("pls.LOAD_OP_CLEAR_WEBGL", "0x96E4");
   shouldBe("pls.LOAD_OP_LOAD_WEBGL", "0x96E5");
   shouldBe("pls.STORE_OP_STORE_WEBGL", "0x96E6");
-  shouldBe("pls.PIXEL_LOCAL_FORMAT_WEBGL", "0x96E7");
+  shouldBe("pls.PIXEL_LOCAL_INTERNAL_FORMAT_WEBGL", "0x96E7");
   shouldBe("pls.PIXEL_LOCAL_TEXTURE_NAME_WEBGL", "0x96E8");
   shouldBe("pls.PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL", "0x96E9");
   shouldBe("pls.PIXEL_LOCAL_TEXTURE_LAYER_WEBGL", "0x96EA");
@@ -177,7 +177,7 @@ function checkInitialValues() {
   for (let i = 0; i < MAX_PIXEL_LOCAL_STORAGE_PLANES; ++i)
   {
     expectTrue(pls.getFramebufferPixelLocalStorageParameterWEBGL(
-        i, pls.PIXEL_LOCAL_FORMAT_WEBGL) == gl.NONE);
+        i, pls.PIXEL_LOCAL_INTERNAL_FORMAT_WEBGL) == gl.NONE);
     expectTrue(pls.getFramebufferPixelLocalStorageParameterWEBGL(
         i, pls.PIXEL_LOCAL_TEXTURE_NAME_WEBGL) == null);
     expectTrue(pls.getFramebufferPixelLocalStorageParameterWEBGL(

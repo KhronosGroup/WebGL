@@ -74,7 +74,7 @@ interface WEBGL_shader_pixel_local_storage {
   const GLenum LOAD_OP_CLEAR_WEBGL = 0x96E4;
   const GLenum LOAD_OP_LOAD_WEBGL = 0x96E5;
   const GLenum STORE_OP_STORE_WEBGL = 0x96E6;
-  const GLenum PIXEL_LOCAL_FORMAT_WEBGL = 0x96E7;
+  const GLenum PIXEL_LOCAL_INTERNAL_FORMAT_WEBGL = 0x96E7;
   const GLenum PIXEL_LOCAL_TEXTURE_NAME_WEBGL = 0x96E8;
   const GLenum PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL = 0x96E9;
   const GLenum PIXEL_LOCAL_TEXTURE_LAYER_WEBGL = 0x96EA;
@@ -266,7 +266,7 @@ interface WEBGL_shader_pixel_local_storage {
       </p>
       <table>
       <tr><th>pname</th><th>returned type</th></tr>
-      <tr><td>PIXEL_LOCAL_FORMAT_WEBGL</td><td>GLenum</td></tr>
+      <tr><td>PIXEL_LOCAL_INTERNAL_FORMAT_WEBGL</td><td>GLenum</td></tr>
       <tr><td>PIXEL_LOCAL_TEXTURE_NAME_WEBGL</td><td>WebGLTexture?</td></tr>
       <tr><td>PIXEL_LOCAL_TEXTURE_LEVEL_WEBGL</td><td>GLint</td></tr>
       <tr><td>PIXEL_LOCAL_TEXTURE_LAYER_WEBGL</td><td>GLint</td></tr>
@@ -290,6 +290,9 @@ interface WEBGL_shader_pixel_local_storage {
     </revision>
     <revision date="2026/02/20">
       <change>Added non-coherent "usage" flag and revised enum values, tracking ANGLE extension.</change>
+    </revision>
+    <revision date="2026/03/02">
+      <change>Renamed PIXEL_LOCAL_FORMAT_WEBGL to PIXEL_LOCAL_INTERNAL_FORMAT_WEBGL, tracking ANGLE extension.</change>
     </revision>
   </history>
 </draft>
