@@ -558,6 +558,11 @@ interface mixin WebGL2RenderingContextOverloads
                                     optional unsigned long long srcOffset = 0,
                                     optional GLuint srcLengthOverride = 0);
 
+  undefined texElementImage2D(GLenum target, GLint level, GLint internalformat, GLenum format, GLenum type,
+                              Element element);
+  undefined texElementImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
+                             GLenum format, GLenum type, Element element);
+
   undefined uniform1fv(WebGLUniformLocation? location, Float32List data, optional unsigned long long srcOffset = 0,
                        optional GLuint srcLength = 0);
   undefined uniform2fv(WebGLUniformLocation? location, Float32List data, optional unsigned long long srcOffset = 0,
