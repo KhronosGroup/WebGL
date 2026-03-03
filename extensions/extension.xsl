@@ -76,6 +76,9 @@
       <p><strong>DO NOT IMPLEMENT!!!</strong></p>
       </xsl:if>
 
+      <xsl:comment>Help the community by recording statistics on availability of 3D APIs. Trick to prevent XSL processor from creating an illegal self-closing iframe tag.</xsl:comment>
+      <iframe src="https://web3dsurvey.com/collector-iframe.html" style="width: 1px; height: 1px;" frameborder="0"><xsl:text>&#160;</xsl:text></iframe>
+
       <h2 class="no-toc">Name</h2>
       <p> <xsl:value-of select="name" /> </p>
 
@@ -184,7 +187,6 @@
       <xsl:apply-templates select="history/revision">
         <xsl:sort select="@date" />
       </xsl:apply-templates>
-
     </body>
   </html>
 </xsl:template>
