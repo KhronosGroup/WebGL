@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+
+<extension href="WEBGL_multisampled_render_to_texture/">
+  <name>WEBGL_multisampled_render_to_texture</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Rik Cabanier, Facebook</contributor>
+  </contributors>
+  <number>??</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_multisampled_render_to_texture2.txt" name="EXT_multisampled_render_to_texture2">
+    </mirrors>
+    <features>
+      <feature>
+        Adds support for rendering multisampled to a color renderable texture, without requiring an explicit resolve of multisample data.
+      </feature>
+    </features>
+  </overview>
+  <idl xml:space="preserve">
+[Exposed=(Window,Worker), LegacyNoInterfaceObject]
+interface WEBGL_multisampled_render_to_texture {
+      const GLenum RENDERBUFFER_SAMPLES_EXT = 0x8CAB;
+      const GLenum FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT = 0x8D56;
+      const GLenum MAX_SAMPLES_EXT = 0x8D57;
+      const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES_EXT = 0x8D6C;
+
+      undefined renderbufferStorageMultisampleEXT(
+            GLenum target, GLsizei samples,
+            GLenum internalformat,
+            GLsizei width, GLsizei height);
+
+      undefined framebufferTexture2DMultisampleEXT(
+            GLenum target, GLenum attachment,
+            GLenum textarget, WebGLTexture? texture,
+            GLint level, GLsizei samples);
+};
+  </idl>
+  <newfun>
+    <function name="renderbufferStorageMultisampleEXT" type="undefined">
+      <param name="target" type="GLenum"/>
+      <param name="samples" type="GLsizei"/>
+      <param name="internalformat" type="GLenum"/>
+      <param name="width" type="GLsizei"/>
+      <param name="height" type="GLsizei"/>
+    </function>
+  </newfun>
+  <newfun>
+    <function name="framebufferTexture2DMultisampleEXT" type="undefined">
+      <param name="target" type="GLenum"/>
+      <param name="attachment" type="GLenum"/>
+      <param name="textarget" type="GLenum"/>
+      <param name="texture" type="GLuint"/>
+      <param name="level" type="GLint"/>
+      <param name="samples" type="GLsizei"/>
+    </function>
+  </newfun>
+  <newtok>
+    <function name="GetRenderbufferParameter" type="any">
+      <param name="target" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      Calling with the <code>pname</code> set to <code>RENDERBUFFER_SAMPLES_EXT</code> returns the number of samples.
+      <br/>
+<!--
+        If <code>renderbufferStorageMultisampleEXT</code> is called with <code>samples</code> is zero, then <code>RENDERBUFFER_SAMPLES_EXT</code> is set to zero.
+        Otherwise <code>samples</code> represents a request for a desired minimum number
+        of samples. Since different implementations may support different
+        sample counts for multisampled rendering, the actual number of samples
+        allocated for the renderbuffer image is implementation-dependent.
+        However, the resulting value for <code>RENDERBUFFER_SAMPLES_EXT</code> is
+        guaranteed to be greater than or equal to samples and no more than the
+        next larger sample count supported by the implementation.
+      <br/>
+-->
+      The return type depends on the parameter queried:
+      <table width="30%">
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>RENDERBUFFER_SAMPLES_EXT</td><td>GLint</td></tr>
+      </table>
+    </function>
+    <function name="checkFramebufferStatus" type="GLenum">
+      <param name="target" type="GLenum"/>
+    </function>
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      Calling with the <code>pname</code> set to <code>MAX_SAMPLES_EXT</code> returns the maximum number of samples.
+      <br/>
+
+      The return type depends on the parameter queried:
+      <table width="30%">
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>MAX_SAMPLES_EXT</td><td>GLint</td></tr>
+      </table>
+    </function>
+    <function name="getFramebufferAttachmentParameter" type="any">
+      <param name="target" type="GLenum"/>
+      <param name="attachment" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      Calling with the <code>pname</code> set to <code>FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES_EXT</code> returns the number of samples in the multisampled texture.
+      <br/>
+      The return type depends on the parameter queried:
+      <table width="30%">
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>MAX_SAMPLES_EXT</td><td>GLint</td></tr>
+      </table>
+    </function>
+  </newtok>
+  <errors>
+    <error>
+      The error <code>OUT_OF_MEMORY</code> is generated when <code>RenderbufferStorageMultisampleEXT</code> cannot create storage of the specified size.
+    </error>
+    <error>
+      If <code>RenderbufferStorageMultisampleEXT</code> is called with a value of <code>samples</code> that is greater than <code>MAX_SAMPLES_EXT</code>, then the error <code>INVALID_VALUE</code> is generated.
+    </error>
+    <error>
+      The error <code>INVALID_ENUM</code> is generated if<code> FramebufferTexture2DMultisampleEXT</code> is called with a target that is not <code>FRAMEBUFFER</code>, <code>DRAW_FRAMEBUFFER</code>, or <code>READ_FRAMEBUFFER</code>.
+    </error>
+    <error>
+      The error <code>INVALID_ENUM</code> is generated if <code>FramebufferTexture2DMultisampleEXT</code> is called with an <code>attachment</code> that is not <code>COLOR_ATTACHMENT0</code>.
+    </error>
+    <error>
+      The error <code>INVALID_ENUM</code> is generated if <code>FramebufferTexture2DMultisampleEXT</code> is called with a textarget that is not <code>TEXTURE_2D</code>, <code>TEXTURE_CUBE_MAP_POSITIVE_X</code>, <code>TEXTURE_CUBE_MAP_POSITIVE_Y</code>, <code>TEXTURE_CUBE_MAP_POSITIVE_Z</code>, <code>TEXTURE_CUBE_MAP_NEGATIVE_X</code>, <code>TEXTURE_CUBE_MAP_NEGATIVE_Y</code>, or <code>TEXTURE_CUBE_MAP_NEGATIVE_Z</code>.
+    </error>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated if <code>FramebufferTexture2DMultisampleEXT</code> is called with samples greater than the maximum number of samples supported for target and its internalformat.
+    </error>
+  </errors>
+  <samplecode xml:space="preserve">
+    <pre>
+    var gl = document.createElement('canvas').getContext('webgl2');
+    var ext = gl.getExtension('WEBGL_multisampled_render_to_texture');
+    var samples = gl.getParameter(ext.MAX_SAMPLES_EXT);
+    var fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
+
+    // Create color texture and storage.
+    var colorTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, colorTex);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 512, 512);
+    ext.framebufferTexture2DMultisampleEXT(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTex, 0, samples);
+
+    // Create depth texture and storage.
+    var depthStencilTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, depthStencilTex);
+    ext.renderbufferStorageMultisampleEXT(gl.RENDER_BUFFER, samples, gl.DEPTH32F_STENCIL8, 512, 512);
+    ext.framebufferTexture2DMultisampleEXT(gl.DRAW_FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.TEXTURE_2D, depthStencilTex, 0, samples);
+
+    gl.drawElements(...);  // Draw will be done with multisampling and flushed to the non-multisample texture.
+    </pre>
+  </samplecode>
+  <history>
+    <revision date="2021/10/09">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</extension>
