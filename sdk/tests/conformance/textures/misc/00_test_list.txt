@@ -42,6 +42,7 @@ texture-complete.html
 --min-version 1.0.3 --max-version 1.9.9 texture-fakeblack.html
 --min-version 1.0.2 --max-version 1.9.9 texture-formats-test.html
 --min-version 1.0.2 texture-hd-dpi.html
+--min-version 1.0.4 texture-min-mag-filter.html
 texture-mips.html
 --max-version 1.9.9 texture-npot-video.html
 --max-version 1.9.9 texture-npot.html
