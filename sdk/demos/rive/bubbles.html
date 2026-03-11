@@ -357,7 +357,7 @@ html, body {
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, renderFBO);
-      pls.framebufferTexturePixelLocalStorageWEBGL(0, tex, 0, 0);
+      pls.framebufferTexturePixelLocalStorageWEBGL(0, tex, 0, 0, 0);
 
       lastWidth = w;
       lastHeight = h;
