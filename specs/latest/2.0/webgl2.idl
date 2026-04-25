@@ -562,6 +562,11 @@ interface mixin WebGL2RenderingContextOverloads
                               Element element);
   undefined texElementImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
                              GLenum format, GLenum type, Element element);
+  undefined texElementImage2D(GLenum target, GLint level, GLint internalformat, GLfloat sx, GLfloat sy,
+                              GLfloat swidth, GLfloat sheight, GLenum format, GLenum type, Element element);
+  undefined texElementImage2D(GLenum target, GLint level, GLint internalformat, GLfloat sx, GLfloat sy,
+                              GLfloat swidth, GLfloat sheight, GLsizei width, GLsizei height, GLenum format,
+                              GLenum type, Element element);
 
   undefined uniform1fv(WebGLUniformLocation? location, Float32List data, optional unsigned long long srcOffset = 0,
                        optional GLuint srcLength = 0);
@@ -606,4 +611,3 @@ interface WebGL2RenderingContext
 WebGL2RenderingContext includes WebGLRenderingContextBase;
 WebGL2RenderingContext includes WebGL2RenderingContextBase;
 WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
-
