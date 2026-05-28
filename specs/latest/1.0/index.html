@@ -4526,10 +4526,10 @@ extensions.
     The GLSL ES 1.00 <a href="#refsGLES20GLSL">[GLES20GLSL]</a> specification mandates that
     <code>#extension</code> directives must occur before any non-preprocessor tokens unless the
     extension specification says otherwise. In the WebGL API, <code>#extension</code> directives
-    may always occur after non-preprocessor tokens in GLSL ES 1.00 shaders. The scope of
-    <code>#extension</code> directives in GLSL ES 1.00 shaders is always the whole shader, and
-    <code>#extension</code> directives that occur later override those seen earlier for the whole
-    shader.
+    may occur after non-preprocessor tokens in GLSL ES 1.00 shaders if the behavior is not `disable`.
+    The scope of <code>#extension</code> directives in GLSL ES 1.00 shaders is always the whole
+    shader, and <code>#extension</code> directives that occur later override those seen earlier for
+    the whole shader.
 </p>
 
 <div class="note rationale">
