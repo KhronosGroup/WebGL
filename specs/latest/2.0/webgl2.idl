@@ -28,8 +28,8 @@ typedef long long GLint64;
 typedef unsigned long long GLuint64;
 
 dictionary WebGLCopyElementImageConfig {
-  GLfloat sx = 0;
-  GLfloat sy = 0;
+  GLfloat sx;
+  GLfloat sy;
   GLfloat swidth;
   GLfloat sheight;
   GLsizei width;

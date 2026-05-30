@@ -268,8 +268,8 @@ typedef long long GLint64;
 typedef unsigned long long GLuint64;
 
 dictionary WebGLCopyElementImageConfig {
-  GLfloat sx = 0;
-  GLfloat sy = 0;
+  GLfloat sx;
+  GLfloat sy;
   GLfloat swidth;
   GLfloat sheight;
   GLsizei width;
@@ -2234,8 +2234,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         <p>If <code>target</code> is not <code>TEXTURE_2D</code>, generates an <code>INVALID_ENUM</code> error.</p>
         <p>If no <code>WebGLTexture</code> is bound to <code>target</code>, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If a <code>WebGLBuffer</code> is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
-        <p><code>config.sx</code> and <code>config.sy</code> are in CSS pixels and default to 0. <code>config.swidth</code> and <code>config.sheight</code> are in CSS pixels and default to the source's natural width minus <code>config.sx</code> and natural height minus <code>config.sy</code>, respectively. Together, these members define the source rectangle of the element image snapshot to render.</p>
-        <p><code>config.width</code> and <code>config.height</code> are in texels and define the generated texture size. If omitted, each dimension defaults to the source rectangle size scaled by the inverse of the canvas-grid-to-CSS scaling factor used to produce the element image snapshot.</p>
+        <p>If <code>config.sx</code>, <code>config.sy</code>, <code>config.swidth</code>, and <code>config.sheight</code> are all supplied, they define the source rectangle of the element image snapshot to render, in CSS pixels. If none of them are supplied, the source rectangle has <code>sx</code> and <code>sy</code> of 0, <code>swidth</code> equal to the source's natural width, and <code>sheight</code> equal to the source's natural height. If only some of them are supplied, generates an <code>INVALID_VALUE</code> error.</p>
+        <p>If <code>config.width</code> and <code>config.height</code> are both supplied, they define the generated texture size, in texels. If neither member is supplied, the texture width and height default to the source rectangle size scaled by the inverse of the canvas-grid-to-CSS scaling factor used to produce the element image snapshot. If only one of them is supplied, generates an <code>INVALID_VALUE</code> error.</p>
         <p>The <code>internalformat</code> argument must be one of the values in the following table. Each value has an implied source format of <code>RGBA</code> and the listed implied source type:</p>
         <table>
         <tr><th>Internal Format</th><th>Implied Source Type</th></tr>
