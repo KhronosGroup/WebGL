@@ -2228,12 +2228,12 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
                               optional WebGLCopyElementImageConfig config = {});
       </dt>
       <dd>
-        <p>Renders <code>element</code> to the currently bound <code>WebGLTexture</code> at level zero.</p>
+        <p>Renders <code>element</code> to the currently bound <code>WebGLTexture</code>, redefining level 0 of the texture. This function always operates on level 0.</p>
         <p>The <code>element</code> argument identifies an <a href="https://whatpr.org/html/11588/canvas.html#concept-canvas-element-image-snapshots">element image snapshot</a>, as defined by HTML. The HTML algorithms define how element image snapshots are created, updated, retrieved, and filtered for security- or privacy-sensitive information. If <code>element</code> is an <code>Element</code>, the source rendering is the snapshot from the most recent <code>paint</code> event for the <a href="#context-canvas">canvas</a> of the current context. If <code>element</code> is an <code>ElementImage</code>, the source rendering is that captured snapshot.</p>
         <p>If this function is called with an <code>Element</code> that is not a direct child of the <a href="#context-canvas">canvas</a> of the current context in the most recent rendering update, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If <code>target</code> is not <code>TEXTURE_2D</code>, generates an <code>INVALID_ENUM</code> error.</p>
         <p>If no <code>WebGLTexture</code> is bound to <code>target</code>, generates an <code>INVALID_OPERATION</code> error.</p>
-        <p>If a <code>WebGLBuffer</code> is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>All pixel unpack state is ignored by this function, including the <code>PIXEL_UNPACK_BUFFER</code> binding and all <code>UNPACK_</code> pixel store parameters.</p>
         <p>If <code>config.sx</code>, <code>config.sy</code>, <code>config.swidth</code>, and <code>config.sheight</code> are all supplied, they define the source rectangle of the element image snapshot to render, in CSS pixels. If none of them are supplied, the source rectangle has <code>sx</code> and <code>sy</code> of 0, <code>swidth</code> equal to the source's natural width, and <code>sheight</code> equal to the source's natural height. If only some of them are supplied, generates an <code>INVALID_VALUE</code> error.</p>
         <p>If <code>config.width</code> and <code>config.height</code> are both supplied, they define the generated texture size, in texels. If neither member is supplied, the texture width and height default to the source rectangle size scaled by the inverse of the canvas-grid-to-CSS scaling factor used to produce the element image snapshot. If only one of them is supplied, generates an <code>INVALID_VALUE</code> error.</p>
         <p>The <code>internalformat</code> argument must be one of the values in the following table. Each value has an implied source format of <code>RGBA</code> and the listed implied source type:</p>
@@ -2246,10 +2246,6 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </table>
         <p>If <code>internalformat</code> is not listed in the table above, generates an <code>INVALID_ENUM</code> error.</p>
         <p>If any supplied numeric member of <code>config</code> is negative, or if the computed source rectangle width, source rectangle height, texture width, or texture height is not positive, generates an <code>INVALID_VALUE</code> error.</p>
-        <p>
-          If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
-          generates an <code>INVALID_OPERATION</code> error.
-        </p>
       </dd>
     </dl>
 
