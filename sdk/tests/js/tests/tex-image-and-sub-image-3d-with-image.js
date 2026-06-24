@@ -15,7 +15,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var blueColor = [0, 0, 255];
     var cyanColor = [0, 255, 255];
     var imageURLs = [resourcePath + "red-green.png",
-                     resourcePath + "red-green-blue-cyan-4x4.png"];
+                     resourcePath + "red-green-blue-cyan-4x4.png",
+                     resourcePath + "red-green-blue-cyan-8x8x4-mipmaps.png",
+                     resourcePath + "red-green-blue-cyan-128x128x4-mipmaps.png"];
 
     function init()
     {
@@ -55,7 +57,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function uploadImageToTexture(image, useTexSubImage3D, flipY, bindingTarget,
-                                  depth, sourceSubRectangle, unpackImageHeight)
+                                  depth, sourceSubRectangle, unpackImageHeight, mipmaps)
     {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Disable any writes to the alpha channel
@@ -64,7 +66,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         // Bind the texture to texture unit 0
         gl.bindTexture(bindingTarget, texture);
         // Set up texture parameters
-        gl.texParameteri(bindingTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(bindingTarget, gl.TEXTURE_MIN_FILTER, mipmaps ? gl.NEAREST_MIPMAP_NEAREST : gl.NEAREST);
         gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -94,6 +96,26 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         } else {
             gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, uploadHeight, depth, 0,
                           gl[pixelFormat], gl[pixelType], image);
+            if (mipmaps) {
+                // Upload mipmaps packed beneath the specified image
+                var sourceY = sourceSubRectangle ? sourceSubRectangle[1] : 0;
+                var lastWidth = uploadWidth;
+                var lastHeight = uploadHeight;
+                var lastDepth = depth;
+                var level = 0;
+                while (lastWidth > 1 || lastHeight > 1) {
+                    sourceY += lastHeight * depth;
+                    ++level;
+                    lastWidth = Math.max(1, Math.floor(lastWidth/2));
+                    lastHeight = Math.max(1, Math.floor(lastHeight/2));
+                    if (bindingTarget == gl.TEXTURE_3D) {
+                        lastDepth = Math.max(1, Math.floor(lastDepth/2));
+                    }
+                    gl.pixelStorei(gl.UNPACK_SKIP_ROWS, sourceY);
+                    gl.texImage3D(bindingTarget, level, gl[internalFormat], lastWidth, lastHeight, lastDepth, 0,
+                                  gl[pixelFormat], gl[pixelType], image);
+                }
+            }
         }
         gl.pixelStorei(gl.UNPACK_SKIP_PIXELS, 0);
         gl.pixelStorei(gl.UNPACK_SKIP_ROWS, 0);
@@ -248,10 +270,111 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         }
     }
 
+    function runMipMapTest(image) {
+
+        var width = image.width;
+        var sourceSubRectangle = [0, 0, width, width];
+        var depth = 4;
+        var useTexSubImage3D = false;
+        var useMinMax = false;
+        var tolerance = 3; // Since using non-0/1 values, on various formats the results won't be exact
+
+        function runOneIteration(bindingTarget, rTextureCoord, lod, color, program)
+        {
+            debug('Testing ' + (useTexSubImage3D ? 'texSubImage3D' : 'texImage3D') +
+                  ' with bindingTarget=' +
+                  (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY') + ' with mipmaps from ' +
+                  image.width + 'x' + image.height + ' with r=' + rTextureCoord + ', lod=' + lod);
+
+            uploadImageToTexture(image, useTexSubImage3D, false, bindingTarget, depth, sourceSubRectangle, undefined, true);
+
+            var rCoordLocation = gl.getUniformLocation(program, 'uRCoord');
+            if (!rCoordLocation) {
+                testFailed('Shader incorrectly set up; couldn\'t find uRCoord uniform');
+                return;
+            }
+            gl.uniform1f(rCoordLocation, rTextureCoord);
+
+            if (useMinMax) {
+                // Note: this seems like it should work, but fails on uint textures,
+                //   bug in test / test author, or bug in implementations?
+                gl.texParameterf(bindingTarget, gl.TEXTURE_MIN_LOD, lod);
+                gl.texParameterf(bindingTarget, gl.TEXTURE_MAX_LOD, lod);
+            } else {
+                gl.texParameteri(bindingTarget, gl.TEXTURE_BASE_LEVEL, lod);
+                gl.texParameteri(bindingTarget, gl.TEXTURE_MAX_LEVEL, lod);
+            }
+
+            // Draw the triangles
+            wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
+            // Check a few pixels near the top and bottom and make sure they have
+            // the right color.
+            var coord = Math.floor(gl.canvas.height/2);
+            wtu.checkCanvasRect(gl, coord, coord, 2, 2, color,
+                                "shouldBe " + color, tolerance);
+
+            if (useMinMax) {
+                gl.texParameterf(bindingTarget, gl.TEXTURE_MIN_LOD, 0);
+                gl.texParameterf(bindingTarget, gl.TEXTURE_MAX_LOD, Infinity);
+            } else {
+                gl.texParameteri(bindingTarget, gl.TEXTURE_BASE_LEVEL, 0);
+                gl.texParameteri(bindingTarget, gl.TEXTURE_MAX_LEVEL, Infinity);
+            }
+        }
+
+        function masked(r, g, b) {
+            return [r, greenColor[1] ? g : 0, blueColor[2] ? b : 0];
+        }
+
+        var levels = internalFormat[0] === 'S' ? [
+            // SRGB values
+            0xFF, 0xB8, 0x7F
+        ] : [
+            // Raw values from mipmaps in texture
+            0xFF, 0xDD, 0xBB
+        ];
+        var cases = [
+            { rTextureCoord: 0, lod: 0, color: masked(levels[0], 0, 0) },
+            { rTextureCoord: 0.33, lod: 0, color: masked(0, levels[0], 0) },
+            { rTextureCoord: 0.66, lod: 0, color: masked(0, 0, levels[0]) },
+            { rTextureCoord: 1, lod: 0, color: masked(0, levels[0], levels[0]) },
+            { rTextureCoord: 0, lod: 1, color: masked(levels[1], 0, 0) },
+            { rTextureCoord: 1, lod: 1, color: masked(0, levels[1], 0) },
+            { rTextureCoord: 0, lod: 2, color: masked(levels[2], 0, 0) },
+        ];
+
+        var program = tiu.setupTexturedQuadWith3D(gl, internalFormat);
+        for (var i in cases) {
+            runOneIteration(gl.TEXTURE_3D, cases[i].rTextureCoord, cases[i].lod,
+                            cases[i].color, program);
+        }
+        cases = [
+            { rTextureCoord: 0, lod: 0, color: masked(levels[0], 0, 0) },
+            { rTextureCoord: 1, lod: 0, color: masked(0, levels[0], 0) },
+            { rTextureCoord: 2, lod: 0, color: masked(0, 0, levels[0]) },
+            { rTextureCoord: 3, lod: 0, color: masked(0, levels[0], levels[0]) },
+            { rTextureCoord: 0, lod: 1, color: masked(levels[1], 0, 0) },
+            { rTextureCoord: 1, lod: 1, color: masked(0, levels[1], 0) },
+            { rTextureCoord: 2, lod: 1, color: masked(0, 0, levels[1]) },
+            { rTextureCoord: 3, lod: 1, color: masked(0, levels[1], levels[1]) },
+            { rTextureCoord: 0, lod: 2, color: masked(levels[2], 0, 0) },
+            { rTextureCoord: 1, lod: 2, color: masked(0, levels[2], 0) },
+            { rTextureCoord: 2, lod: 2, color: masked(0, 0, levels[2]) },
+            { rTextureCoord: 3, lod: 2, color: masked(0, levels[2], levels[2]) },
+        ];
+        program = tiu.setupTexturedQuadWith2DArray(gl, internalFormat);
+        for (var i in cases) {
+            runOneIteration(gl.TEXTURE_2D_ARRAY, cases[i].rTextureCoord, cases[i].lod,
+                            cases[i].color, program);
+        }
+    }
+
     function runTest(imageMap)
     {
         runRedGreenTest(imageMap[imageURLs[0]]);
         runRedGreenBlueCyanTest(imageMap[imageURLs[1]]);
+        runMipMapTest(imageMap[imageURLs[2]]);
+        runMipMapTest(imageMap[imageURLs[3]]);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
         finishTest();
     }
