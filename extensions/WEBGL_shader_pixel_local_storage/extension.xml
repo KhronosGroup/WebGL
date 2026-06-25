@@ -56,8 +56,6 @@
           When this extension is enabled, the following WebGL extensions are enabled implicitly:
           <ul>
             <li><a href="../OES_draw_buffers_indexed/">OES_draw_buffers_indexed</a></li>
-            <li><a href="../EXT_color_buffer_float/">EXT_color_buffer_float</a></li>
-            <li><a href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a></li>
           </ul>
         </div>
       </addendum>
@@ -293,6 +291,9 @@ interface WEBGL_shader_pixel_local_storage {
     </revision>
     <revision date="2026/03/02">
       <change>Renamed PIXEL_LOCAL_FORMAT_WEBGL to PIXEL_LOCAL_INTERNAL_FORMAT_WEBGL, tracking ANGLE extension.</change>
+    </revision>
+    <revision date="2026/06/25">
+      <change>Removed implicit enablement of floating-point rendering extensions, tracking ANGLE extension.</change>
     </revision>
   </history>
 </draft>
