@@ -944,7 +944,8 @@ interface mixin <dfn data-dfn-type="interface" id="WebGL2RenderingContextOverloa
                                     optional unsigned long long srcOffset = 0,
                                     optional GLuint srcLengthOverride = 0);
 
-  undefined texElementImage2D(GLenum target, GLenum internalformat, (Element or ElementImage) element,
+  undefined texElementImage2D(GLenum target, GLint level, GLenum internalformat,
+                              (Element or ElementImage) element,
                               optional WebGLCopyElementImageConfig config = {}); // May throw DOMException
 
   undefined uniform1fv(WebGLUniformLocation? location, Float32List data, optional unsigned long long srcOffset = 0,
@@ -2224,10 +2225,12 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
       </dd>
 
       <dt class="idl-code">
-        [throws] undefined texElementImage2D(GLenum target, GLenum internalformat, (Element or ElementImage) element,
+        [throws] undefined texElementImage2D(GLenum target, GLint level, GLenum internalformat,
+                              (Element or ElementImage) element,
                               optional WebGLCopyElementImageConfig config = {});
       </dt>
       <dd>
+        <p>The <code>level</code> argument identifies the mipmap level of the texture object bound to <code>target</code> to redefine.</p>
         <p>The <code>element</code> argument identifies an <a href="https://whatpr.org/html/11588/canvas.html#concept-canvas-element-image-snapshots">element image snapshot</a>, as defined by HTML. The HTML algorithms define how element image snapshots are created, updated, retrieved, and filtered for security- or privacy-sensitive information. If <code>element</code> is an <code>Element</code>, the source rendering is the snapshot from the most recent <code>paint</code> event for the <a href="#context-canvas">canvas</a> of the current context. If <code>element</code> is an <code>ElementImage</code>, the source rendering is that captured snapshot.</p>
         <p>If this function is called with an <code>Element</code> that is not a direct child of the <a href="#context-canvas">canvas</a> of the current context in the most recent rendering update, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If <code>target</code> is not <code>TEXTURE_2D</code>, generates an <code>INVALID_ENUM</code> error.</p>
