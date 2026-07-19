@@ -1,0 +1,108 @@
+<!--
+Copyright (c) 2022 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Matrix operator/= test</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+<script src="../../js/glsl-conformance-test.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script id="vertexShader" type="text/something-not-javascript">#version 100
+precision mediump float;
+precision mediump sampler2D;
+uniform highp vec4 sk_RTAdjust;
+attribute highp vec2 position;
+attribute mediump vec4 color;
+varying mediump vec4 vcolor_S0;
+void main() {
+    vcolor_S0 = color;
+    gl_Position = vec4(position, 0.0, 1.0);
+    gl_Position = vec4(gl_Position.xy * sk_RTAdjust.xz + gl_Position.ww * sk_RTAdjust.yw, 0.0, gl_Position.w);
+}
+</script>
+<script id="fragmentShader" type="text/something-not-javascript">#version 100
+precision mediump float;
+precision mediump sampler2D;
+const highp int minus_S1_c0 = 2;
+const highp int star_S1_c0 = 3;
+const highp int slash_S1_c0 = 4;
+uniform mediump vec4 ucolorGreen_S1_c0;
+uniform mediump vec4 ucolorRed_S1_c0;
+uniform highp mat3 umatrix_S1;
+varying mediump vec4 vcolor_S0;
+bool test_S1_c0_bifffff22(highp int op, highp float m11, highp float m12, highp float m21, highp float m22, highp mat2 expected);
+bool test_S1_c0_bifffff22(highp int op, highp float m11, highp float m12, highp float m21, highp float m22, highp mat2 expected) {
+    highp float one = ucolorRed_S1_c0.x;
+    highp mat2 m2 = mat2(m11 * one, m12 * one, m21 * one, m22 * one);
+    int _tmpSwitchValue1 = op, _tmpSwitchFallthrough0 = 0;
+    for (int _tmpSwitchLoop2 = 0; _tmpSwitchLoop2 < 1; _tmpSwitchLoop2++) {
+        if ((_tmpSwitchValue1 == 1)) {
+            m2 += 1.0;
+            break;
+            _tmpSwitchFallthrough0 = 1;
+        }
+        if ((_tmpSwitchFallthrough0 > 0) || (_tmpSwitchValue1 == 2)) {
+            m2 -= 1.0;
+            break;
+            _tmpSwitchFallthrough0 = 1;
+        }
+        if ((_tmpSwitchFallthrough0 > 0) || (_tmpSwitchValue1 == 3)) {
+            m2 *= 2.0;
+            break;
+            _tmpSwitchFallthrough0 = 1;
+        }
+        if ((_tmpSwitchFallthrough0 > 0) || (_tmpSwitchValue1 == 4)) {
+            m2 /= 2.0;
+            break;
+            _tmpSwitchFallthrough0 = 1;
+        }
+    }
+    return ((m2[0].x == expected[0].x && m2[0].y == expected[0].y) && m2[1].x == expected[1].x) && m2[1].y == expected[1].y;
+}
+void main() {
+    mediump vec4 outputColor_S0;
+    outputColor_S0 = vcolor_S0;
+    mediump vec4 output_S1;
+    highp float _12_f1 = ucolorGreen_S1_c0.y;
+    highp float _13_f2 = 2.0 * ucolorGreen_S1_c0.y;
+    highp float _14_f3 = 3.0 * ucolorGreen_S1_c0.y;
+    highp float _15_f4 = 4.0 * ucolorGreen_S1_c0.y;
+    highp mat2 _16_expected = mat2(_12_f1 + 1.0, _13_f2 + 1.0, _14_f3 + 1.0, _15_f4 + 1.0);
+    highp float _17_one = ucolorRed_S1_c0.x;
+    highp mat2 _18_m2 = mat2(_12_f1 * _17_one, _13_f2 * _17_one, _14_f3 * _17_one, _15_f4 * _17_one);
+    {
+        _18_m2 += 1.0;
+    }
+    output_S1 = (((((_18_m2[0].x == _16_expected[0].x && _18_m2[0].y == _16_expected[0].y) && _18_m2[1].x == _16_expected[1].x) && _18_m2[1].y == _16_expected[1].y) && test_S1_c0_bifffff22(minus_S1_c0, _12_f1, _13_f2, _14_f3, _15_f4, mat2(_12_f1 - 1.0, _13_f2 - 1.0, _14_f3 - 1.0, _15_f4 - 1.0))) && test_S1_c0_bifffff22(star_S1_c0, _12_f1, _13_f2, _14_f3, _15_f4, mat2(_12_f1 * 2.0, _13_f2 * 2.0, _14_f3 * 2.0, _15_f4 * 2.0))) && test_S1_c0_bifffff22(slash_S1_c0, _12_f1, _13_f2, _14_f3, _15_f4, mat2(_12_f1 / 2.0, _13_f2 / 2.0, _14_f3 / 2.0, _15_f4 / 2.0)) ? ucolorGreen_S1_c0 : ucolorRed_S1_c0;
+    {
+        gl_FragColor = output_S1;
+    }
+}
+</script>
+<script type="application/javascript">
+"use strict";
+description();
+GLSLConformanceTester.runTests([
+  {
+    vShaderId: "vertexShader",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShader",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "test case using operator/=(matrix, float) should compile and link",
+  },
+]);
+</script>
+</body>
+</html>
