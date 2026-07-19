@@ -1,0 +1,85 @@
+<!--
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Test that contexts are freed and garbage collected reasonably</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"> </script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description();
+
+const CANVAS_COUNT = 100;
+const SIZE_REQUEST = 23170; // Chrome doesn't even try for >2GB backbuffers.
+
+debug(`SIZE_REQUEST: ${SIZE_REQUEST*SIZE_REQUEST*4/1024/1024|0} MB`);
+
+const wtu = WebGLTestUtils;
+
+const canvasList = []; // Keeps canvases alive
+
+function newCanvas() {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = SIZE_REQUEST;
+
+  canvasList.push(canvas);
+  canvas.id = canvasList.length;
+
+  canvas.addEventListener("webglcontextlost", function(e) {
+    //e.preventDefault(); // preventDefault enables context restore.
+    debug(`(webglcontextlost on canvas ${canvas.id})`);
+  });
+
+  return canvas;
+}
+
+function testNextContext(minSize) {
+  const canvas = newCanvas();
+  const gl = wtu.create3DContext(canvas, {
+    depth: false,
+    antialias: false,
+  });
+  assertMsg(gl, `Creating context ${canvas.id} should succeed.`);
+  if (gl) {
+    const width = gl.drawingBufferWidth;
+    const height = gl.drawingBufferHeight;
+    debug(`   allocated size: ${width*height*4/1024/1024|0} MB`);
+    assertMsg(width >= minSize,
+              `   drawingBufferWidth (${width}) should be >= ${minSize}`);
+    assertMsg(height >= minSize,
+              `   drawingBufferHeight (${height}) should be >= ${minSize}`);
+  }
+
+  if (canvasList.length >= CANVAS_COUNT) {
+    finishTest();
+    return;
+  }
+
+  wtu.dispatchPromise(() => { testNextContext(minSize); });
+}
+
+(function() {
+  const probeCanvas = newCanvas();
+  const probeGl = wtu.create3DContext(probeCanvas);
+  const minSize = Math.min(probeGl.drawingBufferWidth, probeGl.drawingBufferHeight);
+
+  testNextContext(minSize);
+})();
+
+var successfullyParsed = true;
+</script>
+
+</body>
+</html>
+
