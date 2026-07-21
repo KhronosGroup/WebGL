@@ -18,4 +18,5 @@ drawingbuffer-test.html
 --min-version 1.0.4 to-data-url-after-composite.html
 viewport-unchanged-upon-resize.html
 --min-version 1.0.4 webgl-to-2d-canvas.html
+--min-version 1.0.4 webgl-background-clear-after-present-crash.html
 

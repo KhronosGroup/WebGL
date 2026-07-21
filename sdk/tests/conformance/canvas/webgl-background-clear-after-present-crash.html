@@ -1,0 +1,73 @@
+<!--
+Copyright (c) 2026 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL background clear after readback does not crash</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="100" height="100"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+<script type="application/javascript">
+"use strict";
+
+description("Verifies that calling gl.clear() while the page is hidden after toDataURL() does not cause a crash when preserveDrawingBuffer is false.");
+
+const wtu = WebGLTestUtils;
+const canvas = document.getElementById("canvas");
+const gl = wtu.create3DContext(canvas, { preserveDrawingBuffer: false });
+
+if (!gl) {
+  testFailed("WebGL context should be initialized successfully");
+} else {
+  // 1. Initial draw & clear
+  gl.clearColor(1.0, 0.0, 0.0, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  // 2. Wait for composite so the frame is presented to the compositor.
+  wtu.waitForComposite(() => {
+    // 3. Perform a readback/toDataURL.
+    canvas.toDataURL();
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        // 5. Page is hidden. Call gl.clear().
+        gl.clearColor(0.0, 1.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "gl.clear in background should not produce GL errors");
+
+        // Restore page visibility
+        if (window.testRunner && window.testRunner.setMainWindowHidden) {
+          testRunner.setMainWindowHidden(false);
+        }
+      } else if (document.visibilityState === 'visible') {
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+        testPassed("WebGL clear while page is hidden completed without crashing");
+        finishTest();
+      }
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    // 4. Hide the page programmatically if testRunner is present
+    if (window.testRunner && window.testRunner.setMainWindowHidden) {
+      testRunner.setMainWindowHidden(true);
+    } else {
+      testPassed("Test complete (window.testRunner not available to hide window)");
+      finishTest();
+    }
+  });
+}
+
+var successfullyParsed = true;
+</script>
+</body>
+</html>
