@@ -76,6 +76,8 @@ async function runTest() {
   checkInitialValues();
   checkFrontendValidation();
   checkWebGLNonNormativeBehavior();
+  checkBlit();
+  checkImplicitDisables();
 
   await checkRendering(gl);
   await checkRendering(gl_no_alpha);
@@ -468,6 +470,393 @@ function checkWebGLNonNormativeBehavior() {
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.deleteFramebuffer(fb);
+}
+
+function checkBlit() {
+  debug("\nCheck that blitFramebuffer ends PLS and works.");
+
+  gl.disable(gl.DITHER);
+
+  const drawFB = gl.createFramebuffer();
+  const readFB = gl.createFramebuffer();
+
+  const pls0 = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, pls0);
+  gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 4, 4);
+
+  const pls1 = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, pls1);
+  gl.texStorage2D(gl.TEXTURE_2D, 1, gl.R32UI, 4, 4);
+
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 4, 4);
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, drawFB);
+  pls.framebufferTexturePixelLocalStorageWEBGL(0, pls0, 0, 0, 0);
+  pls.framebufferTexturePixelLocalStorageWEBGL(1, pls1, 0, 0, 0);
+
+  gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+  gl.clearColor(1, 0, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, readFB);
+  gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pls0, 0);
+
+  pls.framebufferPixelLocalClearValuefvWEBGL(0, [0, 1, 0, 1]);
+  pls.framebufferPixelLocalClearValueuivWEBGL(1, [123, 0, 0, 0]);
+  pls.beginPixelLocalStorageWEBGL([pls.LOAD_OP_CLEAR_WEBGL, pls.LOAD_OP_CLEAR_WEBGL]);
+  shouldBe("gl.getParameter(pls.PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL)", "2");
+
+  // glBlitFramebuffer must implicitly end PLS.
+  gl.blitFramebuffer(0, 0, 2, 4, 0, 0, 2, 4, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+  shouldBe("gl.getParameter(pls.PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL)", "0");
+
+  gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pls0, 0);
+  wtu.checkCanvasRect(gl, 0, 0, 4, 4, [0, 255, 0, 255], 'Plane 0 is green');
+
+  gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pls1, 0);
+  wtu.checkCanvasRect(gl, 0, 0, 4, 4, [123, 0, 0, 1], 'Plane 1 is red integer',
+                      0, new Uint32Array(64), gl.UNSIGNED_INT, gl.RGBA_INTEGER);
+
+  gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+  wtu.checkCanvasRect(gl, 0, 0, 2, 4, [0, 255, 0, 255], 'Left attachment side is green');
+  wtu.checkCanvasRect(gl, 2, 0, 2, 4, [255, 0, 0, 255], 'Right attachment side is red');
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  gl.deleteTexture(tex);
+  gl.deleteTexture(pls1);
+  gl.deleteTexture(pls0);
+
+  gl.deleteFramebuffer(readFB);
+  gl.deleteFramebuffer(drawFB);
+
+  gl.enable(gl.DITHER);
+}
+
+function checkImplicitDisables() {
+  debug("\nCheck that certain commands implicitly disable PLS even if used incorrectly.");
+
+  function checkEnds(command, error) {
+    pls.beginPixelLocalStorageWEBGL([pls.LOAD_OP_ZERO_WEBGL]);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "beginPixelLocalStorageWEBGL");
+    shouldBe("gl.getParameter(pls.PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL)", "1");
+
+    command();
+    wtu.glErrorShouldBe(gl, error);
+
+    shouldBe("gl.getParameter(pls.PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL)", "0");
+  }
+
+  let fb, tex;
+
+  function testCase(name, fbTarget, body) {
+    debug(`\n${name}`);
+
+    gl.disable(gl.DITHER);
+
+    tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+
+    fb = gl.createFramebuffer();
+    gl.bindFramebuffer(fbTarget, fb);
+    gl.drawBuffers([]);
+    pls.framebufferTexturePixelLocalStorageWEBGL(0, tex, 0, 0, 0);
+
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+    body();
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fb);
+
+    gl.deleteTexture(tex);
+
+    gl.enable(gl.DITHER);
+
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+  }
+
+  testCase("beginTransformFeedback", gl.FRAMEBUFFER, () => {
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buf);
+    gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 16, gl.STATIC_DRAW);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buf);
+
+    const program = wtu.loadStandardProgram(gl);
+    gl.transformFeedbackVaryings(program, ['gl_Position'], gl.INTERLEAVED_ATTRIBS);
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    // Invalid usage
+    checkEnds(() => { gl.beginTransformFeedback(-1); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.beginTransformFeedback(gl.POINTS); },
+              gl.NO_ERROR);
+
+    gl.endTransformFeedback();
+    gl.useProgram(null);
+    gl.deleteProgram(program);
+    gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
+    gl.deleteBuffer(buf);
+  });
+
+  testCase("bindFramebuffer", gl.DRAW_FRAMEBUFFER, () => {
+    // Invalid usage
+    checkEnds(() => { gl.bindFramebuffer(0, null); },
+              gl.INVALID_ENUM);
+    checkEnds(() => { gl.bindFramebuffer(0, fb); },
+              gl.INVALID_ENUM);
+
+    // Binding a read framebuffer still ends PLS
+    checkEnds(() => { gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null); },
+              gl.NO_ERROR);
+
+    // Re-binding the same framebuffer still ends PLS
+    checkEnds(() => { gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb); },
+              gl.NO_ERROR);
+    checkEnds(() => { gl.bindFramebuffer(gl.FRAMEBUFFER, fb); },
+              gl.NO_ERROR);
+  });
+
+  testCase("copyTexImage2D", gl.FRAMEBUFFER, () => {
+    const texAtt = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texAtt);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texAtt, 0);
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+    const texNew = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texNew);
+
+    // Invalid usage
+    checkEnds(() => { gl.copyTexImage2D(0, 0, gl.RGBA8, 0, 0, 1, 1, 0); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 0, 0, 1, 1, 0); },
+              gl.NO_ERROR);
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.deleteTexture(texNew);
+    gl.deleteTexture(texAtt);
+  });
+
+  testCase("copyTexSubImage2D", gl.FRAMEBUFFER, () => {
+    const texAtt = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texAtt);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texAtt, 0);
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+    const texNew = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texNew);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
+
+    // Invalid usage
+    checkEnds(() => { gl.copyTexSubImage2D(0, 0, 0, 0, 0, 0, 1, 1); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, 1, 1); },
+              gl.NO_ERROR);
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.deleteTexture(texNew);
+    gl.deleteTexture(texAtt);
+  });
+
+  testCase("copyTexSubImage3D", gl.FRAMEBUFFER, () => {
+    const texAtt = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texAtt);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texAtt, 0);
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+    const texNew = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, texNew);
+    gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, 1, 1, 2);
+
+    // Invalid usage
+    checkEnds(() => { gl.copyTexSubImage3D(0, 0, 0, 0, 0, 0, 0, 1, 1); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.copyTexSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, 0, 0, 0, 1, 1); },
+              gl.NO_ERROR);
+
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, null);
+    gl.deleteTexture(texNew);
+    gl.deleteTexture(texAtt);
+  });
+
+  testCase("drawBuffers", gl.DRAW_FRAMEBUFFER, () => {
+    // Invalid usage
+    checkEnds(() => { gl.drawBuffers([1]); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+    checkEnds(() => { gl.drawBuffers([]); },
+              gl.NO_ERROR);
+  });
+
+  testCase("framebufferRenderbuffer", gl.DRAW_FRAMEBUFFER, () => {
+    const rb = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA8, 4, 4);
+
+    // Invalid usage
+    checkEnds(() => { gl.framebufferRenderbuffer(0, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER,
+                                                 gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb); },
+              gl.NO_ERROR);
+
+    gl.deleteRenderbuffer(rb);
+  });
+
+  testCase("framebufferTexture2D", gl.DRAW_FRAMEBUFFER, () => {
+    const tex2 = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex2);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 4, 4);
+
+    // Invalid usage
+    checkEnds(() => { gl.framebufferTexture2D(0, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex2, 0); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER,
+                                              gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex2, 0); },
+              gl.NO_ERROR);
+
+    gl.deleteTexture(tex2);
+  });
+
+  testCase("framebufferTextureLayer", gl.DRAW_FRAMEBUFFER, () => {
+    const tex2 = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, tex2);
+    gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, 4, 4, 2);
+
+    // Invalid usage
+    checkEnds(() => { gl.framebufferTextureLayer(0, gl.COLOR_ATTACHMENT0, tex2, 0, 1); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.framebufferTextureLayer(gl.DRAW_FRAMEBUFFER,
+                                                 gl.COLOR_ATTACHMENT0, tex2, 0, 1); },
+              gl.NO_ERROR);
+
+    gl.deleteTexture(tex2);
+  });
+
+  testCase("framebufferTextureMultiviewOVR", gl.DRAW_FRAMEBUFFER, () => {
+    const ovr = gl.getExtension("OVR_multiview2");
+    if (!ovr) {
+      debug("OVR_multiview2 not supported");
+      return;
+    }
+
+    const tex2 = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, tex2);
+    gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, 4, 4, 1);
+
+    // Invalid usage
+    checkEnds(() => { ovr.framebufferTextureMultiviewOVR(0, gl.COLOR_ATTACHMENT0, tex2, 0, 0, 1); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { ovr.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER,
+                                                         gl.COLOR_ATTACHMENT0, tex2, 0, 0, 1); },
+              gl.NO_ERROR);
+
+    gl.deleteTexture(tex2);
+  });
+
+  testCase("framebufferTexturePixelLocalStorageWEBGL", gl.DRAW_FRAMEBUFFER, () => {
+    // Invalid usage
+    checkEnds(() => { pls.framebufferTexturePixelLocalStorageWEBGL(-1, null, 0, 0, 0); },
+              gl.INVALID_VALUE);
+
+    // Valid usage
+    const tex2 = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex2);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 4, 4);
+    checkEnds(() => { pls.framebufferTexturePixelLocalStorageWEBGL(0, tex2, 0, 0, 0); },
+              gl.NO_ERROR);
+
+    gl.deleteTexture(tex2);
+  });
+
+  testCase("invalidateFramebuffer", gl.FRAMEBUFFER, () => {
+    // Invalid usage
+    checkEnds(() => { gl.invalidateFramebuffer(0, []); },
+              gl.INVALID_ENUM);
+    checkEnds(() => { gl.invalidateSubFramebuffer(0, [], 0, 0, 1, 1); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.invalidateFramebuffer(gl.FRAMEBUFFER, []); },
+              gl.NO_ERROR);
+    checkEnds(() => { gl.invalidateSubFramebuffer(gl.FRAMEBUFFER, [], 0, 0, 1, 1); },
+              gl.NO_ERROR);
+  });
+
+  testCase("readPixels", gl.FRAMEBUFFER, () => {
+    const data = new Uint8Array(4);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buf);
+    gl.bufferData(gl.PIXEL_PACK_BUFFER, 4, gl.STATIC_DRAW);
+
+    const texAtt = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texAtt);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texAtt, 0);
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+    // Invalid usage
+    checkEnds(() => { gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data); },
+              gl.INVALID_OPERATION);
+
+    checkEnds(() => { gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data, 0); },
+              gl.INVALID_OPERATION);
+
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    checkEnds(() => { gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0); },
+              gl.INVALID_OPERATION);
+
+    // Valid usage
+    checkEnds(() => { gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data); },
+              gl.NO_ERROR);
+
+    checkEnds(() => { gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data, 0); },
+              gl.NO_ERROR);
+
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buf);
+    checkEnds(() => { gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0); },
+              gl.NO_ERROR);
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.deleteTexture(texAtt);
+
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    gl.deleteBuffer(buf);
+  });
 }
 
 async function checkRendering(localGL) {
