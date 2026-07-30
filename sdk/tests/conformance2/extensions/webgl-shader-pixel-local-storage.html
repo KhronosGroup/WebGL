@@ -12,8 +12,14 @@
 </head>
 <body>
 <div id="description"></div>
-<canvas id="canvas" width="128" height="128" style="background-color:#080"> </canvas>
-<canvas id="canvas_no_alpha" width="128" height="128"> </canvas>
+<!--
+  Canvases use fixed position to ensure that they are always visible.
+  Multi-frame tests rely on timely canvas composition that may not
+  happen if the canvases are scrolled off the top of the page.
+-->
+<canvas id="canvas" width="128" height="128" style="background-color:#080;position:fixed;"> </canvas>
+<canvas id="canvas_no_alpha" width="128" height="128" style="background-color:#000;position:fixed;margin-left:128px;"> </canvas>
+<div style="width:256px;height:128px;"></div>
 <div id="console"></div>
 <script>
 "use strict";
@@ -100,16 +106,20 @@ function checkDependencyExtensionsEnabled(enabled) {
                         "OES_draw_buffers_indexed not enabled or disabled as expected");
   }
   {
-    gl.bindRenderbuffer(gl.RENDERBUFFER, gl.createRenderbuffer());
+    const rb = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.R32F, 1, 1);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "EXT_color_buffer_float not disabled as expected");
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.deleteRenderbuffer(rb);
   }
   {
-    gl.bindRenderbuffer(gl.RENDERBUFFER, gl.createRenderbuffer());
+    const rb = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.RG16F, 1, 1);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "EXT_color_buffer_half_float not disabled as expected");
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.deleteRenderbuffer(rb);
   }
 }
 
@@ -165,7 +175,8 @@ function checkInitialValues() {
       "It's valid to query GL_PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL even when fbo 0 is bound.");
 
   // Table 6.Y: Pixel Local Storage State
-  gl.bindFramebuffer(gl.FRAMEBUFFER, gl.createFramebuffer());
+  const fb = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   shouldBe("gl.getParameter(pls.PIXEL_LOCAL_STORAGE_ACTIVE_PLANES_WEBGL)", "0");
   debug("Check the initial clear values for each plane.");
   const MAX_PIXEL_LOCAL_STORAGE_PLANES =
@@ -193,6 +204,7 @@ function checkInitialValues() {
   }
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.deleteFramebuffer(fb);
 }
 
 function checkFrontendValidation() {
@@ -232,6 +244,7 @@ function checkFrontendValidation() {
     pls.framebufferTexturePixelLocalStorageWEBGL(0, tex, 0, 0, 0);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
     gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.deleteTexture(tex);
   }
 
   debug("\nAttaching a PLS plane with a wrong plane index must be rejected.");
@@ -239,7 +252,8 @@ function checkFrontendValidation() {
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, gl.createFramebuffer());
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     pls.framebufferTexturePixelLocalStorageWEBGL(-1, tex, 0, 0, 0);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
@@ -247,6 +261,8 @@ function checkFrontendValidation() {
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fb);
+    gl.deleteTexture(tex);
   }
 
   debug("\nQuerying a PLS plane parameter on the default framebuffer must be rejected.");
@@ -274,7 +290,8 @@ function checkFrontendValidation() {
   debug("\nQuerying a PLS plane parameter with a wrong index must be rejected.");
   {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, gl.createFramebuffer());
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     shouldBeNull("pls.getFramebufferPixelLocalStorageParameterWEBGL(-1, pls.PIXEL_LOCAL_INTERNAL_FORMAT_WEBGL)");
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
     shouldBeNull("pls.getFramebufferPixelLocalStorageParameterWEBGL(-1, pls.PIXEL_LOCAL_TEXTURE_NAME_WEBGL)");
@@ -308,6 +325,7 @@ function checkFrontendValidation() {
     shouldBeNull(`pls.getFramebufferPixelLocalStorageParameterWEBGL(${MAX_PIXEL_LOCAL_STORAGE_PLANES}, pls.PIXEL_LOCAL_CLEAR_VALUE_UNSIGNED_INT_WEBGL)`);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fb);
   }
 
   debug("\nSetting a PLS plane clear value on the default framebuffer must be rejected.");
@@ -325,7 +343,8 @@ function checkFrontendValidation() {
   debug("\nSetting a PLS plane clear value with a wrong index must be rejected.");
   {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, gl.createFramebuffer());
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     pls.framebufferPixelLocalClearValuefvWEBGL(-1, [0, 0, 0, 0]);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
     pls.framebufferPixelLocalClearValueivWEBGL(-1, [0, 0, 0, 0]);
@@ -339,13 +358,15 @@ function checkFrontendValidation() {
     pls.framebufferPixelLocalClearValueuivWEBGL(MAX_PIXEL_LOCAL_STORAGE_PLANES, [0, 0, 0, 0]);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fb);
   }
 }
 
 function checkWebGLNonNormativeBehavior() {
   debug("\nCheck the WebGL-specific behavior not found in the " +
         "ANGLE_shader_pixel_local_storage specification.");
-  gl.bindFramebuffer(gl.FRAMEBUFFER, gl.createFramebuffer());
+  const fb = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
 
   debug("If 'texture' has been deleted, generates an INVALID_OPERATION error.");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
@@ -366,6 +387,7 @@ function checkWebGLNonNormativeBehavior() {
   pls.framebufferTexturePixelLocalStorageWEBGL(0, tex2, 0, 0, 0);
   wtu.glErrorShouldBe(gl2, gl2.NO_ERROR);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
+  gl2.deleteTexture(tex2);
 
   debug("\nIf value has less than srcOffset + 4 elements, generates an INVALID_VALUE error.");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
@@ -441,9 +463,11 @@ function checkWebGLNonNormativeBehavior() {
            "validTex");
   pls.framebufferTexturePixelLocalStorageWEBGL(0, null, 0, 0, 0);
   shouldBeNull("pls.getFramebufferPixelLocalStorageParameterWEBGL(0, pls.PIXEL_LOCAL_TEXTURE_NAME_WEBGL)");
-
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+  gl.deleteTexture(window.validTex);
+
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.deleteFramebuffer(fb);
 }
 
 async function checkRendering(localGL) {
@@ -595,6 +619,10 @@ async function checkRendering(localGL) {
   shouldBeTrue("localGL.getParameter(localGL.COLOR_WRITEMASK)[1]");
   shouldBeFalse("localGL.getParameter(localGL.COLOR_WRITEMASK)[2]");
   shouldBeTrue("localGL.getParameter(localGL.COLOR_WRITEMASK)[3]");
+
+  localGL.deleteFramebuffer(readFBO);
+  localGL.deleteFramebuffer(plsFBO);
+  localGL.deleteTexture(tex);
 }
 
 runTest();
