@@ -182,7 +182,33 @@ if (!gl) {
                   "gl.colorMask should not change after canvas resize");
         shouldBe('getViewport()', '"0,0,300,150"');
         checkCanvasContentIs(0, 0, 0, 0);
-      }
+
+        debug("");
+        debug("change the size of the canvas to the same size it already is and see that it gets cleared");
+        gl.colorMask(true, true, true, true);
+        gl.clearColor(0.25, 0.5, 0.75, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        // Check it's not cleared
+        checkCanvasContentIs(64, 128, 192, 255);
+
+        gl.canvas.width = gl.canvas.width;
+        err = gl.getError();
+        // Some implementations might lost the context when resizing
+        if (err != gl.CONTEXT_LOST_WEBGL) {
+          checkCanvasContentIs(0, 0, 0, 0);
+
+          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+          // Check it's not cleared
+          checkCanvasContentIs(64, 128, 192, 255);
+
+          gl.canvas.height = gl.canvas.height;
+          err = gl.getError();
+          // Some implementations might lost the context when resizing
+          if (err != gl.CONTEXT_LOST_WEBGL) {
+            checkCanvasContentIs(0, 0, 0, 0);
+          }
+        }
+     }
 
       debug("");
       finishTest();
