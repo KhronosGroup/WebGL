@@ -801,6 +801,23 @@ function checkImplicitDisables() {
     gl.deleteTexture(tex2);
   });
 
+  testCase("generateMipmap", gl.FRAMEBUFFER, () => {
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texStorage2D(gl.TEXTURE_2D, 5, gl.RGBA8, 16, 16);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+    // Invalid usage
+    checkEnds(() => { gl.generateMipmap(0); },
+              gl.INVALID_ENUM);
+
+    // Valid usage
+    checkEnds(() => { gl.generateMipmap(gl.TEXTURE_2D); },
+              gl.NO_ERROR);
+
+    gl.deleteTexture(tex);
+  });
+
   testCase("invalidateFramebuffer", gl.FRAMEBUFFER, () => {
     // Invalid usage
     checkEnds(() => { gl.invalidateFramebuffer(0, []); },
