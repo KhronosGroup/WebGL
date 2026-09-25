@@ -14,3 +14,4 @@ gl-vertexattribpointer-offsets.html
 gl-vertex-attrib-zero-issues.html
 --min-version 1.0.4 gl-vertex-attrib-unconsumed-out-of-bounds.html
 --min-version 1.0.4 gl-vertex-attrib-context-switch.html
+--min-version 1.0.4 gl-vertexattribpointer-shared-layouts.html

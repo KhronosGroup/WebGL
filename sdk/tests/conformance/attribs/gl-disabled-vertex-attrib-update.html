@@ -59,7 +59,9 @@ var uniLoc = gl.getUniformLocation(program, "u_expectedValue");
 var gridRes = 1;
 wtu.setupIndexedQuad(gl, gridRes, positionLocation);
 
-var testValues = [1, 2, 3, 4];
+// Revisit the initial value after other updates to exercise restoration of
+// previously used current attribute state.
+var testValues = [1, 2, 3, 4, 1];
 for (var i = 0; i < testValues.length; ++i) {
   var testValue = testValues[i];
   gl.uniform1f(uniLoc, testValue);
