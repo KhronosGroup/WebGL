@@ -1,0 +1,114 @@
+<!--
+Copyright (c) 2026 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Samplers with different types and a shared name prefix</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="4" height="4"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description("Floating-point and integer samplers with a shared name prefix must retain their distinct types and bindings.");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas", {antialias: false}, 2);
+
+function createTexture(unit, internalFormat, format, type, data) {
+    var texture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0 + unit);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, format, type, data);
+    return texture;
+}
+
+function runTest(stage, integerType) {
+    var label = stage + " shader: sampler2D image and " + integerType + " imageInteger";
+    debug("");
+    debug(label);
+
+    // Identifiers are whole tokens: image must not be confused with imageInteger.
+    var samplingSource = [
+        "uniform highp sampler2D image;",
+        "uniform highp " + integerType + " imageInteger;",
+        "vec4 sampleBoth() {",
+        "    return texture(image, vec2(0.5)) * 0.5 +",
+        "           vec4(texture(imageInteger, vec2(0.5))) / 510.0;",
+        "}"
+    ].join("\n");
+    var vertexSource = [
+        "#version 300 es",
+        "precision highp float;",
+        "in vec4 position;",
+        "out vec4 color;",
+        stage === "vertex" ? samplingSource : "",
+        "void main() {",
+        "    gl_Position = position;",
+        "    color = " + (stage === "vertex" ? "sampleBoth()" : "vec4(1.0)") + ";",
+        "}"
+    ].join("\n");
+    var fragmentSource = [
+        "#version 300 es",
+        "precision highp float;",
+        "in vec4 color;",
+        "out vec4 outputColor;",
+        stage === "fragment" ? samplingSource : "",
+        "void main() {",
+        "    outputColor = " + (stage === "fragment" ? "sampleBoth()" : "color") + ";",
+        "}"
+    ].join("\n");
+    var program = wtu.setupProgram(gl, [vertexSource, fragmentSource], ["position"], [0], true);
+    if (!program) {
+        testFailed(label + " must compile and link");
+        return;
+    }
+    testPassed(label + " compiled and linked");
+
+    var floatTexture = createTexture(0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE,
+                                    new Uint8Array([255, 0, 0, 255]));
+    var unsigned = integerType === "usampler2D";
+    var integerTexture = createTexture(1, unsigned ? gl.RGBA32UI : gl.RGBA32I,
+                                      gl.RGBA_INTEGER, unsigned ? gl.UNSIGNED_INT : gl.INT,
+                                      unsigned ? new Uint32Array([0, 0, 255, 255]) :
+                                                 new Int32Array([0, 0, 255, 255]));
+    gl.uniform1i(gl.getUniformLocation(program, "image"), 0);
+    gl.uniform1i(gl.getUniformLocation(program, "imageInteger"), 1);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, label + ": texture and uniform setup");
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, label + ": drawing");
+    wtu.checkCanvas(gl, [128, 0, 128, 255], label + ": equal contributions from red and blue textures", 1);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, label + ": readback");
+    gl.deleteTexture(floatTexture);
+    gl.deleteTexture(integerTexture);
+    gl.deleteProgram(program);
+}
+
+if (!gl) {
+    testFailed("Could not create a WebGL 2 context");
+} else {
+    gl.disable(gl.DITHER);
+    wtu.setupUnitQuad(gl);
+    ["vertex", "fragment"].forEach(function(stage) {
+        ["usampler2D", "isampler2D"].forEach(function(integerType) {
+            runTest(stage, integerType);
+        });
+    });
+}
+
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+</body>
+</html>

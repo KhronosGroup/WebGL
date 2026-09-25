@@ -31,6 +31,8 @@ misplaced-version-directive.html
 --min-version 2.0.1 reciprocal-sqrt-of-sum-of-squares-crash.html
 sampler-no-precision.html
 --min-version 2.0.1 sampler-array-indexing.html
+--min-version 2.0.1 sampler-uniform-name-prefix.html
+--min-version 2.0.1 sampler3d-macro-forwarding.html
 sequence-operator-returns-non-constant.html
 shader-linking.html
 shader-with-1024-character-define.html
