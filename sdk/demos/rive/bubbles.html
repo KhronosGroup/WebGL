@@ -45,9 +45,15 @@ html, body {
   </div>
   <div style="float:right" id="fps_label">0.0&nbsp;fps</div>
   <div style="margin:0 auto; text-align: center; width:100%" id="renderer_name"></div>
+  <div style="margin:0 auto; text-align: left; width:100%" id="log"></div>
 </div>
 <canvas id="canvas"></canvas>
 <script>
+  function logAndThrow(str) {
+    document.getElementById("log").innerHTML += str + "<br>";
+    throw str;
+  }
+
   const canvas = document.getElementById("canvas");
   const gl = canvas.getContext("webgl2", {
     antialias: false,
@@ -63,8 +69,12 @@ html, body {
   document.getElementById("renderer_name").innerHTML = renderer;
 
   const pls = gl.getExtension("WEBGL_shader_pixel_local_storage");
-  if (!pls || !pls.isCoherent())
-    throw "Coherent PLS not supported."
+  if (!pls) {
+    logAndThrow("PLS not supported.");
+  }
+  if (!pls.isCoherent()) {
+    logAndThrow("Coherent PLS not supported.");
+  }
 
   const vs = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vs, `#version 300 es
@@ -89,7 +99,7 @@ html, body {
   }`);
   gl.compileShader(vs);
   if (!gl.getShaderParameter(vs, gl.COMPILE_STATUS)) {
-    throw gl.getShaderInfoLog(vs);
+    logAndThrow("Shader compile failed: " + gl.getShaderInfoLog(vs));
   }
 
   let program, uniformWindow, uniformT;
@@ -270,7 +280,7 @@ html, body {
     }`);
     gl.compileShader(fs);
     if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
-      throw gl.getShaderInfoLog(fs);
+      logAndThrow("Fragment shader compile failed: " + gl.getShaderInfoLog(fs));
     }
 
     program = gl.createProgram();
@@ -278,7 +288,7 @@ html, body {
     gl.attachShader(program, fs);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      throw gl.getProgramInfoLog(program);
+      logAndThrow("Program link failed: " + gl.getProgramInfoLog(program));
     }
 
     gl.useProgram(program);
