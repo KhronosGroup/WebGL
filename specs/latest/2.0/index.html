@@ -3598,6 +3598,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         WebGL 1.0 supports tokens up to 256 characters in length. WebGL 2.0 follows The OpenGL ES Shading Language, Version 3.00
         <span class="gl-spec">(<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/es_spec_3.0.pdf#nameddest=subsection.1.5.1">OpenGL ES 3.0.6 &sect;1.5.1</a>)</span>
         and allows tokens up to 1024 characters in length for both ESSL 1 and ESSL 3 shaders. Shaders containing tokens longer than 1024 characters must fail to compile.
+        Shaders containing tokens longer than 1022 characters that lead with an underscore must also fail to compile, allowing room for translators to annotate tokens.
     </p>
 
     <h4>Maximum Uniform and Attribute Location Lengths</h4>
