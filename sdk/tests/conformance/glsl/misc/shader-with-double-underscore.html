@@ -8,7 +8,7 @@ found in the LICENSE.txt file.
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL GLSL Conformance Tests</title>
+<title>WebGL GLSL Conformance Tests - Double-Underscore Identifiers</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <link rel="stylesheet" href="../../../resources/glsl-feature-tests.css"/>
 <script src="../../../js/js-test-pre.js"></script>
@@ -18,25 +18,119 @@ found in the LICENSE.txt file.
 <body>
 <div id="description"></div>
 <div id="console"></div>
-<script id="vertexShader" type="text/something-not-javascript">
-// vertex shader that uses double-underscore in identifier should succeed
-attribute vec4 foo__bar;
+<script id="vertexShaderVarying" type="text/something-not-javascript">
+attribute vec4 position;
+varying vec4 $replaceMe;
 void main()
 {
-    gl_Position = foo__bar;
+    $replaceMe = position;
+    gl_Position = position;
 }
 </script>
-<script id="fragmentShader" type="text/something-not-javascript">
-// fragment shader that uses double-underscore in identifier should succeed
-attribute vec4 foo__bar;
+<script id="fragmentShaderVarying" type="text/something-not-javascript">
+precision mediump float;
+varying vec4 $replaceMe;
 void main()
 {
-    gl_FragColor = foo__bar;
+    gl_FragColor = $replaceMe;
+}
+</script>
+<script id="vertexShaderAttribute" type="text/something-not-javascript">
+attribute vec4 $replaceMe;
+void main()
+{
+    gl_Position = $replaceMe;
+}
+</script>
+<script id="fragmentShaderUniform" type="text/something-not-javascript">
+precision mediump float;
+uniform vec4 $replaceMe;
+void main()
+{
+    gl_FragColor = $replaceMe;
+}
+</script>
+<script id="fragmentShaderFunction" type="text/something-not-javascript">
+precision mediump float;
+vec4 $replaceMe()
+{
+    return vec4(0.0, 1.0, 0.0, 1.0);
+}
+void main()
+{
+    gl_FragColor = $replaceMe();
+}
+</script>
+<script id="fragmentShaderParameterAndLocal" type="text/something-not-javascript">
+precision mediump float;
+vec4 identity(vec4 $replaceMe)
+{
+    return $replaceMe;
+}
+void main()
+{
+    vec4 $replaceMe = vec4(0.0, 1.0, 0.0, 1.0);
+    gl_FragColor = identity($replaceMe);
+}
+</script>
+<script id="fragmentShaderStruct" type="text/something-not-javascript">
+precision mediump float;
+struct $replaceMe {
+    vec4 color;
+};
+struct Foo {
+    vec4 $replaceMe;
+};
+void main()
+{
+    $replaceMe s;
+    s.color = vec4(0.0, 1.0, 0.0, 1.0);
+    Foo f;
+    f.$replaceMe = s.color;
+    gl_FragColor = f.$replaceMe;
 }
 </script>
 <script>
 "use strict";
-GLSLConformanceTester.runTest();
+description("Identifiers containing two consecutive underscores, including a leading double underscore, should be accepted.");
+
+var identifiers = [
+  "foo__bar",   // two underscores in the middle
+  "__foo"       // two leading underscores
+];
+
+var templates = [
+  { name: "varying", vShaderId: "vertexShaderVarying", fShaderId: "fragmentShaderVarying" },
+  { name: "attribute", vShaderId: "vertexShaderAttribute" },
+  { name: "uniform", fShaderId: "fragmentShaderUniform" },
+  { name: "function name", fShaderId: "fragmentShaderFunction" },
+  { name: "function parameter and local variable", fShaderId: "fragmentShaderParameterAndLocal" },
+  { name: "struct name and struct member", fShaderId: "fragmentShaderStruct" }
+];
+
+function getSource(id, identifier) {
+  if (!id) {
+    return undefined;
+  }
+  return document.getElementById(id).text.replace(/\$replaceMe/g, identifier);
+}
+
+var tests = [];
+for (var ii = 0; ii < identifiers.length; ++ii) {
+  for (var jj = 0; jj < templates.length; ++jj) {
+    var template = templates[jj];
+    tests.push({
+      vShaderSource: getSource(template.vShaderId, identifiers[ii]),
+      vShaderSuccess: true,
+      fShaderSource: getSource(template.fShaderId, identifiers[ii]),
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "shader with '" + identifiers[ii] + "' as " + template.name + " should succeed"
+    });
+  }
+}
+
+GLSLConformanceTester.runTests(tests);
 var successfullyParsed = true;
 </script>
 </body>
