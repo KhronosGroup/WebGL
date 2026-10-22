@@ -1,0 +1,119 @@
+<!--
+Copyright (c) 2026 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Forwarding a sampler3D through nested macros</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="4" height="4"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+<script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
+in vec4 position;
+void main() {
+    gl_Position = position;
+}
+</script>
+<script id="fragment-common" type="text/plain">#version 300 es
+precision highp float;
+precision highp sampler3D;
+uniform sampler3D volume;
+out vec4 outputColor;
+
+vec4 sampleVolume(vec3 coord, highp sampler3D grid) {
+    return texture(grid, coord);
+}
+
+// A macro parameter has no GLSL type. Its replacement reaches a typed helper.
+#define READ_VOLUME(value, grid, coord) \
+    value = sampleVolume(coord, grid)
+#define FORWARD_VOLUME(value, grid, coord) \
+    READ_VOLUME(value, grid, coord)
+
+// grid and gridT are separate preprocessor tokens, despite their shared prefix.
+#define SCALE_VOLUME(value, grid, coord, gridT) \
+    FORWARD_VOLUME(value, grid, coord); \
+    value *= gridT
+</script>
+<script>
+"use strict";
+description("A sampler3D passed through multiline and nested function-like macros must reach the helper function unchanged.");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas", {antialias: false}, 2);
+var cases = [
+    {
+        name: "direct helper call",
+        statement: "value = sampleVolume(vec3(0.5), volume);",
+        expected: [255, 0, 0, 255]
+    },
+    {
+        name: "multiline macro forwarding to a typed helper",
+        statement: "READ_VOLUME(value, volume, vec3(0.5));",
+        expected: [255, 0, 0, 255]
+    },
+    {
+        name: "nested multiline macros forwarding to a typed helper",
+        statement: "FORWARD_VOLUME(value, volume, vec3(0.5));",
+        expected: [255, 0, 0, 255]
+    },
+    {
+        name: "nested forwarding preserves the separate gridT macro argument",
+        statement: "SCALE_VOLUME(value, volume, vec3(0.5), 0.5);",
+        expected: [128, 0, 0, 255]
+    }
+];
+
+if (!gl) {
+    testFailed("Could not create a WebGL 2 context");
+} else {
+    gl.disable(gl.DITHER);
+    wtu.setupUnitQuad(gl);
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_3D, texture);
+    gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, 1, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                  new Uint8Array([255, 0, 0, 255]));
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Initialize a one-texel 3D texture");
+
+    cases.forEach(function(testCase) {
+        debug("");
+        debug(testCase.name);
+        var fragmentSource = wtu.getScript("fragment-common") + [
+            "void main() {",
+            "    vec4 value = vec4(0.0);",
+            "    " + testCase.statement,
+            "    outputColor = vec4(value.rgb, 1.0);",
+            "}"
+        ].join("\n");
+        var program = wtu.setupProgram(gl, ["vertex-shader", fragmentSource], ["position"], [0], true);
+        if (!program) {
+            testFailed(testCase.name + " must compile and link");
+            return;
+        }
+        testPassed(testCase.name + " compiled and linked");
+        gl.uniform1i(gl.getUniformLocation(program, "volume"), 0);
+        wtu.clearAndDrawUnitQuad(gl);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, testCase.name + ": drawing");
+        wtu.checkCanvas(gl, testCase.expected, testCase.name + ": expected sampled color", 1);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, testCase.name + ": readback");
+        gl.deleteProgram(program);
+    });
+    gl.deleteTexture(texture);
+}
+
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+</body>
+</html>
