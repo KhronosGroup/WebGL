@@ -33,6 +33,7 @@ sampler-no-precision.html
 --min-version 2.0.1 sampler-array-indexing.html
 sequence-operator-returns-non-constant.html
 shader-linking.html
+shader-with-1022-character-identifier.frag.html
 shader-with-1024-character-define.html
 shader-with-1024-character-identifier.frag.html
 shader-with-1025-character-define.html
