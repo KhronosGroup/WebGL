@@ -24,8 +24,7 @@ debug("");
 
 var wtu = WebGLTestUtils;
 
-const e_canvas = document.createElement('canvas');
-const gl = e_canvas.getContext('webgl2');
+const gl = wtu.create3DContext(undefined, undefined, 2);
 
 const VSRC = `\
   #version 300 es
@@ -111,6 +110,50 @@ const FSRC = `\
       expectTrue(info.name.startsWith(name), `'${info.name}'.startsWith('${name}')`);
     }
   });
+
+  debug("A valid program returns an empty array for empty uniform names");
+  shouldBe("gl.getUniformIndices(prog, [])", "[]");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+  debug("A valid program returns INVALID_INDEX for an unknown uniform name");
+  shouldBe('gl.getUniformIndices(prog, ["missing"])', "[gl.INVALID_INDEX]");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+  debug("A program from another context returns null");
+  const other = wtu.create3DContext(undefined, undefined, 2);
+  if (!other) {
+    testFailed("Second WebGL context does not exist");
+    return;
+  }
+  const other_prog = wtu.setupProgram(other, [VSRC, FSRC]);
+  if (!other_prog) {
+    testFailed("Setting up program in another context failed");
+    return;
+  }
+  for (const names of [[], ["missing"]]) {
+    expectTrue(gl.getUniformIndices(other_prog, names) === null,
+               `A program from another context should return null with ${names.length} names`);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
+  }
+
+  debug("A deleted program returns null");
+  // setupProgram makes the program current; unbind it so deletion is not deferred.
+  other.useProgram(null);
+  other.deleteProgram(other_prog);
+  expectTrue(other.getUniformIndices(other_prog, ["missing"]) === null,
+             "getUniformIndices should return null for a deleted program");
+  wtu.glErrorShouldBe(other, other.INVALID_VALUE);
+
+  debug("A lost context returns null");
+  const extension = gl.getExtension("WEBGL_lose_context");
+  if (!extension) {
+    debug("WEBGL_lose_context is not supported; skipping the lost context test");
+    return;
+  }
+  extension.loseContext();
+  expectTrue(gl.isContextLost(), "WebGL context should be lost");
+  expectTrue(gl.getUniformIndices(prog, ["missing"]) === null,
+             "getUniformIndices should return null for a lost context");
 })();
 
 var successfullyParsed = true;
