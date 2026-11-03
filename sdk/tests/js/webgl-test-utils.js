@@ -3543,6 +3543,104 @@ var colorAsSampledWithInternalFormat = function(color, internalFormat) {
   return color;
 }
 
+/**
+ * Returns the expected 8-bit RGBA color when sampling a texture of internal
+ * format |destFormat| populated by copying from a framebuffer cleared to the
+ * floating-point [0, 1] RGBA color |src|, and drawing it to an 8-bit RGBA
+ * framebuffer.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {GLenum} destFormat The destination texture internalFormat.
+ * @param {!Array.<number>} src 4-element array of [0, 1] RGBA values.
+ * @return {!Array.<number>} 4-element array of [0, 255] RGBA values.
+ */
+var expectedSampledCopyColor = function(gl, destFormat, src) {
+  const GL = globalThis.WebGL2RenderingContext || gl;
+  const toByte = v => Math.round(Math.min(Math.max(v, 0.0), 1.0) * 255.0);
+  const r = toByte(src[0]);
+  const g = toByte(src[1]);
+  const b = toByte(src[2]);
+  const a = toByte(src[3]);
+  switch (destFormat) {
+    case GL.R8:
+    case GL.R16F:
+    case GL.R32F:
+      return [r, 0, 0, 255];
+    case GL.RG8:
+    case GL.RG16F:
+    case GL.RG32F:
+      return [r, g, 0, 255];
+    case GL.RGB:
+    case GL.RGB8:
+    case GL.SRGB8:
+    case GL.RGB16F:
+    case GL.RGB32F:
+    case GL.R11F_G11F_B10F:
+      return [r, g, b, 255];
+    case GL.RGBA:
+    case GL.RGBA8:
+    case GL.SRGB8_ALPHA8:
+    case GL.RGBA16F:
+    case GL.RGBA32F:
+      return [r, g, b, a];
+    case GL.LUMINANCE:
+      return [r, r, r, 255];
+    case GL.ALPHA:
+      return [0, 0, 0, a];
+    case GL.LUMINANCE_ALPHA:
+      return [r, r, r, a];
+    default:
+      testFailed("Unexpected destFormat: " + glEnumToString(gl, destFormat));
+      return [0, 0, 0, 0];
+  }
+};
+
+/**
+ * Returns the expected 4-element integer/unsigned-integer RGBA color when
+ * sampling a texture of integer internal format |destFormat| populated from
+ * a framebuffer cleared to |src|.
+ * @param {!WebGL2RenderingContext} gl The WebGL2RenderingContext to use.
+ * @param {GLenum} destFormat The destination texture internalFormat.
+ * @param {!Array.<number>|!Int32Array|!Uint32Array} src 4-element RGBA values.
+ * @return {!Array.<number>} 4-element array of expected sampled RGBA values.
+ */
+var expectedSampledIntColor = function(gl, destFormat, src) {
+  const GL = globalThis.WebGL2RenderingContext || gl;
+  switch (destFormat) {
+    case GL.R8I:
+    case GL.R8UI:
+    case GL.R16I:
+    case GL.R16UI:
+    case GL.R32I:
+    case GL.R32UI:
+      return [src[0], 0, 0, 1];
+    case GL.RG8I:
+    case GL.RG8UI:
+    case GL.RG16I:
+    case GL.RG16UI:
+    case GL.RG32I:
+    case GL.RG32UI:
+      return [src[0], src[1], 0, 1];
+    case GL.RGB8I:
+    case GL.RGB8UI:
+    case GL.RGB16I:
+    case GL.RGB16UI:
+    case GL.RGB32I:
+    case GL.RGB32UI:
+      return [src[0], src[1], src[2], 1];
+    case GL.RGBA8I:
+    case GL.RGBA8UI:
+    case GL.RGBA16I:
+    case GL.RGBA16UI:
+    case GL.RGBA32I:
+    case GL.RGBA32UI:
+    case GL.RGB10_A2UI:
+      return [src[0], src[1], src[2], src[3]];
+    default:
+      testFailed("Unexpected integer destFormat: " + glEnumToString(gl, destFormat));
+      return [0, 0, 0, 0];
+  }
+};
+
 function comparePixels(cmp, ref, tolerance, diff) {
     if (cmp.length != ref.length) {
         testFailed("invalid pixel size.");
@@ -3769,6 +3867,8 @@ var API = {
   // color converter API
   namedColorInColorSpace: namedColorInColorSpace,
   colorAsSampledWithInternalFormat: colorAsSampledWithInternalFormat,
+  expectedSampledCopyColor: expectedSampledCopyColor,
+  expectedSampledIntColor: expectedSampledIntColor,
 
   // sRGB converter api
   sRGBToLinear: sRGBToLinear,
