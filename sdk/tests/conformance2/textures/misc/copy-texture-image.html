@@ -133,6 +133,42 @@ var testInternalformat = function () {
 
     var texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    wtu.setupUnitQuad(gl, 0, 1);
+    const floatCopyVerifyProgram = wtu.setupSimpleTextureProgram(gl, 0, 1);
+    const intCopyVerifyFS = `#version 300 es
+precision highp float;
+precision highp int;
+precision highp isampler2D;
+uniform isampler2D tex;
+in vec2 texCoord;
+out ivec4 out_color;
+void main() {
+    out_color = texture(tex, texCoord);
+}`;
+    const intCopyVerifyProgram = wtu.setupSimpleTextureProgramESSL300(gl, 0, 1, intCopyVerifyFS);
+    const uintCopyVerifyFS = `#version 300 es
+precision highp float;
+precision highp int;
+precision highp usampler2D;
+uniform usampler2D tex;
+in vec2 texCoord;
+out uvec4 out_color;
+void main() {
+    out_color = texture(tex, texCoord);
+}`;
+    const uintCopyVerifyProgram = wtu.setupSimpleTextureProgramESSL300(gl, 0, 1, uintCopyVerifyFS);
+
+    const copyTestFullColor = [0.125, 0.25, 0.5, 0.75];
+    const copyTestSubColor = [0.875, 0.625, 0.375, 0.25];
+    const fullIntColor = new Int32Array([17, -42, 103, -120]);
+    const subIntColor = new Int32Array([-85, 64, -19, 91]);
+    const fullUintColor = new Uint32Array([31, 79, 151, 223]);
+    const subUintColor = new Uint32Array([211, 139, 67, 19]);
 
     function testFormat(internalformat, srcTexFormatsTypes, fboAttachmentType, expected, msg) {
         var fbo = gl.createFramebuffer();
@@ -143,9 +179,73 @@ var testInternalformat = function () {
         gl.framebufferTexture2D(gl.FRAMEBUFFER, fboAttachmentType, gl.TEXTURE_2D, srcTexture, 0);
         checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
 
+        if (expected == gl.NO_ERROR) {
+            if (srcTexFormatsTypes.type == gl.INT) {
+                gl.clearBufferiv(gl.COLOR, 0, fullIntColor);
+            } else if (srcTexFormatsTypes.type == gl.UNSIGNED_INT) {
+                gl.clearBufferuiv(gl.COLOR, 0, fullUintColor);
+            } else {
+                gl.clearColor(copyTestFullColor[0], copyTestFullColor[1], copyTestFullColor[2], copyTestFullColor[3]);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+            }
+        }
+
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl[internalformat], 0, 0, 64, 64, 0);
         wtu.glErrorShouldBe(gl, expected, msg + srcTexFormatsTypes.internalformat + '=>' + internalformat);
+
+        if (expected == gl.NO_ERROR) {
+            if (srcTexFormatsTypes.type == gl.INT) {
+                gl.clearBufferiv(gl.COLOR, 0, subIntColor);
+            } else if (srcTexFormatsTypes.type == gl.UNSIGNED_INT) {
+                gl.clearBufferuiv(gl.COLOR, 0, subUintColor);
+            } else {
+                gl.clearColor(copyTestSubColor[0], copyTestSubColor[1], copyTestSubColor[2], copyTestSubColor[3]);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+            }
+            gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, 32, 32);
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copyTexSubImage2D should succeed for " + srcTexFormatsTypes.internalformat + '=>' + internalformat);
+
+            const destFormatEnum = gl[internalformat];
+            if (srcTexFormatsTypes.type == gl.INT || srcTexFormatsTypes.type == gl.UNSIGNED_INT) {
+                const isInt = (srcTexFormatsTypes.type == gl.INT);
+                const verifyFbo = gl.createFramebuffer();
+                const verifyRbo = gl.createRenderbuffer();
+                gl.bindFramebuffer(gl.FRAMEBUFFER, verifyFbo);
+                gl.bindRenderbuffer(gl.RENDERBUFFER, verifyRbo);
+                gl.renderbufferStorage(gl.RENDERBUFFER, isInt ? gl.RGBA32I : gl.RGBA32UI, gl.canvas.width, gl.canvas.height);
+                gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, verifyRbo);
+                checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
+                gl.useProgram(isInt ? intCopyVerifyProgram : uintCopyVerifyProgram);
+                wtu.drawUnitQuad(gl);
+                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Drawing integer copied texture should succeed.");
+
+                const readBufSub = isInt ? new Int32Array(4) : new Uint32Array(4);
+                const readBufFull = isInt ? new Int32Array(4) : new Uint32Array(4);
+                const expectedSub = wtu.expectedSampledIntColor(gl, destFormatEnum, isInt ? subIntColor : subUintColor);
+                const expectedFull = wtu.expectedSampledIntColor(gl, destFormatEnum, isInt ? fullIntColor : fullUintColor);
+                wtu.checkCanvasRect(gl, 16, 16, 1, 1, expectedSub,
+                                    "Sub-image copy region should match for " + internalformat, 0,
+                                    readBufSub, isInt ? gl.INT : gl.UNSIGNED_INT, gl.RGBA_INTEGER);
+                wtu.checkCanvasRect(gl, 48, 48, 1, 1, expectedFull,
+                                    "Full-image copy region should match for " + internalformat, 0,
+                                    readBufFull, isInt ? gl.INT : gl.UNSIGNED_INT, gl.RGBA_INTEGER);
+                gl.deleteRenderbuffer(verifyRbo);
+                gl.deleteFramebuffer(verifyFbo);
+            } else {
+                gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                gl.useProgram(floatCopyVerifyProgram);
+                wtu.clearAndDrawUnitQuad(gl);
+                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Drawing copied texture should succeed.");
+
+                const expectedSub = wtu.expectedSampledCopyColor(gl, destFormatEnum, copyTestSubColor);
+                const expectedFull = wtu.expectedSampledCopyColor(gl, destFormatEnum, copyTestFullColor);
+                wtu.checkCanvasRect(gl, 16, 16, 1, 1, expectedSub,
+                                    "Sub-image copy region should match for " + internalformat, 2);
+                wtu.checkCanvasRect(gl, 48, 48, 1, 1, expectedFull,
+                                    "Full-image copy region should match for " + internalformat, 2);
+            }
+        }
 
         gl.deleteTexture(srcTexture);
         gl.deleteFramebuffer(fbo);
