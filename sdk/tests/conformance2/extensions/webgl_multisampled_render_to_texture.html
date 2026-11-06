@@ -1,0 +1,181 @@
+<!--
+Copyright (c) 2019 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL OVR_multiview2 Conformance Tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+
+let wtu = WebGLTestUtils;
+let gl = wtu.create3DContext(null, null, 2);
+let ext = null;
+
+function runMultisampledTest() {
+    debug("");
+    debug("Testing that color is written as multisampled");
+    let program = wtu.setupColorQuad(gl, 0);
+    gl.viewport(0, 0, 2, 2);
+    let color = [0, 1.0, 0, 1.0];
+
+    let fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+
+    let colorTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, colorTex);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
+    ext.framebufferTexture2DMultisampleEXT(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTex, 0, 4);
+
+    gl.clearColor(1, 1, 1, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from clear");
+
+    gl.useProgram(program);
+    wtu.drawFloatColorQuad(gl, color);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from drawFloatColorQuad");
+
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTex, 0);
+    let buf = new Uint8Array(4);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    if (buf[0] != 0 ||
+        buf[1] != 255 ||
+        buf[2] != 0 ||
+        buf[3] != 255) {
+        testFailed("Pixel at should have been (0, 255, 0, 255), " +
+                 "was (" + buf[0] + ", " + buf[1] + ", " + buf[2] + ", " + buf[3] + ")");
+    } else
+        testPassed("runMultisampledTest with full green rgb");
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    let colorTex_partial = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, colorTex_partial);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 1, 1);
+    ext.framebufferTexture2DMultisampleEXT(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTex_partial, 0, 4);
+
+    gl.clearColor(1, 1, 1, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from clear");
+
+    program = wtu.setupColorQuad(gl, 0, { scale: 0.5 });
+    gl.useProgram(program);
+    wtu.drawFloatColorQuad(gl, color);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from drawFloatColorQuad");
+
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTex_partial, 0);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    if (buf[0] != 191 ||
+        buf[1] != 255 ||
+        buf[2] != 191 ||
+        buf[3] != 255) {
+        testFailed("Pixel at should have been (191, 255, 191, 255), " +
+                 "was (" + buf[0] + ", " + buf[1] + ", " + buf[2] + ", " + buf[3] + ")");
+    } else
+        testPassed("runMultisampledTest with partial green rgb");
+
+    let colorTex_srgb = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, colorTex_srgb);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.SRGB8_ALPHA8, 1, 1);
+    ext.framebufferTexture2DMultisampleEXT(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTex_srgb, 0, 4);
+
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from clear");
+
+    gl.useProgram(program);
+    wtu.drawFloatColorQuad(gl, color);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from drawFloatColorQuad");
+
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTex_srgb, 0);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from readpixels");
+    if (buf[0] != 0 ||
+        buf[1] != 63 ||
+        buf[2] != 0 ||
+        buf[3] != 63) {
+        testFailed("Pixel at should have been (0, 63, 0, 63), " +
+                 "was (" + buf[0] + ", " + buf[1] + ", " + buf[2] + ", " + buf[3] + ")");
+    } else
+        testPassed("runMultisampledTest with partial srgb green");
+
+    debug("");
+}
+
+function runDrawBuffersClearTest()
+{
+    debug("Testing that calling clear() clears all views in all draw buffers");
+
+    let width = 256;
+    let height = 256;
+
+    let samples = gl.getParameter(ext.MAX_SAMPLES_EXT);
+
+    let fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    let colorTex = [null, null, null];
+    let drawBuffers = [0, 0, 0];
+    for (let texIndex = 0; texIndex < colorTex.length; ++texIndex) {
+        colorTex[texIndex] = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, colorTex[texIndex]);
+        gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, width, height);
+        ext.framebufferTexture2DMultisampleEXT(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + texIndex, gl.TEXTURE_2D, colorTex[texIndex], 0, samples);
+        drawBuffers[texIndex] = gl.COLOR_ATTACHMENT0 + texIndex;
+    }
+
+    gl.viewport(0, 0, width, height);
+    gl.drawBuffers(drawBuffers);
+
+    gl.clearColor(0, 1, 1, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from clear");
+
+    let readFb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, readFb);
+    for (let texIndex = 0; texIndex < colorTex.length; ++texIndex) {
+        gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTex[texIndex], 0);
+        let expectedColor = [0, 255, 255, 255];
+        wtu.checkCanvasRect(gl, 0, 0, width, height, expectedColor, 'color attachment ' + texIndex + ' should be cyan');
+    }
+
+    testPassed("runDrawBuffersClearTest");
+}
+
+description("This test verifies the functionality of the WEBGL_multisampled_render_to_texture extension, if it is available.");
+
+debug("");
+
+if (!gl) {
+  testFailed("WebGL context does not exist");
+} else {
+  testPassed("WebGL context exists");
+
+  if (!gl.getExtension("WEBGL_multisampled_render_to_texture")) {
+      testPassed("No WEBGL_multisampled_render_to_texture support -- this is legal");
+  } else {
+      testPassed("Successfully enabled WEBGL_multisampled_render_to_texture extension");
+      ext = gl.getExtension('WEBGL_multisampled_render_to_texture');
+
+      runMultisampledTest();
+
+      runDrawBuffersClearTest();
+  }
+}
+
+debug("");
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+
+</body>
+</html>
