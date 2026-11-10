@@ -756,21 +756,23 @@ goog.scope(function() {
                     if (scalarType === 'float') {
                         var outBuffer = new Float32Array(buffers.output.buffer, buffers.output.offset + buffers.output.stride * outNdx + outOffset + compNdx * 4, 1);
                         var inBuffer = new Float32Array(buffers.input.buffer, buffers.input.offset + buffers.input.stride * inNdx + attribute.offset + compNdx * 4, 1);
-                        var difInOut = inBuffer[0] - outBuffer[0];
-                        /* TODO: Original code used ULP comparison for highp and mediump precision. This could cause failures. */
                         switch (precision) {
                             case gluShaderUtil.precision.PRECISION_HIGHP: {
-                                isEqual = Math.abs(difInOut) < 0.1;
+                                var inBits = new Int32Array(inBuffer.buffer, inBuffer.byteOffset, 1)[0];
+                                var outBits = new Int32Array(outBuffer.buffer, outBuffer.byteOffset, 1)[0];
+                                isEqual = Math.abs(inBits - outBits) < 2;
                                 break;
                             }
 
                             case gluShaderUtil.precision.PRECISION_MEDIUMP: {
-                                isEqual = Math.abs(difInOut) < 0.1;
+                                var inBits = new Int32Array(inBuffer.buffer, inBuffer.byteOffset, 1)[0];
+                                var outBits = new Int32Array(outBuffer.buffer, outBuffer.byteOffset, 1)[0];
+                                isEqual = Math.abs(inBits - outBits) < 2 + (1 << 13);
                                 break;
                             }
 
                             case gluShaderUtil.precision.PRECISION_LOWP: {
-                                isEqual = Math.abs(difInOut) < 0.1;
+                                isEqual = Math.abs(inBuffer[0] - outBuffer[0]) < 0.1;
                                 break;
                             }
                             default:
