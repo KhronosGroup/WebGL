@@ -1,0 +1,141 @@
+<!--
+Copyright (c) 2026 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Array declarations with whitespace inside the brackets</title>
+<link rel="stylesheet" href="../../../resources/js-test-style.css"/>
+<script src="../../../js/js-test-pre.js"></script>
+<script src="../../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="4" height="4"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description("Array sizes written with whitespace inside the brackets, as a literal, a constant, or a macro, must size uniform and varying arrays correctly.");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas", {antialias: false});
+var isWebGL2 = wtu.isWebGL2(gl);
+
+// Each case declares one three-element uniform array whose size is written with
+// spaces inside the brackets, and reads it either directly or through a varying
+// array declared the same way. The expected pixel reads every element once, so an
+// array sized at one element (or an index clamped to the first) produces a
+// different color even when the program still links.
+var cases = [
+    {name: "literal size", decl: "uniform float arrayLiteral[ 3 ];", array: "arrayLiteral", setup: ""},
+    {name: "constant size", decl: "uniform float arrayConstant[ arraySize ];", array: "arrayConstant",
+     setup: "const int arraySize = 3;"},
+    {name: "macro size", decl: "uniform float arrayMacro[ ARRAY_SIZE ];", array: "arrayMacro",
+     setup: "#define ARRAY_SIZE 3"}
+];
+var values = [0.0, 0.5, 1.0];
+var expected = [0, 128, 255, 255];
+
+function shaderPair(version, uniformSetup, uniformDecl, arrayName, expression, varyingArray) {
+    var v = version === 3;
+    var vertexSource = [
+        v ? "#version 300 es" : "",
+        "precision highp float;",
+        v ? "in vec4 position;" : "attribute vec4 position;",
+        varyingArray ? (v ? "out vec4 vValues[ 3 ];" : "varying vec4 vValues[ 3 ];")
+                     : (v ? "out vec4 vValue;" : "varying vec4 vValue;"),
+        uniformSetup,
+        uniformDecl,
+        "void main() {",
+        "    gl_Position = position;",
+        varyingArray ? "    vValues[ 0 ] = vec4(" + expression + ", 1.0) * 0.5;" : "    vValue = vec4(1.0);",
+        varyingArray ? "    vValues[ 1 ] = vec4(0.0);" : "",
+        varyingArray ? "    vValues[ 2 ] = vec4(" + expression + ", 1.0) * 0.5;" : "",
+        "}"
+    ].join("\n");
+    var fragmentSource = [
+        v ? "#version 300 es" : "",
+        "precision highp float;",
+        varyingArray ? (v ? "in vec4 vValues[ 3 ];" : "varying vec4 vValues[ 3 ];")
+                     : (v ? "in vec4 vValue;" : "varying vec4 vValue;"),
+        v ? "out vec4 fragColor;" : "",
+        uniformSetup,
+        uniformDecl,
+        "uniform int elementCount;",
+        "void main() {",
+        // The varying array carries the values in its first and last element; the
+        // middle element is zero so that a mis-sized varying changes the color.
+        // Without the varying array, the fragment stage reads the uniform array itself,
+        // through a loop whose bound is a uniform, so that no element index is a constant
+        // the compiler could reject: a mis-sized array then shows only in the pixel.
+        "    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);",
+        varyingArray ? "    color = vValues[ 0 ] + vValues[ 1 ] + vValues[ 2 ];"
+                     : "    for (int i = 0; i < 3; ++i) { if (i >= elementCount) break; color[i] = " + arrayName + "[i]; }",
+        "    " + (v ? "fragColor" : "gl_FragColor") + " = color;",
+        "}"
+    ].join("\n");
+    return [vertexSource, fragmentSource];
+}
+
+function runCase(version, testCase, varyingArray) {
+    var label = "GLSL ES " + (version === 3 ? "3.00" : "1.00") + ", " + testCase.name +
+                (varyingArray ? ", read through the varying array" : "");
+    debug("");
+    debug(label);
+    var expression = testCase.array + "[0], " + testCase.array + "[1], " + testCase.array + "[2]";
+    var sources = shaderPair(version, testCase.setup, testCase.decl, testCase.array, expression, varyingArray);
+    var program = wtu.setupProgram(gl, sources, ["position"], [0], true);
+    if (!program) {
+        testFailed(label + ": program must compile and link");
+        return;
+    }
+    testPassed(label + ": program compiled and linked");
+
+    var count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    var reportedSize = -1;
+    for (var i = 0; i < count; ++i) {
+        var info = gl.getActiveUniform(program, i);
+        if (info.name === testCase.array || info.name === testCase.array + "[0]") {
+            reportedSize = info.size;
+        }
+    }
+    if (reportedSize === 3) {
+        testPassed(label + ": getActiveUniform reports size 3");
+    } else {
+        testFailed(label + ": getActiveUniform reports size " + reportedSize + ", expected 3");
+    }
+
+    gl.uniform1fv(gl.getUniformLocation(program, testCase.array), new Float32Array(values));
+    if (!varyingArray) {
+        gl.uniform1i(gl.getUniformLocation(program, "elementCount"), 3);
+    }
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, label + ": uniform1fv on the array");
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, label + ": drawing");
+    wtu.checkCanvas(gl, expected, label + ": every element reaches the output", 2);
+    gl.deleteProgram(program);
+}
+
+if (!gl) {
+    testFailed("Could not create a WebGL context");
+} else {
+    gl.disable(gl.DITHER);
+    wtu.setupUnitQuad(gl);
+    var versions = isWebGL2 ? [1, 3] : [1];
+    versions.forEach(function(version) {
+        cases.forEach(function(testCase) {
+            runCase(version, testCase, false);
+            runCase(version, testCase, true);
+        });
+    });
+}
+
+var successfullyParsed = true;
+</script>
+<script src="../../../js/js-test-post.js"></script>
+</body>
+</html>

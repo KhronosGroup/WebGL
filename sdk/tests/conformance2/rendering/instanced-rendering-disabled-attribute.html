@@ -1,0 +1,122 @@
+<!--
+Copyright (c) 2026 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Disabled vertex attributes in large instanced draws</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<canvas id="canvas" width="16" height="16"></canvas>
+<div id="console"></div>
+<script id="vshader" type="x-shader/x-vertex">#version 300 es
+layout(location = 0) in vec2 a_position;
+layout(location = 1) in vec4 a_color;
+uniform int u_lastInstance;
+out vec4 v_color;
+void main() {
+    // Only the last instance can contribute pixels, so an earlier instance
+    // cannot hide an incorrect constant attribute in a later instance.
+    gl_Position = gl_InstanceID == u_lastInstance ?
+        vec4(a_position, 0.0, 1.0) : vec4(2.0, 2.0, 2.0, 1.0);
+    v_color = a_color;
+}
+</script>
+<script id="fshader" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+in vec4 v_color;
+out vec4 outputColor;
+void main() {
+    outputColor = v_color;
+}
+</script>
+<script>
+"use strict";
+description("A disabled vertex attribute must supply its current value to every instance, including instances beyond 4096.");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas", {antialias: false, depth: false}, 2);
+
+if (!gl) {
+    testFailed("WebGL 2 context does not exist");
+} else {
+    testPassed("WebGL 2 context exists");
+    runTest();
+}
+
+function runTest() {
+    var program = wtu.setupProgram(gl, ["vshader", "fshader"]);
+    if (!program) {
+        testFailed("Could not create the test program");
+        return;
+    }
+
+    // Three vertices cover the canvas. There is an enabled, divisor-zero
+    // position array; only the color attribute uses a constant value.
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        -1, -1, 3, -1, -1, 3
+    ]), gl.STATIC_DRAW);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribDivisor(0, 0);
+    gl.disableVertexAttribArray(1);
+
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2]), gl.STATIC_DRAW);
+
+    var lastInstanceLocation = gl.getUniformLocation(program, "u_lastInstance");
+    gl.viewport(0, 0, 16, 16);
+    gl.disable(gl.DITHER);
+    // Neither a skipped draw nor a zero-valued attribute can match red/green.
+    gl.clearColor(0, 0, 1, 1);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Test setup should succeed");
+
+    // A small fixed emulation buffer can cover 4096 instances yet fail above
+    // that boundary. No per-instance input buffer is needed by this test.
+    var instanceCounts = [4096, 4097, 10000];
+    var colors = [
+        {name: "red", value: [1, 0, 0, 1], expected: [255, 0, 0, 255]},
+        {name: "green", value: [0, 1, 0, 1], expected: [0, 255, 0, 255]}
+    ];
+    for (var indexed = 0; indexed < 2; ++indexed) {
+        var drawName = indexed ? "drawElementsInstanced" : "drawArraysInstanced";
+        for (var countIndex = 0; countIndex < instanceCounts.length; ++countIndex) {
+            var instanceCount = instanceCounts[countIndex];
+            gl.uniform1i(lastInstanceLocation, instanceCount - 1);
+            for (var colorIndex = 0; colorIndex < colors.length; ++colorIndex) {
+                var color = colors[colorIndex];
+                var label = drawName + ", " + instanceCount + " instances, " + color.name;
+                gl.vertexAttrib4fv(1, color.value);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                if (indexed) {
+                    gl.drawElementsInstanced(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0, instanceCount);
+                } else {
+                    gl.drawArraysInstanced(gl.TRIANGLES, 0, 3, instanceCount);
+                }
+                wtu.glErrorShouldBe(gl, gl.NO_ERROR, label + ": draw should succeed");
+                wtu.checkCanvas(gl, color.expected, label + ": last instance should use the current attribute value", 0);
+                wtu.glErrorShouldBe(gl, gl.NO_ERROR, label + ": readback should succeed");
+            }
+        }
+    }
+
+    gl.deleteBuffer(indexBuffer);
+    gl.deleteBuffer(positionBuffer);
+    gl.deleteProgram(program);
+}
+
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+</body>
+</html>
