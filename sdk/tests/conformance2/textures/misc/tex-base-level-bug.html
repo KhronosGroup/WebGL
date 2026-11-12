@@ -39,6 +39,8 @@ function runtest() {
   var width = 2;
   var height = 2;
   gl.bindTexture(gl.TEXTURE_2D, tex);
+  wtu.fillTexture(gl, tex, width * 4, height * 4, [0, 255, 0, 255], 0, gl.RGBA, gl.UNSIGNED_BYTE);
+  wtu.fillTexture(gl, tex, width * 2, height * 2, [0, 255, 0, 255], 1, gl.RGBA, gl.UNSIGNED_BYTE);
   wtu.fillTexture(gl, tex, width, height, [255, 0, 0, 255], 2, gl.RGBA, gl.UNSIGNED_BYTE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 2);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -53,9 +55,9 @@ function runtest() {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clearAndDrawQuad should succeed");
   wtu.checkCanvas(gl, [255, 0, 0, 255], "should draw with [255, 0, 0, 255]");
 
-  width = 1;
-  height = 1;
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  // Redefining level 0 is ok as long as it's compatible with the existing
+  // level 0 definition (because base level is not zero).
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width * 4, height * 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texImage2D should succeed");
 
   wtu.clearAndDrawUnitQuad(gl);

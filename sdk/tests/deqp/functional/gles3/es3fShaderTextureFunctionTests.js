@@ -1814,10 +1814,6 @@ goog.scope(function() {
         // gen texture
         texId = gl.createTexture();
         gl.bindTexture(textureTarget, texId);
-        gl.texParameteri(textureTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(textureTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(textureTarget, gl.TEXTURE_BASE_LEVEL, testSize.lodBase);
-        gl.texParameteri(textureTarget, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
 
         // set up texture
 
@@ -1861,6 +1857,11 @@ goog.scope(function() {
             default:
                 throw new Error('Type not supported');
         }
+
+        gl.texParameteri(textureTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(textureTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(textureTarget, gl.TEXTURE_BASE_LEVEL, testSize.lodBase);
+        gl.texParameteri(textureTarget, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
 
         // test
         /** @type {number} */ var colorTolerance = 0.1;

@@ -1659,6 +1659,18 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
           <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
           <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an
           <code>INVALID_OPERATION</code> error.</p>
+          <p>
+              If <em>pname</em> is TEXTURE_BASE_LEVEL, <em>param</em> is non-zero, the currently bound WebGLTexture (see
+              above) is mutable, and texture level zero is not <em>base complete</em> as defined in
+              <a href="#refsGLES30">[GLES30]</a> p161, generates an <code>INVALID_OPERATION</code> error.
+          </p>
+          <p>
+              If <em>pname</em> is TEXTURE_BASE_LEVEL, <em>param</em> is
+              non-zero, the currently bound WebGLTexture (see above) is mutable,
+              and the texture would not be <em>mipmap complete</em> as defined in <a href="#refsGLES30">[GLES30]</a>
+              p161 if TEXTURE_BASE_LEVEL were 0 and TEXTURE_MAX_LEVEL were the highest defined level of the texture,
+              generates an <code>INVALID_OPERATION</code> error.
+          </p>
       </dd>
       <dt class="idl-code">void texParameteri(GLenum target, GLenum pname, GLint param)
           <span class="gl-spec">
@@ -1754,6 +1766,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
            <code>srcData</code>. (Elements are bytes for Uint8Array, int32s for Int32Array, etc.)
         <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>,
            generate INVALID_OPERATION.
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
 
       <dt class="idl-code">
@@ -1797,6 +1814,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         <p>Uploading subregions of elements is detailed in <a href="#DOM_UPLOAD_UNPACK_PARAMS">Pixel
            store parameters for uploads from <code>TexImageSource</code></a>.
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
+        </p>
         <p>Sized internal formats are supported in WebGL 2.0 and <em>internalformat</em> is no longer required to be the same as <em>format</em>. Instead, the combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in the following table:</p>
         <table id="TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE">
         <tr><th>Internal Format</th><th>Format</th><th>Type</th></tr>
@@ -1848,6 +1870,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         <p>
             If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
             generates an <code>INVALID_OPERATION</code> error.
+        </p>
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
         </p>
       </dd>
 
@@ -1917,6 +1944,24 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
       </dd>
 
       <dt class="idl-code">
+        void copyTexImage2D(GLenum target, GLint level, GLenum internalformat,
+                        GLint x, GLint y, GLsizei width, GLsizei height,
+                        GLint border)
+        <span class="gl-spec">
+          (<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/es_spec_3.0.pdf#nameddest=subsection.3.8.5">OpenGL ES 3.0.6 &sect;3.8.5</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glCopyTexImage2D.xhtml">man page</a>)
+        </span>
+      </dt>
+      <dd>
+        <p>Only differences from <a href="../1.0/index.html#COPYTEXIMAGE2D_HTML">copyTexImage2D</a> in WebGL 1.0 are described here.</p>
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
+        </p>
+      </dd>
+
+      <dt class="idl-code">
         <p>void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width,
                            GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type,
                            [AllowShared] ArrayBufferView? srcData)</p>
@@ -1950,6 +1995,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
            <code>srcData</code>. (Elements are bytes for Uint8Array, int32s for Int32Array, etc.)
         <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>,
            generate INVALID_OPERATION.
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
+        </p>
 
         <div class="note">It is recommended to use <a href="#TEXSTORAGE3D">texStorage3D</a> instead of texImage3D to allocate three-dimensional textures. texImage3D may impose a higher memory cost compared to texStorage3D in some implementations.</div>
       </dd>
@@ -1975,6 +2025,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in <a href="#TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE">this table</a>.</p>
         <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
+        </p>
         <p>If this function is called with an <code>ImageData</code> whose <code>data</code> attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. </p>
         <p>If this function is called with an <code>ImageBitmap</code> that has been neutered, an <code>INVALID_VALUE</code> error is generated. </p>
         <p>If this function is called with an <code>HTMLImageElement</code> or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing Document, or with an <code>HTMLCanvasElement</code>, <code>ImageBitmap</code>, or <code>OffscreenCanvas</code> whose bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception must be thrown. See <a href="../1.0/index.html#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.</p>
@@ -2119,6 +2174,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>, or
            if the amount of data passed in is not consistent with the format, dimensions, and
            contents of the compressed image, generates an INVALID_VALUE error.</p>
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
       </dt>
       <dt>
@@ -2164,6 +2224,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>, or
            if the amount of data passed in is not consistent with the format, dimensions, and
            contents of the compressed image, generates an INVALID_VALUE error.</p>
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
       </dt>
       <dt>
@@ -2204,18 +2269,30 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         </p>
       </dt>
       <dt>
-        <p class="idl-code">void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLintptr offset)
-          <span class="gl-spec">
-            (<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/es_spec_3.0.pdf#nameddest=subsection.3.8.6">OpenGL ES 3.0.6 &sect;3.8.6</a>,
-            <a href="https://registry.khronos.org/OpenGL-Refpages/es3.0/html/glCompressedTexSubImage2D.xhtml" class="nonnormative">man page</a>)
-          </span>
-        </p>
-      </dt>
-      <dt>
         <p class="idl-code">void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLintptr offset)
           <span class="gl-spec">
             (<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/es_spec_3.0.pdf#nameddest=subsection.3.8.6">OpenGL ES 3.0.6 &sect;3.8.6</a>,
             <a href="https://registry.khronos.org/OpenGL-Refpages/es3.0/html/glCompressedTexImage3D.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <p><strong>This section applies to the above two entry points.</strong></p>
+      <dd>
+        <p>If an attempt is made to call these functions with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
+        <p>
+           If the current value of TEXTURE_BASE_LEVEL is non-zero and the texture level is being
+           <a href="#BASE_LEVEL_CONSTRAINTS">incompatibly redefined</a>, generates an
+           <code>INVALID_OPERATION</code> error.
+        </p>
+        <p>The ETC2 and EAC texture formats defined in OpenGL ES 3.0 are <a href="#NO_ETC2_EAC">not available in WebGL 2.0</a>.
+      </dd>
+      <dt>
+        <p class="idl-code">void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLintptr offset)
+          <span class="gl-spec">
+            (<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/es_spec_3.0.pdf#nameddest=subsection.3.8.6">OpenGL ES 3.0.6 &sect;3.8.6</a>,
+            <a href="https://registry.khronos.org/OpenGL-Refpages/es3.0/html/glCompressedTexSubImage2D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
       </dt>
@@ -2227,7 +2304,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
           </span>
         </p>
       </dt>
-      <p><strong>This section applies to the above four entry points.</strong></p>
+      <p><strong>This section applies to the above two entry points.</strong></p>
       <dd>
         <p>If an attempt is made to call these functions with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
@@ -4382,6 +4459,38 @@ WebGL2RenderingContext includes WebGL2RenderingContextOverloads;
         undefined texture images, skipping an otherwise-common validation.
     </div>
 
+    <h3><a name="BASE_LEVEL_CONSTRAINTS">Incompatible redefinition of mutable textures is disallowed if TEXTURE_BASE_LEVEL is non-zero</a></h3>
+    <p>
+        In entry points that define a mutable texture level (<code>texImage2D</code>,
+        <code>texImage3D</code>, <code>compressedTexImage2D</code>,
+        <code>compressedTexImage3D</code>, and <code>copyTexImage2D</code>), if TEXTURE_BASE_LEVEL
+        is non-zero, then an <code>INVALID_OPERATION</code> error is generated if the defined level
+        is not mipmap-compatible with the existing definition of level zero.
+        That is, the newly defined texture level must have the same format and dimensions as an
+        immutable texture would at the same level if defined with the same format and dimensions as
+        the texture's level zero format and dimensions.
+    </p>
+
+    <p>
+        Additionally, if a mutable texture is not defined in an equivalent way to an immutable
+        texture with the same level zero format, dimensions, and level count,
+        <code>texParameterf</code> with a non-zero value for TEXTURE_BASE_LEVEL generates an
+        <code>INVALID_OPERATION</code> error.
+    </p>
+
+    <div class="note">
+        Effectively, these rules restrict use of TEXTURE_BASE_LEVEL to mutable textures that are
+        identically defined to an equivalent immutable texture.
+    </div>
+
+    <div class="note rationale">
+        This change greatly simplifies implementations and avoids widespread bugs in existing OpenGL
+        and OpenGL ES drivers.
+        In general, applications are advised to avoid mutable textures altogether if possible, or
+        otherwise define them as an immutable texture would be defined and never redefine them.
+        Internally to the implementations, redefining a mutable texture is no more efficient than
+        creating a second texture and copying the contents, only more error-prone.
+    </div>
 
     <h3><code>deleteQuery</code> implicitly calls <code>endQuery</code> if the query is active</h3>
     <p>

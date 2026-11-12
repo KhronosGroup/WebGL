@@ -94,6 +94,15 @@ function testChangeTargetTextureLevelSize() {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copyTexImage2D should succeed.");
     checkFramebuffer([gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT]);
 
+    // Make the texture consistent again before base level can be changed
+    var new_width = 64 * 4;
+    var new_height = 64 * 4;
+    for (var level = 0; (new_width >> level) > 0; ++level) {
+        // Keep level 2 intact
+        if (level != 2)
+            gl.texImage2D(gl.TEXTURE_2D, level, gl.RGBA8, new_width >> level, new_height >> level, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    }
+
     checkTextureLevelColor(texture, 2, 64, 64, 0, 0, 32, 32, [255, 0, 0, 255]);
     checkTextureLevelColor(texture, 2, 64, 64, 0, 32, 64, 32, [0, 0, 0, 0]);
     checkTextureLevelColor(texture, 2, 64, 64, 32, 32, 32, 32, [0, 0, 0, 0]);
@@ -120,6 +129,13 @@ function testChangeTargetTextureLevelFormat() {
     gl.copyTexImage2D(gl.TEXTURE_2D, 2, gl.LUMINANCE_ALPHA, 0, 0, 16, 16, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copyTexImage2D should succeed.");
     checkFramebuffer([gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT]);
+
+    // Make the texture consistent again before base level can be changed
+    for (var level = 0; (64 >> level) > 0; ++level) {
+        // Keep level 2 intact
+        if (level != 2)
+            gl.texImage2D(gl.TEXTURE_2D, level, gl.LUMINANCE_ALPHA, 64 >> level, 64 >> level, 0, gl.LUMINANCE_ALPHA, gl.UNSIGNED_BYTE, null);
+    }
 
     checkTextureLevelColor(texture, 2, 16, 16, 0, 0, 16, 16, [255, 255, 255, 255]);
 

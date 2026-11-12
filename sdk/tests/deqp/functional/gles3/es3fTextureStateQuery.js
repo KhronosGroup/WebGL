@@ -184,9 +184,21 @@ es3fTextureStateQuery.TextureLevelCase.prototype.testTexture = function() {
 
     this.check(glsStateQuery.verifyTexture(this.m_textureTarget, this.m_levelTarget, this.m_initialValue));
 
+    var size = 128;
+    var is_base_level = this.m_levelTarget == gl.TEXTURE_BASE_LEVEL;
+    var max_value = is_base_level ? 7 : 64000;
+
+    // For BASE_LEVEL, the texture must be well defined before it can be changed.
+    if (is_base_level) {
+        if (this.m_textureTarget == gl.TEXTURE_2D_ARRAY || this.m_textureTarget == gl.TEXTURE_3D)
+            gl.texStorage3D(this.m_textureTarget, 8, gl.RGBA8, size, size, size);
+        else
+            gl.texStorage2D(this.m_textureTarget, 8, gl.RGBA8, size, size);
+    }
+
     var numIterations = 60;
     for (var ndx = 0; ndx < numIterations; ++ndx) {
-        var ref = rnd.getInt(0, 64000);
+        var ref = rnd.getInt(0, max_value);
 
         gl.texParameteri(this.m_textureTarget, this.m_levelTarget, ref);
 
@@ -197,7 +209,7 @@ es3fTextureStateQuery.TextureLevelCase.prototype.testTexture = function() {
     var nonSignificantOffsets = [-0.45, -0.25, 0, 0.45]; // offsets O so that for any integers z in Z, o in O roundToClosestInt(z+o)==z
 
     for (var ndx = 0; ndx < numIterations; ++ndx) {
-        var ref = rnd.getInt(0, 64000);
+        var ref = rnd.getInt(0, max_value);
 
         for (var i = 0; i < nonSignificantOffsets.length; i++) {
             gl.texParameterf(this.m_textureTarget, this.m_levelTarget, ref + nonSignificantOffsets[i]);
