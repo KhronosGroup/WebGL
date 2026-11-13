@@ -32,6 +32,7 @@ function testDrawIntegerTextureBaseLevel()
 {
     description("This test verifies the functionality of rendering with integer texture non-zero base level.");
 
+    var red = [255, 0, 0, 255];
     var green = [0, 255, 0, 255];
 
     var width = 16;
@@ -41,12 +42,12 @@ function testDrawIntegerTextureBaseLevel()
     gl.viewport(0, 0, width, height);
 
     var texture = gl.createTexture();
-    var level = 1;
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, level);
-    wtu.fillTexture(gl, texture, width, height, green, level, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, gl.RGBA8UI);
+    wtu.fillTexture(gl, texture, width * 2, height * 2, red, 0, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, gl.RGBA8UI);
+    wtu.fillTexture(gl, texture, width, height, green, 1, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, gl.RGBA8UI);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 1);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     var program = tiu.setupTexturedQuad(gl, "RGBA8UI");

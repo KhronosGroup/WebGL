@@ -38,6 +38,21 @@ for (var ii = 0; ii < targets.length; ++ii) {
   var tex = gl.createTexture();
   gl.activeTexture(gl.TEXTURE0 + ii);
   gl.bindTexture(gl[target], tex);
+
+  // Changing base level requires well-defined texture mips.
+  var size = 128;
+  for (var level = 0; level <= 7; ++level) {
+    var level_size = size >> level;
+    if (gl[target] == gl.TEXTURE_2D_ARRAY || gl[target] == gl.TEXTURE_3D)
+      gl.texImage3D(gl[target], level, gl.RGBA8, level_size, level_size, gl[target] == gl.TEXTURE_3D ? level_size : size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    else if (gl[target] == gl.TEXTURE_CUBE_MAP) {
+      for (var face = 0; face < 6; ++face) {
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + face, level, gl.RGBA8, level_size, level_size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      }
+    }
+    else
+      gl.texImage2D(gl[target], level, gl.RGBA8, level_size, level_size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  }
 }
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
@@ -54,7 +69,7 @@ if (contextVersion > 1) {
     { state: 'TEXTURE_WRAP_R',            default: 'REPEAT',                 value1: 'CLAMP_TO_EDGE',           value2: 'MIRRORED_REPEAT' },
     { state: 'TEXTURE_COMPARE_FUNC',      default: 'LEQUAL',                 value1: 'GREATER',                 value2: 'LESS'            },
     { state: 'TEXTURE_COMPARE_MODE',      default: 'NONE',                   value1: 'COMPARE_REF_TO_TEXTURE',  value2: 'NONE'            },
-    { state: 'TEXTURE_BASE_LEVEL',        default: 0,                        value1: 100,                       value2: 99                },
+    { state: 'TEXTURE_BASE_LEVEL',        default: 0,                        value1: 7,                         value2: 6                 },
     { state: 'TEXTURE_MAX_LEVEL',         default: 1000,                     value1: 800,                       value2: 300               },
     { state: 'TEXTURE_MIN_LOD',           default: -1000.0,                  value1: -500.0,                    value2: -999.0            },
     { state: 'TEXTURE_MAX_LOD',           default: 1000.0,                   value1: 500.0,                     value2: 999.0             },
