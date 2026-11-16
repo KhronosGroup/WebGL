@@ -374,12 +374,6 @@
         an <a href="https://html.spec.whatwg.org/multipage/webappapis.html#imagebitmap">ImageBitmap</a> <a href="#refsHTML">[HTML]</a>
         from this context's canvas.
     </p>
-    <p>
-        When presenting the drawing buffer, the pixel values in the drawing buffer shall be
-        converted from the color space of the drawing buffer to the color space of the screen, and
-        then shall be tone mapped as specified by the tone mapping of the drawing buffer (see
-        <code>drawingBufferToneMapping</code>).
-    </p>
     <div class="note">
         <p>
             While it is sometimes desirable to preserve the drawing buffer, it can cause significant
@@ -449,51 +443,18 @@
 
         <dt class="idl-code">[WebGLHandlesContextLoss] undefined drawingBufferToneMapping(optional CanvasToneMapping toneMapping = {});
         <dd>
-            <p>
-                Set the tone mapping of the drawing buffer to <code>toneMapping</code>.
-                This may be called at any time.
-            </p>
-            <p>
-                The tone mapping of the drawing buffer is a
-                <code><a href="#refsCANVASTONEMAPPING">CanvasToneMapping</a></code>
-                <a href="#refsCANVASTONEMAPPING">[CANVASTONEMAPPING]</a>.
-                Its initial value is <code>{mode:"standard"}</code>.
-                It indicates how the drawing buffer shall be tone mapped when it is presented,
-                and is interpreted identically to the <code>toneMapping</code> member of
-                <code>GPUCanvasConfiguration</code> <a href="#refsWEBGPU">[WEBGPU]</a>.
-            </p>
-            <div class="note">
-                <p>
-                    Because <code>toneMapping</code> defaults to <code>{}</code>, calling
-                    <code>drawingBufferToneMapping()</code> with no arguments resets the tone mapping
-                    of the drawing buffer to <code>{mode:"standard"}</code>.
-                </p>
-            </div>
-            <p>
-                The behavior specified by the tone mapping of the drawing buffer shall be preserved
-                when the drawing buffer is used to create an
-                <a href="https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#imagebitmap">ImageBitmap</a>,
-                a <code>VideoFrame</code>, or an encoded image (e.g, via <code>toDataURL</code> or
-                <code>toBlob</code>), as specified for <code>CanvasToneMapping</code>
-                <a href="#refsCANVASTONEMAPPING">[CANVASTONEMAPPING]</a>.
-            </p>
-            <p>
-                Calling <code>drawingBufferToneMapping</code> does not modify the contents of the
-                drawing buffer.
-            </p>
+            Set the tone mapping of the drawing buffer to <code>toneMapping</code>.
+            The tone mapping of the drawing buffer is of type
+            <code><a href="https://html.spec.whatwg.org/multipage/canvas.html#canvastonemapping">CanvasToneMapping</a></code>
+            <a href="#refsCANVASTONEMAPPING">(specification)</a>, and is initially
+            <code>{mode: "standard"}</code>.
+            Changing the tone mapping causes the drawing buffer to be reallocated; its
+            current contents are lost.
         </dd>
 
         <dt class="idl-code">[WebGLHandlesContextLoss] CanvasToneMapping getDrawingBufferToneMapping();
         <dd>
-            <p>
-                Return the tone mapping of the drawing buffer.
-            </p>
-            <div class="note">
-                <p>
-                    The tone mapping is a dictionary, and therefore cannot be exposed as an attribute
-                    in the way that <code>drawingBufferColorSpace</code> is.
-                </p>
-            </div>
+            Return the tone mapping of the drawing buffer.
         </dd>
     </dl>
 
@@ -4846,11 +4807,9 @@ extensions.
             WHATWG.
         </dd>
         <dt id="refsCANVASTONEMAPPING">[CANVASTONEMAPPING]</dt>
-        <dd><cite><a href="https://github.com/w3c-cg/ColorWeb-CG/blob/main/canvas-tone-map.md">
-            Tone mapping for 2D Canvas</a></cite>
-            (proposed addition of <code>CanvasToneMapping</code> and <code>CanvasToneMappingMode</code>
-            to the HTML Living Standard),
-            Color on the Web Community Group.
+        <dd><cite><a href="https://html.spec.whatwg.org/multipage/canvas.html#canvastonemapping">
+            HTML Living Standard - The CanvasToneMapping dictionary</a></cite>,
+            WHATWG.
         </dd>
         <dt id="refsWEBGPU">[WEBGPU]</dt>
         <dd><cite><a href="https://gpuweb.github.io/gpuweb/">
