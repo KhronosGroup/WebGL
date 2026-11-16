@@ -18,6 +18,7 @@ mipmap-fbo.html
 --min-version 2.0.1 npot-video-sizing.html
 --min-version 2.0.1 tex-3d-mipmap-levels-intel-bug.html
 --min-version 2.0.1 origin-clean-conformance-offscreencanvas.html
+--min-version 2.0.1 pbo-texture-uploads.html
 tex-3d-size-limit.html
 --min-version 2.0.1 tex-base-level-bug.html
 --min-version 2.0.1 tex-image-10bpc.html

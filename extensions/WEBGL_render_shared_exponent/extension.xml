@@ -20,7 +20,7 @@
              name="QCOM_render_shared_exponent">
       <addendum>
         Clearing or drawing to a shared exponent color buffer will generate <code>INVALID_OPERATION</code>
-        if the associated color write mask has different values for red, green, and blue channels.
+        if the associated color write mask has different values for red, green, blue, and alpha channels.
       </addendum>
     </mirrors>
 
@@ -43,6 +43,9 @@ interface WEBGL_render_shared_exponent {
     </revision>
     <revision date="2024/01/25">
       <change>Promoted to Community Approved.</change>
+    </revision>
+    <revision date="2026/06/30">
+      <change>Adjusted color write mask validation to require the same state for all channels.</change>
     </revision>
   </history>
 </extension>

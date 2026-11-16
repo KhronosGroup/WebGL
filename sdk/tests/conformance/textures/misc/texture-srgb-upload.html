@@ -72,7 +72,7 @@ invoke(async () => {
     video.loop = true;
     video.crossOrigin = "anonymous";
     try {
-        await video.play();
+        await wtu.waitVideoUploadable(video);
     } catch (e) {
         debug('Browser could not play this specific video. Skipping test.');
         finishTest();

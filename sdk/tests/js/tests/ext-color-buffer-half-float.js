@@ -273,6 +273,9 @@ function runInternalFormatQueryTest()
     testPassed("Internal format query succeeded");
 }
 
+const copyTestFullColor = [0.125, 0.25, 0.5, 0.75];
+const copyTestSubColor = [0.875, 0.625, 0.375, 0.25];
+
 function runCopyTexImageTest(enabled)
 {
     var width = 16;
@@ -313,6 +316,7 @@ function runCopyTexImageTest(enabled)
             { valid:  true, renderable: false, format: "LUMINANCE_ALPHA", destFormat: "LUMINANCE_ALPHA", },
         ];
     }
+    var copyVerifyProgram = wtu.setupSimpleTextureProgram(gl);
     cases.forEach(function(testcase) {
         debug("");
         debug(`Testing CopyTexImage2D for format: ${testcase.format}, internalformat: ${testcase.internalformat}, destformat: ${testcase.destFormat}`);
@@ -330,16 +334,35 @@ function runCopyTexImageTest(enabled)
         var fbo = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texSrc, level);
-        var texDest = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texDest);
+        var texDest = allocateTexture();
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setup framebuffer with texture should succeed.");
         if (enabled && testcase.renderable) {
             if (!wtu.isWebGL2(gl) && format == gl.RGB && gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT) {
                 testPassed("RGB framebuffer attachment not supported. This is allowed.")
             } else {
                 shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
+                gl.clearColor(copyTestFullColor[0], copyTestFullColor[1], copyTestFullColor[2], copyTestFullColor[3]);
+                gl.clear(gl.COLOR_BUFFER_BIT);
                 gl.copyTexImage2D(gl.TEXTURE_2D, level, destFormat, 0, 0, width, height, 0);
                 wtu.glErrorShouldBe(gl, testcase.valid ? gl.NO_ERROR : [gl.INVALID_ENUM, gl.INVALID_OPERATION], "CopyTexImage2D");
+                if (testcase.valid) {
+                    gl.clearColor(copyTestSubColor[0], copyTestSubColor[1], copyTestSubColor[2], copyTestSubColor[3]);
+                    gl.clear(gl.COLOR_BUFFER_BIT);
+                    gl.copyTexSubImage2D(gl.TEXTURE_2D, level, 0, 0, 0, 0, width / 2, height / 2);
+                    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "CopyTexSubImage2D should succeed.");
+
+                    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                    gl.useProgram(copyVerifyProgram);
+                    wtu.clearAndDrawUnitQuad(gl);
+                    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Drawing copied texture should succeed.");
+
+                    const expectedSub = wtu.expectedSampledCopyColor(gl, destFormat, copyTestSubColor);
+                    const expectedFull = wtu.expectedSampledCopyColor(gl, destFormat, copyTestFullColor);
+                    wtu.checkCanvasRect(gl, Math.floor(gl.canvas.width / 4), Math.floor(gl.canvas.height / 4), 1, 1,
+                                        expectedSub, "Sub-image copy region should match expected color", 2);
+                    wtu.checkCanvasRect(gl, Math.floor(gl.canvas.width * 3 / 4), Math.floor(gl.canvas.height * 3 / 4), 1, 1,
+                                        expectedFull, "Full-image copy region should match expected color", 2);
+                }
             }
         } else {
             shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT");

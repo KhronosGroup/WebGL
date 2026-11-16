@@ -72,13 +72,13 @@ for (ii = 0; ii < extensionNames.length; ++ii) {
         var extension2 = gl.getExtension(originalName);
         assertMsg(
             extension === extension2,
-            "calling getExtension twice for the same extension returns the same object");
+            "calling getExtension twice for the same extension " + originalName + " returns the same object");
         assertMsg(
             extension2.testStringProperty === kTestString &&
             extension2.testFunctionProperty === kTestFunction &&
             extension2.testObjectProperty === kTestObject &&
             extension2.testNumberProperty === kTestNumber,
-            "object returned by 2nd call to getExtension has same properties");
+            "object returned by 2nd call to getExtension " + originalName + " has same properties");
 
         var prefixedVariants = wtu.getExtensionPrefixedNames(originalName);
         for (var jj = 0; jj < prefixedVariants.length; ++jj) {
