@@ -377,7 +377,8 @@
     <p>
         When presenting the drawing buffer, the pixel values in the drawing buffer shall be
         converted from the color space of the drawing buffer to the color space of the screen, and
-        then shall be tone mapped as specified by <code>drawingBufferToneMapping</code>.
+        then shall be tone mapped as specified by the tone mapping of the drawing buffer (see
+        <code>drawingBufferToneMapping</code>).
     </p>
     <div class="note">
         <p>
@@ -446,43 +447,53 @@
             If allocation fails, generate <code>OUT_OF_MEMORY</code>.
         </dd>
 
-        <dt class="idl-code">undefined drawingBufferToneMapping(WebGLToneMapping toneMapping);
+        <dt class="idl-code">[WebGLHandlesContextLoss] undefined drawingBufferToneMapping(optional CanvasToneMapping toneMapping = {});
         <dd>
             <p>
-              The value of <code>toneMapping.mode</code> indicates how the drawing buffer shall be
-              tone mapped by the HTML page compositor when presented.
+                Set the tone mapping of the drawing buffer to <code>toneMapping</code>.
+                This may be called at any time.
             </p>
-
             <p>
-              The allowed values are:
+                The tone mapping of the drawing buffer is a
+                <code><a href="#refsCANVASTONEMAPPING">CanvasToneMapping</a></code>
+                <a href="#refsCANVASTONEMAPPING">[CANVASTONEMAPPING]</a>.
+                Its initial value is <code>{mode:"standard"}</code>.
+                It indicates how the drawing buffer shall be tone mapped when it is presented,
+                and is interpreted identically to the <code>toneMapping</code> member of
+                <code>GPUCanvasConfiguration</code> <a href="#refsWEBGPU">[WEBGPU]</a>.
             </p>
-            <dl><dd>
+            <div class="note">
                 <p>
-                  <em>standard</em>
+                    Because <code>toneMapping</code> defaults to <code>{}</code>, calling
+                    <code>drawingBufferToneMapping()</code> with no arguments resets the tone mapping
+                    of the drawing buffer to <code>{mode:"standard"}</code>.
                 </p>
+            </div>
+            <p>
+                The behavior specified by the tone mapping of the drawing buffer shall be preserved
+                when the drawing buffer is used to create an
+                <a href="https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#imagebitmap">ImageBitmap</a>,
+                a <code>VideoFrame</code>, or an encoded image (e.g, via <code>toDataURL</code> or
+                <code>toBlob</code>), as specified for <code>CanvasToneMapping</code>
+                <a href="#refsCANVASTONEMAPPING">[CANVASTONEMAPPING]</a>.
+            </p>
+            <p>
+                Calling <code>drawingBufferToneMapping</code> does not modify the contents of the
+                drawing buffer.
+            </p>
+        </dd>
+
+        <dt class="idl-code">[WebGLHandlesContextLoss] CanvasToneMapping getDrawingBufferToneMapping();
+        <dd>
+            <p>
+                Return the tone mapping of the drawing buffer.
+            </p>
+            <div class="note">
                 <p>
-                  All colors that are inside of the standard dynamic range of the screen shall not
-                  be changed, and all colors that outside of the standard dynamic range of the
-                  screen shall be projected to the standard dynamic range of the screen.
+                    The tone mapping is a dictionary, and therefore cannot be exposed as an attribute
+                    in the way that <code>drawingBufferColorSpace</code> is.
                 </p>
-                <div class="note">
-                  This projection is often accomplished by clamping color values in the color
-                  space of the screen to the [0, 1] interval.
-                </div>
-                <p>
-                  <em>extended</em>
-                </p>
-                <p>
-                  All colors that are inside of the extended dynamic range of the screen shall not
-                  be changed, and all colors that outside of the extended dynamic range of the
-                  screen shall be projected to the extended dynamic range of the screen.
-                </p>
-                <div class="note">
-                  This projection is often accomplished by clamping color values in the color
-                  space of the screen to the interval of values that the screen is capable of
-                  displaying, which may include values greater than 1.
-                </div>
-            </dd></dl>
+            </div>
         </dd>
     </dl>
 
@@ -821,15 +832,6 @@ typedef unrestricted float GLclampf;
 // The power preference settings are documented in the WebGLContextAttributes
 // section of the specification.
 enum WebGLPowerPreference { "default", "low-power", "high-performance" };
-
-enum WebGLToneMappingMode {
-  "standard",
-  "extended",
-};
-
-dictionary WebGLToneMapping {
-  WebGLToneMappingMode mode = "standard";
-};
 </pre>
 
 <!-- ======================================================================================================= -->
@@ -1861,7 +1863,8 @@ interface mixin <dfn data-dfn-type="interface" id="WebGLRenderingContextBase">We
     object? getExtension(DOMString name);
 
     undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
-    undefined drawingBufferToneMapping(WebGLToneMapping toneMapping);
+    [WebGLHandlesContextLoss] undefined drawingBufferToneMapping(optional CanvasToneMapping toneMapping = {});
+    [WebGLHandlesContextLoss] CanvasToneMapping getDrawingBufferToneMapping();
 
     undefined activeTexture(GLenum texture);
     undefined attachShader(WebGLProgram program, WebGLShader shader);
@@ -4841,6 +4844,13 @@ extensions.
         <dd><cite><a href="https://html.spec.whatwg.org/multipage/canvas.html#predefinedcolorspace">
             HTML Living Standard - The PredefinedColorSpace enum</a></cite>,
             WHATWG.
+        </dd>
+        <dt id="refsCANVASTONEMAPPING">[CANVASTONEMAPPING]</dt>
+        <dd><cite><a href="https://github.com/w3c-cg/ColorWeb-CG/blob/main/canvas-tone-map.md">
+            Tone mapping for 2D Canvas</a></cite>
+            (proposed addition of <code>CanvasToneMapping</code> and <code>CanvasToneMappingMode</code>
+            to the HTML Living Standard),
+            Color on the Web Community Group.
         </dd>
         <dt id="refsWEBGPU">[WEBGPU]</dt>
         <dd><cite><a href="https://gpuweb.github.io/gpuweb/">
