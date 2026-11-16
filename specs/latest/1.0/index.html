@@ -439,6 +439,23 @@
             generate <code>INVALID_VALUE</code>.
 
             If allocation fails, generate <code>OUT_OF_MEMORY</code>.
+        </dd>
+
+        <dt class="idl-code">[WebGLHandlesContextLoss] undefined drawingBufferToneMapping(optional CanvasToneMapping toneMapping = {});
+        <dd>
+            Set the tone mapping of the drawing buffer to <code>toneMapping</code>.
+            The tone mapping of the drawing buffer is of type
+            <code><a href="https://html.spec.whatwg.org/multipage/canvas.html#canvastonemapping">CanvasToneMapping</a></code>
+            <a href="#refsCANVASTONEMAPPING">(specification)</a>, and is initially
+            <code>{mode: "standard"}</code>.
+            Changing the tone mapping causes the drawing buffer to be reallocated; its
+            current contents are lost.
+        </dd>
+
+        <dt class="idl-code">[WebGLHandlesContextLoss] CanvasToneMapping getDrawingBufferToneMapping();
+        <dd>
+            Return the tone mapping of the drawing buffer.
+        </dd>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1807,6 +1824,8 @@ interface mixin <dfn data-dfn-type="interface" id="WebGLRenderingContextBase">We
     object? getExtension(DOMString name);
 
     undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
+    [WebGLHandlesContextLoss] undefined drawingBufferToneMapping(optional CanvasToneMapping toneMapping = {});
+    [WebGLHandlesContextLoss] CanvasToneMapping getDrawingBufferToneMapping();
 
     undefined activeTexture(GLenum texture);
     undefined attachShader(WebGLProgram program, WebGLShader shader);
@@ -4785,6 +4804,11 @@ extensions.
         <dt id="refsPREDEFINEDCOLORSPACE">[PREDEFINEDCOLORSPACE]</dt>
         <dd><cite><a href="https://html.spec.whatwg.org/multipage/canvas.html#predefinedcolorspace">
             HTML Living Standard - The PredefinedColorSpace enum</a></cite>,
+            WHATWG.
+        </dd>
+        <dt id="refsCANVASTONEMAPPING">[CANVASTONEMAPPING]</dt>
+        <dd><cite><a href="https://html.spec.whatwg.org/multipage/canvas.html#canvastonemapping">
+            HTML Living Standard - The CanvasToneMapping dictionary</a></cite>,
             WHATWG.
         </dd>
         <dt id="refsWEBGPU">[WEBGPU]</dt>

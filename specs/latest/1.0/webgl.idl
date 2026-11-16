@@ -554,6 +554,8 @@ interface mixin WebGLRenderingContextBase
     object? getExtension(DOMString name);
 
     undefined drawingBufferStorage(GLenum sizedFormat, unsigned long width, unsigned long height);
+    [WebGLHandlesContextLoss] undefined drawingBufferToneMapping(optional CanvasToneMapping toneMapping = {});
+    [WebGLHandlesContextLoss] CanvasToneMapping getDrawingBufferToneMapping();
 
     undefined activeTexture(GLenum texture);
     undefined attachShader(WebGLProgram program, WebGLShader shader);
