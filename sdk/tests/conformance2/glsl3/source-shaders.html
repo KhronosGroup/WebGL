@@ -1,0 +1,894 @@
+<!--
+Copyright (c) 2021 The Khronos Group Inc.
+Use of this source code is governed by an MIT-style license that can be
+found in the LICENSE.txt file.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Source engine shaders block during glGetUniformBlockIndex</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script id="shader" type="x-shader/x-vertex-and-fragment">precision mediump float;
+precision mediump sampler2DArray;
+precision mediump sampler2DShadow;
+
+#ifdef VERT
+#define attribute in
+#define varying out
+#define mainVS main
+#endif
+
+#ifdef FRAG
+#define attribute in
+#define varying in
+#define mainPS main
+#endif
+
+struct Mat4x4 { vec4 mx; vec4 my; vec4 mz; vec4 mw; };
+struct Mat4x3 { vec4 mx; vec4 my; vec4 mz; };
+struct Mat4x2 { vec4 mx; vec4 my; };
+
+vec3 Mat4x3GetCol0(Mat4x3 m) { return vec3(m.mx.x, m.my.x, m.mz.x); }
+vec3 Mat4x3GetCol1(Mat4x3 m) { return vec3(m.mx.y, m.my.y, m.mz.y); }
+vec3 Mat4x3GetCol2(Mat4x3 m) { return vec3(m.mx.z, m.my.z, m.mz.z); }
+vec3 Mat4x3GetCol3(Mat4x3 m) { return vec3(m.mx.w, m.my.w, m.mz.w); }
+
+vec4 Mul(Mat4x4 m, vec4 v) { return vec4(dot(m.mx, v), dot(m.my, v), dot(m.mz, v), dot(m.mw, v)); }
+vec3 Mul(Mat4x3 m, vec4 v) { return vec3(dot(m.mx, v), dot(m.my, v), dot(m.mz, v)); }
+vec2 Mul(Mat4x2 m, vec4 v) { return vec2(dot(m.mx, v), dot(m.my, v)); }
+
+vec4 Mul(vec3 v, Mat4x3 m) {
+return vec4(
+    dot(Mat4x3GetCol0(m), v),
+    dot(Mat4x3GetCol1(m), v),
+    dot(Mat4x3GetCol2(m), v),
+    dot(Mat4x3GetCol3(m), v)
+);
+}
+
+void Fma(inout Mat4x3 d, Mat4x3 m, float s) { d.mx += m.mx * s; d.my += m.my * s; d.mz += m.mz * s; }
+
+Mat4x4 _Mat4x4(float n) { Mat4x4 o; o.mx = vec4(n, 0.0, 0.0, 0.0); o.my = vec4(0.0, n, 0.0, 0.0); o.mz = vec4(0.0, 0.0, n, 0.0); o.mw = vec4(0.0, 0.0, 0.0, n); return o; }
+Mat4x4 _Mat4x4(Mat4x3 m) { Mat4x4 o = _Mat4x4(1.0); o.mx = m.mx; o.my = m.my; o.mz = m.mz; return o; }
+Mat4x4 _Mat4x4(Mat4x2 m) { Mat4x4 o = _Mat4x4(1.0); o.mx = m.mx; o.my = m.my; return o; }
+
+Mat4x3 _Mat4x3(float n) { Mat4x3 o; o.mx = vec4(n, 0.0, 0.0, 0.0); o.my = vec4(0.0, n, 0.0, 0.0); o.mz = vec4(0.0, 0.0, n, 0.0); return o; }
+Mat4x3 _Mat4x3(Mat4x4 m) { Mat4x3 o; o.mx = m.mx; o.my = m.my; o.mz = m.mz; return o; }
+
+#define DETAIL_COMBINE_MODE -1
+#define USE_LIGHTMAP 1
+#define SKINNING_MODE 0
+#define USE_FOG 1
+#define USE_PROJECTED_LIGHT 1
+layout(std140) uniform ub_SceneParams {
+    Mat4x4 u_ProjectionView;
+    vec4 u_SceneMisc[3];
+};
+layout(std140) uniform ub_SkinningParams {
+#if SKINNING_MODE == 2
+    Mat4x3 u_BoneMatrix[53];
+#else
+    Mat4x3 u_ModelMatrix;
+#endif
+};
+#define u_CameraPosWorld (u_SceneMisc[0].xyz)
+#define u_ToneMapScale   (u_SceneMisc[0].w)
+#define u_FogColor       (u_SceneMisc[1].xyz)
+#define u_FogStart       (u_SceneMisc[2].x)
+#define u_FogEnd         (u_SceneMisc[2].y)
+#define u_FogMaxDensity  (u_SceneMisc[2].z)
+const float g_LightmapScale = 16.0;
+const float g_EnvmapScale = 1.0;
+float saturate(float v) { return clamp(v, 0.0, 1.0); }
+vec2 saturate(vec2 v) { return clamp(v, vec2(0.0), vec2(1.0)); }
+vec3 saturate(vec3 v) { return clamp(v, vec3(0.0), vec3(1.0)); }
+vec4 saturate(vec4 v) { return clamp(v, vec4(0.0), vec4(1.0)); }
+float invlerp(float a, float b, float v) { return (v - a) / (b - a); }
+vec2 CalcScaleBias(in vec2 t_Pos, in vec4 t_SB) {
+    return t_Pos.xy * t_SB.xy + t_SB.zw;
+}
+vec3 CalcReflection(in vec3 t_NormalWorld, in vec3 t_PositionToEye) {
+    return (2.0 * (dot(t_NormalWorld, t_PositionToEye)) * t_NormalWorld) - (dot(t_NormalWorld, t_NormalWorld) * t_PositionToEye);
+}
+vec3 CalcTangentToWorld(in vec3 t_TangentNormal, in vec3 t_Basis0, in vec3 t_Basis1, in vec3 t_Basis2) {
+    return t_TangentNormal.xxx * t_Basis0 + t_TangentNormal.yyy * t_Basis1 + t_TangentNormal.zzz * t_Basis2;
+}
+vec3 CalcWorldToTangent(in vec3 t_WorldNormal, in vec3 t_Basis0, in vec3 t_Basis1, in vec3 t_Basis2) {
+    return vec3(dot(t_WorldNormal.xyz, t_Basis0), dot(t_WorldNormal.xyz, t_Basis1), dot(t_WorldNormal.xyz, t_Basis2));
+}
+float CalcFresnelTerm5(float t_DotProduct) {
+    return pow(1.0 - max(0.0, t_DotProduct), 5.0);
+}
+float CalcFresnelTerm2(float t_DotProduct) {
+    return pow(1.0 - max(0.0, t_DotProduct), 2.0);
+}
+float CalcFresnelTerm2Ranges(float t_DotProduct, in vec3 t_Ranges) {
+    float t_Fresnel = CalcFresnelTerm2(t_DotProduct);
+    if (t_Fresnel <= 0.5)
+        return mix(t_Ranges.x, t_Ranges.y, invlerp(0.0, 0.5, t_Fresnel));
+    else
+        return mix(t_Ranges.y, t_Ranges.z, invlerp(0.5, 1.0, t_Fresnel));
+    return 0.0;
+}
+vec4 UnpackUnsignedNormalMap(in vec4 t_NormalMapSample) {
+    t_NormalMapSample.rgb = t_NormalMapSample.rgb * 2.0 - 1.0;
+    return t_NormalMapSample;
+}
+vec3 GammaToLinear(in vec3 t_Color) {
+    return pow(t_Color, vec3(2.2));
+}
+void CalcFog(inout vec4 t_Color, in vec3 t_PositionWorld) {
+#ifdef USE_FOG
+    float t_DistanceWorld = distance(t_PositionWorld.xyz, u_CameraPosWorld.xyz);
+    float t_FogFactor = saturate(invlerp(u_FogStart, u_FogEnd, t_DistanceWorld));
+    t_FogFactor = min(t_FogFactor, u_FogMaxDensity);
+    t_FogFactor *= t_FogFactor;
+    t_Color.rgb = mix(t_Color.rgb, u_FogColor.rgb, t_FogFactor);
+#endif
+}
+#ifdef VERT
+layout(location = 0) in vec3 a_Position;
+layout(location = 1) in vec4 a_Normal;
+layout(location = 2) in vec4 a_TangentS;
+layout(location = 3) in vec4 a_TexCoord;
+#ifdef USE_VERTEX_COLOR
+layout(location = 4) in vec4 a_Color;
+#endif
+#ifdef USE_STATIC_VERTEX_LIGHTING
+layout(location = 5) in vec3 a_StaticVertexLighting;
+#endif
+#if SKINNING_MODE == 2
+layout(location = 6) in vec4 a_BoneWeights;
+layout(location = 7) in vec4 a_BoneIndices;
+#endif
+Mat4x3 CalcWorldFromLocalMatrix() {
+#if SKINNING_MODE == 2
+    Mat4x3 t_WorldFromLocalMatrix = _Mat4x3(0.0);
+    Fma(t_WorldFromLocalMatrix, u_BoneMatrix[int(a_BoneIndices.x)], a_BoneWeights.x);
+    Fma(t_WorldFromLocalMatrix, u_BoneMatrix[int(a_BoneIndices.y)], a_BoneWeights.y);
+    Fma(t_WorldFromLocalMatrix, u_BoneMatrix[int(a_BoneIndices.z)], a_BoneWeights.z);
+    Fma(t_WorldFromLocalMatrix, u_BoneMatrix[int(a_BoneIndices.w)], a_BoneWeights.w);
+    return t_WorldFromLocalMatrix;
+#else
+    return u_ModelMatrix;
+#endif
+}
+#endif
+#ifdef FRAG
+layout(location = 0) out vec4 o_Color0;
+void OutputLinearColor(in vec4 t_Color) {
+    t_Color.rgb *= u_ToneMapScale;
+    o_Color0.rgba = t_Color.rgba;
+}
+#endif
+struct WorldLight {
+    vec4 Position;
+    vec4 Color;
+    vec4 DistAttenuation;
+    vec4 Direction;
+};
+layout(std140) uniform ub_ObjectParams {
+#ifdef USE_AMBIENT_CUBE
+    vec4 u_AmbientCube[6];
+#endif
+#ifdef USE_DYNAMIC_LIGHTING
+    WorldLight u_WorldLights[4];
+#endif
+    Mat4x2 u_BaseTextureTransform;
+#ifdef USE_BUMPMAP
+    Mat4x2 u_BumpmapTransform;
+#endif
+#ifdef USE_BUMPMAP2
+    Mat4x2 u_Bumpmap2Transform;
+#endif
+#ifdef USE_DETAIL
+    vec4 u_DetailScaleBias;
+#endif
+#ifdef USE_ENVMAP_MASK
+    vec4 u_EnvmapMaskScaleBias;
+#endif
+#ifdef USE_BLEND_MODULATE
+    vec4 u_BlendModulateScaleBias;
+#endif
+#ifdef USE_ENVMAP
+    vec4 u_EnvmapTint;
+    vec4 u_EnvmapContrastSaturationFresnel;
+#endif
+#ifdef USE_SELFILLUM
+    vec4 u_SelfIllumTint;
+#endif
+#ifdef USE_SELFILLUM_FRESNEL
+    vec4 u_SelfIllumFresnel;
+#endif
+#ifdef USE_PHONG
+    vec4 u_FresnelRangeSpecBoost;
+#endif
+#ifdef USE_PROJECTED_LIGHT
+    Mat4x4 u_ProjectedLightFromWorldMatrix;
+    vec4 u_ProjectedLightColor;
+    vec4 u_ProjectedLightOrigin;
+#endif
+    vec4 u_ModulationColor;
+    vec4 u_Misc[1];
+};
+#define u_AlphaTestReference (u_Misc[0].x)
+#define u_DetailBlendFactor  (u_Misc[0].y)
+#define u_SpecExponentFactor (u_Misc[0].z)
+#define u_SeamlessScale      (u_Misc[0].w)
+#define HAS_FULL_TANGENTSPACE (USE_BUMPMAP)
+varying vec4 v_TexCoord0;
+varying vec4 v_TexCoord1;
+varying vec4 v_TexCoord2;
+varying vec4 v_PositionWorld;
+varying vec4 v_Color;
+varying vec3 v_DiffuseLighting;
+#ifdef HAS_FULL_TANGENTSPACE
+varying vec3 v_TangentSpaceBasis0;
+varying vec3 v_TangentSpaceBasis1;
+#endif
+varying vec3 v_TangentSpaceBasis2;
+#ifdef USE_DYNAMIC_PIXEL_LIGHTING
+varying vec4 v_LightAtten;
+#endif
+uniform sampler2D u_TextureBase; // BINDING=0
+uniform sampler2D u_TextureBase2; // BINDING=1
+uniform sampler2D u_TextureBumpmap; // BINDING=2
+uniform sampler2D u_TextureBumpmap2; // BINDING=3
+uniform sampler2D u_TextureBumpMask; // BINDING=4
+uniform sampler2D u_TextureDetail; // BINDING=5
+uniform sampler2D u_TextureEnvmapMask; // BINDING=6
+uniform sampler2D u_TextureSpecularExponent; // BINDING=7
+uniform sampler2D u_TextureSelfIllumMask; // BINDING=8
+uniform sampler2D u_TextureBlendModulate; // BINDING=9
+uniform sampler2DArray u_TextureLightmap; // BINDING=10
+uniform samplerCube u_TextureEnvmap; // BINDING=11
+uniform sampler2DShadow u_TextureProjectedLightDepth; // BINDING=12
+uniform sampler2D u_TextureProjectedLight; // BINDING=13
+float ApplyAttenuation(vec3 t_Coeff, float t_Value) {
+    return dot(t_Coeff, vec3(1.0, t_Value, t_Value*t_Value));
+}
+#ifdef USE_DYNAMIC_LIGHTING
+float WorldLightCalcAttenuation(in WorldLight t_WorldLight, in vec3 t_PositionWorld) {
+    int t_LightType = int(t_WorldLight.Position.w);
+    float t_Attenuation = 1.0;
+    bool t_UseDistanceAttenuation = (t_LightType == 1 || t_LightType == 2);
+    bool t_UseAngleAttenuation = (t_LightType == 2);
+    if (t_UseDistanceAttenuation) {
+        float t_Distance = distance(t_WorldLight.Position.xyz, t_PositionWorld);
+        t_Attenuation *= 1.0 / ApplyAttenuation(t_WorldLight.DistAttenuation.xyz, t_Distance);
+        if (t_UseAngleAttenuation) {
+            float t_Exponent = t_WorldLight.Color.w;
+            float t_Stopdot = t_WorldLight.DistAttenuation.w;
+            float t_Stopdot2 = t_WorldLight.Direction.w;
+            vec3 t_LightDirectionWorld = normalize(t_WorldLight.Position.xyz - t_PositionWorld);
+            float t_AngleDot = dot(t_WorldLight.Direction.xyz, -t_LightDirectionWorld);
+            float t_AngleAttenuation = max(invlerp(t_Stopdot2, t_Stopdot, t_AngleDot), 0.01);
+            t_AngleAttenuation = saturate(pow(t_AngleAttenuation, t_Exponent));
+            t_Attenuation *= t_AngleAttenuation;
+        }
+    }
+    return t_Attenuation;
+}
+vec3 WorldLightCalcDirection(in WorldLight t_WorldLight, in vec3 t_PositionWorld) {
+    int t_LightType = int(t_WorldLight.Position.w);
+    if (t_LightType == 3) {
+        return -t_WorldLight.Direction.xyz;
+    } else {
+        return normalize(t_WorldLight.Position.xyz - t_PositionWorld);
+    }
+    return vec3(0.0);
+}
+vec4 WorldLightCalcAllAttenuation(in vec3 t_PositionWorld) {
+    vec4 t_FinalAtten = vec4(0.0);
+    for (int i = 0; i < 4; i++)
+        t_FinalAtten[i] = WorldLightCalcAttenuation(u_WorldLights[i], t_PositionWorld);
+    return t_FinalAtten;
+}
+float WorldLightCalcVisibility(in WorldLight t_WorldLight, in vec3 t_PositionWorld, in vec3 t_NormalWorld, bool t_HalfLambert) {
+    vec3 t_LightDirectionWorld = WorldLightCalcDirection(t_WorldLight, t_PositionWorld);
+    float t_NoL = dot(t_NormalWorld, t_LightDirectionWorld);
+    if (t_HalfLambert) {
+        t_NoL = t_NoL * 0.5 + 0.5;
+        t_NoL = t_NoL * t_NoL;
+        return t_NoL;
+    } else {
+        return max(0.0, t_NoL);
+    }
+    return 0.0;
+}
+vec3 WorldLightCalcDiffuse(in vec3 t_PositionWorld, in vec3 t_NormalWorld, bool t_HalfLambert, in float t_Attenuation, in WorldLight t_WorldLight) {
+    int t_LightType = int(t_WorldLight.Position.w);
+    if (t_LightType == 0)
+        return vec3(0.0);
+    float t_Visibility = WorldLightCalcVisibility(t_WorldLight, t_PositionWorld, t_NormalWorld, t_HalfLambert);
+    return t_WorldLight.Color.rgb * t_Attenuation * t_Visibility;
+}
+struct DiffuseLightInput {
+    vec3 PositionWorld;
+    vec3 NormalWorld;
+    vec4 LightAttenuation;
+    bool HalfLambert;
+};
+vec3 WorldLightCalcAllDiffuse(in DiffuseLightInput t_DiffuseLightInput) {
+#ifdef DEBUG_FULLBRIGHT
+    return vec3(0.0);
+#else
+    vec3 t_FinalLight = vec3(0.0);
+    for (int i = 0; i < 4; i++)
+        t_FinalLight += WorldLightCalcDiffuse(t_DiffuseLightInput.PositionWorld, t_DiffuseLightInput.NormalWorld, t_DiffuseLightInput.HalfLambert, t_DiffuseLightInput.LightAttenuation[i], u_WorldLights[i]);
+    return t_FinalLight;
+#endif
+}
+#endif
+#ifdef USE_AMBIENT_CUBE
+vec3 AmbientLight(in vec3 t_NormalWorld) {
+#ifdef DEBUG_FULLBRIGHT
+    return vec3(1.0);
+#else
+    vec3 t_Weight = t_NormalWorld * t_NormalWorld;
+    bvec3 t_Negative = lessThan(t_NormalWorld, vec3(0.0));
+    return (
+        t_Weight.x * u_AmbientCube[t_Negative.x ? 1 : 0].rgb +
+        t_Weight.y * u_AmbientCube[t_Negative.y ? 3 : 2].rgb +
+        t_Weight.z * u_AmbientCube[t_Negative.z ? 5 : 4].rgb
+    );
+#endif
+}
+#endif
+#ifdef VERT
+void mainVS() {
+    Mat4x3 t_WorldFromLocalMatrix = CalcWorldFromLocalMatrix();
+    vec3 t_PositionWorld = Mul(t_WorldFromLocalMatrix, vec4(a_Position, 1.0));
+    v_PositionWorld.xyz = t_PositionWorld;
+    gl_Position = Mul(u_ProjectionView, vec4(t_PositionWorld, 1.0));
+    vec3 t_NormalWorld = Mul(t_WorldFromLocalMatrix, vec4(a_Normal.xyz, 0.0));
+#ifdef USE_VERTEX_COLOR
+    v_Color = a_Color;
+#else
+    v_Color = vec4(1.0);
+#endif
+    v_DiffuseLighting.rgb = vec3(1.0);
+#ifdef USE_STATIC_VERTEX_LIGHTING
+    v_DiffuseLighting.rgb = GammaToLinear(a_StaticVertexLighting * 2.0);
+#endif
+#ifdef USE_AMBIENT_CUBE
+    v_DiffuseLighting.rgb = AmbientLight(t_NormalWorld);
+#endif
+#ifdef USE_DYNAMIC_LIGHTING
+    vec4 t_LightAtten = WorldLightCalcAllAttenuation(t_PositionWorld.xyz);
+#endif
+#ifdef USE_DYNAMIC_VERTEX_LIGHTING
+    bool t_HalfLambert = false;
+#ifdef USE_HALF_LAMBERT
+    t_HalfLambert = true;
+#endif
+    DiffuseLightInput t_DiffuseLightInput;
+    t_DiffuseLightInput.PositionWorld = t_PositionWorld.xyz;
+    t_DiffuseLightInput.NormalWorld = t_NormalWorld.xyz;
+    t_DiffuseLightInput.LightAttenuation = t_LightAtten.xyzw;
+    t_DiffuseLightInput.HalfLambert = t_HalfLambert;
+    vec3 t_DiffuseLighting = WorldLightCalcAllDiffuse(t_DiffuseLightInput);
+    v_DiffuseLighting.rgb += t_DiffuseLighting;
+#endif
+#ifdef USE_DYNAMIC_PIXEL_LIGHTING
+    v_LightAtten.xyzw = t_LightAtten;
+#endif
+#ifdef USE_MODULATIONCOLOR_COLOR
+    v_Color.rgb *= u_ModulationColor.rgb;
+#endif
+#ifdef USE_MODULATIONCOLOR_ALPHA
+    v_Color.a *= u_ModulationColor.a;
+#endif
+#ifdef USE_BASETEXTURE2
+    v_PositionWorld.w = a_Normal.w;
+#endif
+#ifdef HAS_FULL_TANGENTSPACE
+    vec3 t_TangentSWorld = Mul(t_WorldFromLocalMatrix, vec4(a_TangentS.xyz, 0.0));
+    vec3 t_TangentTWorld = cross(t_TangentSWorld, t_NormalWorld);
+    v_TangentSpaceBasis0 = t_TangentSWorld * a_TangentS.w;
+    v_TangentSpaceBasis1 = t_TangentTWorld;
+#endif
+    v_TangentSpaceBasis2 = t_NormalWorld;
+    v_TexCoord0.xy = Mul(u_BaseTextureTransform, vec4(a_TexCoord.xy, 1.0, 1.0));
+#ifdef USE_BLEND_MODULATE
+    v_TexCoord0.zw = CalcScaleBias(a_TexCoord.xy, u_BlendModulateScaleBias);
+#endif
+#ifdef USE_LIGHTMAP
+    v_TexCoord1.xy = a_TexCoord.zw;
+#endif
+#ifdef USE_ENVMAP_MASK
+    v_TexCoord1.zw = CalcScaleBias(a_TexCoord.xy, u_EnvmapMaskScaleBias);
+#endif
+#ifdef USE_BUMPMAP
+    v_TexCoord2.xy = Mul(u_BumpmapTransform, vec4(a_TexCoord.xy, 1.0, 1.0));
+#endif
+#ifdef USE_BUMPMAP2
+    v_TexCoord2.zw = Mul(u_Bumpmap2Transform, vec4(a_TexCoord.xy, 1.0, 1.0));
+#endif
+}
+#endif
+#ifdef FRAG
+#define COMBINE_MODE_MUL_DETAIL2                             (0)
+#define COMBINE_MODE_RGB_ADDITIVE                            (1)
+#define COMBINE_MODE_DETAIL_OVER_BASE                        (2)
+#define COMBINE_MODE_FADE                                    (3)
+#define COMBINE_MODE_BASE_OVER_DETAIL                        (4)
+#define COMBINE_MODE_RGB_ADDITIVE_SELFILLUM                  (5)
+#define COMBINE_MODE_RGB_ADDITIVE_SELFILLUM_THRESHOLD_FADE   (6)
+#define COMBINE_MODE_MOD2X_SELECT_TWO_PATTERNS               (7)
+#define COMBINE_MODE_SSBUMP_BUMP                             (10)
+vec4 CalcDetail(in vec4 t_BaseTexture, in vec4 t_DetailTexture) {
+    bool use_detail = false;
+    if (!use_detail)
+        return t_BaseTexture;
+    int t_CombineMode = -1;
+    float t_BlendFactor = u_DetailBlendFactor;
+    if (t_CombineMode == COMBINE_MODE_MUL_DETAIL2) {
+        return t_BaseTexture * mix(vec4(1.0), t_DetailTexture * 2.0, t_BlendFactor);
+    } else if (t_CombineMode == COMBINE_MODE_RGB_ADDITIVE) {
+        return t_BaseTexture + t_DetailTexture * t_BlendFactor;
+    } else if (t_CombineMode == COMBINE_MODE_BASE_OVER_DETAIL) {
+        return vec4(mix(t_BaseTexture.rgb, t_DetailTexture.rgb, (t_BlendFactor * (1.0 - t_BaseTexture.a))), t_DetailTexture.a);
+    } else if (t_CombineMode == COMBINE_MODE_MOD2X_SELECT_TWO_PATTERNS) {
+        vec4 t_DetailPattern = vec4(mix(t_DetailTexture.r, t_DetailTexture.a, t_BaseTexture.a));
+        return t_BaseTexture * mix(vec4(1.0), t_DetailPattern * 2.0, t_BlendFactor);
+    } else if (t_CombineMode == COMBINE_MODE_RGB_ADDITIVE_SELFILLUM || t_CombineMode == COMBINE_MODE_RGB_ADDITIVE_SELFILLUM_THRESHOLD_FADE) {
+        return t_BaseTexture;
+    } else if (t_CombineMode == COMBINE_MODE_SSBUMP_BUMP) {
+        return t_BaseTexture;
+    }
+    return t_BaseTexture + vec4(1.0, 0.0, 1.0, 0.0);
+}
+vec3 CalcDetailPostLighting(in vec3 t_DiffuseColor, in vec3 t_DetailTexture) {
+    bool use_detail = false;
+    if (!use_detail)
+        return t_DiffuseColor;
+    int t_CombineMode = -1;
+    float t_BlendFactor = u_DetailBlendFactor;
+    if (t_CombineMode == COMBINE_MODE_RGB_ADDITIVE_SELFILLUM) {
+        return t_DiffuseColor.rgb + t_DetailTexture.rgb * t_BlendFactor;
+    } else if (t_CombineMode == COMBINE_MODE_RGB_ADDITIVE_SELFILLUM_THRESHOLD_FADE) {
+        if (t_BlendFactor >= 0.5) {
+            float t_Mult = (1.0 / t_BlendFactor);
+            return t_DiffuseColor.rgb + clamp((t_Mult * t_DetailTexture.rgb) + (1.0 - t_Mult), 0.0, 1.0);
+        } else {
+            float t_Mult = (4.0 * t_BlendFactor);
+            return t_DiffuseColor.rgb + clamp((t_Mult * t_DetailTexture.rgb) + (-0.5 * t_Mult), 0.0, 1.0);
+        }
+    }
+    return t_DiffuseColor.rgb;
+}
+const vec3 g_RNBasis0 = vec3( 0.8660254037844386,  0.0000000000000000, 0.5773502691896258);
+const vec3 g_RNBasis1 = vec3(-0.4082482904638631,  0.7071067811865475, 0.5773502691896258);
+const vec3 g_RNBasis2 = vec3(-0.4082482904638631, -0.7071067811865475, 0.5773502691896258);
+#ifdef USE_DYNAMIC_PIXEL_LIGHTING
+struct SpecularLightResult {
+    vec3 SpecularLight;
+    vec3 RimLight;
+};
+SpecularLightResult SpecularLightResult_New() {
+    SpecularLightResult t_Result;
+    t_Result.SpecularLight = vec3(0, 0, 0);
+    t_Result.RimLight = vec3(0, 0, 0);
+    return t_Result;
+}
+void SpecularLightResult_Sum(inout SpecularLightResult t_Dst, in SpecularLightResult t_Src) {
+    t_Dst.SpecularLight += t_Src.SpecularLight;
+    t_Dst.RimLight += t_Src.RimLight;
+}
+struct SpecularLightInput {
+    vec3 PositionWorld;
+    vec3 NormalWorld;
+    vec3 WorldDirectionToEye;
+    float Fresnel;
+    float SpecularExponent;
+    float RimExponent;
+};
+SpecularLightResult WorldLightCalcSpecular(in SpecularLightInput t_Input, in WorldLight t_WorldLight) {
+    vec3 t_Reflect = CalcReflection(t_Input.NormalWorld, t_Input.WorldDirectionToEye);
+    vec3 t_LightDirectionWorld = WorldLightCalcDirection(t_WorldLight, t_Input.PositionWorld);
+    const bool t_HalfLambert = false;
+    float t_NoL = saturate(dot(t_Input.NormalWorld, t_LightDirectionWorld));
+    float t_RoL = saturate(dot(t_Reflect, t_LightDirectionWorld));
+    SpecularLightResult t_Result = SpecularLightResult_New();
+    float t_Attenuation = WorldLightCalcAttenuation(t_WorldLight, t_Input.PositionWorld);
+    t_Result.SpecularLight += vec3(pow(t_RoL, t_Input.SpecularExponent));
+    t_Result.SpecularLight *= t_NoL * t_WorldLight.Color.rgb * t_Attenuation * t_Input.Fresnel;
+    t_Result.RimLight += vec3(pow(t_RoL, t_Input.RimExponent));
+    t_Result.RimLight *= t_NoL * t_WorldLight.Color.rgb * t_Attenuation;
+    return t_Result;
+}
+SpecularLightResult WorldLightCalcAllSpecular(in SpecularLightInput t_Input) {
+    SpecularLightResult t_FinalLight = SpecularLightResult_New();
+    for (int i = 0; i < 4; i++)
+        SpecularLightResult_Sum(t_FinalLight, WorldLightCalcSpecular(t_Input, u_WorldLights[i]));
+    return t_FinalLight;
+}
+#endif
+vec4 DebugColorTexture(in vec4 t_TextureSample) {
+#ifdef DEBUG_DIFFUSEONLY
+    t_TextureSample.rgb = vec3(0.5);
+#endif
+    return t_TextureSample;
+}
+vec3 SampleLightmapTexture(in vec4 t_TextureSample) {
+#ifdef DEBUG_FULLBRIGHT
+    return vec3(1.0);
+#endif
+    return t_TextureSample.rgb * g_LightmapScale;
+}
+vec4 UnpackNormalMap(vec4 t_Sample) {
+    bool use_ssbump = false;
+    if (!use_ssbump)
+        t_Sample = UnpackUnsignedNormalMap(t_Sample);
+    return t_Sample;
+}
+vec4 SeamlessSampleTex(sampler2D P_t_Texture, in vec2 t_TexCoord) {
+    bool use_seamless = false;
+    if (use_seamless) {
+        vec3 t_BaseTexCoord = v_PositionWorld.xyz * u_SeamlessScale;
+        vec3 t_Weights = v_TangentSpaceBasis2.xyz * v_TangentSpaceBasis2.xyz;
+        vec4 t_Sample = vec4(0.0);
+        t_Sample += texture(P_t_Texture, t_BaseTexCoord.zy) * t_Weights.x;
+        t_Sample += texture(P_t_Texture, t_BaseTexCoord.xz) * t_Weights.y;
+        t_Sample += texture(P_t_Texture, t_BaseTexCoord.xy) * t_Weights.z;
+        return t_Sample;
+    } else {
+        return texture(P_t_Texture, t_TexCoord.xy);
+    }
+}
+float CalcShadowPCF9(sampler2DShadow P_t_TextureDepth, in vec3 t_ProjCoord) {
+    float t_Res = 0.0f;
+    t_Res += texture(P_t_TextureDepth, t_ProjCoord.xyz) * (1.0 / 9.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2( 0,  1)) * (1.0 / 9.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2( 0, -1)) * (1.0 / 9.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2( 1,  0)) * (1.0 / 9.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2(-1,  0)) * (1.0 / 9.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2( 1,  1)) * (1.0 / 9.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2( 1, -1)) * (1.0 / 9.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2(-1,  1)) * (1.0 / 9.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2(-1, -1)) * (1.0 / 9.0);
+    return t_Res;
+}
+float CalcShadowPCF5(sampler2DShadow P_t_TextureDepth, in vec3 t_ProjCoord) {
+    float t_Res = 0.0f;
+    t_Res += texture(P_t_TextureDepth, t_ProjCoord.xyz) * (1.0 / 5.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2( 0,  1)) * (1.0 / 5.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2( 0, -1)) * (1.0 / 5.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2( 1,  0)) * (1.0 / 5.0);
+    t_Res += textureOffset(P_t_TextureDepth, t_ProjCoord.xyz, ivec2(-1,  0)) * (1.0 / 5.0);
+    return t_Res;
+}
+float CalcShadowPCF1(sampler2DShadow P_t_TextureDepth, in vec3 t_ProjCoord) {
+    return texture(P_t_TextureDepth, t_ProjCoord.xyz);
+}
+float CalcShadowPCF(sampler2DShadow P_t_TextureDepth, in vec3 t_ProjCoord, in float t_Bias) {
+    t_ProjCoord.z += t_Bias;
+    return CalcShadowPCF5(P_t_TextureDepth, t_ProjCoord.xyz);
+}
+void mainPS() {
+    vec4 t_Albedo, t_BlendedAlpha;
+    vec4 t_BaseTexture = DebugColorTexture(SeamlessSampleTex(u_TextureBase, v_TexCoord0.xy));
+    bool use_basetexture2 = false;
+    float t_BlendFactorWorld = v_PositionWorld.w;
+    bool use_blend_modulate = false;
+    if (use_blend_modulate) {
+        vec4 t_BlendModulateSample = texture(u_TextureBlendModulate, v_TexCoord0.zw);
+        float t_BlendModulateMin = t_BlendModulateSample.g - t_BlendModulateSample.r;
+        float t_BlendModulateMax = t_BlendModulateSample.g + t_BlendModulateSample.r;
+        t_BlendFactorWorld = smoothstep(t_BlendModulateMin, t_BlendModulateMax, t_BlendFactorWorld);
+    }
+    if (use_basetexture2) {
+        vec4 t_BaseTexture2 = DebugColorTexture(SeamlessSampleTex(u_TextureBase, v_TexCoord0.xy));
+        t_Albedo = mix(t_BaseTexture, t_BaseTexture2, t_BlendFactorWorld);
+    } else {
+        t_Albedo = t_BaseTexture;
+    }
+    vec4 t_DetailTexture = vec4(0.0);
+#ifdef USE_DETAIL
+    vec2 t_DetailTexCoord = CalcScaleBias(v_TexCoord0.xy, u_DetailScaleBias);
+    t_DetailTexture = DebugColorTexture(texture(u_TextureDetail, t_DetailTexCoord));
+    t_Albedo = CalcDetail(t_Albedo, t_DetailTexture);
+#endif
+    vec4 t_FinalColor;
+    vec3 t_NormalWorld;
+    vec3 t_EnvmapFactor = vec3(1.0);
+#ifdef USE_BUMPMAP
+    vec4 t_BumpmapSample = UnpackNormalMap(SeamlessSampleTex(u_TextureBumpmap, v_TexCoord2.xy));
+    bool use_bumpmap2 = false;
+    if (use_bumpmap2) {
+        vec4 t_Bumpmap2Sample = UnpackNormalMap(texture(u_TextureBumpmap2, v_TexCoord2.zw));
+        bool use_bumpmask = false;
+        if (use_bumpmask) {
+            vec4 t_BumpMaskSample = UnpackUnsignedNormalMap(texture(u_TextureBumpMask, v_TexCoord0.xy));
+            t_BumpmapSample.rgb = normalize(t_BumpmapSample.rgb + t_Bumpmap2Sample.rgb);
+            t_BumpmapSample.rgb = mix(t_BumpMaskSample.rgb, t_BumpmapSample.rgb, t_BumpMaskSample.a);
+            t_EnvmapFactor *= t_BumpMaskSample.a;
+        } else {
+            t_BumpmapSample.rgb = mix(t_BumpmapSample.rgb, t_Bumpmap2Sample.rgb, t_BlendFactorWorld);
+        }
+    }
+    bool use_normalmap_alpha_envmap_mask = false;
+    if (use_normalmap_alpha_envmap_mask)
+        t_EnvmapFactor *= t_BumpmapSample.a;
+    vec3 t_BumpmapNormal;
+    bool use_ssbump = false;
+    if (use_ssbump) {
+        t_BumpmapNormal = normalize(g_RNBasis0*t_BumpmapSample.x + g_RNBasis1*t_BumpmapSample.y + g_RNBasis2*t_BumpmapSample.z);
+    } else {
+        t_BumpmapNormal = t_BumpmapSample.rgb;
+    }
+    t_NormalWorld = CalcTangentToWorld(t_BumpmapNormal, v_TangentSpaceBasis0, v_TangentSpaceBasis1, v_TangentSpaceBasis2);
+#else
+    t_NormalWorld = v_TangentSpaceBasis2;
+#endif
+    vec3 t_DiffuseLighting = vec3(0.0);
+    bool use_lightmap = true;
+    bool use_diffuse_bumpmap = false;
+    if (use_lightmap) {
+        vec3 t_DiffuseLightingScale = u_ModulationColor.xyz;
+        vec3 t_LightmapColor0 = SampleLightmapTexture(texture(u_TextureLightmap, vec3(v_TexCoord1.xy, 0.0)));
+#ifdef USE_BUMPMAP
+        if (use_diffuse_bumpmap) {
+            vec3 t_LightmapColor1 = SampleLightmapTexture(texture(u_TextureLightmap, vec3(v_TexCoord1.xy, 1.0)));
+            vec3 t_LightmapColor2 = SampleLightmapTexture(texture(u_TextureLightmap, vec3(v_TexCoord1.xy, 2.0)));
+            vec3 t_LightmapColor3 = SampleLightmapTexture(texture(u_TextureLightmap, vec3(v_TexCoord1.xy, 3.0)));
+            vec3 t_Influence;
+            if (use_ssbump) {
+                t_Influence = t_BumpmapSample.rgb;
+                if (DETAIL_COMBINE_MODE == COMBINE_MODE_SSBUMP_BUMP) {
+                    t_Influence.xyz *= mix(vec3(1.0), 2.0 * t_DetailTexture.rgb, t_BaseTexture.a);
+                    t_Albedo.a = 1.0;
+                }
+            } else {
+                t_Influence.x = clamp(dot(t_BumpmapNormal, g_RNBasis0), 0.0, 1.0);
+                t_Influence.y = clamp(dot(t_BumpmapNormal, g_RNBasis1), 0.0, 1.0);
+                t_Influence.z = clamp(dot(t_BumpmapNormal, g_RNBasis2), 0.0, 1.0);
+                if (DETAIL_COMBINE_MODE == COMBINE_MODE_SSBUMP_BUMP) {
+                    t_Influence.xyz *= t_DetailTexture.rgb * 2.0;
+                }
+                t_Influence *= t_Influence;
+                t_DiffuseLightingScale /= dot(t_Influence, vec3(1.0));
+            }
+            t_DiffuseLighting = vec3(0.0);
+            t_DiffuseLighting += t_LightmapColor1 * t_Influence.x;
+            t_DiffuseLighting += t_LightmapColor2 * t_Influence.y;
+            t_DiffuseLighting += t_LightmapColor3 * t_Influence.z;
+        } else
+#endif
+        {
+            t_DiffuseLighting.rgb = t_LightmapColor0;
+        }
+        t_DiffuseLighting.rgb = t_DiffuseLighting.rgb * t_DiffuseLightingScale;
+    } else {
+        t_DiffuseLighting.rgb = v_DiffuseLighting.rgb;
+    }
+    t_Albedo *= v_Color;
+#ifdef USE_ALPHATEST
+    if (t_Albedo.a < u_AlphaTestReference)
+        discard;
+#endif
+    bool use_half_lambert = false;
+    bool use_phong = false;
+#ifdef USE_DYNAMIC_PIXEL_LIGHTING
+    bool t_HalfLambert = use_half_lambert;
+    if (use_phong) {
+        t_HalfLambert = true;
+    }
+    DiffuseLightInput t_DiffuseLightInput;
+    t_DiffuseLightInput.PositionWorld = v_PositionWorld.xyz;
+    t_DiffuseLightInput.NormalWorld = t_NormalWorld.xyz;
+    t_DiffuseLightInput.LightAttenuation = v_LightAtten.xyzw;
+    t_DiffuseLightInput.HalfLambert = t_HalfLambert;
+    t_DiffuseLighting.rgb *= WorldLightCalcAllDiffuse(t_DiffuseLightInput);
+#endif
+#ifdef USE_PROJECTED_LIGHT
+    vec4 t_ProjectedLightCoord = Mul(u_ProjectedLightFromWorldMatrix, vec4(v_PositionWorld.xyz, 1.0));
+    t_ProjectedLightCoord.xyz /= t_ProjectedLightCoord.www;
+    t_ProjectedLightCoord.xy = t_ProjectedLightCoord.xy * 0.5 + 0.5;
+#ifndef GFX_CLIPSPACE_NEAR_ZERO
+    t_ProjectedLightCoord.z = t_ProjectedLightCoord.z * 0.5 + 0.5;
+#endif
+    if (all(greaterThan(t_ProjectedLightCoord.xyz, vec3(0.0))) && all(lessThan(t_ProjectedLightCoord.xyz, vec3(1.0)))) {
+        vec4 t_ProjectedLightSample = texture(u_TextureProjectedLight, t_ProjectedLightCoord.xy);
+        vec3 t_ProjectedLightColor = (t_ProjectedLightSample.rgb * u_ProjectedLightColor.rgb);
+        vec3 t_WorldToProjectedLight = u_ProjectedLightOrigin.xyz - v_PositionWorld.xyz;
+        vec3 t_WorldDirectionToProjectedLight = normalize(t_WorldToProjectedLight);
+        float t_AngleAttenuation = saturate(dot(t_WorldDirectionToProjectedLight.xyz, t_NormalWorld.xyz));
+        float t_DistanceNorm = length(t_WorldToProjectedLight) / u_ProjectedLightOrigin.w;
+        float t_DistanceAttenuation = saturate(invlerp(1.0, 0.6, t_DistanceNorm));
+        t_ProjectedLightColor *= t_DistanceAttenuation * t_AngleAttenuation;
+        if (all(greaterThan(t_ProjectedLightColor.rgb, vec3(0.0)))) {
+            float t_ShadowVisibility = 1.0 - CalcShadowPCF(u_TextureProjectedLightDepth, t_ProjectedLightCoord.xyz, 0.01);
+            t_DiffuseLighting.rgb += t_ProjectedLightColor.rgb * t_ShadowVisibility;
+        }
+    }
+#endif
+    vec3 t_FinalDiffuse = t_DiffuseLighting * t_Albedo.rgb;
+    t_FinalDiffuse = CalcDetailPostLighting(t_FinalDiffuse, t_DetailTexture.rgb);
+    vec3 t_PositionToEye = u_CameraPosWorld.xyz - v_PositionWorld.xyz;
+    vec3 t_WorldDirectionToEye = normalize(t_PositionToEye);
+    float t_FresnelDot = dot(t_NormalWorld, t_WorldDirectionToEye);
+#ifdef USE_SELFILLUM
+    vec3 t_SelfIllumMask;
+    bool use_selfillum_envmapmask_alpha = false;
+    bool use_selfillum_mask = false;
+    if (use_selfillum_envmapmask_alpha) {
+        t_SelfIllumMask = texture(u_TextureEnvmapMask, v_TexCoord1.zw).aaa;
+    } else if (use_selfillum_mask) {
+        t_SelfIllumMask = texture(u_TextureSelfIllumMask, v_TexCoord1.xy).rgb;
+    } else {
+        t_SelfIllumMask = t_BaseTexture.aaa;
+    }
+    vec3 t_SelfIllum = u_SelfIllumTint.rgb * t_Albedo.rgb;
+#ifdef USE_SELFILLUM_FRESNEL
+    float t_SelfIllumFresnelMin = u_SelfIllumFresnel.r;
+    float t_SelfIllumFresnelMax = u_SelfIllumFresnel.g;
+    float t_SelfIllumFresnelExp = u_SelfIllumFresnel.b;
+    float t_SelfIllumFresnel = saturate(mix(t_SelfIllumFresnelMin, t_SelfIllumFresnelMax, pow(saturate(t_FresnelDot), t_SelfIllumFresnelExp)));
+    t_SelfIllumMask.rgb *= t_SelfIllumFresnel;
+#endif
+    t_FinalDiffuse.rgb = mix(t_FinalDiffuse.rgb, t_SelfIllum.rgb, t_SelfIllumMask.rgb);
+#endif
+    t_FinalColor.rgb += t_FinalDiffuse;
+    vec3 t_SpecularLighting = vec3(0.0);
+    float t_Fresnel;
+#ifdef USE_PHONG
+    t_Fresnel = CalcFresnelTerm2Ranges(t_FresnelDot, u_FresnelRangeSpecBoost.xyz);
+#else
+    t_Fresnel = CalcFresnelTerm5(t_FresnelDot);
+#endif
+    bool use_base_alpha_envmap_mask = false;
+#ifdef USE_ENVMAP
+    t_EnvmapFactor *= u_EnvmapTint.rgb;
+    bool use_envmap_mask = false;
+    if (use_envmap_mask)
+        t_EnvmapFactor *= texture(u_TextureEnvmapMask, v_TexCoord1.zw).rgb;
+    if (use_base_alpha_envmap_mask)
+        t_EnvmapFactor *= 1.0 - t_BaseTexture.a;
+    vec3 t_Reflection = CalcReflection(t_NormalWorld, t_WorldDirectionToEye);
+    vec3 t_EnvmapColor = texture(u_TextureEnvmap, t_Reflection).rgb * g_EnvmapScale;
+    t_EnvmapColor *= t_EnvmapFactor;
+    t_EnvmapColor = mix(t_EnvmapColor, t_EnvmapColor*t_EnvmapColor, u_EnvmapContrastSaturationFresnel.x);
+    t_EnvmapColor = mix(vec3(dot(vec3(0.299, 0.587, 0.114), t_EnvmapColor)), t_EnvmapColor, u_EnvmapContrastSaturationFresnel.y);
+    t_EnvmapColor *= mix(t_Fresnel, 1.0, u_EnvmapContrastSaturationFresnel.z);
+    t_SpecularLighting.rgb += t_EnvmapColor.rgb;
+#endif
+#ifdef USE_DYNAMIC_PIXEL_LIGHTING
+    if (use_phong) {
+        SpecularLightInput t_SpecularLightInput;
+        t_SpecularLightInput.PositionWorld = v_PositionWorld.xyz;
+        t_SpecularLightInput.NormalWorld = t_NormalWorld;
+        t_SpecularLightInput.WorldDirectionToEye = t_WorldDirectionToEye;
+        t_SpecularLightInput.Fresnel = t_Fresnel;
+        bool use_phong_exponent_texture = false;
+        if (use_phong_exponent_texture) {
+            vec4 t_SpecularMapSample = texture(u_TextureSpecularExponent, v_TexCoord0.xy);
+            t_SpecularLightInput.SpecularExponent = 1.0 + u_SpecExponentFactor * t_SpecularMapSample.r;
+        } else {
+            t_SpecularLightInput.SpecularExponent = u_SpecExponentFactor;
+        }
+        t_SpecularLightInput.RimExponent = 4.0;
+        float t_SpecularMask;
+        bool use_base_alpha_phong_mask = false;
+        if (use_base_alpha_phong_mask) {
+            t_SpecularMask = t_BaseTexture.a;
+        } else {
+#ifdef USE_BUMPMAP
+            t_SpecularMask = t_BumpmapSample.a;
+#else
+            t_SpecularMask = 1.0;
+#endif
+        }
+        bool use_phong_mask_invert = false;
+        if (use_phong_mask_invert)
+            t_SpecularMask = 1.0 - t_SpecularMask;
+        SpecularLightResult t_SpecularLightResult = WorldLightCalcAllSpecular(t_SpecularLightInput);
+        t_SpecularLighting.rgb += t_SpecularLightResult.SpecularLight * t_SpecularMask * u_FresnelRangeSpecBoost.w;
+    }
+#endif
+    t_FinalColor.rgb += t_SpecularLighting.rgb;
+    t_FinalColor.a = t_Albedo.a;
+    if (!use_base_alpha_envmap_mask)
+        t_FinalColor.a *= t_BaseTexture.a;
+    CalcFog(t_FinalColor, v_PositionWorld.xyz);
+    OutputLinearColor(t_FinalColor);
+}
+#endif
+</script>
+<script type="application/javascript">
+"use strict";
+description();
+debug('Regression test for <a href="https://crbug.com/1267322">crbug.com/1267322</a>');
+const wtu = WebGLTestUtils;
+
+let program;
+let gl;
+let ext;
+let linkIssuedTime, linkCompletedTime;
+
+function makeShaderSource(shaderType) {
+    let rawSource = document.getElementById("shader").text;
+    let header;
+    switch (shaderType) {
+    case gl.VERTEX_SHADER:
+        header = "#define VERT\n";
+        break;
+    case gl.FRAGMENT_SHADER:
+        header = "#define FRAG\n";
+        break;
+    default:
+        throw "Unexpected shader type " + shaderType;
+    }
+    header += "// Timestamp " + window.Date.now() + " // Prevent caching\n";
+    return "#version 300 es\n" + header + rawSource;
+}
+
+
+function outputDelta(desc, begin, end) {
+    debug(desc + ": = " + (end - begin) + " ms");
+}
+
+
+function checkCompletion() {
+    if (!gl.getProgramParameter(program, ext.COMPLETION_STATUS_KHR)) {
+        requestAnimationFrame(checkCompletion);
+        return;
+    }
+
+    linkCompletedTime = window.performance.now();
+    outputDelta("Time to complete link", linkIssuedTime, linkCompletedTime);
+    const startTime = window.performance.now();
+    // Valid options:
+    // ub_SceneParams
+    // ub_SkinningParams
+    // ub_ObjectParams
+    let idx = gl.getUniformBlockIndex(program, "ub_SkinningParams");
+    const stopTime = window.performance.now();
+    outputDelta("gl.getUniformBlockIndex time", startTime, stopTime);
+    debug("Uniform block index was " + idx);
+    if (idx == gl.INVALID_INDEX) {
+        debug("*** Uniform index was invalid ***");
+    }
+}
+
+function run() {
+    gl = wtu.create3DContext(undefined, undefined, 2);
+    ext = gl.getExtension("KHR_parallel_shader_compile");
+    if (!ext) {
+        debug("No KHR_parallel_shader_compile extension - stopping.")
+        return;
+    }
+
+    let vs = gl.createShader(gl.VERTEX_SHADER);
+    let vsSource = makeShaderSource(gl.VERTEX_SHADER);
+    gl.shaderSource(vs, vsSource);
+    gl.compileShader(vs);
+
+    let fs = gl.createShader(gl.FRAGMENT_SHADER);
+    let fsSource = makeShaderSource(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, fsSource);
+    gl.compileShader(fs);
+
+    program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+
+    gl.linkProgram(program);
+    linkIssuedTime = window.performance.now();
+    requestAnimationFrame(checkCompletion);
+}
+
+requestAnimationFrame(run);
+</script>
+</body>
+</html>
