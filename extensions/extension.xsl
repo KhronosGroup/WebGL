@@ -115,7 +115,10 @@
 
       <h2 class="no-toc">IDL</h2>
 <pre class="idl">
-<xsl:value-of select="idl" />
+<xsl:call-template name="link_idl">
+  <xsl:with-param name="text" select="string(idl)" />
+  <xsl:with-param name="funs" select="newfun/function" />
+</xsl:call-template>
 </pre>
 
       <xsl:if test="ipstatus">
@@ -449,10 +452,64 @@
   </dd>
 </xsl:template>
 <xsl:template match="function" mode="newfun">
-  <dt class="idl-code"><xsl:call-template name="fun_sig"/></dt>
+  <dt class="idl-code">
+    <!-- newtok repeats function names, so only newfun gets the anchor. -->
+    <xsl:if test="parent::newfun">
+      <xsl:attribute name="id"><xsl:call-template name="fun_id"/></xsl:attribute>
+    </xsl:if>
+    <xsl:call-template name="fun_sig"/>
+  </dt>
   <dd>
     <xsl:apply-templates select="node()" mode="newfun" />
   </dd>
+</xsl:template>
+
+<xsl:template name="fun_id">
+  <xsl:text>DOM-</xsl:text>
+  <xsl:value-of select="/*/name"/>
+  <xsl:text>-</xsl:text>
+  <xsl:value-of select="@name"/>
+</xsl:template>
+
+<!-- Links each " name(" in the IDL text to the function's definition. -->
+<xsl:template name="link_idl">
+  <xsl:param name="text"/>
+  <xsl:param name="funs"/>
+  <xsl:choose>
+    <xsl:when test="not($funs)">
+      <xsl:value-of select="$text"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="token" select="concat(' ', $funs[1]/@name, '(')"/>
+      <xsl:choose>
+        <xsl:when test="contains($text, $token)">
+          <xsl:call-template name="link_idl">
+            <xsl:with-param name="text" select="substring-before($text, $token)"/>
+            <xsl:with-param name="funs" select="$funs[position() > 1]"/>
+          </xsl:call-template>
+          <xsl:text> </xsl:text>
+          <a>
+            <xsl:attribute name="href">
+              <xsl:text>#</xsl:text>
+              <xsl:for-each select="$funs[1]"><xsl:call-template name="fun_id"/></xsl:for-each>
+            </xsl:attribute>
+            <xsl:value-of select="$funs[1]/@name"/>
+          </a>
+          <xsl:text>(</xsl:text>
+          <xsl:call-template name="link_idl">
+            <xsl:with-param name="text" select="substring-after($text, $token)"/>
+            <xsl:with-param name="funs" select="$funs"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="link_idl">
+            <xsl:with-param name="text" select="$text"/>
+            <xsl:with-param name="funs" select="$funs[position() > 1]"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 <xsl:template match="param" mode="newfun" />
 <xsl:template match="node()" mode="newfun">
@@ -464,7 +521,16 @@
 
 <xsl:template name="fun_sig">
   <xsl:value-of select="@type"/><xsl:text> </xsl:text>
-  <xsl:value-of select="@name"/><xsl:text>(</xsl:text>
+  <xsl:choose>
+    <xsl:when test="parent::newfun">
+      <a>
+        <xsl:attribute name="href">#<xsl:call-template name="fun_id"/></xsl:attribute>
+        <xsl:value-of select="@name"/>
+      </a>
+    </xsl:when>
+    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>(</xsl:text>
   <xsl:for-each select="param">
     <xsl:if test="@default">optional </xsl:if>
     <xsl:value-of select="@type"/>
